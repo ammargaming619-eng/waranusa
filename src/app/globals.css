@@ -199,18 +199,14 @@
   .card-hover:hover { transform: none; }
 }
 
-/* ====== Fitur Aksesibilitas (A11y) ====== */
-html.text-size-normal {
-  font-size: 100%;
-}
-html.text-size-medium {
-  font-size: 110%;
-}
-html.text-size-large {
-  font-size: 125%;
-}
+/* ====== Fitur Aksesibilitas (A11y Extended Suite) ====== */
+html.font-scale-90 { font-size: 90% !important; }
+html.font-scale-100 { font-size: 100% !important; }
+html.font-scale-110 { font-size: 110% !important; }
+html.font-scale-120 { font-size: 120% !important; }
+html.font-scale-130 { font-size: 130% !important; }
 
-/* Mode Kontras Tinggi (High Contrast Mode) */
+/* 1. Mode Kontras Tinggi */
 html.high-contrast {
   --background: #000000 !important;
   --foreground: #ffffff !important;
@@ -248,4 +244,63 @@ html.high-contrast a {
   text-decoration: underline !important;
   text-underline-offset: 3px !important;
   color: #ffd700 !important;
+}
+
+/* 2. Dyslexic-Friendly Font */
+html.dyslexic-font body,
+html.dyslexic-font p,
+html.dyslexic-font span,
+html.dyslexic-font h1,
+html.dyslexic-font h2,
+html.dyslexic-font h3,
+html.dyslexic-font h4,
+html.dyslexic-font a,
+html.dyslexic-font button {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* 3. Pause Animations */
+html.pause-animations *,
+html.pause-animations *::before,
+html.pause-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 4. Large Cursor */
+html.large-cursor,
+html.large-cursor * {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><polygon points='0,0 0,20 6,15 11,24 14,22 9,14 17,14'/></svg>"), auto !important;
+}
+html.large-cursor a,
+html.large-cursor button,
+html.large-cursor [role='button'],
+html.large-cursor input,
+html.large-cursor select {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' fill='%231d4ed8' stroke='white' stroke-width='1.5'><polygon points='0,0 0,20 6,15 11,24 14,22 9,14 17,14'/></svg>"), pointer !important;
+}
+
+/* 5. Underline Links */
+html.underline-links a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 4px !important;
+}
+
+/* 6. Line Height */
+html.line-height-expanded p,
+html.line-height-expanded li {
+  line-height: 2.2 !important;
+}
+
+/* 7. Text Align */
+html.text-align-left p,
+html.text-align-left article,
+html.text-align-left h1,
+html.text-align-left h2,
+html.text-align-left h3,
+html.text-align-left h4 {
+  text-align: left !important;
 }

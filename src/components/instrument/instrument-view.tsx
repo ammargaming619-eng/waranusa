@@ -14,6 +14,7 @@ import {
   Keyboard,
   Music2,
   MousePointerClick,
+  Sparkles,
   Volume2,
   Waves,
 } from "lucide-react";
@@ -187,6 +188,13 @@ export default function InstrumentView({ route }: { route: Route }) {
                     <Keyboard className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
                     Gunakan tombol angka <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">1</kbd>–
                     <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">7</kbd> pada keyboard.
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+                    <span>
+                      <strong className="font-semibold text-foreground">Mode Gerakan Udara (Air Gesture):</strong>{" "}
+                      Gunakan webcam untuk melacak ujung jari telunjuk. Ketuk udara ke bawah atau melayang diam 0.5 detik di atas bilah nada.
+                    </span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <Volume2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
