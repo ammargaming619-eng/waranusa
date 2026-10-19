@@ -25,6 +25,7 @@ interface A11yPreferences {
 const STORAGE_KEY = "waranusa_a11y_prefs";
 
 export function AccessibilityWidget() {
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [fontSize, setFontSize] = useState<FontSizeOption>("normal");
   const [highContrast, setHighContrast] = useState(false);
@@ -61,12 +62,14 @@ export function AccessibilityWidget() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     } catch {
-      // Abaikan jika quota storage browser penuh
+      // Abaikan jika storage penuh
     }
   };
 
   // Muat setelan saat mount
   useEffect(() => {
+    setMounted(true);
+
     if (typeof window === "undefined") return;
 
     if (!("speechSynthesis" in window)) {
@@ -139,10 +142,8 @@ export function AccessibilityWidget() {
     const mainEl = document.querySelector("main") || document.querySelector("article");
     const container = mainEl || document.body;
 
-    // Kloning node agar tidak merusak DOM asli
     const clone = container.cloneNode(true) as HTMLElement;
 
-    // Bersihkan elemen yang tidak perlu dibacakan
     const ignoreElements = clone.querySelectorAll(
       "header, nav, footer, script, style, svg, button, [data-a11y-ignore], [aria-hidden='true']"
     );
@@ -178,7 +179,6 @@ export function AccessibilityWidget() {
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
 
-    // Cari suara Bahasa Indonesia bila tersedia di sistem
     const voices = window.speechSynthesis.getVoices();
     const idVoice = voices.find(
       (v) =>
@@ -217,17 +217,24 @@ export function AccessibilityWidget() {
     }
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div data-a11y-ignore className="select-none">
       {/* ================= FLOATING TRIGGER BUTTON (Pojok Kiri Bawah) ================= */}
       <button
         ref={triggerRef}
+        type="button"
         onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
         className={cn(
-          "fixed bottom-6 left-6 z-50",
+          "fixed bottom-6 left-6 z-[9999]",
           "group flex items-center justify-center",
           "w-14 h-14 rounded-full",
-          "bg-stone-900/90 dark:bg-slate-950/90 backdrop-blur-md",
+          "bg-stone-900/95 dark:bg-slate-950/95 backdrop-blur-md",
           "border-2 border-amber-500/40 hover:border-amber-400",
           "shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_28px_rgba(245,158,11,0.45)]",
           "transition-all duration-300 transform hover:scale-105 active:scale-95",
@@ -237,11 +244,11 @@ export function AccessibilityWidget() {
         aria-label="Buka Menu Aksesibilitas Web"
         title="Menu Aksesibilitas (Ukuran teks, kontras, narator)"
       >
-        <Accessibility className="w-7 h-7 text-amber-400 group-hover:text-amber-300 transition-colors" />
-        
+        <Accessibility className="w-7 h-7 text-amber-400 group-hover:text-amber-300 transition-colors pointer-events-none" />
+
         {/* Indikator aktif bila ada fitur aksesibilitas yang sedang diubah */}
         {(fontSize !== "normal" || highContrast || isSpeaking) && (
-          <span className="absolute top-1 right-1 flex h-3 w-3">
+          <span className="absolute top-1 right-1 flex h-3 w-3 pointer-events-none">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-stone-900"></span>
           </span>
@@ -252,8 +259,10 @@ export function AccessibilityWidget() {
       {isOpen && (
         <div
           ref={popoverRef}
+          role="dialog"
+          aria-label="Pengaturan Aksesibilitas Web"
           className={cn(
-            "fixed bottom-22 left-4 sm:left-6 z-50",
+            "fixed bottom-24 left-4 sm:left-6 z-[9999]",
             "w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl overflow-hidden",
             "bg-stone-950/95 dark:bg-stone-950/95 backdrop-blur-xl",
             "border border-amber-500/35 shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_25px_rgba(245,158,11,0.2)]",
@@ -278,6 +287,7 @@ export function AccessibilityWidget() {
             </div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors cursor-pointer"
               aria-label="Tutup menu aksesibilitas"
@@ -297,12 +307,13 @@ export function AccessibilityWidget() {
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <button
+                  type="button"
                   onClick={() => handleFontSizeChange("normal")}
                   className={cn(
                     "py-2 px-2.5 text-xs rounded-xl font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
                     fontSize === "normal"
                       ? "bg-amber-500 text-stone-950 border-amber-400 font-bold shadow-md"
-                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-850"
+                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-800"
                   )}
                 >
                   <span className="text-xs">A</span>
@@ -310,12 +321,13 @@ export function AccessibilityWidget() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => handleFontSizeChange("medium")}
                   className={cn(
                     "py-2 px-2.5 text-xs rounded-xl font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
                     fontSize === "medium"
                       ? "bg-amber-500 text-stone-950 border-amber-400 font-bold shadow-md"
-                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-850"
+                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-800"
                   )}
                 >
                   <span className="text-sm font-semibold">A+</span>
@@ -323,12 +335,13 @@ export function AccessibilityWidget() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => handleFontSizeChange("large")}
                   className={cn(
                     "py-2 px-2.5 text-xs rounded-xl font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
                     fontSize === "large"
                       ? "bg-amber-500 text-stone-950 border-amber-400 font-bold shadow-md"
-                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-850"
+                      : "bg-stone-900 text-stone-300 border-stone-800 hover:border-amber-500/40 hover:bg-stone-800"
                   )}
                 >
                   <span className="text-base font-bold">A++</span>
@@ -353,6 +366,7 @@ export function AccessibilityWidget() {
 
               {/* Toggle Switch */}
               <button
+                type="button"
                 role="switch"
                 aria-checked={highContrast}
                 onClick={handleToggleHighContrast}
@@ -391,14 +405,16 @@ export function AccessibilityWidget() {
                 <div className="flex items-center gap-2">
                   {!isSpeaking ? (
                     <button
+                      type="button"
                       onClick={handleStartSpeech}
-                      className="flex-1 py-2 px-3 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-500/50 hover:bg-stone-850 text-stone-200 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      className="flex-1 py-2 px-3 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-500/50 hover:bg-stone-800 text-stone-200 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       <Play className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                       <span>Bacakan Halaman Ini</span>
                     </button>
                   ) : (
                     <button
+                      type="button"
                       onClick={handleStopSpeech}
                       className="flex-1 py-2 px-3 rounded-xl bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-200 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
@@ -418,8 +434,9 @@ export function AccessibilityWidget() {
 
             {/* 4. Tombol Reset */}
             <button
+              type="button"
               onClick={handleReset}
-              className="w-full py-2 px-3 rounded-xl bg-stone-900/60 hover:bg-stone-850 border border-stone-800 text-stone-400 hover:text-stone-200 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
+              className="w-full py-2 px-3 rounded-xl bg-stone-900/60 hover:bg-stone-800 border border-stone-800 text-stone-400 hover:text-stone-200 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5 text-stone-400" />
               <span>Kembalikan ke Kondisi Bawaan (Reset)</span>
