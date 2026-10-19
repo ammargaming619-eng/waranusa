@@ -3,29 +3,46 @@
 /**
  * WaraNusa — Saron virtual interaktif (dipakai halaman instrumen publik).
  *
- * - Membuat <Canvas> sendiri (±380px) berisi ProceduralSaron yang interaktif:
- *   klik/ketuk bilah → playNote(index), bilah aktif terangkat + emissive emas.
- * - Laras PELOG 7 nada. CATATAN: frekuensi laras pelog sesungguhnya TIDAK
- *   temperamen sama; deret di bawah adalah pendekatan demo yang musikal.
- * - Audio via singleton saronAudio (Web Audio API, audio sintetis).
- * - Keyboard: tombol 1–7 memainkan nada (diabaikan saat fokus di input).
- * - Aksesibilitas: role="application", tombol nada alternatif, aria-live.
+ * Fitur Unggulan:
+ * 1. Mode Mouse / Sentuh: klik bilah, seret pandangan 3D, atau tombol angka 1–7.
+ * 2. Mode Gerakan Udara (Air Gamelan):
+ *    - Deteksi gestur tangan real-time via @mediapipe/tasks-vision.
+ *    - Melacak ujung jari telunjuk (Landmark 8: INDEX_FINGER_TIP).
+ *    - Kursor bulat emas menyala dengan efek riak gelombang saat menabuh.
+ *    - Pemicu tabuh: Gerakan turun cepat (Air Tap) ATAU melayang diam (Hover 0.5s).
+ *    - Floating preview webcam dengan garis kerangka sendi tangan di pojok instrumen.
+ * 3. Audio via singleton saronAudio (Web Audio API, sintesis metalofon).
  */
 
 import * as React from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Info, Play, Square, Volume2 } from "lucide-react";
+import {
+  Hand,
+  Info,
+  MousePointer,
+  Play,
+  Sparkles,
+  Square,
+  Volume2,
+} from "lucide-react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ProceduralSaron, SARON_KEY_XS, SpriteLabel } from "@/components/three/procedural-models";
 import { saronAudio } from "@/components/three/saron-audio";
+import {
+  AirGesture3DTracker,
+  AirGestureCursorOverlay,
+  AirGamelanFloatingPreview,
+  useAirGamelanTracking,
+} from "@/components/three/air-gamelan";
 
 /** Frekuensi (Hz) 7 nada pelog — pendekatan demo, tidak temperamen sama. */
 export const PELOG_FREQUENCIES = [261.63, 293.66, 329.63, 392.0, 440.0, 493.88, 587.33] as const;
 
-/** Label nada 1–7 (notasi kepatkahan). */
+/** Label nada 1–7 (notasi kepatihan). */
 export const PELOG_LABELS = ["1", "2", "3", "4", "5", "6", "7"] as const;
 
 /** Urutan nada contoh (indeks 0-based) untuk tombol demo. */
@@ -34,8 +51,6 @@ const DEMO_INTERVAL_MS = 350;
 const NOTE_HOLD_MS = 250;
 
 function AutoInvalidate() {
-  // Memaksa render satu frame setiap kali tree scene dirender ulang
-  // (mode frameloop="demand").
   const invalidate = useThree((s) => s.invalidate);
   React.useEffect(() => {
     invalidate();
@@ -52,11 +67,14 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
   const [vol, setVol] = React.useState(volume);
   const [activeNote, setActiveNote] = React.useState<number | null>(null);
   const [playingDemo, setPlayingDemo] = React.useState(false);
+  const [controlMode, setControlMode] = React.useState<"mouse" | "air">("mouse");
+  const [hoveredNote, setHoveredNote] = React.useState<number | null>(null);
+
   const noteTimer = React.useRef<number | null>(null);
   const demoTimer = React.useRef<number | null>(null);
   const volRef = React.useRef(volume);
 
-  // Sinkronkan bila prop volume berubah dari luar.
+  // Sinkronkan bila prop volume berubah dari luar
   React.useEffect(() => {
     volRef.current = volume;
     setVol(volume);
@@ -78,6 +96,35 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
     setVol(clamped);
     saronAudio.updateVolume(clamped);
   }, []);
+
+  // ---------- Air Gamelan: Penanganan Error Kamera ----------
+  const handleAirError = React.useCallback((error: Error) => {
+    setControlMode("mouse");
+    if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+      toast.error("Izin kamera ditolak. Silakan izinkan akses webcam pada browser.");
+    } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+      toast.error("Kamera tidak ditemukan pada perangkat Anda.");
+    } else {
+      toast.error(`Kamera tidak dapat diakses: ${error.message || "Gagal mengaktifkan"}`);
+    }
+  }, []);
+
+  // ---------- Air Gamelan: Hook Pelacakan Gestur Tangan ----------
+  const {
+    videoRef,
+    canvasRef,
+    isLoadingModel,
+    handDetected,
+    cursor,
+    cursorNDC,
+    hoverProgress,
+    strikeEvent,
+  } = useAirGamelanTracking({
+    active: controlMode === "air",
+    hoveredNote,
+    onPlayNote: playNote,
+    onError: handleAirError,
+  });
 
   // ---------- Demo melodi ----------
   const stopDemo = React.useCallback(() => {
@@ -144,17 +191,67 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
 
   return (
     <section aria-label="Saron virtual" className="w-full">
+      {/* Tombol Pemilih Mode Kontrol: Mouse / Sentuh vs Air Gesture */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="inline-flex items-center rounded-xl border border-brand-line bg-muted/40 p-1">
+          <Button
+            type="button"
+            size="sm"
+            variant={controlMode === "mouse" ? "default" : "ghost"}
+            onClick={() => setControlMode("mouse")}
+            className={`h-8 rounded-lg px-3 text-xs font-semibold transition-all ${
+              controlMode === "mouse"
+                ? "bg-brand-ink text-white shadow-sm hover:bg-brand-ink"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <MousePointer className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+            Mode Mouse / Sentuh
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={controlMode === "air" ? "default" : "ghost"}
+            onClick={() => {
+              setControlMode("air");
+              toast.info("Mengaktifkan Air Gamelan... Mohon izinkan akses webcam.");
+            }}
+            className={`h-8 rounded-lg px-3 text-xs font-semibold transition-all ${
+              controlMode === "air"
+                ? "bg-brand-gold text-brand-ink shadow-sm hover:bg-brand-gold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-600" aria-hidden />
+            Mode Gerakan Udara (Air Gesture)
+            <Badge
+              variant="secondary"
+              className="ml-1.5 px-1 py-0 text-[9px] font-extrabold uppercase bg-amber-100 text-amber-900 border-amber-300"
+            >
+              AI
+            </Badge>
+          </Button>
+        </div>
+
+        {controlMode === "air" && (
+          <div className="flex items-center gap-1.5 text-xs text-brand-teal font-medium">
+            <Hand className="h-3.5 w-3.5 animate-pulse text-amber-500" />
+            <span className="hidden sm:inline">Hand Tracking Vision Aktif</span>
+          </div>
+        )}
+      </div>
+
       {/* Panggung 3D */}
       <div
         role="application"
-        aria-label="Saron virtual — klik bilah untuk membunyikan"
+        aria-label="Saron virtual — klik bilah atau gunakan gestur udara untuk membunyikan"
         className="relative h-[380px] w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft shadow-sm"
       >
         <Canvas
           shadows="soft"
           dpr={[1, 2]}
           camera={{ position: [0, 1.35, 2.9], fov: 40 }}
-          frameloop="demand"
+          frameloop={controlMode === "air" ? "always" : "demand"}
           style={{ width: "100%", height: "100%" }}
         >
           <ambientLight intensity={0.75} />
@@ -183,8 +280,8 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
                 text={PELOG_LABELS[i]}
                 position={[x, 0.72, 0]}
                 scale={0.2}
-                bg="#FFFFFF"
-                border="#E1EBE8"
+                bg={activeNote === i ? "#F2B544" : "#FFFFFF"}
+                border={activeNote === i ? "#B08D57" : "#E1EBE8"}
               />
             ))}
           </group>
@@ -194,6 +291,13 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
             <circleGeometry args={[2.4, 48]} />
             <meshStandardMaterial color="#F3F8F7" roughness={1} metalness={0} />
           </mesh>
+
+          {/* Pelacak Sinar Tangan 3D ke Bilah Saron */}
+          <AirGesture3DTracker
+            cursorNDC={cursorNDC}
+            active={controlMode === "air"}
+            onHoverNote={setHoveredNote}
+          />
 
           <OrbitControls
             makeDefault
@@ -207,11 +311,37 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
           <AutoInvalidate />
         </Canvas>
 
+        {/* Indikator Kursor Penunjuk Emas Virtual di atas Kanvas */}
+        {controlMode === "air" && (
+          <AirGestureCursorOverlay
+            cursor={cursor}
+            hoveredNote={hoveredNote}
+            hoverProgress={hoverProgress}
+            strikeEvent={strikeEvent}
+            handDetected={handDetected}
+            labels={PELOG_LABELS}
+          />
+        )}
+
+        {/* Floating Preview Webcam di Pojok Kanan Bawah */}
+        {controlMode === "air" && (
+          <AirGamelanFloatingPreview
+            videoRef={videoRef}
+            canvasRef={canvasRef}
+            handDetected={handDetected}
+            isLoadingModel={isLoadingModel}
+            hoveredNote={hoveredNote}
+            lastStrike={strikeEvent}
+            onClose={() => setControlMode("mouse")}
+            labels={PELOG_LABELS}
+          />
+        )}
+
         <Badge
           variant="outline"
           className="absolute right-3 top-3 border-brand-line bg-white/90 text-[10px] font-medium text-muted-foreground backdrop-blur"
         >
-          Web Audio API — audio sintetis
+          {controlMode === "air" ? "Air Gamelan • Vision AI" : "Web Audio API • Sintetis"}
         </Badge>
       </div>
 
@@ -220,10 +350,18 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
         {activeNote !== null ? `Nada ${PELOG_LABELS[activeNote]} dibunyikan` : ""}
       </span>
 
-      {/* Petunjuk */}
+      {/* Petunjuk Interaksi */}
       <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Info className="h-3.5 w-3.5 text-brand-teal" aria-hidden />
-        Klik bilah atau tekan tombol angka 1–7. Seret untuk memutar pandangan.
+        <Info className="h-3.5 w-3.5 text-brand-teal shrink-0" aria-hidden />
+        {controlMode === "air" ? (
+          <span>
+            <strong className="text-brand-ink">Mode Gerakan Udara:</strong> Arahkan ujung telunjuk ke
+            bilah nada, lalu <strong className="text-amber-700">ketuk cepat ke bawah</strong> atau{" "}
+            <strong className="text-amber-700">diamkan selama 0.5 detik</strong> untuk memukul bilah!
+          </span>
+        ) : (
+          <span>Klik bilah atau tekan tombol angka 1–7. Seret untuk memutar pandangan.</span>
+        )}
       </p>
 
       {/* Kontrol */}
@@ -270,9 +408,9 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
               size="icon"
               aria-label={`Mainkan nada ${label}`}
               onClick={() => playNote(i)}
-              className={`h-9 w-9 rounded-full text-xs font-bold ${
+              className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
                 activeNote === i
-                  ? "bg-brand-gold text-brand-ink hover:bg-brand-gold"
+                  ? "bg-brand-gold text-brand-ink hover:bg-brand-gold scale-105 shadow-sm"
                   : "border-brand-line text-brand-ink hover:bg-brand-soft"
               }`}
             >
