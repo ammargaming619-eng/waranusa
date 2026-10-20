@@ -64,6 +64,9 @@ export default function LoginView() {
     setSubmitting(true);
     try {
       const u = await login(email.trim(), password);
+      try {
+        localStorage.setItem("waranusa_has_registered", "true");
+      } catch {}
       toast.success(`Selamat datang, ${u.name}!`);
       navigate(canAccessCMS() ? "/admin/dashboard" : "/kontribusi-saya");
     } catch (err) {

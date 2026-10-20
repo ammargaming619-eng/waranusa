@@ -380,13 +380,13 @@ export function AirGamelanFloatingPreview({
   const [isMinimized, setIsMinimized] = React.useState(false);
 
   return (
-    <div className="absolute bottom-3 right-3 z-30 flex flex-col items-end">
-      <div className="overflow-hidden rounded-2xl border border-brand-gold/40 bg-brand-ink/95 shadow-2xl backdrop-blur-md transition-all duration-200">
+    <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-30 flex flex-col items-end">
+      <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-brand-gold/40 bg-brand-ink/95 shadow-2xl backdrop-blur-md transition-all duration-200">
         {/* Header Preview Bar */}
-        <div className="flex items-center justify-between gap-2 border-b border-white/10 px-3 py-1.5 text-xs">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-1.5 sm:gap-2 border-b border-white/10 px-2 sm:px-3 py-1 sm:py-1.5 text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <span
-              className={`h-2.5 w-2.5 rounded-full ${
+              className={`h-2 sm:h-2.5 w-2 sm:w-2.5 rounded-full ${
                 isLoadingModel
                   ? "bg-amber-400 animate-pulse"
                   : handDetected
@@ -394,16 +394,16 @@ export function AirGamelanFloatingPreview({
                   : "bg-amber-500"
               }`}
             />
-            <span className="text-[11px] font-medium text-white">
+            <span className="text-[10px] sm:text-[11px] font-medium text-white">
               {isLoadingModel
                 ? "Memuat AI Vision..."
                 : handDetected
                 ? "Tangan Terdeteksi"
-                : "Arahkan Tangan ke Kamera"}
+                : "Arahkan Tangan"}
             </span>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1">
             <Button
               type="button"
               variant="ghost"
@@ -429,7 +429,7 @@ export function AirGamelanFloatingPreview({
 
         {/* Layar Kamera + Canvas Kerangka Tangan */}
         {!isMinimized && (
-          <div className="relative h-28 w-44 sm:h-32 sm:w-52 bg-black/60 overflow-hidden">
+          <div className="relative h-24 w-36 sm:h-32 sm:w-52 bg-black/60 overflow-hidden">
             {/* Video stream mirrored horizontally */}
             <video
               ref={videoRef}

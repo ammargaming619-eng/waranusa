@@ -18,6 +18,7 @@ import ExploreView from "@/components/explore/explore-view";
 import CatalogView from "@/components/catalog/catalog-view";
 import CultureDetailView from "@/components/culture/culture-detail-view";
 import InstrumentView from "@/components/instrument/instrument-view";
+import Exploration3DView from "@/components/explore/exploration-3d-view";
 import ArchiveView from "@/components/archive/archive-view";
 import ContributeView from "@/components/contribute/contribute-view";
 import LoginView from "@/components/account/login-view";
@@ -79,6 +80,10 @@ export default function WaraNusaApp() {
     case "instrumen":
       view = <InstrumentView route={route} />;
       break;
+    case "eksplorasi-3d":
+    case "3d":
+      view = <Exploration3DView />;
+      break;
     case "arsip":
       view = <ArchiveView />;
       break;
@@ -102,7 +107,7 @@ export default function WaraNusaApp() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900">
       <SiteHeader route={route} />
       <div className="flex-1">{view}</div>
       <SiteFooter
