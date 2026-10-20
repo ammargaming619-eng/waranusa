@@ -181,11 +181,12 @@ export function CulturalChatWidget() {
       {/* ================= FLOATING TRIGGER BUTTON ================= */}
       {!isOpen && (
         <button
+          type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed bottom-6 right-6 z-50",
+            "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50",
             "group flex items-center justify-center",
-            "w-14 h-14 rounded-full",
+            "w-12 h-12 sm:w-14 sm:h-14 rounded-full",
             "bg-[#111722] border-2 border-[#D4AF37]/80 hover:border-[#D4AF37]",
             "shadow-[0_0_24px_rgba(212,175,55,0.4)] hover:shadow-[0_0_32px_rgba(212,175,55,0.65)]",
             "transition-all duration-300 transform hover:scale-105 active:scale-95",
@@ -194,12 +195,12 @@ export function CulturalChatWidget() {
           aria-label="Buka Chatbot Budaya Karsa"
           title="Tanya Karsa - Panduan Budaya AI"
         >
-          <div className="relative flex items-center justify-center w-full h-full p-1.5">
-            <KarsaMedallion className="w-10 h-10 transition-transform duration-300 group-hover:rotate-6" />
+          <div className="relative flex items-center justify-center w-full h-full p-1 sm:p-1.5">
+            <KarsaMedallion className="w-8 h-8 sm:w-10 sm:h-10 transition-transform duration-300 group-hover:rotate-6" />
             {/* Status online ping badge */}
-            <span className="absolute top-1 right-1 flex h-3.5 w-3.5">
+            <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 flex h-2.5 w-2.5 sm:h-3.5 sm:w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-[#111722]"></span>
+              <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500 border-2 border-[#111722]"></span>
             </span>
           </div>
         </button>
@@ -209,8 +210,8 @@ export function CulturalChatWidget() {
       {isOpen && (
         <div
           className={cn(
-            "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50",
-            "w-[calc(100vw-2rem)] sm:w-[410px] h-[580px] max-h-[calc(100vh-2.5rem)]",
+            "fixed bottom-3 right-3 left-3 sm:left-auto sm:bottom-6 sm:right-6 z-50",
+            "w-auto sm:w-[410px] h-[82vh] sm:h-[580px] max-h-[calc(100vh-1.5rem)]",
             "flex flex-col rounded-3xl overflow-hidden",
             "bg-[#111722]/95 backdrop-blur-xl border border-[#c5a059]/40",
             "shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.2)]",
@@ -218,14 +219,14 @@ export function CulturalChatWidget() {
           )}
         >
           {/* ============ HEADER ============ */}
-          <div className="relative flex items-center justify-between px-4 py-3.5 border-b border-white/10 bg-[#0f151f]/90 select-none">
-            <div className="flex items-center gap-3">
-              <KarsaMedallion className="w-10 h-10 shadow-sm" />
+          <div className="relative flex items-center justify-between px-3.5 sm:px-4 py-3 sm:py-3.5 border-b border-white/10 bg-[#0f151f]/90 select-none">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <KarsaMedallion className="w-8 h-8 sm:w-10 sm:h-10 shadow-sm" />
               <div className="flex flex-col">
-                <span className="text-white font-semibold text-[0.95rem] tracking-wide leading-tight">
+                <span className="text-white font-semibold text-sm sm:text-[0.95rem] tracking-wide leading-tight">
                   Karsa - Panduan Budaya AI
                 </span>
-                <span className="flex items-center gap-1.5 text-xs text-[#22c55e] font-medium leading-none mt-1">
+                <span className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#22c55e] font-medium leading-none mt-1">
                   <span className="w-2 h-2 rounded-full bg-[#22c55e] inline-block animate-pulse"></span>
                   online
                 </span>
@@ -236,6 +237,7 @@ export function CulturalChatWidget() {
               {/* Menu 3 Titik */}
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => setShowMenu((prev) => !prev)}
                   className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                   title="Opsi percakapan"
@@ -247,6 +249,7 @@ export function CulturalChatWidget() {
                 {showMenu && (
                   <div className="absolute right-0 mt-1 w-44 rounded-xl bg-[#192231] border border-white/10 shadow-xl py-1 text-xs text-slate-200 z-20">
                     <button
+                      type="button"
                       onClick={resetChat}
                       className="w-full text-left px-3.5 py-2 hover:bg-[#D4AF37]/20 flex items-center gap-2 cursor-pointer transition-colors"
                     >
@@ -263,6 +266,7 @@ export function CulturalChatWidget() {
 
               {/* Tombol Tutup */}
               <button
+                type="button"
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                 title="Tutup chat"
@@ -274,20 +278,20 @@ export function CulturalChatWidget() {
           </div>
 
           {/* ============ MESSAGES CONTAINER ============ */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3.5 scrollbar-thin scrollbar-thumb-slate-700">
+          <div className="flex-1 overflow-y-auto px-3.5 sm:px-4 py-3.5 sm:py-4 space-y-3.5 scrollbar-thin scrollbar-thumb-slate-700">
             {messages.map((msg, index) => {
               const isAssistant = msg.role === "assistant";
               return (
                 <div
                   key={index}
                   className={cn(
-                    "flex flex-col max-w-[86%]",
+                    "flex flex-col max-w-[88%] sm:max-w-[86%]",
                     isAssistant ? "self-start items-start" : "self-end items-end ml-auto"
                   )}
                 >
                   <div
                     className={cn(
-                      "px-4 py-3 text-sm leading-relaxed",
+                      "px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm leading-relaxed",
                       isAssistant
                         ? "bg-[#1c2433] text-slate-100 rounded-2xl rounded-tl-sm border border-white/5 shadow-sm"
                         : "bg-[#D4AF37]/20 text-[#fdf8ee] border border-[#D4AF37]/45 rounded-2xl rounded-tr-sm shadow-sm"
@@ -308,11 +312,11 @@ export function CulturalChatWidget() {
             {/* Typing Indicator */}
             {isLoading && (
               <div className="self-start items-start max-w-[85%]">
-                <div className="px-4 py-3 bg-[#1c2433] text-slate-300 rounded-2xl rounded-tl-sm border border-white/5 flex items-center gap-1.5 shadow-sm">
+                <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 bg-[#1c2433] text-slate-300 rounded-2xl rounded-tl-sm border border-white/5 flex items-center gap-1.5 shadow-sm">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce [animation-delay:-0.3s]"></span>
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce [animation-delay:-0.15s]"></span>
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce"></span>
-                  <span className="text-xs text-slate-400 ml-2">Karsa sedang merangkai info...</span>
+                  <span className="text-[11px] sm:text-xs text-slate-400 ml-2">Karsa sedang merangkai info...</span>
                 </div>
               </div>
             )}
@@ -321,16 +325,17 @@ export function CulturalChatWidget() {
           </div>
 
           {/* ============ FOOTER (QUICK PILLS & INPUT) ============ */}
-          <div className="px-3.5 pb-3.5 pt-1.5 bg-[#0f151f]/95 border-t border-white/5 space-y-2.5">
+          <div className="px-3 sm:px-3.5 pb-3 sm:pb-3.5 pt-1.5 bg-[#0f151f]/95 border-t border-white/5 space-y-2">
             {/* Quick Prompt Pills (Persis desain gambar) */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
               {QUICK_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
+                  type="button"
                   onClick={() => handleSendMessage(prompt)}
                   disabled={isLoading}
                   className={cn(
-                    "text-xs px-3.5 py-1.5 rounded-full shrink-0 font-normal",
+                    "text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full shrink-0 font-normal",
                     "bg-[#16202d] text-slate-200 border border-[#c5a059]/60",
                     "hover:border-[#D4AF37] hover:text-[#FDE047] hover:bg-[#D4AF37]/10",
                     "active:scale-95 transition-all duration-150 cursor-pointer shadow-sm",
@@ -347,7 +352,7 @@ export function CulturalChatWidget() {
               className={cn(
                 "rounded-full bg-[#121824] border border-[#c5a059]/70",
                 "focus-within:border-[#D4AF37] focus-within:ring-1 focus-within:ring-[#D4AF37]/40",
-                "px-3.5 py-1.5 flex items-center gap-2 shadow-inner transition-all duration-200"
+                "px-3 sm:px-3.5 py-1.5 flex items-center gap-2 shadow-inner transition-all duration-200"
               )}
             >
               <input
@@ -358,15 +363,16 @@ export function CulturalChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder="Tanya tentang budaya..."
                 disabled={isLoading}
-                className="bg-transparent text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none flex-1 pl-1 disabled:opacity-50"
+                className="bg-transparent text-xs sm:text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none flex-1 pl-1 disabled:opacity-50"
               />
 
               {/* Tombol Kirim Bundar Hijau Zamrud */}
               <button
+                type="button"
                 onClick={() => handleSendMessage()}
                 disabled={isLoading || !inputValue.trim()}
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                  "w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0",
                   "bg-[#10b981] hover:bg-[#059669] text-white shadow-md",
                   "transition-all duration-150 active:scale-95 cursor-pointer",
                   "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#10b981]"
@@ -374,7 +380,7 @@ export function CulturalChatWidget() {
                 aria-label="Kirim pertanyaan"
                 title="Kirim pertanyaan"
               >
-                <Send className="w-3.5 h-3.5 translate-x-px" />
+                <Send className="w-3 h-3 sm:w-3.5 sm:h-3.5 translate-x-px" />
               </button>
             </div>
           </div>

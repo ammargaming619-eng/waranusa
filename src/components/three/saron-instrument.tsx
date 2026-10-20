@@ -192,21 +192,21 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
   return (
     <section aria-label="Saron virtual" className="w-full">
       {/* Tombol Pemilih Mode Kontrol: Mouse / Sentuh vs Air Gesture */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="inline-flex items-center rounded-xl border border-brand-line bg-muted/40 p-1">
+      <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="grid grid-cols-2 sm:inline-flex items-center rounded-xl border border-brand-line bg-muted/40 p-1 gap-1">
           <Button
             type="button"
             size="sm"
             variant={controlMode === "mouse" ? "default" : "ghost"}
             onClick={() => setControlMode("mouse")}
-            className={`h-8 rounded-lg px-3 text-xs font-semibold transition-all ${
+            className={`h-9 sm:h-8 rounded-lg px-2 sm:px-3 text-xs font-semibold transition-all ${
               controlMode === "mouse"
                 ? "bg-brand-ink text-white shadow-sm hover:bg-brand-ink"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <MousePointer className="mr-1.5 h-3.5 w-3.5" aria-hidden />
-            Mode Mouse / Sentuh
+            <MousePointer className="mr-1.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+            <span className="truncate">Mode Sentuh</span>
           </Button>
           <Button
             type="button"
@@ -216,17 +216,17 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
               setControlMode("air");
               toast.info("Mengaktifkan Air Gamelan... Mohon izinkan akses webcam.");
             }}
-            className={`h-8 rounded-lg px-3 text-xs font-semibold transition-all ${
+            className={`h-9 sm:h-8 rounded-lg px-2 sm:px-3 text-xs font-semibold transition-all ${
               controlMode === "air"
                 ? "bg-brand-gold text-brand-ink shadow-sm hover:bg-brand-gold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-600" aria-hidden />
-            Mode Gerakan Udara (Air Gesture)
+            <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-600 shrink-0" aria-hidden />
+            <span className="truncate">Air Gesture</span>
             <Badge
               variant="secondary"
-              className="ml-1.5 px-1 py-0 text-[9px] font-extrabold uppercase bg-amber-100 text-amber-900 border-amber-300"
+              className="ml-1 sm:ml-1.5 px-1 py-0 text-[9px] font-extrabold uppercase bg-amber-100 text-amber-900 border-amber-300"
             >
               AI
             </Badge>
@@ -236,7 +236,7 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
         {controlMode === "air" && (
           <div className="flex items-center gap-1.5 text-xs text-brand-teal font-medium">
             <Hand className="h-3.5 w-3.5 animate-pulse text-amber-500" />
-            <span className="hidden sm:inline">Hand Tracking Vision Aktif</span>
+            <span className="text-xs">Hand Tracking Vision Aktif</span>
           </div>
         )}
       </div>
@@ -245,7 +245,7 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
       <div
         role="application"
         aria-label="Saron virtual — klik bilah atau gunakan gestur udara untuk membunyikan"
-        className="relative h-[380px] w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft shadow-sm"
+        className="relative h-[280px] sm:h-[380px] w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft shadow-sm"
       >
         <Canvas
           shadows="soft"
@@ -365,41 +365,43 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
       </p>
 
       {/* Kontrol */}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <div className="flex items-center gap-2.5">
-          <Volume2 className="h-4 w-4 shrink-0 text-brand-ink" aria-hidden />
-          <Slider
-            value={[Math.round(vol * 100)]}
-            min={0}
-            max={100}
-            step={1}
-            aria-label="Volume saron"
-            onValueChange={(v) => updateVolume((v[0] ?? 70) / 100)}
-            className="w-32 sm:w-40"
-          />
-          <span className="w-9 text-right text-xs tabular-nums text-muted-foreground">
-            {Math.round(vol * 100)}%
-          </span>
+      <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-auto">
+          <div className="flex items-center gap-2">
+            <Volume2 className="h-4 w-4 shrink-0 text-brand-ink" aria-hidden />
+            <Slider
+              value={[Math.round(vol * 100)]}
+              min={0}
+              max={100}
+              step={1}
+              aria-label="Volume saron"
+              onValueChange={(v) => updateVolume((v[0] ?? 70) / 100)}
+              className="w-24 sm:w-36"
+            />
+            <span className="w-8 text-right text-xs tabular-nums text-muted-foreground">
+              {Math.round(vol * 100)}%
+            </span>
+          </div>
+
+          <Button
+            type="button"
+            size="sm"
+            variant={playingDemo ? "secondary" : "default"}
+            onClick={playingDemo ? stopDemo : startDemo}
+            aria-label={playingDemo ? "Hentikan demo melodi" : "Mainkan demo melodi"}
+            className="h-8 px-3 text-xs"
+          >
+            {playingDemo ? (
+              <Square className="h-3.5 w-3.5 mr-1" aria-hidden />
+            ) : (
+              <Play className="h-3.5 w-3.5 mr-1" aria-hidden />
+            )}
+            {playingDemo ? "Hentikan" : "Demo Melodi"}
+          </Button>
         </div>
 
-        <Button
-          type="button"
-          size="sm"
-          variant={playingDemo ? "secondary" : "default"}
-          onClick={playingDemo ? stopDemo : startDemo}
-          aria-label={playingDemo ? "Hentikan demo melodi" : "Mainkan demo melodi"}
-          className="min-w-32"
-        >
-          {playingDemo ? (
-            <Square className="h-3.5 w-3.5" aria-hidden />
-          ) : (
-            <Play className="h-3.5 w-3.5" aria-hidden />
-          )}
-          {playingDemo ? "Hentikan" : "Demo Melodi"}
-        </Button>
-
         {/* Tombol nada alternatif (aksesibel tanpa raycast) */}
-        <div className="flex items-center gap-1.5" role="group" aria-label="Tombol nada pelog">
+        <div className="grid grid-cols-7 gap-1 sm:flex sm:items-center sm:gap-1.5 w-full sm:w-auto" role="group" aria-label="Tombol nada pelog">
           {PELOG_LABELS.map((label, i) => (
             <Button
               key={label}
@@ -408,7 +410,7 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
               size="icon"
               aria-label={`Mainkan nada ${label}`}
               onClick={() => playNote(i)}
-              className={`h-9 w-9 rounded-full text-xs font-bold transition-all ${
+              className={`h-9 w-full sm:w-9 rounded-lg sm:rounded-full text-xs font-bold transition-all ${
                 activeNote === i
                   ? "bg-brand-gold text-brand-ink hover:bg-brand-gold scale-105 shadow-sm"
                   : "border-brand-line text-brand-ink hover:bg-brand-soft"

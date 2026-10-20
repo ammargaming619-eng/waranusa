@@ -18,7 +18,7 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
   const name = siteName || "WaraNusa";
   return (
     <footer className="mt-auto border-t border-border bg-secondary/60">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 pb-24 sm:pb-10 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2 space-y-3">
             <BrandLogo />

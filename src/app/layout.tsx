@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { CulturalChatWidget } from "@/components/chat/cultural-chat-widget";
+import { UnifiedAssistantWidget } from "@/components/shared/unified-assistant-widget";
 import { AccessibilityWidget } from "@/components/shared/accessibility-widget";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -38,12 +38,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
+      <body suppressHydrationWarning className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
         {children}
         <Toaster />
         <SonnerToaster position="top-center" richColors closeButton />
         <AccessibilityWidget />
-        <CulturalChatWidget />
+        <UnifiedAssistantWidget />
       </body>
     </html>
   );

@@ -85,23 +85,22 @@ export default function InstrumentView({ route }: { route: Route }) {
         });
       }
     }
-    // Hanya sekali saat halaman dibuka
   }, []);
 
   const activeInstrument = INSTRUMENTS.find((i) => i.id === active) ?? INSTRUMENTS[0];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+    <div className="mx-auto max-w-7xl px-3.5 py-6 sm:px-6 md:py-14 lg:px-8 pb-32 sm:pb-36">
       {/* ============ HERO KECIL ============ */}
       <SectionHeading
         eyebrow="Ruang permainan"
         title="Instrumen Musik Virtual"
         description="Kenali bunyi dan mekanika instrumen nusantara lewat replika digital yang bisa dimainkan langsung."
       />
-      <Alert className="mt-6 rounded-2xl border-brand-gold/40 bg-brand-gold/10">
+      <Alert className="mt-4 sm:mt-6 rounded-2xl border-brand-gold/40 bg-brand-gold/10">
         <Info className="h-4 w-4 text-brand-orange" aria-hidden="true" />
         <AlertTitle className="text-sm font-bold text-brand-ink">Tentang audio instrumen virtual</AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
+        <AlertDescription className="text-xs sm:text-sm text-muted-foreground">
           Audio pada instrumen virtual dibangkitkan secara sintetis melalui Web Audio API sebagai demo
           pembelajaran — bukan rekaman autentik. Rekaman asli akan dimasukkan dengan lisensi yang jelas.
         </AlertDescription>
@@ -109,7 +108,7 @@ export default function InstrumentView({ route }: { route: Route }) {
 
       {/* ============ PEMILIH INSTRUMEN ============ */}
       <div
-        className="mt-8 grid gap-4 md:grid-cols-3"
+        className="mt-6 sm:mt-8 flex overflow-x-auto gap-3 pb-2 no-scrollbar md:grid md:grid-cols-3"
         role="tablist"
         aria-label="Pilih instrumen"
       >
@@ -127,7 +126,7 @@ export default function InstrumentView({ route }: { route: Route }) {
                 else toast.info("Sedang dalam pengembangan", { description: `${inst.name} belum dapat dimainkan.` });
               }}
               className={cn(
-                "min-h-[44px] rounded-2xl border p-4 text-left transition-all",
+                "min-h-[44px] shrink-0 w-[240px] md:w-auto rounded-2xl border p-3.5 sm:p-4 text-left transition-all cursor-pointer",
                 isActive
                   ? "border-brand-teal bg-brand-teal/5 shadow-sm ring-1 ring-brand-teal"
                   : "border-brand-line bg-card hover:border-brand-teal/40",
@@ -135,7 +134,7 @@ export default function InstrumentView({ route }: { route: Route }) {
               )}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-2 font-bold text-brand-ink">
+                <span className="flex items-center gap-2 font-bold text-brand-ink text-sm sm:text-base">
                   <Music2 className={cn("h-4 w-4", isActive ? "text-brand-teal" : "text-muted-foreground")} aria-hidden="true" />
                   {inst.name}
                 </span>
@@ -146,7 +145,7 @@ export default function InstrumentView({ route }: { route: Route }) {
                 )}
               </div>
               <p className="mt-1 text-xs font-semibold text-brand-sea">{inst.region}</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">{inst.desc}</p>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">{inst.desc}</p>
             </button>
           );
         })}
@@ -154,11 +153,11 @@ export default function InstrumentView({ route }: { route: Route }) {
 
       {/* ============ SARON ============ */}
       {activeInstrument.id === "saron" && (
-        <div className="mt-8 grid gap-6 lg:grid-cols-5">
+        <div className="mt-6 sm:mt-8 grid gap-6 lg:grid-cols-5">
           {/* Panggung instrumen */}
-          <Card className="rounded-3xl border-brand-line lg:col-span-3">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg text-brand-ink">
+          <Card className="rounded-3xl border-brand-line lg:col-span-3 overflow-hidden">
+            <CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-brand-ink">
                 <Waves className="h-5 w-5 text-brand-teal" aria-hidden="true" />
                 Gamelan Saron — Laras Pelog
               </CardTitle>
@@ -167,7 +166,7 @@ export default function InstrumentView({ route }: { route: Route }) {
                 tidak mendukung WebGL — panel informasi di samping tetap dapat digunakan.
               </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3.5 sm:px-6 pb-4 sm:pb-6">
               <SaronInstrument volume={volume} />
             </CardContent>
           </Card>
@@ -175,19 +174,21 @@ export default function InstrumentView({ route }: { route: Route }) {
           {/* Panel kontrol & info */}
           <div className="space-y-6 lg:col-span-2">
             <Card className="rounded-3xl border-brand-line">
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
                 <CardTitle className="text-base text-brand-ink">Cara Memainkan</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <ol className="space-y-3 text-sm text-foreground/85">
+              <CardContent className="space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
+                <ol className="space-y-3 text-xs sm:text-sm text-foreground/85">
                   <li className="flex items-start gap-2.5">
                     <MousePointerClick className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
-                    Klik atau ketuk bilah saron dengan kursor/jari untuk memainkan nadanya.
+                    <span>Klik atau ketuk bilah saron dengan kursor/jari untuk memainkan nadanya.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <Keyboard className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
-                    Gunakan tombol angka <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">1</kbd>–
-                    <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">7</kbd> pada keyboard.
+                    <span>
+                      Gunakan tombol angka <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">1</kbd>–
+                      <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">7</kbd> pada keyboard atau tombol nada di bawah kanvas.
+                    </span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
@@ -198,15 +199,15 @@ export default function InstrumentView({ route }: { route: Route }) {
                   </li>
                   <li className="flex items-start gap-2.5">
                     <Volume2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
-                    Atur kenyaringan dengan penggeser di bawah ini.
+                    <span>Atur kenyaringan dengan penggeser di bawah kanvas atau kontrol ini.</span>
                   </li>
                 </ol>
                 <div className="space-y-2 pt-1">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="volume-saron" className="text-sm font-semibold">
+                    <Label htmlFor="volume-saron" className="text-xs sm:text-sm font-semibold">
                       Volume
                     </Label>
-                    <span className="text-sm font-bold text-brand-teal" aria-live="polite">
+                    <span className="text-xs sm:text-sm font-bold text-brand-teal" aria-live="polite">
                       {Math.round(volume * 100)}%
                     </span>
                   </div>
@@ -224,10 +225,10 @@ export default function InstrumentView({ route }: { route: Route }) {
             </Card>
 
             <Card className="rounded-3xl border-brand-line">
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
                 <CardTitle className="text-base text-brand-ink">Tentang Saron</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+              <CardContent className="space-y-3 text-xs sm:text-sm leading-relaxed text-muted-foreground px-4 sm:px-6 pb-4 sm:pb-6">
                 <p>
                   Saron adalah instrumen bilah perunggu pada ansambel gamelan Jawa yang berlaras{" "}
                   <strong className="font-semibold text-foreground">pelog</strong>. Ia memainkan{" "}
