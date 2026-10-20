@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * WaraNusa — Generator aset 3D "Rumah Joglo" (prosedural → GLB).
  *
