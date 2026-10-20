@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * WaraNusa — Seed image generator (dengan retry)
  * Jalankan: bun scripts/gen-seed-images.ts
@@ -30,7 +31,7 @@ async function genOne(zai: Awaited<ReturnType<typeof ZAI.create>>, file: string,
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       console.log(`GEN ${file} (attempt ${attempt})...`);
-      const res = await zai.images.generations.create({ prompt, size });
+      const res = await zai.images.generations.create({ prompt, size: size as any });
       const b64 = res?.data?.[0]?.base64;
       if (!b64) throw new Error("empty base64");
       fs.writeFileSync(out, Buffer.from(b64, "base64"));

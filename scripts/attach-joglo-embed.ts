@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * WaraNusa — Attach model 3D embed Sketchfab "Joglo House" (ilhamsbi)
  * ke objek budaya `joglo` pada database yang sudah ada (tanpa re-seed).
