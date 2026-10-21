@@ -6,9 +6,9 @@
  * floating glassmorphism navbar, judul serif anggun, dan peta interaktif
  * kepulauan bernuansa kayu/terakota dengan kartu pin budaya melayang.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HashLink as Link } from "@/components/shared/hash-link";
-import { motion, MotionConfig } from "framer-motion";
+import { motion, MotionConfig, useInView } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -189,16 +189,23 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
             ) : (
               stats.data && (
                 <>
-                  <Stat value={stats.data.published} label="Objek budaya terpublikasi" />
-                  <Stat value={stats.data.regions} label="Wilayah terpetakan" />
-                  <Stat value={stats.data.categories} label="Kategori budaya" />
-                  <div>
-                    <p className="font-serif text-3xl font-extrabold tracking-tight text-[#2D1E12]">100%</p>
-                    <p className="mt-1 flex items-center gap-1.5 text-sm text-stone-600">
+                  <Stat value={stats.data.published} label="Objek budaya terpublikasi" delay={0.05} />
+                  <Stat value={stats.data.regions} label="Wilayah terpetakan" delay={0.15} />
+                  <Stat value={stats.data.categories} label="Kategori budaya" delay={0.25} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.35 }}
+                  >
+                    <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
+                      <AnimatedCounter value={100} suffix="%" duration={1.6} />
+                    </p>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 font-medium">
                       <ShieldCheck className="h-4 w-4 text-[#8C5E3C]" aria-hidden="true" />
                       Konten bersumber rujukan
                     </p>
-                  </div>
+                  </motion.div>
                 </>
               )
             )}
@@ -403,13 +410,68 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
   );
 }
 
-function Stat({ value, label }: { value: number; label: string }) {
+function AnimatedCounter({
+  value,
+  suffix = "",
+  duration = 1.4,
+}: {
+  value: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-30px" });
+
+  useEffect(() => {
+    if (!inView) return;
+    const start = 0;
+    const end = value;
+    if (start === end) {
+      setCount(end);
+      return;
+    }
+
+    const startTime = performance.now();
+    const durationMs = duration * 1000;
+
+    const update = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / durationMs, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(easeOut * (end - start) + start);
+      setCount(current);
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        setCount(end);
+      }
+    };
+
+    requestAnimationFrame(update);
+  }, [inView, value, duration]);
+
   return (
-    <div>
-      <p className="font-serif text-3xl font-extrabold tracking-tight text-[#2D1E12]">
-        {new Intl.NumberFormat("id-ID").format(value)}
+    <span ref={ref}>
+      {new Intl.NumberFormat("id-ID").format(count)}
+      {suffix}
+    </span>
+  );
+}
+
+function Stat({ value, label, delay = 0 }: { value: number; label: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5, delay }}
+    >
+      <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
+        <AnimatedCounter value={value} />
       </p>
-      <p className="mt-1 text-sm text-stone-600">{label}</p>
-    </div>
+      <p className="mt-1 text-xs sm:text-sm text-stone-600 font-medium">{label}</p>
+    </motion.div>
   );
 }
