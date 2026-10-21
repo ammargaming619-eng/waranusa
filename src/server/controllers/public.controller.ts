@@ -96,7 +96,8 @@ export async function itemDetail(_req: Request, ctx: { params: Promise<{ id: str
     }
     return ok(serializeItem({ ...item, hotspots: item.hotspots.filter((h) => h.published) }));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[itemDetail error]", e);
+    return notFound("Objek budaya tidak ditemukan.");
   }
 }
 
@@ -112,7 +113,8 @@ export async function itemSources(_req: Request, ctx: { params: Promise<{ id: st
     });
     return ok(sources.map((s) => serializeSource(s)));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[itemSources error]", e);
+    return ok([]);
   }
 }
 
@@ -138,7 +140,8 @@ export async function itemMedia(_req: Request, ctx: { params: Promise<{ id: stri
     const usage = await mediaUsageMap([...unique.keys()]);
     return ok([...unique.values()].map((m) => serializeMediaAsset(m, usage.get(m.id) ?? [])));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[itemMedia error]", e);
+    return ok([]);
   }
 }
 
@@ -164,7 +167,8 @@ export async function listPublicSources(req: Request): Promise<Response> {
     });
     return ok(rows.map((s) => serializeSource(s)));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[listPublicSources error]", e);
+    return ok([]);
   }
 }
 
