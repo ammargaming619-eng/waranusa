@@ -147,6 +147,26 @@ function StatusPanel({
   );
 }
 
+// ---------- Kamera Responsif (Cegah model terpotong di HP / layar potret) ----------
+
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+  React.useEffect(() => {
+    const aspect = size.width / size.height;
+    if (camera instanceof THREE.PerspectiveCamera) {
+      if (aspect < 1.15) {
+        // Layar portrait / mobile: mundurkan kamera proporsional agar model rumah adat yang lebar muat utuh
+        const factor = Math.min(Math.max(1.15 / aspect, 1.1), 1.6);
+        camera.position.set(3 * factor, 2.2 * factor, 3.2 * factor);
+      } else {
+        camera.position.set(3, 2.2, 3.2);
+      }
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, size]);
+  return null;
+}
+
 // ---------- Komponen utama ----------
 
 export interface ModelViewerProps {
@@ -376,6 +396,7 @@ export default function ModelViewer({
               onPointerMissed={() => setOpenHotspotId(null)}
               style={{ width: "100%", height: "100%" }}
             >
+              <ResponsiveCamera />
               <ambientLight intensity={0.7} />
               <directionalLight
                 position={[4, 6, 4]}

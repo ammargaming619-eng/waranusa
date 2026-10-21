@@ -85,18 +85,18 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
         className={cn(
           "transition-colors duration-300",
           isLanding
-            ? "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white/40 backdrop-blur-md border border-white/50 shadow-md flex items-center justify-between"
+            ? "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl px-3 sm:px-6 py-2 sm:py-3 rounded-full bg-white/40 backdrop-blur-md border border-white/50 shadow-md flex items-center justify-between"
             : "sticky top-0 z-50 border-b border-stone-200/80 bg-[#FCF8EC]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#FCF8EC]/80"
         )}
       >
         <div
           className={cn(
-            "flex items-center justify-between gap-4 w-full",
+            "flex items-center justify-between gap-2 sm:gap-4 w-full min-w-0",
             !isLanding && "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16"
           )}
         >
           {/* ================= SISI KIRI: LOGO WARANUSA DENGAN GUNUNGAN ================= */}
-          <div className="flex items-center">
+          <div className="flex items-center shrink-0 min-w-0">
             <BrandLogo variant="earthy" />
           </div>
 
@@ -146,13 +146,13 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
           </nav>
 
           {/* ================= SISI KANAN: PENCARIAN, DAFTAR, MASUK, BAHASA ================= */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
             {/* Tombol Pencarian */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setSearchOpen(true)}
-              className="h-9 w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 shrink-0"
               aria-label="Pencarian Budaya"
             >
               <Search className="h-4 w-4" />
@@ -223,10 +223,10 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-9 px-2 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 flex items-center gap-1 text-xs font-medium"
+                  className="h-8 sm:h-9 px-1.5 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 flex items-center gap-0.5 sm:gap-1 text-xs font-medium shrink-0"
                   aria-label="Pilih Bahasa"
                 >
-                  <span className="font-serif font-bold text-sm tracking-tighter">文A</span>
+                  <span className="font-serif font-bold text-xs sm:text-sm tracking-tighter">文A</span>
                   <ChevronDown className="h-3 w-3 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
@@ -260,10 +260,10 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden h-9 w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50"
+                  className="md:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 shrink-0"
                   aria-label="Buka menu navigasi"
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-[#FAF7F2] border-stone-200 p-6">
@@ -271,6 +271,19 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                 <div className="mt-2">
                   <BrandLogo variant="earthy" />
                 </div>
+
+                {/* Pencarian di dalam menu seluler */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="mt-6 w-full flex items-center gap-2.5 rounded-2xl border border-stone-200 bg-white/80 px-3.5 py-2.5 text-xs font-medium text-stone-500 hover:border-[#8C5E3C] transition-colors text-left cursor-pointer shadow-xs"
+                >
+                  <Search className="h-4 w-4 text-stone-400" />
+                  <span>Cari objek budaya, tradisi...</span>
+                </button>
                 <nav className="mt-8 flex flex-col gap-2" aria-label="Navigasi seluler">
                   {NAV_ITEMS.map((item) => (
                     <Link

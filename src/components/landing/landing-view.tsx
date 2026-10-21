@@ -293,26 +293,26 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
         </section>
 
         {/* ================= PENGALAMAN 3D ================= */}
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8" aria-labelledby="pengalaman3d">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-24 lg:px-8 overflow-hidden" aria-labelledby="pengalaman3d">
+          <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16 min-w-0">
+            <div className="min-w-0">
               <SectionHeading
                 eyebrow="Lebih dari sekadar bacaan"
                 title="Pengalaman 3D Interaktif"
                 description="Objek budaya didigitalisasi menjadi model tiga dimensi yang bisa diputar, didekati, dan dipelajari — lengkap dengan titik penjelasan pada setiap detail arsitektur."
               />
               <ul className="mt-6 space-y-3 text-sm text-stone-600">
-                <li className="flex items-center gap-2.5">
-                  <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#8C5E3C]" />
-                  Seret kursor untuk memutar sudut pandang 360 derajat
+                <li className="flex items-start gap-2.5">
+                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
+                  <span>Seret kursor untuk memutar sudut pandang 360 derajat</span>
                 </li>
-                <li className="flex items-center gap-2.5">
-                  <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#8C5E3C]" />
-                  Klik titik emas interaktif untuk membaca filosofi struktur bangunan
+                <li className="flex items-start gap-2.5">
+                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
+                  <span>Klik titik emas interaktif untuk membaca filosofi struktur bangunan</span>
                 </li>
-                <li className="flex items-center gap-2.5">
-                  <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#8C5E3C]" />
-                  Ringan dan responsif di peramban komputer maupun layar ponsel
+                <li className="flex items-start gap-2.5">
+                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
+                  <span>Ringan dan responsif di peramban komputer maupun layar ponsel</span>
                 </li>
               </ul>
               <Button
@@ -324,8 +324,8 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                 </Link>
               </Button>
             </div>
-            <div className="rounded-3xl border border-stone-200 bg-white p-4 shadow-lg sm:p-6">
-              <ModelViewer item={gadang.data ?? FALLBACK_LANDING_GADANG} height={380} autoRotate showHotspots />
+            <div className="rounded-2xl sm:rounded-3xl border border-stone-200 bg-white p-2 sm:p-6 shadow-md sm:shadow-lg min-w-0 overflow-hidden">
+              <ModelViewer item={gadang.data ?? FALLBACK_LANDING_GADANG} height={330} autoRotate showHotspots />
             </div>
           </div>
         </section>

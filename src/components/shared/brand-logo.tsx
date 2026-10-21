@@ -27,17 +27,17 @@ export function BrandLogo({
     return (
       <Link
         href="#/"
-        className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 rounded-full select-none"
+        className="flex items-center gap-2 sm:gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 rounded-full select-none shrink-0"
         aria-label="WaraNusa — Beranda"
       >
         <img
           src="/images/brand/waranusa-logo.png?v=2"
           alt="Logo WaraNusa"
-          className="h-10 w-auto sm:h-11 max-h-12 object-contain transition-all duration-300 group-hover:scale-108 group-hover:drop-shadow-[0_4px_14px_rgba(212,175,55,0.45)] drop-shadow-sm"
+          className="h-8 w-auto sm:h-11 max-h-12 object-contain transition-all duration-300 group-hover:scale-108 group-hover:drop-shadow-[0_4px_14px_rgba(212,175,55,0.45)] drop-shadow-sm shrink-0"
         />
         <span
           className={cn(
-            "font-serif text-2xl font-bold tracking-tight transition-colors duration-200",
+            "font-serif text-lg sm:text-2xl font-bold tracking-tight transition-colors duration-200 truncate",
             dark ? "text-stone-100" : "text-[#2D1E12] group-hover:text-stone-900"
           )}
         >
