@@ -36,6 +36,7 @@ import {
 /** Deteksi dukungan WebGL sebelum mencoba membuat Canvas. */
 function hasWebGL(): boolean {
   try {
+    if (typeof window === "undefined" || typeof document === "undefined") return false;
     const canvas = document.createElement("canvas");
     return Boolean(
       window.WebGLRenderingContext &&

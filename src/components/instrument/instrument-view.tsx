@@ -29,7 +29,16 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { SectionHeading } from "@/components/shared/states";
-import { SaronInstrument } from "@/components/three/saron-instrument";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const SaronInstrument = dynamic(
+  () => import("@/components/three/saron-instrument").then((m) => m.SaronInstrument),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[380px] w-full rounded-2xl" />,
+  }
+);
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
