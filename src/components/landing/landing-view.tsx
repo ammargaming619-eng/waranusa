@@ -28,7 +28,32 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
-import ModelViewer from "@/components/three/model-viewer";
+import dynamic from "next/dynamic";
+import type { CulturalItem } from "@/lib/types";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[380px] w-full rounded-2xl" />,
+});
+
+const FALLBACK_LANDING_GADANG: CulturalItem = {
+  id: "seed-rumah-gadang-landing",
+  slug: "rumah-gadang",
+  title: "Rumah Gadang",
+  summary: "Arsitektur khas Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang megah.",
+  description: "Rumah Gadang adalah rumah adat tradisional suku Minangkabau di Sumatera Barat.",
+  status: "PUBLISHED",
+  featured: true,
+  viewCount: 120,
+  category: { id: "cat-arsitektur", slug: "arsitektur", name: "Arsitektur", createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  region: { id: "ID-SB", code: "ID-SB", name: "Sumatera Barat", islandGroup: "SUMATERA", summary: "Ranah Minang", lat: -0.7399, lng: 100.8000, createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  hotspots: [
+    { id: "h1", itemId: "seed-rumah-gadang-landing", title: "Atap Gonjong", description: "Bentuk atap melengkung menyerupai tanduk kerbau dari ijuk", x: 0, y: 1.2, z: 0, published: true },
+    { id: "h2", itemId: "seed-rumah-gadang-landing", title: "Tiang Kokoh", description: "Konstruksi pasak kayu tanpa paku tahan terhadap gempa", x: -0.8, y: 0.1, z: 0.5, published: true },
+  ],
+  createdAt: "2026-01-01",
+  updatedAt: "2026-01-01",
+};
 import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
 import { cn } from "@/lib/utils";
 
@@ -290,18 +315,7 @@ export default function LandingView() {
               </Button>
             </div>
             <div className="rounded-3xl border border-stone-200 bg-white p-4 shadow-lg sm:p-6">
-              {gadang.data ? (
-                <ModelViewer item={gadang.data} height={380} autoRotate showHotspots />
-              ) : gadang.error ? (
-                <div className="flex h-[380px] flex-col items-center justify-center gap-3 rounded-2xl bg-[#FAF7F2] text-center">
-                  <Box className="h-8 w-8 text-[#8C5E3C]" aria-hidden="true" />
-                  <p className="max-w-xs text-sm text-stone-500">
-                    Pratinjau 3D sementara tidak dapat dimuat. Halaman budaya tetap bisa dibuka.
-                  </p>
-                </div>
-              ) : (
-                <Skeleton className="h-[380px] w-full rounded-2xl" />
-              )}
+              <ModelViewer item={gadang.data ?? FALLBACK_LANDING_GADANG} height={380} autoRotate showHotspots />
             </div>
           </div>
         </section>

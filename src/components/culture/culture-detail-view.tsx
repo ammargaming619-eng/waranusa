@@ -47,7 +47,12 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState, ErrorState, Loader } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
-import ModelViewer from "@/components/three/model-viewer";
+import dynamic from "next/dynamic";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[460px] w-full rounded-2xl" />,
+});
 import { toast } from "sonner";
 
 const fmtDate = (iso: string) =>

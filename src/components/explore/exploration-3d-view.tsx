@@ -20,8 +20,59 @@ import { useAsyncData } from "@/hooks/use-async-data";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import ModelViewer from "@/components/three/model-viewer";
-import { SaronInstrument } from "@/components/three/saron-instrument";
+import dynamic from "next/dynamic";
+import type { CulturalItem } from "@/lib/types";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[440px] w-full rounded-xl" />,
+});
+
+const SaronInstrument = dynamic(
+  () => import("@/components/three/saron-instrument").then((m) => m.SaronInstrument),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[380px] w-full rounded-2xl" />,
+  }
+);
+
+const FALLBACK_GADANG: CulturalItem = {
+  id: "seed-rumah-gadang",
+  slug: "rumah-gadang",
+  title: "Rumah Gadang",
+  summary: "Arsitektur khas Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang tinggi, dinding ukiran sarat falsafah alam, dan ketahanan terhadap gempa bumi.",
+  description: "Rumah Gadang adalah rumah adat tradisional suku Minangkabau di Sumatera Barat dengan tiang-tiang kayu miring yang tahan terhadap guncangan gempa bumi.",
+  status: "PUBLISHED",
+  featured: true,
+  viewCount: 120,
+  category: { id: "cat-arsitektur", slug: "arsitektur", name: "Arsitektur", createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  region: { id: "ID-SB", code: "ID-SB", name: "Sumatera Barat", islandGroup: "SUMATERA", summary: "Ranah Minang", lat: -0.7399, lng: 100.8000, createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  hotspots: [
+    { id: "h1", itemId: "seed-rumah-gadang", title: "Atap Gonjong", description: "Bentuk atap melengkung menyerupai tanduk kerbau dari ijuk tahan cuaca", x: 0, y: 1.2, z: 0, published: true },
+    { id: "h2", itemId: "seed-rumah-gadang", title: "Dinding Ukiran", description: "Pola ornamen flora khas yang melambangkan falsafah alam Minangkabau", x: -0.8, y: 0.1, z: 0.5, published: true },
+  ],
+  createdAt: "2026-01-01",
+  updatedAt: "2026-01-01",
+};
+
+const FALLBACK_JOGLO: CulturalItem = {
+  id: "seed-joglo",
+  slug: "joglo",
+  title: "Rumah Joglo",
+  summary: "Arsitektur vernakular Jawa bertingkat tumpangsari yang ditopang empat tiang utama (saka guru) kokoh tanpa paku besi.",
+  description: "Rumah Joglo merupakan lambang status sosial dan harmoni spiritual masyarakat Jawa dengan ruang utama pendapa dan tatanan saka guru yang kokoh.",
+  status: "PUBLISHED",
+  featured: true,
+  viewCount: 95,
+  category: { id: "cat-arsitektur", slug: "arsitektur", name: "Arsitektur", createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  region: { id: "ID-YO", code: "ID-YO", name: "D.I. Yogyakarta", islandGroup: "JAWA", summary: "Pusat Kebudayaan Jawa", lat: -7.7956, lng: 110.3695, createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  hotspots: [
+    { id: "h3", itemId: "seed-joglo", title: "Saka Guru", description: "Empat tiang penyangga utama penopang atap tumpangsari piramidal", x: 0, y: 0.8, z: 0, published: true },
+    { id: "h4", itemId: "seed-joglo", title: "Pendapa Depan", description: "Ruang terbuka untuk musyawarah keluarga besar dan pertunjukan gamelan", x: 0, y: -0.2, z: 0.6, published: true },
+  ],
+  createdAt: "2026-01-01",
+  updatedAt: "2026-01-01",
+};
 import { cn } from "@/lib/utils";
 
 type TabFilter = "all" | "architecture" | "instruments";
@@ -33,7 +84,8 @@ export default function Exploration3DView() {
   const gadangQ = useAsyncData(() => api.items.detail("rumah-gadang"), []);
   const jogloQ = useAsyncData(() => api.items.detail("joglo"), []);
 
-  const activeHouseData = activeHouse === "rumah-gadang" ? gadangQ.data : jogloQ.data;
+  const rawHouseData = activeHouse === "rumah-gadang" ? gadangQ.data : jogloQ.data;
+  const activeHouseData = rawHouseData ?? (activeHouse === "rumah-gadang" ? FALLBACK_GADANG : FALLBACK_JOGLO);
   const activeHouseLoading = activeHouse === "rumah-gadang" ? gadangQ.loading : jogloQ.loading;
 
   return (
