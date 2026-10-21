@@ -52,7 +52,7 @@ const QUICK_CHIPS: QuickChip[] = [
 const CHAT_STORAGE_KEY = "waranusa_assistant_messages";
 
 // ============================================================================
-// 1. EMBLEM KECIL GUNUNGAN AI UNTUK SIDE DOCKED TAB & HEADER
+// 1. EMBLEM KECIL ANGKLUNG EMAS UNTUK SIDE DOCKED TAB & HEADER
 // ============================================================================
 
 function WaranusaAIEmblem({ className }: { className?: string }) {
@@ -78,147 +78,306 @@ function WaranusaAIEmblem({ className }: { className?: string }) {
       {/* Piringan Dalam Gelap Elegan */}
       <circle cx="50" cy="50" r="32" fill="#2D1E12" stroke="#D4AF37" strokeWidth="1.2" opacity="0.8" />
 
-      {/* Siluet Gunungan AI Kayon Minimalis */}
-      <path
-        d="M50 24 C52 25, 68 45, 72 58 C75 68, 70 76, 68 78 C65 80, 56 81, 50 81 C44 81, 35 80, 32 78 C30 76, 25 68, 28 58 C32 45, 48 25, 50 24 Z"
-        fill="#D4AF37"
-        opacity="0.95"
-      />
-      {/* Batang Pohon Hayat */}
-      <path d="M50 80 V48" stroke="#2D1E12" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M50 64 Q58 58 62 61" stroke="#2D1E12" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-      <path d="M50 64 Q42 58 38 61" stroke="#2D1E12" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+      {/* Siluet Angklung Emas Ikonis */}
+      <rect x="30" y="32" width="2.5" height="38" rx="1" fill="#D4AF37" />
+      <rect x="67.5" y="32" width="2.5" height="38" rx="1" fill="#D4AF37" />
+      <rect x="49" y="24" width="2.2" height="47" rx="1" fill="#FDE047" />
+      <rect x="27" y="34" width="46" height="2.5" rx="1" fill="#D4AF37" />
+      <rect x="27" y="68" width="46" height="3.2" rx="1" fill="#D4AF37" />
 
-      {/* Bintang AI di Puncak */}
-      <circle cx="50" cy="24" r="3.5" fill="#FFF" stroke="#D4AF37" strokeWidth="1" />
+      {/* Tabung Bambu Kiri (Besar & Potongan Miring) */}
+      <path
+        d="M37 40 L45 44 V68 H37 Z"
+        fill="#FDE047"
+      />
+      {/* Tabung Bambu Kanan (Sedang & Potongan Miring) */}
+      <path
+        d="M54 48 L61 51 V68 H54 Z"
+        fill="#E5B942"
+      />
+
+      {/* Bintang AI Mini di Puncak */}
+      <circle cx="50" cy="23" r="2.5" fill="#FFF" />
     </svg>
   );
 }
 
 // ============================================================================
-// 2. MASKOT KARSA RAMAH (ILUSTRASI ANIMASI GUNUNGAN MODERN NUSANTARA)
+// 2. MASKOT ANGKLUNG RAMAH (KARAKTER ANIMASI GOYANG & NADA MELODI)
 // ============================================================================
 
-function KarsaMascotIllustration({ className }: { className?: string }) {
+function AngklungMascotIllustration({ className }: { className?: string }) {
   return (
-    <div className={cn("relative flex items-center justify-center select-none py-1", className)}>
+    <div className={cn("relative flex items-center justify-center select-none py-1 group", className)}>
       <style>{`
-        @keyframes karsaFloat {
+        @keyframes angklungGoyang {
           0%, 100% {
-            transform: translateY(0px);
+            transform: rotate(0deg) translateY(0px);
           }
-          50% {
-            transform: translateY(-6px);
+          10% {
+            transform: rotate(-6deg) translateY(-2px);
+          }
+          16% {
+            transform: rotate(7deg) translateY(-3px);
+          }
+          22% {
+            transform: rotate(-7deg) translateY(-3px);
+          }
+          28% {
+            transform: rotate(6deg) translateY(-2px);
+          }
+          34% {
+            transform: rotate(-4deg) translateY(-1px);
+          }
+          40% {
+            transform: rotate(3deg) translateY(0px);
+          }
+          46% {
+            transform: rotate(0deg) translateY(0px);
+          }
+          65% {
+            transform: rotate(0deg) translateY(-5px);
+          }
+          80% {
+            transform: rotate(0deg) translateY(0px);
           }
         }
-        @keyframes karsaBlink {
-          0%, 93%, 100% {
+        @keyframes angklungBlink {
+          0%, 92%, 100% {
             transform: scaleY(1);
           }
           95%, 97% {
             transform: scaleY(0.08);
           }
         }
-        @keyframes karsaTwinkle {
-          0%, 100% {
-            transform: scale(1) rotate(0deg);
-            opacity: 0.88;
+        @keyframes noteFloatLeft {
+          0%, 12% {
+            opacity: 0;
+            transform: translateY(0) scale(0.4) rotate(0deg);
           }
-          50% {
-            transform: scale(1.2) rotate(20deg);
+          22% {
             opacity: 0.95;
-            filter: drop-shadow(0 0 4px rgba(212,175,55,0.4));
+          }
+          45% {
+            opacity: 0;
+            transform: translateY(-26px) translateX(-10px) scale(1.1) rotate(-18deg);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.4);
           }
         }
-        @keyframes karsaPulse {
+        @keyframes noteFloatRight {
+          0%, 18% {
+            opacity: 0;
+            transform: translateY(0) scale(0.4) rotate(0deg);
+          }
+          28% {
+            opacity: 0.95;
+          }
+          52% {
+            opacity: 0;
+            transform: translateY(-28px) translateX(12px) scale(1.1) rotate(18deg);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-32px) scale(0.4);
+          }
+        }
+        @keyframes angklungPulseHalo {
           0%, 100% {
             transform: scale(1);
             opacity: 0.35;
           }
           50% {
-            transform: scale(1.15);
+            transform: scale(1.18);
             opacity: 0.65;
           }
         }
-        .karsa-float-anim {
-          animation: karsaFloat 3.2s ease-in-out infinite;
+        @keyframes crownTwinkle {
+          0%, 100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 0.88;
+          }
+          50% {
+            transform: scale(1.25) rotate(25deg);
+            opacity: 1;
+            filter: drop-shadow(0 0 5px rgba(253, 224, 71, 0.8));
+          }
         }
-        .karsa-eye-anim {
-          transform-origin: 60px 50px;
-          animation: karsaBlink 3.8s ease-in-out infinite;
+        .angklung-goyang-anim {
+          transform-origin: 50% 88%;
+          animation: angklungGoyang 3.2s ease-in-out infinite;
         }
-        .karsa-star-anim {
-          transform-origin: 60px 12px;
-          animation: karsaTwinkle 2.5s ease-in-out infinite;
+        .angklung-goyang-anim:hover {
+          animation-duration: 1.2s;
         }
-        .karsa-halo-anim {
-          animation: karsaPulse 3.2s ease-in-out infinite;
+        .angklung-eye-anim {
+          transform-origin: 64px 66px;
+          animation: angklungBlink 3.6s ease-in-out infinite;
+        }
+        .note-float-1 {
+          animation: noteFloatLeft 3.2s ease-in-out infinite;
+          transform-origin: 46px 36px;
+        }
+        .note-float-2 {
+          animation: noteFloatRight 3.2s ease-in-out infinite;
+          transform-origin: 82px 48px;
+        }
+        .angklung-halo-anim {
+          animation: angklungPulseHalo 3.2s ease-in-out infinite;
+        }
+        .angklung-crown-anim {
+          transform-origin: 64px 16px;
+          animation: crownTwinkle 2.6s ease-in-out infinite;
         }
       `}</style>
 
       {/* Halo Glow Cahaya Emas Lembut Berdenyut */}
-      <div className="absolute w-28 h-28 rounded-full bg-gradient-to-tr from-amber-400/25 via-orange-300/30 to-amber-200/15 blur-xl karsa-halo-anim pointer-events-none" />
+      <div className="absolute w-28 h-28 rounded-full bg-gradient-to-tr from-amber-400/25 via-orange-300/30 to-amber-200/15 blur-xl angklung-halo-anim pointer-events-none" />
 
-      {/* SVG Maskot dengan Animasi Melayang */}
+      {/* SVG Maskot Karakter Angklung */}
       <svg
-        viewBox="0 0 120 120"
-        className="w-20 h-20 sm:w-24 sm:h-24 relative drop-shadow-md transition-transform duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer karsa-float-anim"
+        viewBox="0 0 128 128"
+        className="w-24 h-24 sm:w-28 sm:h-28 relative drop-shadow-md transition-transform duration-300 hover:scale-108 cursor-pointer angklung-goyang-anim"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="karsaGununganGrad" x1="60" y1="10" x2="60" y2="110" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#C48847" />
-            <stop offset="50%" stopColor="#8C5E3C" />
-            <stop offset="100%" stopColor="#4A2E1B" />
+          {/* Gradasi Bambu Kuning Emas Utama */}
+          <linearGradient id="bambuTubeGold1" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#F5D07A" />
+            <stop offset="35%" stopColor="#E2A648" />
+            <stop offset="85%" stopColor="#B87A2C" />
+            <stop offset="100%" stopColor="#7C4C16" />
           </linearGradient>
-          <radialGradient id="karsaAura" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#FFF9D2" />
-            <stop offset="50%" stopColor="#FDE047" />
-            <stop offset="100%" stopColor="#D4AF37" />
+          <linearGradient id="bambuTubeGold2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#F8DE97" />
+            <stop offset="40%" stopColor="#EBB65B" />
+            <stop offset="85%" stopColor="#C48834" />
+            <stop offset="100%" stopColor="#8A5318" />
+          </linearGradient>
+          {/* Gradasi Rangka Kayu Bambu */}
+          <linearGradient id="bambuFrameGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#D99B49" />
+            <stop offset="50%" stopColor="#9C6228" />
+            <stop offset="100%" stopColor="#5D3512" />
+          </linearGradient>
+          <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="40%" stopColor="#FEF08A" />
+            <stop offset="100%" stopColor="#EAB308" />
           </radialGradient>
         </defs>
 
-        {/* Bentuk Dasar Siluet Gunungan Wayang Ramah */}
+        {/* ================= 1. NOTASI MUSIK EMAS MELAYANG (♪ ♫) ================= */}
+        <g className="note-float-1" opacity="0">
+          <text x="32" y="32" fill="#D97706" fontSize="16" fontWeight="bold" fontFamily="sans-serif">♪</text>
+        </g>
+        <g className="note-float-2" opacity="0">
+          <text x="88" y="44" fill="#B45309" fontSize="15" fontWeight="bold" fontFamily="sans-serif">♫</text>
+        </g>
+
+        {/* ================= 2. RANGKA BAMBU LUAR (FRAME) ================= */}
+        {/* Tiang Vertikal Kiri */}
+        <rect x="25" y="26" width="5.5" height="74" rx="2.5" fill="url(#bambuFrameGrad)" stroke="#4A2808" strokeWidth="0.8" />
+        {/* Tiang Vertikal Kanan */}
+        <rect x="97.5" y="26" width="5.5" height="74" rx="2.5" fill="url(#bambuFrameGrad)" stroke="#4A2808" strokeWidth="0.8" />
+        {/* Tiang Vertikal Tengah (Gantungan Utama) */}
+        <rect x="61.5" y="16" width="5" height="84" rx="2.5" fill="url(#bambuFrameGrad)" stroke="#4A2808" strokeWidth="0.8" />
+
+        {/* Palang Horizontal Atas */}
+        <rect x="20" y="28" width="88" height="6" rx="2.5" fill="url(#bambuFrameGrad)" stroke="#4A2808" strokeWidth="0.8" />
+        {/* Palang Tabung Resonansi Tengah */}
+        <rect x="20" y="52" width="88" height="5" rx="2" fill="url(#bambuFrameGrad)" stroke="#4A2808" strokeWidth="0.8" opacity="0.85" />
+        {/* Palang Dasar Bawah (Resonator Base Tempat Goyang) */}
+        <rect x="18" y="93" width="92" height="9" rx="3.5" fill="url(#bambuFrameGrad)" stroke="#3D2005" strokeWidth="1" />
+
+        {/* Tali Rotan Pengikat Tradisional (Lilitan Silang) */}
+        {/* Kiri Atas */}
+        <path d="M24 27 L31 35 M31 27 L24 35" stroke="#311904" strokeWidth="1.8" strokeLinecap="round" />
+        {/* Kanan Atas */}
+        <path d="M96 27 L104 35 M104 27 L96 35" stroke="#311904" strokeWidth="1.8" strokeLinecap="round" />
+        {/* Tengah Atas */}
+        <path d="M60 27 L68 35 M68 27 L60 35" stroke="#311904" strokeWidth="1.8" strokeLinecap="round" />
+        {/* Kiri Bawah */}
+        <path d="M23 92 L32 103 M32 92 L23 103" stroke="#311904" strokeWidth="1.8" strokeLinecap="round" />
+        {/* Kanan Bawah */}
+        <path d="M96 92 L105 103 M105 92 L96 103" stroke="#311904" strokeWidth="1.8" strokeLinecap="round" />
+
+        {/* ================= 3. DUA TABUNG RESONANSI BAMBU (TABUNG UTAMA & PENYERTA) ================= */}
+        {/* Tabung 1 (Kiri - Lebih Tinggi, Potongan Miring Khas Angklung) */}
+        <g filter="drop-shadow(0px 2px 3px rgba(45,30,18,0.25))">
+          {/* Badan Tabung Kiri */}
+          <path
+            d="M38 40 L56 50 V93 H38 Z"
+            fill="url(#bambuTubeGold1)"
+            stroke="#5D3512"
+            strokeWidth="1.2"
+          />
+          {/* Lubang Potongan Miring Dalam Tabung */}
+          <path
+            d="M38 40 L56 50 L56 54 L38 44 Z"
+            fill="#5D3512"
+            opacity="0.85"
+          />
+          {/* Garis Ruas / Buku Bambu Kiri */}
+          <line x1="38" y1="74" x2="56" y2="74" stroke="#7C4C16" strokeWidth="1.5" strokeDasharray="1,1" />
+          <line x1="38" y1="75.5" x2="56" y2="75.5" stroke="#FDE68A" strokeWidth="1" opacity="0.7" />
+        </g>
+
+        {/* Tabung 2 (Kanan - Sedang, Potongan Miring) */}
+        <g filter="drop-shadow(0px 2px 3px rgba(45,30,18,0.25))">
+          {/* Badan Tabung Kanan */}
+          <path
+            d="M71 52 L88 61 V93 H71 Z"
+            fill="url(#bambuTubeGold2)"
+            stroke="#5D3512"
+            strokeWidth="1.2"
+          />
+          {/* Lubang Potongan Miring Tabung Kanan */}
+          <path
+            d="M71 52 L88 61 L88 64.5 L71 55.5 Z"
+            fill="#5D3512"
+            opacity="0.85"
+          />
+          {/* Garis Ruas / Buku Bambu Kanan */}
+          <line x1="71" y1="78" x2="88" y2="78" stroke="#7C4C16" strokeWidth="1.5" strokeDasharray="1,1" />
+          <line x1="71" y1="79.5" x2="88" y2="79.5" stroke="#FDE68A" strokeWidth="1" opacity="0.7" />
+        </g>
+
+        {/* ================= 4. WAJAH RAMAH CHIBI (MATA, PIPI, SENYUM) ================= */}
+        {/* Mata Animasi Berkedip */}
+        <g className="angklung-eye-anim" fill="#FFF">
+          {/* Mata Kiri (Di Tabung Kiri) */}
+          <ellipse cx="48" cy="65" rx="4.5" ry="5.5" />
+          <circle cx="49.5" cy="63.8" r="2" fill="#2D1E12" />
+          <circle cx="47.2" cy="66.2" r="1" fill="#FFF" />
+
+          {/* Mata Kanan (Di Tabung Kanan) */}
+          <ellipse cx="79" cy="69" rx="4.5" ry="5.5" />
+          <circle cx="80.5" cy="67.8" r="2" fill="#2D1E12" />
+          <circle cx="78.2" cy="70.2" r="1" fill="#FFF" />
+        </g>
+
+        {/* Pipi Merona Hangat (Blush) */}
+        <ellipse cx="43" cy="70" rx="3.5" ry="2.2" fill="#F87171" opacity="0.75" />
+        <ellipse cx="84" cy="74" rx="3.5" ry="2.2" fill="#F87171" opacity="0.75" />
+
+        {/* Senyuman Lucu Bersahabat di Tengah */}
         <path
-          d="M60 12 C62 14, 82 42, 88 64 C94 84, 86 100, 84 104 C80 108, 68 110, 60 110 C52 110, 40 108, 36 104 C34 100, 26 84, 32 64 C38 42, 58 14, 60 12 Z"
-          fill="url(#karsaGununganGrad)"
-          stroke="#D4AF37"
-          strokeWidth="2.5"
+          d="M59 72 Q64 77 69 72"
+          stroke="#2D1E12"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          fill="none"
         />
 
-        {/* Motif Batang Pohon Hayat Keemasan */}
-        <path d="M60 108 V55" stroke="#FDE047" strokeWidth="2.5" strokeLinecap="round" opacity="0.85" />
-        <path d="M60 85 Q72 75 78 80" stroke="#FDE047" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M60 85 Q48 75 42 80" stroke="#FDE047" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M60 70 Q70 60 74 65" stroke="#FDE047" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M60 70 Q50 60 46 65" stroke="#FDE047" strokeWidth="1.8" strokeLinecap="round" fill="none" opacity="0.7" />
-
-        {/* Puncak Mahkota Bintang AI Karsa Berpendar */}
-        <g className="karsa-star-anim">
-          <circle cx="60" cy="12" r="5" fill="url(#karsaAura)" stroke="#FFF" strokeWidth="1" />
-          <path d="M60 5 L61.5 10 L66 11.5 L61.5 13 L60 18 L58.5 13 L54 11.5 L58.5 10 Z" fill="#FFF" />
+        {/* ================= 5. MAHKOTA BINTANG AI WARANUSA ================= */}
+        <g className="angklung-crown-anim">
+          <circle cx="64" cy="15" r="5" fill="url(#starGlow)" stroke="#FFF" strokeWidth="1" />
+          <path d="M64 8 L65.5 13 L70 15 L65.5 17 L64 22 L62.5 17 L58 15 L62.5 13 Z" fill="#FFF" />
         </g>
-
-        {/* Mata Ramah Tersenyum dengan Animasi Berkedip */}
-        <g className="karsa-eye-anim" fill="#FFF">
-          {/* Mata Kiri */}
-          <ellipse cx="48" cy="50" rx="4.5" ry="5.5" />
-          <circle cx="49.5" cy="48.5" r="1.8" fill="#2D1E12" />
-          <circle cx="47" cy="51.5" r="0.9" fill="#FFF" />
-
-          {/* Mata Kanan */}
-          <ellipse cx="72" cy="50" rx="4.5" ry="5.5" />
-          <circle cx="73.5" cy="48.5" r="1.8" fill="#2D1E12" />
-          <circle cx="71" cy="51.5" r="0.9" fill="#FFF" />
-        </g>
-
-        {/* Pipi Merona Lembut */}
-        <circle cx="42" cy="55" r="3" fill="#F87171" opacity="0.6" />
-        <circle cx="78" cy="55" r="3" fill="#F87171" opacity="0.6" />
-
-        {/* Senyuman Ramah */}
-        <path d="M53 55 Q60 61 67 55" stroke="#FFF" strokeWidth="2.2" strokeLinecap="round" fill="none" />
       </svg>
     </div>
   );
@@ -454,8 +613,8 @@ export function UnifiedAssistantWidget() {
               {/* 2A. SAMBUTAN AWAL BERSIH (MASKOT ANIMASI + HEADING RINGKAS + GRID 2x2) */}
               {messages.length <= 1 ? (
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col items-center justify-center text-center">
-                  {/* Maskot Animasi */}
-                  <KarsaMascotIllustration className="my-2" />
+                  {/* Maskot Karakter Angklung Animasi Goyang */}
+                  <AngklungMascotIllustration className="my-2" />
 
                   {/* Heading Ramah & Ringkas (Anti-Clutter) */}
                   <h4 className="font-bold text-lg sm:text-xl text-[#2D1E12] mt-2 font-serif">
