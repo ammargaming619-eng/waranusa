@@ -190,13 +190,14 @@ export default function InstrumentView({ route }: { route: Route }) {
                 <ol className="space-y-3 text-xs sm:text-sm text-foreground/85">
                   <li className="flex items-start gap-2.5">
                     <MousePointerClick className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
-                    <span>Klik atau ketuk bilah saron dengan kursor/jari untuk memainkan nadanya.</span>
+                    <span>
+                      <strong className="font-semibold text-foreground">Mode Layar Sentuh & Mouse:</strong> Klik bilah pada model 3D atau ketuk bilah perunggu sentuh langsung di bawah kanvas dengan jari (dilengkapi getaran haptik responsif).
+                    </span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <Keyboard className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
                     <span>
-                      Gunakan tombol angka <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">1</kbd>–
-                      <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">7</kbd> pada keyboard atau tombol nada di bawah kanvas.
+                      <strong className="font-semibold text-foreground">Pintasan Keyboard:</strong> Gunakan tombol angka <kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">1</kbd>–<kbd className="rounded border border-brand-line bg-brand-soft px-1.5 py-0.5 font-mono text-xs">7</kbd> pada keyboard komputer (1: Ji, 2: Ro, 3: Lu, 4: Pat, 5: Mo, 6: Nem, 7: Pi).
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">

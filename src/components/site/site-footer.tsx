@@ -26,6 +26,18 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
               {tagline ||
                 "Platform eksplorasi & pelestarian budaya Indonesia — peta interaktif, katalog bersumber, model 3D, dan instrumen musik virtual."}
             </p>
+            {/* Badges SDGs & UINIC 8.0 */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="inline-flex items-center rounded-full bg-amber-500/10 border border-amber-600/20 px-2.5 py-0.5 text-[10px] font-bold text-[#8C5E3C]">
+                SDG 11.4 Pelestarian Budaya
+              </span>
+              <span className="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-600/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                SDG 4 Pendidikan Berkualitas
+              </span>
+              <span className="inline-flex items-center rounded-full bg-sky-500/10 border border-sky-600/20 px-2.5 py-0.5 text-[10px] font-bold text-sky-700">
+                Web Interoperabilitas UINIC 8.0
+              </span>
+            </div>
             {footerNote && <p className="max-w-md text-xs text-muted-foreground/80">{footerNote}</p>}
           </div>
 

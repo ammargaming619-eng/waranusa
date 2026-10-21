@@ -45,6 +45,9 @@ export const PELOG_FREQUENCIES = [261.63, 293.66, 329.63, 392.0, 440.0, 493.88, 
 /** Label nada 1–7 (notasi kepatihan). */
 export const PELOG_LABELS = ["1", "2", "3", "4", "5", "6", "7"] as const;
 
+/** Nama nada tradisional gamelan Jawa pelog (Ji, Ro, Lu, Pat, Mo, Nem, Pi). */
+export const PELOG_NAMES = ["Ji", "Ro", "Lu", "Pat", "Mo", "Nem", "Pi"] as const;
+
 /** Urutan nada contoh (indeks 0-based) untuk tombol demo. */
 const DEMO_SEQUENCE = [0, 1, 2, 4, 5, 4, 2, 1, 0] as const;
 const DEMO_INTERVAL_MS = 350;
@@ -84,6 +87,11 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
   const playNote = React.useCallback((index: number) => {
     const freq = PELOG_FREQUENCIES[index];
     if (typeof freq !== "number") return;
+    try {
+      if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+        navigator.vibrate(20);
+      }
+    } catch {}
     saronAudio.playNote(freq, volRef.current);
     setActiveNote(index);
     if (noteTimer.current !== null) window.clearTimeout(noteTimer.current);
@@ -360,9 +368,63 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
             <strong className="text-amber-700">diamkan selama 0.5 detik</strong> untuk memukul bilah!
           </span>
         ) : (
-          <span>Klik bilah atau tekan tombol angka 1–7. Seret untuk memutar pandangan.</span>
+          <span>Klik bilah 3D, ketuk bilah sentuh di bawah, atau tekan angka 1–7.</span>
         )}
       </p>
+
+      {/* ========================================================================= */}
+      {/* PAPAN TABUH SENTUH MOBILE (COMFORTABLE TOUCH-BAR FOR SMARTPHONES)          */}
+      {/* ========================================================================= */}
+      <div className="mt-3 rounded-2xl border border-stone-200 bg-[#FAF7F2] p-2.5 sm:p-3 shadow-inner">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+            Bilah Saron Sentuh (Tap Layar Sentuh)
+          </span>
+          <span className="text-[10px] sm:text-[11px] text-stone-500 font-medium">
+            Ketuk bilah perunggu dengan jari
+          </span>
+        </div>
+
+        <div className="grid grid-cols-7 gap-1 sm:gap-2" role="group" aria-label="Bilah tabuh saron sentuh">
+          {PELOG_LABELS.map((label, i) => {
+            const isActive = activeNote === i;
+            return (
+              <button
+                key={`touch-bar-${label}`}
+                type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  playNote(i);
+                }}
+                className={cn(
+                  "relative flex flex-col items-center justify-between rounded-xl sm:rounded-2xl py-2 sm:py-3 transition-all duration-75 select-none touch-manipulation cursor-pointer",
+                  "border min-h-[64px] sm:min-h-[80px] shadow-sm",
+                  isActive
+                    ? "bg-gradient-to-b from-[#FDE047] via-[#D4AF37] to-[#B45309] border-amber-500 text-stone-900 scale-[0.96] shadow-inner ring-2 ring-amber-400"
+                    : "bg-gradient-to-b from-[#FFFDF9] via-[#F5EFEB] to-[#E5DACD] border-stone-300 text-stone-800 hover:border-amber-500/60 active:scale-95"
+                )}
+                aria-label={`Tabuh nada ${label} (${PELOG_NAMES[i]})`}
+              >
+                {/* Paku Penahan Bilah Saron */}
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-stone-400/80 shadow-xs shrink-0" />
+
+                <div className="flex flex-col items-center my-0.5 sm:my-1">
+                  <span className="font-serif text-base sm:text-xl font-black leading-none drop-shadow-xs">
+                    {label}
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-stone-600 uppercase mt-0.5 leading-none">
+                    {PELOG_NAMES[i]}
+                  </span>
+                </div>
+
+                {/* Paku Penahan Bawah */}
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-stone-400/80 shadow-xs shrink-0" />
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Kontrol */}
       <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -389,7 +451,7 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
             variant={playingDemo ? "secondary" : "default"}
             onClick={playingDemo ? stopDemo : startDemo}
             aria-label={playingDemo ? "Hentikan demo melodi" : "Mainkan demo melodi"}
-            className="h-8 px-3 text-xs"
+            className="h-8 px-3 text-xs min-h-[36px]"
           >
             {playingDemo ? (
               <Square className="h-3.5 w-3.5 mr-1" aria-hidden />
@@ -398,27 +460,6 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
             )}
             {playingDemo ? "Hentikan" : "Demo Melodi"}
           </Button>
-        </div>
-
-        {/* Tombol nada alternatif (aksesibel tanpa raycast) */}
-        <div className="grid grid-cols-7 gap-1 sm:flex sm:items-center sm:gap-1.5 w-full sm:w-auto" role="group" aria-label="Tombol nada pelog">
-          {PELOG_LABELS.map((label, i) => (
-            <Button
-              key={label}
-              type="button"
-              variant={activeNote === i ? "default" : "outline"}
-              size="icon"
-              aria-label={`Mainkan nada ${label}`}
-              onClick={() => playNote(i)}
-              className={`h-9 w-full sm:w-9 rounded-lg sm:rounded-full text-xs font-bold transition-all ${
-                activeNote === i
-                  ? "bg-brand-gold text-brand-ink hover:bg-brand-gold scale-105 shadow-sm"
-                  : "border-brand-line text-brand-ink hover:bg-brand-soft"
-              }`}
-            >
-              {label}
-            </Button>
-          ))}
         </div>
       </div>
 

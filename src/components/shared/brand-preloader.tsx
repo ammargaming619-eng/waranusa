@@ -13,10 +13,13 @@ interface BrandPreloaderProps {
 export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: BrandPreloaderProps) {
   const [visible, setVisible] = useState(true);
   const [readyToScroll, setReadyToScroll] = useState(false);
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(30);
   const touchStartY = useRef<number | null>(null);
+  const dismissedRef = useRef(false);
 
   const dismiss = useCallback(() => {
+    if (dismissedRef.current) return;
+    dismissedRef.current = true;
     setVisible(false);
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     try {
@@ -25,22 +28,47 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
     if (onStartDismiss) onStartDismiss();
   }, [onStartDismiss]);
 
-  // Efek progress bar saat pertama terbuka
+  // Efek progress bar yang halus dan pasti selesai dalam waktu maksimal 900ms
   useEffect(() => {
-    const pInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 98) {
-          clearInterval(pInterval);
-          setReadyToScroll(true);
-          return 100;
-        }
-        const step = Math.max(3, Math.floor((100 - prev) * 0.25));
-        return Math.min(100, prev + step);
-      });
-    }, 50);
+    // Jika sudah pernah melihat intro di sesi ini, langsung buka
+    try {
+      if (sessionStorage.getItem("waranusa_intro_seen") === "true") {
+        dismiss();
+        if (onComplete) onComplete();
+        return;
+      }
+    } catch {}
 
-    return () => clearInterval(pInterval);
-  }, []);
+    const startTime = Date.now();
+    const duration = 850; // target durasi progress bar
+
+    const pInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, Math.round(30 + (elapsed / duration) * 70));
+      setProgress(pct);
+
+      if (pct >= 100) {
+        clearInterval(pInterval);
+        setReadyToScroll(true);
+      }
+    }, 30);
+
+    // Failsafe timer: pastikan dalam 1.2 detik selalu siap scroll / tap, dan maksimal 2.8 detik otomatis lanjut
+    const safetyTimer = setTimeout(() => {
+      setProgress(100);
+      setReadyToScroll(true);
+    }, 1100);
+
+    const autoContinueTimer = setTimeout(() => {
+      dismiss();
+    }, 2800);
+
+    return () => {
+      clearInterval(pInterval);
+      clearTimeout(safetyTimer);
+      clearTimeout(autoContinueTimer);
+    };
+  }, [dismiss, onComplete]);
 
   // Event listener untuk scroll, swipe, dan keyboard + Kunci Scroll Background
   useEffect(() => {
@@ -139,7 +167,7 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
                 e.stopPropagation();
                 dismiss();
               }}
-              className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 text-xs font-semibold text-stone-300 backdrop-blur-md transition-all hover:border-[#D4AF37]/60 hover:bg-white/15 hover:text-white cursor-pointer"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-4 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-stone-200 backdrop-blur-md transition-all hover:border-[#D4AF37]/80 hover:bg-white/20 hover:text-white cursor-pointer touch-manipulation active:scale-95 shadow-md"
               aria-label="Lewati intro langsung ke beranda"
             >
               <span>Lewati</span>

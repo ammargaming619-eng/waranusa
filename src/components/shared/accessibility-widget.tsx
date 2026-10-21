@@ -435,8 +435,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={toggleVoiceMode}
+              aria-label="Baca teks halaman dengan sintesis suara"
+              aria-pressed={isSpeaking}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 isSpeaking
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -459,8 +461,9 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleIncreaseText}
+              aria-label="Perbesar ukuran teks bacaan"
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.fontScale > 100
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -483,8 +486,9 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleDecreaseText}
+              aria-label="Perkecil ukuran teks bacaan"
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.fontScale < 100
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -507,8 +511,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleHighContrast}
+              aria-label="Aktifkan mode kontras tinggi"
+              aria-pressed={state.highContrast}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.highContrast
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -531,8 +537,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleDyslexic}
+              aria-label="Ganti ke font khusus disleksia"
+              aria-pressed={state.dyslexicFont}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.dyslexicFont
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -555,8 +563,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleAnimations}
+              aria-label="Jeda animasi visual"
+              aria-pressed={state.pauseAnimations}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.pauseAnimations
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -579,8 +589,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleCursor}
+              aria-label="Perbesar ukuran kursor mouse"
+              aria-pressed={state.largeCursor}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.largeCursor
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -603,8 +615,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleUnderline}
+              aria-label="Beri garis bawah pada semua tautan"
+              aria-pressed={state.underlineLinks}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.underlineLinks
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -627,8 +641,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleLineHeight}
+              aria-label="Tingkatkan jarak antar baris teks"
+              aria-pressed={state.lineHeight}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.lineHeight
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
@@ -651,8 +667,10 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleTextAlign}
+              aria-label="Format perataan teks rata kiri"
+              aria-pressed={state.textAlignLeft}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left",
+                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
                 state.textAlignLeft
                   ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
                   : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"

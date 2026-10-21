@@ -53,11 +53,17 @@ export function setUnauthorizedHandler(fn: (() => void) | null) {
 async function request<T>(path: string, init?: RequestInit): Promise<{ data: T; meta?: PageMeta }> {
   let res: Response;
   try {
+    // Berikan timeout 12 detik agar koneksi seluler tidak menggantung tanpa batas
+    const controller = typeof AbortController !== "undefined" && !init?.signal ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 12000) : null;
+
     res = await fetch(`${BASE}${path}`, {
       credentials: "same-origin",
       headers: init?.body instanceof FormData ? undefined : { "Content-Type": "application/json" },
+      signal: init?.signal ?? controller?.signal,
       ...init,
     });
+    if (timeoutId) clearTimeout(timeoutId);
   } catch {
     throw new ApiError("Tidak dapat menghubungi server. Periksa koneksi Anda.", 0);
   }

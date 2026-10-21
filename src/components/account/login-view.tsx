@@ -82,7 +82,7 @@ export default function LoginView() {
     <div className="flex min-h-screen flex-col bg-background lg:grid lg:grid-cols-2">
       {/* ============ PANEL BRAND (desktop) ============ */}
       <aside
-        className="relative hidden overflow-hidden bg-gradient-to-br from-[#24170E] via-[#3D2617] to-[#5C3B24] p-10 text-white lg:flex lg:flex-col lg:justify-between"
+        className="relative hidden overflow-hidden bg-gradient-to-br from-[#24170E] via-[#3D2617] to-[#5C3B24] p-10 pb-28 lg:pb-32 text-white lg:flex lg:flex-col lg:justify-between"
         aria-label="Tentang WaraNusa"
       >
         {/* Hiasan bunder-bunder (dipertahankan dengan nuansa hangat) */}
@@ -112,13 +112,13 @@ export default function LoginView() {
             model 3D, dan instrumen virtual dalam satu tempat.
           </p>
         </div>
-        <figure className="relative my-10 max-w-md">
+        <figure className="relative my-8 max-w-md">
           <blockquote className="font-serif text-2xl font-bold leading-snug text-[#FCF8EC]">
             &ldquo;Budaya yang dipahami adalah budaya yang lestari.&rdquo;
           </blockquote>
           <figcaption className="mt-3 text-sm text-stone-300">— Nilai yang kami pegang</figcaption>
         </figure>
-        <ul className="relative space-y-4">
+        <ul className="relative space-y-4 mb-4">
           {[
             { icon: MapPinned, text: "Peta interaktif 34 wilayah budaya Nusantara" },
             { icon: Sparkles, text: "Model 3D & instrumen musik virtual yang bisa dimainkan" },

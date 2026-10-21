@@ -32,6 +32,7 @@ import {
   Compass,
   LayoutGrid,
   Box,
+  Music4,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -40,6 +41,7 @@ const NAV_ITEMS = [
   { href: "#/jelajah", label: "Jelajahi Nusantara", icon: Compass },
   { href: "#/katalog", label: "Katalog Budaya", icon: LayoutGrid },
   { href: "#/eksplorasi-3d", label: "Eksplorasi 3D", icon: Box },
+  { href: "#/instrumen", label: "Instrumen Virtual", icon: Music4 },
 ];
 
 export function SiteHeader({ route, introRevealed = true }: { route: Route; introRevealed?: boolean }) {
@@ -78,6 +80,14 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
 
   return (
     <>
+      {/* Aksesibilitas: Tautan Lewati ke Konten Utama (WCAG 2.1 Level A) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[999999] focus:rounded-full focus:bg-[#8C5E3C] focus:px-4 focus:py-2 focus:text-xs focus:font-bold focus:text-white focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400"
+      >
+        Lewati ke konten utama
+      </a>
+
       <motion.header
         initial={isLanding ? { y: -80, opacity: 0 } : false}
         animate={isLanding ? (introRevealed ? { y: 0, opacity: 1 } : { y: -80, opacity: 0 }) : undefined}
@@ -85,7 +95,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
         className={cn(
           "transition-colors duration-300",
           isLanding
-            ? "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl px-3 sm:px-6 py-2 sm:py-3 rounded-full bg-white/40 backdrop-blur-md border border-white/50 shadow-md flex items-center justify-between"
+            ? "fixed top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl px-2.5 sm:px-6 py-1.5 sm:py-3 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-md flex items-center justify-between"
             : "sticky top-0 z-50 border-b border-stone-200/80 bg-[#FCF8EC]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#FCF8EC]/80"
         )}
       >
@@ -266,9 +276,9 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-72 bg-[#FAF7F2] border-stone-200 p-6">
+              <SheetContent side="right" className="w-[85vw] max-w-xs sm:w-80 bg-[#FAF7F2] border-stone-200 p-5 sm:p-6 overflow-y-auto">
                 <SheetTitle className="sr-only">Navigasi WaraNusa</SheetTitle>
-                <div className="mt-2">
+                <div className="mt-1">
                   <BrandLogo variant="earthy" />
                 </div>
 
@@ -279,12 +289,13 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                     setMobileOpen(false);
                     setSearchOpen(true);
                   }}
-                  className="mt-6 w-full flex items-center gap-2.5 rounded-2xl border border-stone-200 bg-white/80 px-3.5 py-2.5 text-xs font-medium text-stone-500 hover:border-[#8C5E3C] transition-colors text-left cursor-pointer shadow-xs"
+                  className="mt-5 w-full flex items-center gap-2.5 rounded-2xl border border-stone-200 bg-white/90 px-3.5 py-3 text-xs font-medium text-stone-600 hover:border-[#8C5E3C] transition-colors text-left cursor-pointer shadow-xs min-h-[44px]"
+                  aria-label="Cari objek budaya"
                 >
-                  <Search className="h-4 w-4 text-stone-400" />
-                  <span>Cari objek budaya, tradisi...</span>
+                  <Search className="h-4 w-4 text-stone-400 shrink-0" />
+                  <span className="truncate">Cari objek budaya, tradisi...</span>
                 </button>
-                <nav className="mt-8 flex flex-col gap-2" aria-label="Navigasi seluler">
+                <nav className="mt-6 flex flex-col gap-1.5" aria-label="Navigasi seluler">
                   {NAV_ITEMS.map((item) => (
                     <Link
                       key={item.href}
@@ -296,18 +307,28 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                         }
                       }}
                       className={cn(
-                        "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold",
+                        "flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold transition-all active:scale-[0.98]",
                         isActive(item.href)
-                          ? "bg-stone-200 text-stone-900"
+                          ? "bg-stone-200/90 text-stone-900 shadow-xs"
                           : "text-stone-700 hover:bg-stone-200/50"
                       )}
                     >
-                      <item.icon className="h-4 w-4 text-[#8A5B38]" />
-                      {item.label}
+                      <item.icon className="h-4 w-4 text-[#8A5B38] shrink-0" />
+                      <span>{item.label}</span>
                     </Link>
                   ))}
 
-                  <div className="my-3 border-t border-stone-200" />
+                  {/* Pintasan Kontribusi Budaya untuk Pelestarian */}
+                  <Link
+                    href="#/kontribusi"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold text-[#8A5B38] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-600/20 transition-all"
+                  >
+                    <span className="text-base">✨</span>
+                    <span>Kirim Kontribusi Budaya</span>
+                  </Link>
+
+                  <div className="my-2 border-t border-stone-200" />
 
                   {user ? (
                     <>

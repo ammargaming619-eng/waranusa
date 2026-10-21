@@ -19,6 +19,10 @@ import {
   Play,
   ShieldCheck,
   MessageSquarePlus,
+  GraduationCap,
+  Globe,
+  Cpu,
+  Sparkles,
 } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { navigate } from "@/lib/router";
@@ -367,6 +371,107 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                 </Link>
               </Button>
             </div>
+          </div>
+        </section>
+
+        {/* ================= DAMPAK KEBERLANJUTAN (SDGs) & EKOSISTEM DIGITAL ================= */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8" aria-labelledby="sdg-title">
+          <SectionHeading
+            eyebrow="Komitmen Keberlanjutan & Solusi Digital"
+            title="Empowering a Sustainable Digital Cultural Ecosystem"
+            description="Mengacu pada tema UINIC 8.0, WaraNusa merancang arsitektur web yang scalable, aman, dan berorientasi pada pelestarian nilai budaya serta dampak sosial jangka panjang."
+          />
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Kartu 1: SDG 11.4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45 }}
+              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-[#8C5E3C]">
+                    <Globe className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold text-amber-900 uppercase tracking-wider">
+                    SDG 11.4
+                  </span>
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
+                  Perlindungan Warisan Budaya Nusantara
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
+                  Melindungi objek tradisi, rumah adat, motif tenun, dan seni pertunjukan dari kepunahan melalui repositori digital terverifikasi dengan rujukan primer buku dan arsip.
+                </p>
+              </div>
+              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-[#8C5E3C]">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>100% Konten Bersumber Terbuka</span>
+              </div>
+            </motion.div>
+
+            {/* Kartu 2: SDG 4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45, delay: 0.1 }}
+              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-700">
+                    <GraduationCap className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-900 uppercase tracking-wider">
+                    SDG 4
+                  </span>
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
+                  Pendidikan Berkualitas & Inklusif
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
+                  Media ajar digital gratis untuk guru, pelajar, dan generasi muda melalui eksplorasi 3D interaktif, notasi kepatihan gamelan, serta fitur ramah difabel (TTS, kontras, font disleksia).
+                </p>
+              </div>
+              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Aksesibilitas Web WCAG 2.1</span>
+              </div>
+            </motion.div>
+
+            {/* Kartu 3: Rekayasa Web Interoperabilitas */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45, delay: 0.2 }}
+              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between sm:col-span-2 lg:col-span-1"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-700">
+                    <Cpu className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <span className="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-bold text-sky-900 uppercase tracking-wider">
+                    UINIC 8.0
+                  </span>
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
+                  Interoperabilitas & AI Berkelanjutan
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
+                  Mendukung ekosistem terintegrasi dengan REST API publik, validasi schema berlapis Zod, session token opaque anti-CSRF, serta AI Vision (Air Gamelan Hand Tracking).
+                </p>
+              </div>
+              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-sky-700">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>REST API & Vision AI Engine</span>
+              </div>
+            </motion.div>
           </div>
         </section>
 

@@ -45,20 +45,25 @@ export default function WaraNusaApp() {
   // Pengaturan situs (untuk footer) diambil ringan dari settings API publik
   const isAdmin = route.segments[0] === "admin";
   const isLogin = route.segments[0] === "masuk";
+  const isDirectNonLanding = Boolean(route.segments[0] && route.segments[0] !== "");
 
-  if (!initialized) {
-    return (
-      <div className="relative min-h-screen bg-[#140B06]">
-        <BrandPreloader
-          onStartDismiss={() => setIntroRevealed(true)}
-          onComplete={() => setIntroDone(true)}
-        />
-      </div>
-    );
-  }
+  // Jika membuka langsung sub-halaman (bukan beranda), lewati animasi pembuka agar instan
+  useEffect(() => {
+    if (isDirectNonLanding) {
+      setIntroRevealed(true);
+      setIntroDone(true);
+    }
+  }, [isDirectNonLanding]);
 
   // CMS: layout sendiri (sidebar) tanpa header/footer publik
   if (isAdmin) {
+    if (!initialized) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-stone-900 text-stone-200">
+          <Loader text="Menyiapkan panel admin..." />
+        </div>
+      );
+    }
     return <AdminApp route={route} />;
   }
 
@@ -121,7 +126,9 @@ export default function WaraNusaApp() {
         />
       )}
       <SiteHeader route={route} introRevealed={introRevealed} />
-      <div className="flex-1">{view}</div>
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none" role="main">
+        {view}
+      </main>
       <SiteFooter
         siteName={settings.siteName}
         tagline={settings.tagline}
