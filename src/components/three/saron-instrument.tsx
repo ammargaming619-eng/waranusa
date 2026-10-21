@@ -294,10 +294,10 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
             ))}
           </group>
 
-          {/* Lantai lingkaran */}
+          {/* Panggung Kayu Melingkar Warm Studio */}
           <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.46, 0]}>
-            <circleGeometry args={[2.4, 48]} />
-            <meshStandardMaterial color="#F3F8F7" roughness={1} metalness={0} />
+            <circleGeometry args={[4.2, 64]} />
+            <meshStandardMaterial color="#EFE8DC" roughness={0.9} metalness={0.05} />
           </mesh>
 
           {/* Pelacak Sinar Tangan 3D ke Bilah Saron */}
@@ -347,9 +347,9 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
 
         <Badge
           variant="outline"
-          className="absolute right-3 top-3 border-brand-line bg-white/90 text-[10px] font-medium text-muted-foreground backdrop-blur"
+          className="absolute right-3 top-3 border-stone-200 bg-white/95 text-[11px] font-semibold text-[#6E472D] shadow-xs backdrop-blur"
         >
-          {controlMode === "air" ? "Air Gamelan • Vision AI" : "Web Audio API • Sintetis"}
+          {controlMode === "air" ? "Air Gamelan • Vision AI" : "Laras Pelog 7 Nada • Karawitan Tradisional"}
         </Badge>
       </div>
 
@@ -462,13 +462,6 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
           </Button>
         </div>
       </div>
-
-      {/* Keterbukaan jujur soal audio & laras */}
-      <p className="mt-2 text-[11px] leading-snug text-muted-foreground">
-        Tombol &quot;Demo Melodi&quot; memainkan urutan nada contoh, bukan lagu tradisional spesifik.
-        Laras pelog sesungguhnya tidak temperamen sama — frekuensi di sini adalah pendekatan demo
-        untuk sintesis metalofon.
-      </p>
     </section>
   );
 }

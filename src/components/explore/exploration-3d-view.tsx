@@ -12,6 +12,7 @@ import {
   Hammer,
   Layers,
   Music4,
+  Play,
   RotateCcw,
   ShieldCheck,
   Sparkles,
@@ -365,31 +366,237 @@ const ISLAND_TABS: { id: IslandRegion; label: string }[] = [
   { id: "PAPUA_MALUKU", label: "Papua & Maluku" },
 ];
 
+// ============================================================================
+// DATASET INSTRUMEN MUSIK & ETNOMUSIKOLOGI 38 PROVINSI (SACHS-HORNBOSTEL)
+// ============================================================================
+
+export type OrganologyType = "ALL" | "IDIOFON" | "KORDOFON" | "MEMBRANOFON" | "AEROFON";
+
+export interface OrganologySpecs {
+  tuningSystem: string;
+  materialAcoustic: string;
+  playingTechnique: string;
+  ensembleFunction: string;
+}
+
+export interface TraditionalInstrument {
+  id: string;
+  slug: string;
+  title: string;
+  vernacularName: string;
+  province: string;
+  ethnicGroup: string;
+  islandRegion: Exclude<IslandRegion, "ALL">;
+  organology: Exclude<OrganologyType, "ALL">;
+  organologyLabel: string;
+  hasInteractive3D: boolean;
+  philosophy: string;
+  specs: OrganologySpecs;
+}
+
+const ORGANOLOGY_TABS: { id: OrganologyType; label: string; icon: string }[] = [
+  { id: "ALL", label: "Semua Klasifikasi", icon: "✨" },
+  { id: "IDIOFON", label: "Idiofon (Bilah & Resonator)", icon: "🔔" },
+  { id: "KORDOFON", label: "Kordofon (Dawai & Senar)", icon: "🎸" },
+  { id: "MEMBRANOFON", label: "Membranofon (Selaput Kulit)", icon: "🥁" },
+  { id: "AEROFON", label: "Aerofon (Peniup Udara)", icon: "🪈" },
+];
+
+const INSTRUMENTS_CATALOGUE: TraditionalInstrument[] = [
+  {
+    id: "saron-barung",
+    slug: "gamelan-jawa",
+    title: "Saron Barung",
+    vernacularName: "Saron Barung Pelog Nem",
+    province: "D.I. Yogyakarta & Jawa Tengah",
+    ethnicGroup: "Jawa",
+    islandRegion: "JAWA",
+    organology: "IDIOFON",
+    organologyLabel: "Idiofon Metalofon Gangsa",
+    hasInteractive3D: true,
+    philosophy:
+      "“Laras Pelog Nem” — Refleksi rasa batin manusia Jawa yang hening, meditatif, dan laras dengan keselarasan jagad alit dan jagad ageng.",
+    specs: {
+      tuningSystem: "Pelog 7 nada bertingkat (1: Ji, 2: Ro, 3: Lu, 4: Pat, 5: Mo, 6: Nem, 7: Pi) dengan interval mikrotonal non-equal-temperament khas karawitan.",
+      materialAcoustic: "Tujuh bilah perunggu gangsa tempa tebal di atas rancakan kotak kayu jati tua penguat resonansi suara.",
+      playingTechnique: "Ditabuh dengan tabuh kayu pipih bundar seraya tangan kiri mematuk (meredam dengung bilah sebelumnya).",
+      ensembleFunction: "Pemegang balungan (rangka melodi utama) penuntun jalannya komposisi gending ageng dalam upacara kraton.",
+    },
+  },
+  {
+    id: "angklung",
+    slug: "angklung",
+    title: "Angklung Sunda",
+    vernacularName: "Angklung Buhun / Daeng",
+    province: "Jawa Barat & Banten",
+    ethnicGroup: "Sunda",
+    islandRegion: "JAWA",
+    organology: "IDIOFON",
+    organologyLabel: "Idiofon Tabung Bambu Resonansi",
+    hasInteractive3D: false,
+    philosophy:
+      "“Nyambung rasa sora awi” — Menghidupkan kesuburan tanah pertiwi Dewi Sri serta mengikat harmoni gotong royong warga tanpa sekat.",
+    specs: {
+      tuningSystem: "Laras Salendro, Pelog, & Diatonis bernada ganda (dua tabung bambu berselisih satu oktaf murni yang selaras).",
+      materialAcoustic: "Bambu hitam (awi wulung) dan bambu tali pilihan yang diawetkan alami dengan asap perapian tradisi.",
+      playingTechnique: "Digoyang (*dikocok*) horizontal dengan pangkal tangan memegang tabung dasar agar bilah bergetar teratur.",
+      ensembleFunction: "Ritus Seren Taun panen padi, arak-arakan helaran budaya, serta diplomasi warisan mahakarya kemanusiaan UNESCO.",
+    },
+  },
+  {
+    id: "sasando",
+    slug: "sasando",
+    title: "Sasando Gong",
+    vernacularName: "Sasandu / Sasando Haik",
+    province: "Nusa Tenggara Timur",
+    ethnicGroup: "Rote",
+    islandRegion: "BALI_NUSA",
+    organology: "KORDOFON",
+    organologyLabel: "Kordofon Resonator Daun Lontar",
+    hasInteractive3D: false,
+    philosophy:
+      "“Haun Teik Do Gita” — Petikan dawai berakar dari desir angin pada anyaman daun lontar, perlambang keanggunan hidup pesisir Rote.",
+    specs: {
+      tuningSystem: "Tangga nada pentatonik laras gong Rote 7 hingga 12 dawai melingkar menyerupai gema degung samudra selatan.",
+      materialAcoustic: "Tabung bambu silinder pusat, dawai kawat tembaga/baja, serta wadah resonator daun lontar kering (haik).",
+      playingTechnique: "Dipetik dengan kedua belah jemari tangan (tangan kiri pemegang bas & tangan kanan pembawa melodi) dari sela lipatan lontar.",
+      ensembleFunction: "Iringan syair adat kebalai, pelipur lara kedukaan keluarga besar, dan penyambut tamu agung kepulauan Nusa Tenggara.",
+    },
+  },
+  {
+    id: "sampe",
+    slug: "sampe",
+    title: "Sampe' / Sape'",
+    vernacularName: "Sampe' Kayan / Kenyah",
+    province: "Kalimantan Timur",
+    ethnicGroup: "Dayak Kenyah & Kayan",
+    islandRegion: "KALIMANTAN",
+    organology: "KORDOFON",
+    organologyLabel: "Kordofon Petik Pahat Kayu Rimba",
+    hasInteractive3D: false,
+    philosophy:
+      "“Dawai hening rimba borneo” — Melodi dawai mengalun menyuarakan doa syukur kepada leluhur dan kedamaian hidup bersama hutan belantara.",
+    specs: {
+      tuningSystem: "Sistem tala modal 3 hingga 6 dawai dengan tangga nada pentatonik mayor Dayak berirama meditatif dinamis.",
+      materialAcoustic: "Pahatan utuh kayu aro/adau (pelai) yang dikeruk berongga, pasak kayu putar (tengon), & ukiran motif taring aso.",
+      playingTechnique: "Dawai pertama dipetik solo sebagai melodi pemandu ritme, sementara dawai lainnya dipetik serentak sebagai dengung (*drone*).",
+      ensembleFunction: "Iringan tari adat Kancet Papatai (tari perang damai), pengobatan tradisional, & perayaan syukur gawai Dayak.",
+    },
+  },
+  {
+    id: "kolintang",
+    slug: "kolintang",
+    title: "Kolintang Minahasa",
+    vernacularName: "Kolintang Bilah Kayu",
+    province: "Sulawesi Utara",
+    ethnicGroup: "Minahasa",
+    islandRegion: "SULAWESI",
+    organology: "IDIOFON",
+    organologyLabel: "Idiofon Xilofon Bilah Kayu",
+    hasInteractive3D: false,
+    philosophy:
+      "“Minaesa — Bersatu dalam keberagaman” — Paduan nada bilah kayu yang saling mengisi menghidupkan semangat mapalus (gotong royong komunal).",
+    specs: {
+      tuningSystem: "Skala diatonis 3,5 oktaf tersusun dari bilah nada bas, karuai (ritme), tenor, cello, hingga ina (melodi utama).",
+      materialAcoustic: "Kayu telur, bandaran, wunang, atau cempaka hutan ringan namun padat serat yang dikeringkan sempurna.",
+      playingTechnique: "Ditabuh menggunakan tiga stik kayu berlilit karet secara harmoni polifonik cepat (tremolo gemerincing).",
+      ensembleFunction: "Musik pengiring tarian sakral Maengket, penyembah roh leluhur purba, dan konser orkestra ansambel kayu modern.",
+    },
+  },
+  {
+    id: "tifa",
+    slug: "tifa",
+    title: "Tifa Totobuang",
+    vernacularName: "Tifa Kalabasa / Jekir",
+    province: "Maluku & Papua",
+    ethnicGroup: "Ambon & Asmat",
+    islandRegion: "PAPUA_MALUKU",
+    organology: "MEMBRANOFON",
+    organologyLabel: "Membranofon Kayu & Kulit Selaput",
+    hasInteractive3D: false,
+    philosophy:
+      "“Pela Gandong — Pengikat Janji Saudara” — Hentakan ritmis membran tifa meresonansikan persaudaraan abadi antar-negeri pesisir dan pegunungan.",
+    specs: {
+      tuningSystem: "Nada membran perkusi tunggal bernada tak terbatas yang disetel kekencangannya menggunakan pasak rotan & damar getah.",
+      materialAcoustic: "Batang kayu linggua / sukun berongga bulat silinder, selaput kulit rusa / biawak yang diikat jalinan rotan rimba.",
+      playingTechnique: "Ditepuk menggunakan telapak tangan dan sisi pangkal jari dengan variasi pukulan rim tebing dan tengah membran.",
+      ensembleFunction: "Pengiring tarian perang Cakalele, upacara adat pelantikan raja negeri, dan pemersatu pesta bakar batu Papua.",
+    },
+  },
+  {
+    id: "saluang-talempong",
+    slug: "saluang",
+    title: "Saluang & Talempong",
+    vernacularName: "Saluang Darek & Talempong Pacik",
+    province: "Sumatera Barat",
+    ethnicGroup: "Minangkabau",
+    islandRegion: "SUMATERA",
+    organology: "AEROFON",
+    organologyLabel: "Aerofon Bambu & Gong Perunggu",
+    hasInteractive3D: false,
+    philosophy:
+      "“Manyisiah nan taserak, mangumpua nan taberak” — Tiupan saluang menghanyutkan dendang rindu ranah Minang, mengikat perantau dengan tanah pusaka.",
+    specs: {
+      tuningSystem: "Sistem tangga nada mikrotonal 4 lubang nada (Darek/Singgalang) dengan teknik sirkulasi napas tiup berlanjut tanpa jeda.",
+      materialAcoustic: "Talang tipis berserat halus berdiameter sedang, dipadukan gong kecil perunggu talempong pacik.",
+      playingTechnique: "Ditiup dari sudut miring bibir atas menggunakan pernapasan sirkular (*manyisiah angok*) sembari jari menutup lubang nada.",
+      ensembleFunction: "Pengiring dendang kaba cerita rakyat semalam suntuk, pesta adat batagak gala penghulu, dan pertunjukan silek tuo.",
+    },
+  },
+  {
+    id: "gong-kebyar",
+    slug: "gong-kebyar",
+    title: "Gamelan Gong Kebyar",
+    vernacularName: "Gangsa Pemade & Ugal",
+    province: "Bali",
+    ethnicGroup: "Bali",
+    islandRegion: "BALI_NUSA",
+    organology: "IDIOFON",
+    organologyLabel: "Idiofon Metalofon Pelog Selisir",
+    hasInteractive3D: false,
+    philosophy:
+      "“Kebyar — Gemuruh Kilatan Jiwa Kosmis” — Ledakan ritmis dinamis penuh gejolak yang menyelaraskan daya suci Dewa Siwa Nataraja sang penari semesta.",
+    specs: {
+      tuningSystem: "Laras Pelog Selisir 5 nada (Nding, Ndong, Ndeng, Ndung, Ndang) dengan sistem nada kembar berombak (*pengumbang-pengisep*).",
+      materialAcoustic: "Bilah perunggu cor kualitas tertinggi bertatah emas perada di atas rancakan ukiran naga & boma khas Bali.",
+      playingTechnique: "Teknik kotekan interlocking super cepat (polos & sangsih) ditabuh serentak dengan panggul kayu tanduk kerbau.",
+      ensembleFunction: "Iringan tari sakral Legong Kraton, Barong Kuntul, upacara piodalan pura agung, dan festival mebarung antarbanjar.",
+    },
+  },
+];
+
 type MainTabFilter = "all" | "architecture" | "instruments";
 
 export default function Exploration3DView() {
   const [activeMainTab, setActiveMainTab] = useState<MainTabFilter>("all");
-  const [selectedIsland, setSelectedIsland] = useState<IslandRegion>("ALL");
+  
+  // State untuk Wahana Rumah Adat
+  const [selectedHouseIsland, setSelectedHouseIsland] = useState<IslandRegion>("ALL");
   const [activeHouseId, setActiveHouseId] = useState<string>("rumah-gadang");
+
+  // State untuk Wahana Musik Tradisional
+  const [selectedInstIsland, setSelectedInstIsland] = useState<IslandRegion>("ALL");
+  const [selectedOrganology, setSelectedOrganology] = useState<OrganologyType>("ALL");
+  const [activeInstrumentId, setActiveInstrumentId] = useState<string>("saron-barung");
 
   // Query API untuk sinkronisasi data dinamis bila tersedia di database
   const gadangQ = useAsyncData(() => api.items.detail("rumah-gadang"), []);
   const jogloQ = useAsyncData(() => api.items.detail("joglo"), []);
 
-  // Filter daftar rumah adat berdasarkan wilayah pulau yang dipilih
+  // Filter daftar rumah adat
   const filteredHouses = useMemo(() => {
-    if (selectedIsland === "ALL") return HOUSES_CATALOGUE;
-    return HOUSES_CATALOGUE.filter((h) => h.islandRegion === selectedIsland);
-  }, [selectedIsland]);
+    if (selectedHouseIsland === "ALL") return HOUSES_CATALOGUE;
+    return HOUSES_CATALOGUE.filter((h) => h.islandRegion === selectedHouseIsland);
+  }, [selectedHouseIsland]);
 
-  // Dapatkan data rumah aktif
+  // Data rumah aktif
   const activeHouse = useMemo(() => {
     return (
       HOUSES_CATALOGUE.find((h) => h.id === activeHouseId) ?? HOUSES_CATALOGUE[0]
     );
   }, [activeHouseId]);
 
-  // Siapkan CulturalItem yang siap dimasukkan ke ModelViewer
+  // CulturalItem untuk ModelViewer
   const viewerItem = useMemo<CulturalItem>(() => {
     if (activeHouse.id === "rumah-gadang" && gadangQ.data) {
       return gadangQ.data;
@@ -403,6 +610,23 @@ export default function Exploration3DView() {
   const isModelLoading =
     (activeHouse.id === "rumah-gadang" && gadangQ.loading) ||
     (activeHouse.id === "joglo" && jogloQ.loading);
+
+  // Filter daftar instrumen musik
+  const filteredInstruments = useMemo(() => {
+    return INSTRUMENTS_CATALOGUE.filter((item) => {
+      const matchIsland = selectedInstIsland === "ALL" || item.islandRegion === selectedInstIsland;
+      const matchOrganology = selectedOrganology === "ALL" || item.organology === selectedOrganology;
+      return matchIsland && matchOrganology;
+    });
+  }, [selectedInstIsland, selectedOrganology]);
+
+  // Data instrumen aktif
+  const activeInstrument = useMemo(() => {
+    return (
+      INSTRUMENTS_CATALOGUE.find((inst) => inst.id === activeInstrumentId) ??
+      INSTRUMENTS_CATALOGUE[0]
+    );
+  }, [activeInstrumentId]);
 
   return (
     <div className="min-h-screen bg-[#FCF8EC] text-stone-900 pb-20 pt-24 sm:pt-28">
@@ -458,7 +682,7 @@ export default function Exploration3DView() {
               )}
             >
               <Music4 className="h-4 w-4" />
-              Instrumen Musik Virtual
+              Atelier Musik 38 Provinsi
             </button>
           </div>
         </div>
@@ -494,12 +718,12 @@ export default function Exploration3DView() {
             <div className="mb-4">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
                 {ISLAND_TABS.map((island) => {
-                  const isCurrent = selectedIsland === island.id;
+                  const isCurrent = selectedHouseIsland === island.id;
                   return (
                     <button
                       key={island.id}
                       type="button"
-                      onClick={() => setSelectedIsland(island.id)}
+                      onClick={() => setSelectedHouseIsland(island.id)}
                       className={cn(
                         "whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
                         isCurrent
@@ -762,54 +986,355 @@ export default function Exploration3DView() {
           </section>
         )}
 
-        {/* ================= BAGIAN 2: INSTRUMEN VIRTUAL ================= */}
+        {/* ================= BAGIAN 2: ATELIER MUSIK TRADISIONAL 38 PROVINSI ================= */}
         {(activeMainTab === "all" || activeMainTab === "instruments") && (
           <section className="mb-16 rounded-3xl border border-stone-200/90 bg-white/90 backdrop-blur-md p-5 sm:p-8 lg:p-10 shadow-lg">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200/80 pb-6 mb-8">
+            {/* Header Bagian Musik & Etnomusikologi */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-stone-200/80 pb-6 mb-6">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#8A5B38] flex items-center gap-1.5">
                   <Music4 className="h-4 w-4" />
-                  Audio &amp; Gamelan Tradisional
+                  Etnomusikologi &amp; Karawitan 38 Provinsi
                 </span>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D1E12] mt-0.5">
-                  Studio Instrumen Musik Virtual
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D1E12] mt-1">
+                  Atelier Instrumen Tradisional Nusantara
                 </h2>
-                <p className="text-xs sm:text-sm text-stone-500 mt-1">
-                  Eksplorasi laras pelog Jawa dengan sintesis Web Audio API dan pelacakan gestur tangan tanpa sentuhan.
+                <p className="text-xs sm:text-sm text-stone-500 mt-1 max-w-2xl">
+                  Pelajari organologi akustik Sachs-Hornbostel, sistem skala laras pentatonik, dan tabuh instrumen gamelan interaktif menggunakan sentuhan maupun gestur tangan tanpa kontak.
                 </p>
               </div>
-              <Badge className="bg-[#6E472D] text-white rounded-full px-3.5 py-1 text-xs font-semibold self-start md:self-auto">
-                <Volume2 className="h-3.5 w-3.5 mr-1" />
-                Web Audio Synth &amp; Air Gesture
-              </Badge>
-            </div>
 
-            {/* Embed Saron Instrument */}
-            <div className="overflow-hidden rounded-2xl border border-stone-200 bg-[#FAF7F2] p-4 sm:p-6 shadow-inner">
-              <SaronInstrument />
-            </div>
-
-            {/* Rencana Instrumen Lainnya */}
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-stone-200/70 bg-[#FCFAF6] p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-stone-900 text-sm">Angklung Bambu</h4>
-                  <p className="text-xs text-stone-500">Jawa Barat &middot; Getaran tabung bambu nada ganda</p>
-                </div>
-                <Badge variant="secondary" className="text-[11px] rounded-full">
-                  Segera Hadir
-                </Badge>
-              </div>
-              <div className="rounded-2xl border border-stone-200/70 bg-[#FCFAF6] p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-stone-900 text-sm">Rebab Gesek</h4>
-                  <p className="text-xs text-stone-500">Nusantara &middot; Dawai pelog penyanyi melodi</p>
-                </div>
-                <Badge variant="secondary" className="text-[11px] rounded-full">
-                  Rencana
-                </Badge>
+              {/* Status Badge */}
+              <div className="flex items-center gap-2 self-start md:self-auto">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FCF8EC] border border-[#E5D7C5] px-3.5 py-1 text-xs font-medium text-[#6E472D]">
+                  <Volume2 className="h-3.5 w-3.5 text-[#8A5B38]" />
+                  1 Studio 3D Interaktif &bull; 7 Arsip Etnomusikologi
+                </span>
               </div>
             </div>
+
+            {/* FILTER WILAYAH KEPULAUAN */}
+            <div className="mb-3">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+                {ISLAND_TABS.map((island) => {
+                  const isCurrent = selectedInstIsland === island.id;
+                  return (
+                    <button
+                      key={`inst-island-${island.id}`}
+                      type="button"
+                      onClick={() => setSelectedInstIsland(island.id)}
+                      className={cn(
+                        "whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
+                        isCurrent
+                          ? "bg-[#6E472D] text-white shadow-sm"
+                          : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/70 hover:text-stone-900"
+                      )}
+                    >
+                      {island.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* FILTER KLASIFIKASI SACHS-HORNBOSTEL */}
+            <div className="mb-6">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+                {ORGANOLOGY_TABS.map((tab) => {
+                  const isCurrent = selectedOrganology === tab.id;
+                  return (
+                    <button
+                      key={`inst-org-${tab.id}`}
+                      type="button"
+                      onClick={() => setSelectedOrganology(tab.id)}
+                      className={cn(
+                        "whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition-all border",
+                        isCurrent
+                          ? "bg-[#8A5B38]/15 text-[#6E472D] border-[#8A5B38]/40 font-bold"
+                          : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
+                      )}
+                    >
+                      <span className="mr-1">{tab.icon}</span>
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* HORIZONTAL INSTRUMENT SELECTOR DOCK (SCALABLE 38 PROVINCES) */}
+            <div className="mb-8">
+              <div className="flex items-stretch gap-2.5 overflow-x-auto pb-3 pt-1 scrollbar-thin">
+                {filteredInstruments.map((inst) => {
+                  const isActive = inst.id === activeInstrument.id;
+                  return (
+                    <button
+                      key={inst.id}
+                      type="button"
+                      onClick={() => setActiveInstrumentId(inst.id)}
+                      className={cn(
+                        "group flex-shrink-0 text-left rounded-2xl p-3 sm:p-3.5 border transition-all duration-200 min-w-[210px] sm:min-w-[230px]",
+                        isActive
+                          ? "bg-[#6E472D] text-white border-[#583720] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.01]"
+                          : "bg-[#FAF7F2] text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-white"
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-1 mb-1.5">
+                        <span
+                          className={cn(
+                            "text-[10px] font-bold uppercase tracking-wider",
+                            isActive ? "text-amber-200/90" : "text-[#8A5B38]"
+                          )}
+                        >
+                          {inst.province.split("&")[0].trim()}
+                        </span>
+                        {inst.hasInteractive3D ? (
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-md",
+                              isActive
+                                ? "bg-amber-400/20 text-amber-200 border border-amber-300/30"
+                                : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            )}
+                          >
+                            <Sparkles className="h-2.5 w-2.5" />
+                            3D Aktif
+                          </span>
+                        ) : (
+                          <span
+                            className={cn(
+                              "text-[10px] px-1.5 py-0.5 rounded-md",
+                              isActive
+                                ? "text-stone-300 bg-white/10"
+                                : "text-stone-500 bg-stone-200/70"
+                            )}
+                          >
+                            {inst.organology}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="font-serif font-bold text-sm sm:text-base leading-tight">
+                        {inst.title}
+                      </div>
+
+                      <div
+                        className={cn(
+                          "text-[11px] mt-1 line-clamp-1",
+                          isActive ? "text-stone-200" : "text-stone-500"
+                        )}
+                      >
+                        Suku {inst.ethnicGroup}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* PANGGUNG UTAMA INSTRUMEN (SARON 3D ATAU KAJIAN ETNOMUSIKOLOGI) */}
+            {activeInstrument.hasInteractive3D ? (
+              /* ================== PANGGUNG 3D SARON INTERAKTIF ================== */
+              <div className="space-y-6">
+                <div className="overflow-hidden rounded-2xl border border-stone-200 bg-[#FAF7F2] p-4 sm:p-6 shadow-inner">
+                  <SaronInstrument />
+                </div>
+
+                {/* KAJIAN ETNOMUSIKOLOGI & SPESIFIKASI ORGANOLOGI SARON (BEBAS AI SLOP) */}
+                <div className="grid gap-6 lg:grid-cols-12 lg:items-start pt-2">
+                  <div className="lg:col-span-5 space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline" className="border-[#6E472D]/30 bg-[#6E472D]/5 text-[#6E472D] font-medium text-xs">
+                        📍 {activeInstrument.province}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-stone-100 text-stone-700 text-xs font-normal">
+                        Suku {activeInstrument.ethnicGroup}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-amber-50 text-amber-800 border-amber-200 text-xs font-normal">
+                        {activeInstrument.organologyLabel}
+                      </Badge>
+                    </div>
+
+                    <h3 className="font-serif text-2xl font-bold text-[#2D1E12]">
+                      {activeInstrument.vernacularName}
+                    </h3>
+
+                    {/* Kutipan Falsafah Gamelan */}
+                    <div className="rounded-2xl border-l-4 border-[#8A5B38] bg-[#FAF5EB] p-4 text-xs sm:text-sm text-stone-800 shadow-sm">
+                      <p className="font-bold text-[11px] uppercase tracking-wider text-[#8A5B38] mb-1">
+                        Filosofi Rasa &amp; Karawitan
+                      </p>
+                      <blockquote className="font-serif italic text-stone-700 leading-relaxed">
+                        {activeInstrument.philosophy}
+                      </blockquote>
+                    </div>
+                  </div>
+
+                  {/* Grid 2x2 Spesifikasi Organologi */}
+                  <div className="lg:col-span-7">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#2D1E12] block mb-2.5">
+                      Spesifikasi Akustik &amp; Tradisi Karawitan:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                      {/* Box 1: Sistem Skala Laras */}
+                      <div className="rounded-xl border border-stone-200 bg-white p-3.5 space-y-1.5 shadow-sm">
+                        <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                          <Music4 className="h-3.5 w-3.5" />
+                          <span>Sistem Skala Laras</span>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">
+                          {activeInstrument.specs.tuningSystem}
+                        </p>
+                      </div>
+
+                      {/* Box 2: Material Bilah & Resonator */}
+                      <div className="rounded-xl border border-stone-200 bg-white p-3.5 space-y-1.5 shadow-sm">
+                        <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                          <TreePine className="h-3.5 w-3.5" />
+                          <span>Material Akustik</span>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">
+                          {activeInstrument.specs.materialAcoustic}
+                        </p>
+                      </div>
+
+                      {/* Box 3: Teknik Tabuh & Meredam */}
+                      <div className="rounded-xl border border-stone-200 bg-white p-3.5 space-y-1.5 shadow-sm">
+                        <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                          <Hammer className="h-3.5 w-3.5" />
+                          <span>Teknik Tabuh &amp; Pathet</span>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">
+                          {activeInstrument.specs.playingTechnique}
+                        </p>
+                      </div>
+
+                      {/* Box 4: Peran Ansambel & Ritus */}
+                      <div className="rounded-xl border border-stone-200 bg-white p-3.5 space-y-1.5 shadow-sm">
+                        <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                          <ShieldCheck className="h-3.5 w-3.5" />
+                          <span>Peran Karawitan &amp; Ritus</span>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">
+                          {activeInstrument.specs.ensembleFunction}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* ================== PANGGUNG ARSIP ETNOMUSIKOLOGI PROVINSI LAIN ================== */
+              <div className="rounded-2xl border border-stone-200/90 bg-[#FAF7F2] p-5 sm:p-8 space-y-6">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 border-b border-stone-200/80 pb-6">
+                  <div className="space-y-2 max-w-xl">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline" className="border-[#6E472D]/30 bg-[#6E472D]/5 text-[#6E472D] font-medium text-xs">
+                        📍 {activeInstrument.province}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-stone-100 text-stone-700 text-xs font-normal">
+                        Suku {activeInstrument.ethnicGroup}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-amber-100/70 text-amber-900 border-amber-300 text-xs font-semibold">
+                        {activeInstrument.organologyLabel}
+                      </Badge>
+                    </div>
+
+                    <div>
+                      <h3 className="font-serif text-3xl font-bold text-[#2D1E12]">
+                        {activeInstrument.title}
+                      </h3>
+                      <p className="text-xs italic text-[#8A5B38] font-serif mt-0.5">
+                        Sebutan adat: {activeInstrument.vernacularName}
+                      </p>
+                    </div>
+
+                    {/* Falsafah Suara */}
+                    <div className="rounded-2xl border-l-4 border-[#8A5B38] bg-[#FAF5EB] p-4 text-xs sm:text-sm text-stone-800 shadow-sm mt-3">
+                      <p className="font-bold text-[11px] uppercase tracking-wider text-[#8A5B38] mb-1">
+                        Makna Kultural &amp; Filosofi Nada
+                      </p>
+                      <blockquote className="font-serif italic text-stone-700 leading-relaxed">
+                        {activeInstrument.philosophy}
+                      </blockquote>
+                    </div>
+                  </div>
+
+                  {/* Tombol Aksi Cepat ke Saron 3D */}
+                  <div className="flex flex-col gap-2 shrink-0 self-start">
+                    <Button
+                      onClick={() => setActiveInstrumentId("saron-barung")}
+                      className="rounded-full bg-[#6E472D] hover:bg-[#583720] text-white text-xs font-semibold shadow-sm"
+                    >
+                      <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                      Buka Studio 3D Saron Barung
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="rounded-full border-[#6E472D] text-[#6E472D] hover:bg-[#6E472D]/5 text-xs font-semibold"
+                    >
+                      <Link href={`#/budaya/${activeInstrument.slug}`}>
+                        Kajian Rujukan Etnomusikologi
+                        <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Grid 2x2 Spesifikasi Organologi */}
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#2D1E12] block mb-3">
+                    Struktur Organologi &amp; Karakteristik Akustik:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    {/* Box 1 */}
+                    <div className="rounded-xl border border-stone-200/90 bg-white p-3.5 space-y-1.5 shadow-sm">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                        <Music4 className="h-3.5 w-3.5" />
+                        <span>Sistem Tangga Nada</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        {activeInstrument.specs.tuningSystem}
+                      </p>
+                    </div>
+
+                    {/* Box 2 */}
+                    <div className="rounded-xl border border-stone-200/90 bg-white p-3.5 space-y-1.5 shadow-sm">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                        <TreePine className="h-3.5 w-3.5" />
+                        <span>Material Akustik Alami</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        {activeInstrument.specs.materialAcoustic}
+                      </p>
+                    </div>
+
+                    {/* Box 3 */}
+                    <div className="rounded-xl border border-stone-200/90 bg-white p-3.5 space-y-1.5 shadow-sm">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                        <Hammer className="h-3.5 w-3.5" />
+                        <span>Teknik Memainkan</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        {activeInstrument.specs.playingTechnique}
+                      </p>
+                    </div>
+
+                    {/* Box 4 */}
+                    <div className="rounded-xl border border-stone-200/90 bg-white p-3.5 space-y-1.5 shadow-sm">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                        <ShieldCheck className="h-3.5 w-3.5" />
+                        <span>Fungsi Ritus &amp; Sosial</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        {activeInstrument.specs.ensembleFunction}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
         )}
       </div>
