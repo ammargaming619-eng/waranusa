@@ -244,8 +244,11 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
           </ul>
         </section>
 
+        {/* ================= CURVED RIBBON TICKER & FLOATING SHAPES ================= */}
+        <NusantaraCurvedTicker />
+
         {/* ================= SOROTAN BUDAYA ================= */}
-        <section className="bg-[#FAF7F2] border-y border-stone-200" aria-labelledby="sorotan">
+        <section className="bg-[#FAF7F2] border-b border-stone-200" aria-labelledby="sorotan">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
@@ -473,5 +476,123 @@ function Stat({ value, label, delay = 0 }: { value: number; label: string; delay
       </p>
       <p className="mt-1 text-xs sm:text-sm text-stone-600 font-medium">{label}</p>
     </motion.div>
+  );
+}
+
+const TICKER_PHRASE =
+  "✦ WARISAN BUDAYA NUSANTARA • 3D ARTEFAK & RUMAH ADAT • PETA 38 PROVINSI • GAMELAN DIGITAL • DOKUMENTASI TERVERIFIKASI ";
+const REPEATED_TICKER = Array(7).fill(TICKER_PHRASE).join("");
+
+function NusantaraCurvedTicker() {
+  const textPathRef = useRef<SVGTextPathElement>(null);
+  const measureRef = useRef<SVGTextElement>(null);
+  const [phraseWidth, setPhraseWidth] = useState(0);
+
+  useEffect(() => {
+    if (measureRef.current) {
+      const len = measureRef.current.getComputedTextLength();
+      if (len > 0) setPhraseWidth(len);
+    }
+  }, []);
+
+  useEffect(() => {
+    let animId: number;
+    let offset = 0;
+    const unit = phraseWidth > 0 ? phraseWidth : 560;
+
+    const step = () => {
+      offset -= 0.5;
+      if (Math.abs(offset) >= unit) {
+        offset += unit;
+      }
+      if (textPathRef.current) {
+        textPathRef.current.setAttribute("startOffset", `${offset}px`);
+      }
+      animId = requestAnimationFrame(step);
+    };
+
+    animId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animId);
+  }, [phraseWidth]);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-4 sm:py-6"
+    >
+      {/* Soft Ambient Background Glow */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-3/4 rounded-full bg-[#EFE8DE]/60 blur-3xl" />
+
+      {/* Floating Micro-Orbs & Minimalist Rings */}
+      <motion.div
+        className="pointer-events-none absolute left-[7%] top-[20%] h-3 w-3 rounded-full bg-[#8C5E3C]/40 shadow-sm"
+        animate={{ y: [-5, 5, -5], x: [-3, 3, -3] }}
+        transition={{ repeat: Infinity, duration: 5.5, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute left-[34%] bottom-[16%] h-2 w-2 rounded-full bg-[#D4AF37]/65 shadow-sm"
+        animate={{ y: [-4, 4, -4], x: [2, -2, 2] }}
+        transition={{ repeat: Infinity, duration: 4.8, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute left-[64%] top-[14%] h-5 w-5 rounded-full border border-[#D4AF37]/40"
+        animate={{ y: [5, -5, 5], rotate: [0, 90, 0] }}
+        transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute right-[8%] bottom-[18%] h-4 w-4 rounded-full border border-[#8C5E3C]/35"
+        animate={{ y: [4, -5, 4], x: [-2, 3, -2] }}
+        transition={{ repeat: Infinity, duration: 6.2, ease: "easeInOut" }}
+      />
+
+      {/* Curved SVG Wave Ribbon */}
+      <svg
+        viewBox="0 0 1440 120"
+        className="relative z-10 w-full h-20 sm:h-28 text-stone-900"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="ribbon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#6E472D" />
+            <stop offset="35%" stopColor="#8C5E3C" />
+            <stop offset="70%" stopColor="#784E33" />
+            <stop offset="100%" stopColor="#5C3B24" />
+          </linearGradient>
+          <filter id="ribbon-shadow" x="-5%" y="-20%" width="110%" height="160%">
+            <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#2D1E12" floodOpacity="0.16" />
+          </filter>
+        </defs>
+
+        {/* Hidden text to measure exact single phrase width for zero-jump seamless loop */}
+        <text
+          ref={measureRef}
+          className="fill-transparent text-[11.5px] font-sans font-bold tracking-[0.22em] uppercase"
+          style={{ visibility: "hidden" }}
+        >
+          {TICKER_PHRASE}
+        </text>
+
+        {/* The Wave Path */}
+        <path
+          id="nusantara-ribbon-path"
+          d="M -100,60 C 280,110 580,15 880,60 C 1180,105 1380,25 1540,60"
+          fill="none"
+          stroke="url(#ribbon-gradient)"
+          strokeWidth="38"
+          strokeLinecap="round"
+          filter="url(#ribbon-shadow)"
+        />
+
+        {/* The Text running on the path */}
+        <text
+          dominantBaseline="central"
+          className="fill-[#FAF6F0] text-[11.5px] font-sans font-bold tracking-[0.22em] uppercase select-none"
+        >
+          <textPath ref={textPathRef} href="#nusantara-ribbon-path" startOffset="0px">
+            {REPEATED_TICKER}
+          </textPath>
+        </text>
+      </svg>
+    </div>
   );
 }
