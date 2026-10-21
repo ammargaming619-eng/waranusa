@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, Pointer, X } from "lucide-react";
 
 interface BrandPreloaderProps {
   onStartDismiss?: () => void;
@@ -325,25 +325,17 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
                   </motion.div>
                 </motion.div>
 
-                {/* Animasi Ikon Mouse Bergulir */}
+                {/* Animasi Ikon Kursor Tangan (Pointer) */}
                 <motion.div
-                  animate={{ y: [0, 5, 0] }}
+                  animate={{ y: [0, 6, 0], scale: [1, 1.08, 1] }}
                   transition={{
-                    duration: 1.6,
+                    duration: 1.5,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="flex h-8 w-5 items-start justify-center rounded-full border border-stone-400/50 p-1"
+                  className="flex items-center justify-center pt-1"
                 >
-                  <motion.div
-                    animate={{ y: [0, 6, 0], opacity: [1, 0.3, 1] }}
-                    transition={{
-                      duration: 1.6,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="h-1.5 w-1 rounded-full bg-[#D4AF37]"
-                  />
+                  <Pointer className="h-5 w-5 sm:h-6 sm:w-6 text-[#D4AF37] drop-shadow-[0_2px_12px_rgba(212,175,55,0.6)]" />
                 </motion.div>
               </motion.div>
             )}
