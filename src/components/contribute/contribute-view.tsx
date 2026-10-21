@@ -210,9 +210,9 @@ export default function ContributeView({ route }: { route: Route }) {
       />
 
       {settings.contributionNotice && (
-        <Alert className="mt-6 rounded-2xl border-brand-teal/30 bg-brand-soft">
-          <Info className="h-4 w-4 text-brand-teal" aria-hidden="true" />
-          <AlertTitle className="text-sm font-bold text-brand-ink">Catatan kurasi</AlertTitle>
+        <Alert className="mt-6 rounded-2xl border-[#8C5E3C]/30 bg-[#FAF6F0] text-stone-800">
+          <Info className="h-4 w-4 text-[#8C5E3C]" aria-hidden="true" />
+          <AlertTitle className="text-sm font-bold text-[#2D1E12]">Catatan kurasi</AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             {settings.contributionNotice}
           </AlertDescription>
@@ -224,17 +224,17 @@ export default function ContributeView({ route }: { route: Route }) {
         <div className="lg:col-span-3">
           {submitted ? (
             /* ---------- KARTU SUKSES ---------- */
-            <Card className="rounded-3xl border-brand-teal/40 bg-brand-soft/70 shadow-sm">
+            <Card className="rounded-3xl border-[#8C5E3C]/30 bg-[#FAF6F0]/80 shadow-sm">
               <CardContent className="p-8 text-center sm:p-10">
-                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-teal/10">
-                  <CheckCheck className="h-8 w-8 text-brand-teal" aria-hidden="true" />
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#8C5E3C]/10">
+                  <CheckCheck className="h-8 w-8 text-[#8C5E3C]" aria-hidden="true" />
                 </span>
-                <h2 className="mt-5 text-2xl font-extrabold text-brand-ink">Kontribusi Terkirim!</h2>
+                <h2 className="mt-5 font-serif text-2xl font-bold text-[#2D1E12]">Kontribusi Terkirim!</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Simpan kode referensi berikut untuk melacak status peninjauan Anda:
                 </p>
-                <div className="mt-5 inline-flex items-center gap-3 rounded-2xl border border-brand-teal/30 bg-card px-6 py-4">
-                  <span className="font-mono text-2xl font-bold tracking-wider text-brand-teal sm:text-3xl">
+                <div className="mt-5 inline-flex items-center gap-3 rounded-2xl border border-[#8C5E3C]/30 bg-card px-6 py-4">
+                  <span className="font-mono text-2xl font-bold tracking-wider text-[#6E472D] sm:text-3xl">
                     {submitted.refCode}
                   </span>
                   <Button
@@ -242,7 +242,7 @@ export default function ContributeView({ route }: { route: Route }) {
                     size="icon"
                     onClick={() => copyRef(submitted.refCode)}
                     aria-label="Salin kode referensi"
-                    className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-brand-teal"
+                    className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-[#6E472D]"
                   >
                     <ClipboardCopy className="h-5 w-5" aria-hidden="true" />
                   </Button>
@@ -262,7 +262,7 @@ export default function ContributeView({ route }: { route: Route }) {
                       <li key={step.label} className="flex items-center">
                         <div className="flex w-56 flex-col items-center gap-1.5 sm:w-40">
                           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-card shadow-sm ring-1 ring-brand-line">
-                            <step.icon className="h-5 w-5 text-brand-sea" aria-hidden="true" />
+                            <step.icon className="h-5 w-5 text-[#8C5E3C]" aria-hidden="true" />
                           </span>
                           <p className="text-sm font-bold text-brand-ink">{step.label}</p>
                           <p className="text-xs text-muted-foreground">{step.desc}</p>
@@ -276,7 +276,7 @@ export default function ContributeView({ route }: { route: Route }) {
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                   <Button
                     onClick={() => scrollToTrack(submitted.refCode)}
-                    className="min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90"
+                    className="min-h-[44px] rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] font-bold text-white shadow-sm"
                   >
                     Cek Status Nanti
                   </Button>
@@ -295,8 +295,8 @@ export default function ContributeView({ route }: { route: Route }) {
             /* ---------- FORM ---------- */
             <Card className="rounded-3xl border-brand-line">
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg text-brand-ink">
-                  <HandHeart className="h-5 w-5 text-brand-orange" aria-hidden="true" />
+                <CardTitle className="flex items-center gap-2 text-lg font-serif font-bold text-[#2D1E12]">
+                  <HandHeart className="h-5 w-5 text-[#8C5E3C]" aria-hidden="true" />
                   Formulir Kontribusi
                 </CardTitle>
               </CardHeader>
@@ -467,7 +467,7 @@ export default function ContributeView({ route }: { route: Route }) {
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="min-h-[48px] w-full rounded-full bg-brand-teal text-base font-bold text-white hover:bg-brand-teal/90"
+                    className="min-h-[48px] w-full rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-base font-bold text-white shadow-md hover:shadow-lg transition-all"
                   >
                     {submitting ? "Mengirim…" : "Kirim Kontribusi"}
                   </Button>
@@ -484,8 +484,8 @@ export default function ContributeView({ route }: { route: Route }) {
         <aside ref={trackRef} className="scroll-mt-24 space-y-6 lg:col-span-2">
           <Card className="rounded-3xl border-brand-line">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg text-brand-ink">
-                <Search className="h-5 w-5 text-brand-sea" aria-hidden="true" />
+              <CardTitle className="flex items-center gap-2 text-lg font-serif font-bold text-[#2D1E12]">
+                <Search className="h-5 w-5 text-[#8C5E3C]" aria-hidden="true" />
                 Lacak Kontribusi
               </CardTitle>
               <p className="text-sm text-muted-foreground">
@@ -539,7 +539,7 @@ export default function ContributeView({ route }: { route: Route }) {
                 <Button
                   type="submit"
                   disabled={tracking}
-                  className="min-h-[44px] w-full rounded-full bg-brand-sea font-bold text-white hover:bg-brand-sea/90"
+                  className="min-h-[44px] w-full rounded-full bg-[#2D1E12] font-bold text-white hover:bg-[#432D1C] transition-all"
                 >
                   {tracking ? "Melacak…" : "Lacak Status"}
                 </Button>
@@ -552,7 +552,7 @@ export default function ContributeView({ route }: { route: Route }) {
 
               {/* Hasil pelacakan */}
               {tracked && (
-                <div className="mt-5 space-y-4 rounded-2xl border border-brand-line bg-brand-soft/60 p-4" aria-live="polite">
+                <div className="mt-5 space-y-4 rounded-2xl border border-stone-200 bg-[#FAF6F0]/80 p-4" aria-live="polite">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       {tracked.refCode}
@@ -622,20 +622,20 @@ export default function ContributeView({ route }: { route: Route }) {
           {/* Info singkat alur */}
           <Card className="rounded-3xl border-brand-line">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-brand-ink">Apa yang terjadi setelah dikirim?</CardTitle>
+              <CardTitle className="text-base font-serif font-bold text-[#2D1E12]">Apa yang terjadi setelah dikirim?</CardTitle>
             </CardHeader>
             <CardContent>
               <ol className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex gap-2.5">
-                  <FileUp className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
+                  <FileUp className="mt-0.5 h-4 w-4 shrink-0 text-[#8C5E3C]" aria-hidden="true" />
                   Kontribusi Anda dicatat dengan kode referensi unik.
                 </li>
                 <li className="flex gap-2.5">
-                  <SearchCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
+                  <SearchCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C5E3C]" aria-hidden="true" />
                   Reviewer memeriksa kelengkapan isi dan keabsahan sumber.
                 </li>
                 <li className="flex gap-2.5">
-                  <Gavel className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden="true" />
+                  <Gavel className="mt-0.5 h-4 w-4 shrink-0 text-[#8C5E3C]" aria-hidden="true" />
                   Editor mengambil keputusan: diterbitkan (dengan atribusi nama Anda), diminta revisi, atau ditolak.
                 </li>
               </ol>

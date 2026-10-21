@@ -82,34 +82,41 @@ export default function LoginView() {
     <div className="flex min-h-screen flex-col bg-background lg:grid lg:grid-cols-2">
       {/* ============ PANEL BRAND (desktop) ============ */}
       <aside
-        className="relative hidden overflow-hidden bg-brand-gradient p-10 text-white lg:flex lg:flex-col lg:justify-between"
+        className="relative hidden overflow-hidden bg-gradient-to-br from-[#24170E] via-[#3D2617] to-[#5C3B24] p-10 text-white lg:flex lg:flex-col lg:justify-between"
         aria-label="Tentang WaraNusa"
       >
+        {/* Hiasan bunder-bunder (dipertahankan dengan nuansa hangat) */}
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-white/10" />
+        <div aria-hidden="true" className="pointer-events-none absolute top-1/2 -right-16 h-64 w-64 rounded-full bg-[#8C5E3C]/20 blur-2xl" />
+
         <div className="relative">
-          {/* Logo mono putih agar kontras di atas gradien teal */}
-          <a href="#/" className="inline-flex items-center gap-2.5" aria-label="WaraNusa — beranda">
-            <BrandMark className="h-9 w-9" />
+          {/* Logo baru resmi WaraNusa */}
+          <a href="#/" className="inline-flex items-center gap-3 group" aria-label="WaraNusa — Beranda">
+            <img
+              src="/images/brand/waranusa-logo.png?v=2"
+              alt="Logo WaraNusa"
+              className="h-12 w-auto object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+            />
             <span className="flex flex-col leading-none">
-              <span className="font-extrabold tracking-tight text-[1.15rem] text-white drop-shadow-sm">
-                WARA<span className="text-white/90">NUSA</span>
+              <span className="font-serif text-2xl font-bold tracking-tight text-[#FCF8EC]">
+                WaraNusa
               </span>
-              <span className="text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-white/75">
-                Eksplorasi &amp; Pelestarian Budaya
+              <span className="text-[0.6rem] font-medium uppercase tracking-[0.14em] text-stone-300 mt-0.5">
+                Pelestarian Budaya Nusantara
               </span>
             </span>
           </a>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/80">
+          <p className="mt-6 max-w-sm text-sm leading-relaxed text-stone-200">
             Platform eksplorasi &amp; pelestarian budaya Indonesia — peta wilayah, katalog objek,
             model 3D, dan instrumen virtual dalam satu tempat.
           </p>
         </div>
         <figure className="relative my-10 max-w-md">
-          <blockquote className="text-2xl font-bold leading-snug">
+          <blockquote className="font-serif text-2xl font-bold leading-snug text-[#FCF8EC]">
             &ldquo;Budaya yang dipahami adalah budaya yang lestari.&rdquo;
           </blockquote>
-          <figcaption className="mt-3 text-sm text-white/70">— Nilai yang kami pegang</figcaption>
+          <figcaption className="mt-3 text-sm text-stone-300">— Nilai yang kami pegang</figcaption>
         </figure>
         <ul className="relative space-y-4">
           {[
@@ -117,8 +124,8 @@ export default function LoginView() {
             { icon: Sparkles, text: "Model 3D & instrumen musik virtual yang bisa dimainkan" },
             { icon: ShieldCheck, text: "Dokumentasi transparan dengan sumber terverifikasi" },
           ].map((f) => (
-            <li key={f.text} className="flex items-center gap-3 text-sm text-white/90">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15">
+            <li key={f.text} className="flex items-center gap-3 text-sm text-stone-200">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 text-amber-200">
                 <f.icon className="h-4.5 w-4.5" aria-hidden="true" />
               </span>
               {f.text}
@@ -133,7 +140,7 @@ export default function LoginView() {
           {/* Brand kecil untuk mobile + tautan kembali */}
           <div className="mb-8 flex items-center justify-between gap-3">
             <div className="lg:hidden">
-              <BrandLogo />
+              <BrandLogo variant="earthy" />
             </div>
             <Link
               href="#/"
@@ -144,7 +151,7 @@ export default function LoginView() {
             </Link>
           </div>
 
-          <h1 className="text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">
+          <h1 className="font-serif text-2xl font-bold tracking-tight text-[#2D1E12] sm:text-3xl">
             Masuk ke WaraNusa
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -217,7 +224,7 @@ export default function LoginView() {
             <Button
               type="submit"
               disabled={submitting}
-              className="min-h-[48px] w-full rounded-full bg-brand-teal text-base font-bold text-white hover:bg-brand-teal/90"
+              className="min-h-[48px] w-full rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-base font-bold text-white shadow-md transition-all"
             >
               {submitting ? (
                 "Memproses…"
@@ -231,10 +238,10 @@ export default function LoginView() {
           </form>
 
           {/* ============ AKUN DEMO ============ */}
-          <Card className="mt-8 rounded-3xl border-brand-line">
+          <Card className="mt-8 rounded-3xl border-stone-200 bg-[#FCFAF6] shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base text-brand-ink">
-                <KeyRound className="h-4.5 w-4.5 text-brand-gold" aria-hidden="true" />
+              <CardTitle className="flex items-center gap-2 text-base font-bold text-[#2D1E12]">
+                <KeyRound className="h-4.5 w-4.5 text-[#8C5E3C]" aria-hidden="true" />
                 Akun Demo (data seeder)
               </CardTitle>
             </CardHeader>
@@ -242,11 +249,11 @@ export default function LoginView() {
               {DEMO_ACCOUNTS.map((a) => (
                 <div
                   key={a.email}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-line bg-brand-soft/50 px-3.5 py-2.5"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 shadow-xs"
                 >
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-brand-ink">{a.role}</p>
-                    <p className="truncate font-mono text-[11px] text-muted-foreground">
+                    <p className="text-xs font-bold text-[#2D1E12]">{a.role}</p>
+                    <p className="truncate font-mono text-[11px] text-stone-500">
                       {a.email} / {a.password}
                     </p>
                   </div>
@@ -255,13 +262,13 @@ export default function LoginView() {
                     variant="ghost"
                     size="sm"
                     onClick={() => fillDemo(a)}
-                    className="min-h-[36px] shrink-0 rounded-full text-xs font-bold text-brand-teal hover:bg-brand-teal/10 hover:text-brand-teal"
+                    className="min-h-[36px] shrink-0 rounded-full text-xs font-bold text-[#6E472D] hover:bg-[#8C5E3C]/10 hover:text-[#5C3B24]"
                   >
                     Isi otomatis
                   </Button>
                 </div>
               ))}
-              <p className="flex items-start gap-1.5 pt-1 text-[11px] text-muted-foreground">
+              <p className="flex items-start gap-1.5 pt-1 text-[11px] text-stone-500">
                 <Lock className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
                 Akun demo hanya untuk lingkungan pengembangan.
               </p>
