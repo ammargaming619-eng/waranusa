@@ -6,7 +6,8 @@
  * (#/jelajah, #/katalog, #/admin/...) sesuai batasan lingkungan preview.
  * Setiap view bertanggung jawab mengambil datanya sendiri via REST API.
  */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BrandPreloader } from "@/components/shared/brand-preloader";
 import { useRoute, navigate } from "@/lib/router";
 import { useAuth } from "@/lib/auth-store";
 
@@ -33,6 +34,7 @@ export default function WaraNusaApp() {
   const { init, initialized } = useAuth();
   const settings = useSiteSettings((s) => s.settings);
   const loadSettings = useSiteSettings((s) => s.load);
+  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
     init();
@@ -45,8 +47,8 @@ export default function WaraNusaApp() {
 
   if (!initialized) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader label="Menyiapkan WaraNusa…" />
+      <div className="relative min-h-screen bg-[#140B06]">
+        <BrandPreloader minDuration={2100} onComplete={() => setIntroDone(true)} />
       </div>
     );
   }
@@ -108,6 +110,7 @@ export default function WaraNusaApp() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900">
+      {!introDone && <BrandPreloader minDuration={2100} onComplete={() => setIntroDone(true)} />}
       <SiteHeader route={route} />
       <div className="flex-1">{view}</div>
       <SiteFooter

@@ -33,7 +33,7 @@ export function BrandLogo({
         <img
           src="/images/brand/waranusa-logo.png?v=2"
           alt="Logo WaraNusa"
-          className="h-10 w-auto sm:h-11 max-h-12 object-contain transition-transform duration-300 group-hover:scale-108 drop-shadow-sm"
+          className="h-10 w-auto sm:h-11 max-h-12 object-contain transition-all duration-300 group-hover:scale-108 group-hover:drop-shadow-[0_4px_14px_rgba(212,175,55,0.45)] drop-shadow-sm"
         />
         <span
           className={cn(
