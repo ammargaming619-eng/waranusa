@@ -518,48 +518,16 @@ function NusantaraCurvedTicker() {
   return (
     <div
       aria-hidden="true"
-      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-8 sm:py-14"
+      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-4 sm:py-8"
     >
       {/* Soft Ambient Background Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-44 w-3/4 rounded-full bg-[#EFE8DE]/80 blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 sm:h-44 w-3/4 rounded-full bg-[#EFE8DE]/70 blur-3xl" />
 
-      {/* Floating Cultural Micro-Orbs & Geometric Rings (Enlarged & Prominent) */}
-      <motion.div
-        className="pointer-events-none absolute left-[6%] top-[18%] h-6 w-6 rounded-full bg-gradient-to-br from-[#8C5E3C] to-[#6E472D] shadow-md opacity-85"
-        animate={{ y: [-7, 7, -7], x: [-4, 4, -4] }}
-        transition={{ repeat: Infinity, duration: 5.5, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute left-[28%] bottom-[16%] h-4 w-4 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B38F26] shadow-md opacity-90"
-        animate={{ y: [-5, 5, -5], x: [3, -3, 3] }}
-        transition={{ repeat: Infinity, duration: 4.8, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute left-[55%] top-[12%] h-9 w-9 rounded-full border-2 border-[#D4AF37]/50 shadow-sm"
-        animate={{ y: [7, -7, 7], rotate: [0, 90, 0] }}
-        transition={{ repeat: Infinity, duration: 7.2, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute right-[22%] bottom-[14%] h-5 w-5 rounded-full bg-[#8C5E3C]/60 shadow-sm"
-        animate={{ y: [-6, 6, -6], x: [-2, 3, -2] }}
-        transition={{ repeat: Infinity, duration: 5.2, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute right-[7%] top-[22%] h-8 w-8 rounded-full border-2 border-[#8C5E3C]/45 shadow-sm"
-        animate={{ y: [6, -6, 6], x: [-3, 3, -3] }}
-        transition={{ repeat: Infinity, duration: 6.5, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute right-[42%] top-[10%] h-3.5 w-3.5 rounded-full bg-[#D4AF37]/80 shadow-sm"
-        animate={{ y: [-4, 5, -4] }}
-        transition={{ repeat: Infinity, duration: 4.2, ease: "easeInOut" }}
-      />
-
-      {/* Curved SVG Wave Ribbon (Thicker, Bolder, Grand Wave Amplitude) */}
+      {/* Curved SVG Wave Ribbon */}
       <svg
-        viewBox="0 0 1440 180"
-        className="relative z-10 w-full h-32 sm:h-44 md:h-52 text-stone-900"
-        preserveAspectRatio="none"
+        viewBox="0 0 1200 150"
+        className="relative z-10 w-full h-24 sm:h-36 md:h-44 text-stone-900"
+        preserveAspectRatio="xMidYMid slice"
       >
         <defs>
           <linearGradient id="ribbon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -569,7 +537,7 @@ function NusantaraCurvedTicker() {
             <stop offset="100%" stopColor="#5C3B24" />
           </linearGradient>
           <filter id="ribbon-shadow" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#2D1E12" floodOpacity="0.24" />
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#2D1E12" floodOpacity="0.22" />
           </filter>
         </defs>
 
@@ -582,13 +550,13 @@ function NusantaraCurvedTicker() {
           {TICKER_PHRASE}
         </text>
 
-        {/* The Wave Path (Larger Amplitude & Dynamic Flow) */}
+        {/* The Wave Path (Harmonious S-Curve, Smooth at any screen width) */}
         <path
           id="nusantara-ribbon-path"
-          d="M -100,90 C 260,165 580,15 900,90 C 1220,165 1420,20 1560,90"
+          d="M -100,75 C 200,135 450,15 700,75 C 950,135 1150,20 1300,75"
           fill="none"
           stroke="url(#ribbon-gradient)"
-          strokeWidth="58"
+          strokeWidth="50"
           strokeLinecap="round"
           filter="url(#ribbon-shadow)"
         />
