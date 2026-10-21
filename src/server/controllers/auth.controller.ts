@@ -79,6 +79,7 @@ export async function me(): Promise<Response> {
     if (!user || !user.active) return ok(null);
     return ok(serializeUser(user));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[me auth check error]", e);
+    return ok(null);
   }
 }

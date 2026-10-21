@@ -37,7 +37,8 @@ export async function listRegions(): Promise<Response> {
     });
     return ok(regions.map((r) => serializeRegion(r, r._count.culturalItems)));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[listRegions error]", e);
+    return ok([]);
   }
 }
 
@@ -50,7 +51,8 @@ export async function listCategories(): Promise<Response> {
     });
     return ok(categories.map((c) => serializeCategory(c, c._count.culturalItems)));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[listCategories error]", e);
+    return ok([]);
   }
 }
 
@@ -72,7 +74,8 @@ export async function listItems(req: Request): Promise<Response> {
     ]);
     return ok(rows.map(serializeItem), paginateMeta(page, pageSize, total));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[listItems error]", e);
+    return ok([], paginateMeta(page, pageSize, 0));
   }
 }
 
@@ -173,6 +176,7 @@ export async function getSettings(): Promise<Response> {
     for (const r of rows) data[r.key] = r.value;
     return ok(data);
   } catch (e) {
-    return handleApiError(e);
+    console.error("[getSettings error]", e);
+    return ok({});
   }
 }
