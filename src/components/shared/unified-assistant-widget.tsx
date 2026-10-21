@@ -343,8 +343,8 @@ export function UnifiedAssistantWidget() {
           onClick={() => setIsOpen(true)}
           className={cn(
             "fixed right-0 top-1/2 -translate-y-1/2 z-40",
-            "group flex flex-col items-center justify-between",
-            "py-3 px-2 sm:px-2.5",
+            "group flex flex-col items-center justify-center",
+            "py-2 sm:py-3 px-1.5 sm:px-2.5",
             "rounded-l-2xl border-l border-y border-[#8C5E3C]/40 hover:border-[#8C5E3C]",
             "bg-[#5C3B24]/95 hover:bg-[#4A3222]",
             "text-[#FAF6F0] shadow-[-4px_0_16px_rgba(45,30,18,0.22)]",
@@ -354,21 +354,26 @@ export function UnifiedAssistantWidget() {
           aria-label="Buka WaraNusa AI Assistant"
           title="Buka WaraNusa AI Assistant"
         >
-          {/* Panah Indikator Buka */}
-          <ChevronLeft className="w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
+          {/* Panah Indikator Buka (Hanya Desktop) */}
+          <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
 
           {/* Emblem Mini & Status Ping */}
-          <div className="relative my-2">
-            <WaranusaAIEmblem className="w-6 h-6" />
+          <div className="relative my-0.5 sm:my-2">
+            <WaranusaAIEmblem className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500"></span>
             </span>
           </div>
 
-          {/* Teks Vertikal: WARANUSA AI ASSISTANT (Arah baca alami dari atas ke bawah) */}
+          {/* Label Ringkas Khusus Mobile: 'AI' Horizontal Kecil (Tidak Menutupi Teks Konten) */}
+          <span className="md:hidden text-[9px] font-black tracking-wider text-amber-300 uppercase leading-none mt-0.5">
+            AI
+          </span>
+
+          {/* Teks Vertikal: WARANUSA AI ASSISTANT (Hanya Tampil di Desktop/Layar Lebar md+) */}
           <span
-            className="font-bold text-[10px] sm:text-[11px] tracking-widest text-[#FAF6F0] group-hover:text-[#FDF8EE] transition-colors uppercase whitespace-nowrap my-2.5"
+            className="hidden md:inline-block font-bold text-[10px] sm:text-[11px] tracking-widest text-[#FAF6F0] group-hover:text-[#FDF8EE] transition-colors uppercase whitespace-nowrap my-2.5"
             style={{
               writingMode: "vertical-rl",
             }}
@@ -376,8 +381,8 @@ export function UnifiedAssistantWidget() {
             Waranusa AI Assistant
           </span>
 
-          {/* Panah Indikator Bawah */}
-          <ChevronLeft className="w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
+          {/* Panah Indikator Bawah (Hanya Desktop) */}
+          <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
         </button>
       )}
 
@@ -396,8 +401,8 @@ export function UnifiedAssistantWidget() {
           {/* Kartu Mengambang (Floating Card Dialog) */}
           <div
             className={cn(
-              "fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50",
-              "w-[440px] max-w-[94vw] h-[640px] max-h-[88vh]",
+              "fixed left-3 right-3 sm:left-auto sm:right-6 top-1/2 -translate-y-1/2 z-50",
+              "sm:w-[440px] max-w-[94vw] h-[580px] sm:h-[640px] max-h-[85vh] sm:max-h-[88vh]",
               "rounded-3xl bg-[#FAF7F2] border border-stone-300/80",
               "shadow-[0_20px_50px_rgba(45,30,18,0.22)]",
               "flex flex-col overflow-hidden",
