@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
 
 interface BrandPreloaderProps {
   onComplete?: () => void;
@@ -145,16 +145,6 @@ export function BrandPreloader({
                 alt="Logo WaraNusa"
                 className="h-28 w-auto sm:h-32 object-contain drop-shadow-[0_12px_35px_rgba(212,175,55,0.45)]"
               />
-
-              {/* Kilauan Partikel Halus */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: [0, 1, 0], scale: [0.6, 1.2, 0.8] }}
-                transition={{ delay: 0.6, duration: 1.2, repeat: Infinity }}
-                className="absolute -top-1 -right-1 text-[#FDE047]"
-              >
-                <Sparkles className="h-5 w-5" />
-              </motion.div>
             </motion.div>
 
             {/* Teks Brand Merekah (Tracking Reveal) */}
