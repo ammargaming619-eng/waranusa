@@ -68,7 +68,7 @@ export default function WaraNusaApp() {
   switch (route.segments[0]) {
     case undefined:
     case "":
-      view = <LandingView />;
+      view = <LandingView introRevealed={introDone} />;
       break;
     case "jelajah":
       view = <ExploreView route={route} />;
@@ -111,7 +111,7 @@ export default function WaraNusaApp() {
   return (
     <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900">
       {!introDone && <BrandPreloader minDuration={2100} onComplete={() => setIntroDone(true)} />}
-      <SiteHeader route={route} />
+      <SiteHeader route={route} introRevealed={introDone} />
       <div className="flex-1">{view}</div>
       <SiteFooter
         siteName={settings.siteName}

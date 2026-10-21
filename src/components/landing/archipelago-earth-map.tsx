@@ -92,7 +92,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
   },
 ];
 
-export function ArchipelagoEarthMap() {
+export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: boolean } = {}) {
   const [activeTag, setActiveTag] = useState<CulturalTag | null>(null);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 
@@ -120,9 +120,9 @@ export function ArchipelagoEarthMap() {
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (TERLETAK DI AREA ATAS PETA YANG TERBUKA) */}
         <div className="relative z-20 pt-4 sm:pt-6 md:pt-8 lg:pt-10 px-4 text-center max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={introRevealed ? { opacity: 0, y: 28 } : false}
+            animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
+            transition={{ delay: 0.25, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
           >
             <h1
               id="hero-title"
@@ -133,29 +133,35 @@ export function ArchipelagoEarthMap() {
             <p className="mt-1.5 sm:mt-2.5 md:mt-3 text-xs sm:text-sm md:text-base lg:text-lg text-stone-700 max-w-xl mx-auto font-medium">
               Dari Sabang hingga Merauke, setiap tradisi punya cerita.
             </p>
+          </motion.div>
 
-            <div className="mt-2.5 sm:mt-4 md:mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-white px-5 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg transition-all"
-              >
-                <Link href="#/jelajah" className="flex items-center gap-2">
-                  Mulai Jelajahi
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
+          {/* Tombol CTA: Mulai Jelajahi & Lihat Peta (Muncul bertahap secara empuk setelah judul) */}
+          <motion.div
+            initial={introRevealed ? { opacity: 0, y: 22, scale: 0.92 } : false}
+            animate={introRevealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
+            transition={{ delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-2.5 sm:mt-4 md:mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
+          >
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-white px-5 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg transition-all"
+            >
+              <Link href="#/jelajah" className="flex items-center gap-2">
+                Mulai Jelajahi
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
 
-              <Button
-                type="button"
-                onClick={scrollToSection}
-                size="lg"
-                variant="outline"
-                className="rounded-full border border-stone-400/60 bg-white/70 hover:bg-white text-stone-800 px-5 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-sm transition-all"
-              >
-                Lihat Peta
-              </Button>
-            </div>
+            <Button
+              type="button"
+              onClick={scrollToSection}
+              size="lg"
+              variant="outline"
+              className="rounded-full border border-stone-400/60 bg-white/70 hover:bg-white text-stone-800 px-5 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-sm transition-all"
+            >
+              Lihat Peta
+            </Button>
           </motion.div>
         </div>
 
@@ -165,7 +171,7 @@ export function ArchipelagoEarthMap() {
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
         >
-          {CULTURAL_TAGS.map((tag) => {
+          {CULTURAL_TAGS.map((tag, idx) => {
             if (!tag.dashedLine) return null;
             return (
               <line
@@ -183,7 +189,7 @@ export function ArchipelagoEarthMap() {
         </svg>
 
         {/* Pin Penanda & Floating Cultural Cards di Atas Pulau */}
-        {CULTURAL_TAGS.map((tag) => {
+        {CULTURAL_TAGS.map((tag, idx) => {
           const isHovered = hoveredTag === tag.id;
 
           return (
@@ -223,9 +229,9 @@ export function ArchipelagoEarthMap() {
 
               {/* Floating Glassmorphism Cultural Card */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                initial={introRevealed ? { opacity: 0, y: 14 } : false}
+                animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
+                transition={{ duration: 0.55, delay: 0.75 + idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
                   "absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
                   isHovered ? "z-40" : "z-30"

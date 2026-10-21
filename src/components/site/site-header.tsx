@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { HashLink as Link } from "@/components/shared/hash-link";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/shared/brand-logo";
@@ -41,7 +42,7 @@ const NAV_ITEMS = [
   { href: "#/eksplorasi-3d", label: "Eksplorasi 3D", icon: Box },
 ];
 
-export function SiteHeader({ route }: { route: Route }) {
+export function SiteHeader({ route, introRevealed = true }: { route: Route; introRevealed?: boolean }) {
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,9 +78,12 @@ export function SiteHeader({ route }: { route: Route }) {
 
   return (
     <>
-      <header
+      <motion.header
+        initial={isLanding ? { y: -80, opacity: 0 } : false}
+        animate={isLanding ? (introRevealed ? { y: 0, opacity: 1 } : { y: -80, opacity: 0 }) : undefined}
+        transition={{ delay: 0.65, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "transition-all duration-300",
+          "transition-colors duration-300",
           isLanding
             ? "fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-6xl px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white/40 backdrop-blur-md border border-white/50 shadow-md flex items-center justify-between"
             : "sticky top-0 z-50 border-b border-stone-200/80 bg-[#FCF8EC]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#FCF8EC]/80"
@@ -339,7 +343,7 @@ export function SiteHeader({ route }: { route: Route }) {
             </Sheet>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* ================= MODAL DIALOG PENCARIAN BUDAYA ================= */}
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}>

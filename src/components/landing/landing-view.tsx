@@ -110,7 +110,7 @@ const FEATURES = [
   },
 ] as const;
 
-export default function LandingView() {
+export default function LandingView({ introRevealed = true }: { introRevealed?: boolean } = {}) {
   const settings = useSiteSettings((s) => s.settings);
   const contributionNotice =
     settings.contributionNotice ||
@@ -156,7 +156,7 @@ export default function LandingView() {
           aria-labelledby="hero-title"
         >
           <div id="peta-nusantara" className="relative w-full">
-            <ArchipelagoEarthMap />
+            <ArchipelagoEarthMap introRevealed={introRevealed} />
           </div>
 
           {/* Floating Feedback Pill (Pojok Kanan Bawah) */}
