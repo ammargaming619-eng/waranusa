@@ -34,6 +34,7 @@ export default function WaraNusaApp() {
   const { init, initialized } = useAuth();
   const settings = useSiteSettings((s) => s.settings);
   const loadSettings = useSiteSettings((s) => s.load);
+  const [introRevealed, setIntroRevealed] = useState(false);
   const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
@@ -48,7 +49,10 @@ export default function WaraNusaApp() {
   if (!initialized) {
     return (
       <div className="relative min-h-screen bg-[#140B06]">
-        <BrandPreloader minDuration={2100} onComplete={() => setIntroDone(true)} />
+        <BrandPreloader
+          onStartDismiss={() => setIntroRevealed(true)}
+          onComplete={() => setIntroDone(true)}
+        />
       </div>
     );
   }
@@ -68,7 +72,7 @@ export default function WaraNusaApp() {
   switch (route.segments[0]) {
     case undefined:
     case "":
-      view = <LandingView introRevealed={introDone} />;
+      view = <LandingView introRevealed={introRevealed} />;
       break;
     case "jelajah":
       view = <ExploreView route={route} />;
@@ -110,8 +114,13 @@ export default function WaraNusaApp() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900">
-      {!introDone && <BrandPreloader minDuration={2100} onComplete={() => setIntroDone(true)} />}
-      <SiteHeader route={route} introRevealed={introDone} />
+      {!introDone && (
+        <BrandPreloader
+          onStartDismiss={() => setIntroRevealed(true)}
+          onComplete={() => setIntroDone(true)}
+        />
+      )}
+      <SiteHeader route={route} introRevealed={introRevealed} />
       <div className="flex-1">{view}</div>
       <SiteFooter
         siteName={settings.siteName}

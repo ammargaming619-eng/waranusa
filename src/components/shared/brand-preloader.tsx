@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
 
 interface BrandPreloaderProps {
+  onStartDismiss?: () => void;
   onComplete?: () => void;
   minDuration?: number;
 }
 
-export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps) {
+export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: BrandPreloaderProps) {
   const [visible, setVisible] = useState(true);
   const [readyToScroll, setReadyToScroll] = useState(false);
   const [progress, setProgress] = useState(25);
@@ -21,8 +22,8 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
     try {
       sessionStorage.setItem("waranusa_intro_seen", "true");
     } catch {}
-    if (onComplete) onComplete();
-  }, [onComplete]);
+    if (onStartDismiss) onStartDismiss();
+  }, [onStartDismiss]);
 
   // Efek progress bar saat pertama terbuka
   useEffect(() => {
@@ -111,15 +112,18 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
       {visible && (
         <motion.div
           key="waranusa-scroll-intro"
-          initial={{ y: 0, opacity: 1 }}
+          initial={{ y: "0%" }}
           exit={{
             y: "-100%",
-            transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] },
+            transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
           }}
           onAnimationComplete={() => {
             window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            if (!visible && onComplete) {
+              onComplete();
+            }
           }}
-          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-8 text-white select-none cursor-pointer"
+          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-8 text-white select-none cursor-pointer shadow-[0_35px_90px_rgba(0,0,0,0.95)] border-b-2 border-[#D4AF37]/30"
           onClick={dismiss}
           role="dialog"
           aria-modal="true"
@@ -193,7 +197,7 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
           </div>
 
           {/* Konten Utama Tengah (Logo & Tipografi) */}
-          <div className="relative z-10 flex flex-col items-center text-center my-auto">
+          <motion.div exit={{ y: -80, opacity: 0.75, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }} className="relative z-10 flex flex-col items-center text-center my-auto">
             {/* Logo Utama Muncul Mengembang */}
             <motion.div
               initial={{ scale: 0.65, opacity: 0, y: 25 }}
@@ -248,7 +252,7 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
               transition={{ delay: 0.7, duration: 0.8 }}
               className="mt-6 h-0.5 rounded-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
             />
-          </div>
+          </motion.div>
 
           {/* Bagian Bawah: Indikator Scroll & Aksi Masuk */}
           <div className="relative z-10 flex flex-col items-center pb-2 sm:pb-4">
