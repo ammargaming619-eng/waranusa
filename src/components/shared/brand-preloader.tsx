@@ -17,6 +17,7 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
 
   const dismiss = useCallback(() => {
     setVisible(false);
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     try {
       sessionStorage.setItem("waranusa_intro_seen", "true");
     } catch {}
@@ -40,13 +41,21 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
     return () => clearInterval(pInterval);
   }, []);
 
-  // Event listener untuk scroll, swipe, dan keyboard
+  // Event listener untuk scroll, swipe, dan keyboard + Kunci Scroll Background
   useEffect(() => {
     if (!visible) return;
 
-    // 1. Mouse Wheel (Scroll)
+    // Kunci scroll halaman belakang dan tahan di titik 0
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    window.scrollTo(0, 0);
+
+    // 1. Mouse Wheel (Scroll) — cegah scrollbar belakang bergeser
     const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY > 15) {
+      e.preventDefault();
+      if (e.deltaY > 10) {
         dismiss();
       }
     };
@@ -61,7 +70,8 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
     const handleTouchMove = (e: TouchEvent) => {
       if (touchStartY.current !== null && e.touches.length > 0) {
         const delta = touchStartY.current - e.touches[0].clientY;
-        if (delta > 25) {
+        if (delta > 15) {
+          e.preventDefault();
           dismiss();
         }
       }
@@ -75,16 +85,20 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
         e.key === " " ||
         e.key === "Enter"
       ) {
+        e.preventDefault();
         dismiss();
       }
     };
 
-    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+      window.scrollTo(0, 0);
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
@@ -101,6 +115,9 @@ export function BrandPreloader({ onComplete, minDuration }: BrandPreloaderProps)
           exit={{
             y: "-100%",
             transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] },
+          }}
+          onAnimationComplete={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
           }}
           className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-8 text-white select-none cursor-pointer"
           onClick={dismiss}
