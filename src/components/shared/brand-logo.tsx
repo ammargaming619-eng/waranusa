@@ -5,12 +5,14 @@ import { cn } from "@/lib/utils";
 
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <img
-      src="/images/brand/waranusa-logo.png"
-      alt="Logo WaraNusa"
-      className={cn("h-9 w-9 object-contain mix-blend-multiply select-none", className)}
-      aria-hidden="true"
-    />
+    <div className={cn("relative h-10 w-10 overflow-hidden flex items-center justify-center shrink-0 select-none", className)}>
+      <img
+        src="/images/brand/waranusa-logo.png"
+        alt="Logo WaraNusa"
+        className="w-full h-full object-contain scale-[2.7] mix-blend-multiply"
+        aria-hidden="true"
+      />
+    </div>
   );
 }
 
@@ -27,14 +29,16 @@ export function BrandLogo({
     return (
       <Link
         href="#/"
-        className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 rounded-full select-none"
+        className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 rounded-full select-none"
         aria-label="WaraNusa — Beranda"
       >
-        <img
-          src="/images/brand/waranusa-logo.png"
-          alt="Logo WaraNusa"
-          className="h-9 w-9 object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-110"
-        />
+        <div className="relative h-11 w-11 sm:h-12 sm:w-12 overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
+          <img
+            src="/images/brand/waranusa-logo.png"
+            alt="Logo WaraNusa"
+            className="w-full h-full object-contain scale-[2.7] mix-blend-multiply"
+          />
+        </div>
         <span
           className={cn(
             "font-serif text-2xl font-bold tracking-tight transition-colors duration-200",
@@ -48,8 +52,14 @@ export function BrandLogo({
   }
 
   return (
-    <Link href="#/" className="flex items-center gap-2.5 group select-none" aria-label="WaraNusa — Beranda">
-      <BrandMark className="h-9 w-9 transition-transform duration-300 group-hover:scale-110" />
+    <Link href="#/" className="flex items-center gap-2 group select-none" aria-label="WaraNusa — Beranda">
+      <div className="relative h-10 w-10 sm:h-11 sm:w-11 overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
+        <img
+          src="/images/brand/waranusa-logo.png"
+          alt="Logo WaraNusa"
+          className="w-full h-full object-contain scale-[2.7] mix-blend-multiply"
+        />
+      </div>
       {!compact && (
         <span className="flex flex-col leading-none">
           <span
