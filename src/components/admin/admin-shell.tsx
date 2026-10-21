@@ -105,13 +105,13 @@ export function AdminShell({ route, children }: { route: Route; children: React.
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
               active
-                ? "bg-brand-teal text-white shadow-sm"
-                : "text-foreground/70 hover:bg-secondary hover:text-foreground"
+                ? "bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] text-white shadow-sm"
+                : "text-foreground/70 hover:bg-[#FAF6F0] hover:text-[#6E472D]"
             )}
           >
             <s.icon className="h-4 w-4 shrink-0" />
             {s.label}
-            {s.href === "/admin/contributions" && <span className="ml-auto rounded-full bg-brand-gold/20 px-2 py-0.5 text-[10px] font-bold text-brand-orange">review</span>}
+            {s.href === "/admin/contributions" && <span className="ml-auto rounded-full bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#8C5E3C]">review</span>}
           </a>
         );
       })}
@@ -122,24 +122,28 @@ export function AdminShell({ route, children }: { route: Route; children: React.
     <div className="flex min-h-screen bg-brand-soft">
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border bg-card">
-        <div className="flex h-16 items-center px-5 border-b border-border">
-          <a href="#/" className="flex items-center gap-2.5" aria-label="Kembali ke situs publik">
-            <BrandMark className="h-8 w-8" />
+        <div className="flex h-16 items-center px-4 border-b border-border">
+          <a href="#/" className="flex items-center gap-2.5 group" aria-label="Kembali ke situs publik">
+            <img
+              src="/images/brand/waranusa-logo.png?v=2"
+              alt="Logo WaraNusa"
+              className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+            />
             <div className="leading-none">
-              <div className="text-sm font-extrabold tracking-tight text-brand-ink">
-                WARA<span className="text-brand-teal">NUSA</span>
+              <div className="font-serif text-base font-bold tracking-tight text-[#2D1E12]">
+                WaraNusa
               </div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">CMS Pengelolaan</div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-[#8C5E3C] mt-0.5">CMS Pengelolaan</div>
             </div>
           </a>
         </div>
         <div className="flex-1 overflow-y-auto nice-scroll py-4">
           {navList}
         </div>
-        <div className="border-t border-border p-3">
+        <div className="border-t border-border p-3 pb-24">
           <a
             href="#/"
-            className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-brand-teal"
+            className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors"
           >
             Lihat Situs Publik <ExternalLink className="h-3.5 w-3.5" />
           </a>
@@ -158,9 +162,13 @@ export function AdminShell({ route, children }: { route: Route; children: React.
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
               <SheetTitle className="sr-only">Menu CMS</SheetTitle>
-              <div className="flex h-16 items-center px-5 border-b border-border">
-                <BrandMark className="h-8 w-8" />
-                <span className="ml-2 text-sm font-extrabold text-brand-ink">WaraNusa CMS</span>
+              <div className="flex h-16 items-center px-4 border-b border-border">
+                <img
+                  src="/images/brand/waranusa-logo.png?v=2"
+                  alt="Logo WaraNusa"
+                  className="h-8 w-auto object-contain"
+                />
+                <span className="ml-2 font-serif text-base font-bold text-[#2D1E12]">WaraNusa CMS</span>
               </div>
               <div className="py-3">
                 {navList}
@@ -188,13 +196,13 @@ export function AdminShell({ route, children }: { route: Route; children: React.
           </Breadcrumb>
 
           <div className="ml-auto flex items-center gap-2">
-            <a href="#/" target="_self" className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-brand-teal items-center gap-1">
+            <a href="#/" target="_self" className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-[#6E472D] items-center gap-1">
               Situs Publik <ExternalLink className="h-3 w-3" />
             </a>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 rounded-full border border-border bg-background py-1 pl-1 pr-3 hover:bg-secondary transition-colors" aria-label="Menu akun">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-gradient text-[11px] font-bold text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#6E472D] to-[#8C5E3C] text-[11px] font-bold text-white">
                     {user?.name.slice(0, 1).toUpperCase() ?? "?"}
                   </span>
                   <span className="hidden max-w-32 truncate text-xs font-bold sm:block">{user?.name}</span>
@@ -204,7 +212,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
                 <DropdownMenuLabel>
                   <div className="text-sm font-bold">{user?.name}</div>
                   <div className="text-xs font-normal text-muted-foreground">{user?.email}</div>
-                  <div className="mt-1 text-[11px] font-semibold text-brand-teal">{user ? labelRole(user.role) : ""}</div>
+                  <div className="mt-1 text-[11px] font-semibold text-[#8C5E3C]">{user ? labelRole(user.role) : ""}</div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

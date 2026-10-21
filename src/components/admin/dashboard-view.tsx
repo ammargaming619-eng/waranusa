@@ -113,13 +113,13 @@ function StatCard({ icon: Icon, label, value, sub, tone = "default", index = 0, 
         className={cn(
           tone === "gold" && "card-hover border-brand-gold/60 bg-brand-gold/10",
           tone !== "gold" && "card-hover",
-          onClick && "cursor-pointer focus-visible:outline-2 focus-visible:outline-brand-teal"
+          onClick && "cursor-pointer focus-visible:outline-2 focus-visible:outline-[#8C5E3C]"
         )}
       >
         <CardContent className="flex items-start gap-3 p-4 sm:p-5">
           <div
             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-              tone === "gold" ? "bg-brand-gold/25 text-brand-orange" : "bg-brand-teal/10 text-brand-teal"
+              tone === "gold" ? "bg-[#D4AF37]/20 text-[#8C5E3C]" : "bg-[#8C5E3C]/10 text-[#8C5E3C]"
             }`}
           >
             <Icon className="h-5 w-5" aria-hidden />
@@ -225,7 +225,7 @@ export function DashboardView() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <History className="h-4 w-4 text-brand-teal" aria-hidden /> Aktivitas Terbaru
+              <History className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> Aktivitas Terbaru
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -245,7 +245,7 @@ export function DashboardView() {
                   const Icon = activityIcon(a.action);
                   return (
                     <li key={a.id} className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0">
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary text-brand-teal">
+                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF6F0] text-[#8C5E3C]">
                         <Icon className="h-3.5 w-3.5" aria-hidden />
                       </span>
                       <div className="min-w-0 flex-1">
@@ -269,12 +269,12 @@ export function DashboardView() {
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <ClipboardList className="h-4 w-4 text-brand-teal" aria-hidden /> Aksi Cepat
+              <ClipboardList className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> Aksi Cepat
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2 pt-0">
             {canManage && (
-              <Button className="justify-between" onClick={() => navigate("/admin/cultural-items/create")}>
+              <Button className="justify-between bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-white shadow-sm" onClick={() => navigate("/admin/cultural-items/create")}>
                 <span className="flex items-center gap-2">
                   <PlusCircle className="h-4 w-4" aria-hidden /> Objek Budaya Baru
                 </span>
@@ -282,20 +282,20 @@ export function DashboardView() {
               </Button>
             )}
             {canManage && (
-              <Button variant="outline" className="justify-between" onClick={() => navigate("/admin/media")}>
+              <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/media")}>
                 <span className="flex items-center gap-2">
                   <Upload className="h-4 w-4" aria-hidden /> Unggah Media
                 </span>
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>
             )}
-            <Button variant="outline" className="justify-between" onClick={() => navigate("/admin/contributions")}>
+            <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/contributions")}>
               <span className="flex items-center gap-2">
                 <HandHeart className="h-4 w-4" aria-hidden /> Tinjau Kontribusi
               </span>
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
-            <Button variant="outline" className="justify-between" onClick={() => navigate("/admin/regions")}>
+            <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/regions")}>
               <span className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" aria-hidden /> Kelola Wilayah
               </span>

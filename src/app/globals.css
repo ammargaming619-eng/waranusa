@@ -43,51 +43,51 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   /* Warna brand WaraNusa */
-  --color-brand-teal: #159d9a;
+  --color-brand-teal: #8C5E3C;
   --color-brand-sea: #1261a0;
   --color-brand-tropic: #48a66a;
   --color-brand-gold: #f2b544;
   --color-brand-orange: #f28c38;
   --color-brand-ivory: #fffefa;
-  --color-brand-ink: #172b3a;
-  --color-brand-soft: #f3f8f7;
-  --color-brand-line: #e1ebe8;
+  --color-brand-ink: #2D1E12;
+  --color-brand-soft: #FAF6F0;
+  --color-brand-line: #E6DDD4;
 }
 
 :root {
   --radius: 0.75rem;
   /* Palet WaraNusa (bagian 4 master prompt) */
   --background: #fffefa;           /* putih gading */
-  --foreground: #172b3a;           /* teks utama */
+  --foreground: #2D1E12;           /* teks utama */
   --card: #ffffff;
-  --card-foreground: #172b3a;
+  --card-foreground: #2D1E12;
   --popover: #ffffff;
-  --popover-foreground: #172b3a;
-  --primary: #159d9a;              /* teal utama */
+  --popover-foreground: #2D1E12;
+  --primary: #6E472D;              /* teal utama */
   --primary-foreground: #ffffff;
-  --secondary: #f3f8f7;            /* latar sekunder */
-  --secondary-foreground: #172b3a;
-  --muted: #f3f8f7;
+  --secondary: #FAF6F0;            /* latar sekunder */
+  --secondary-foreground: #2D1E12;
+  --muted: #FAF6F0;
   --muted-foreground: #64748b;     /* teks sekunder */
   --accent: #f2b544;               /* emas hangat */
   --accent-foreground: #172b3a;
   --destructive: #dc2626;
-  --border: #e1ebe8;               /* border */
-  --input: #d7e5e2;
-  --ring: #159d9a;
+  --border: #E6DDD4;               /* border */
+  --input: #E6DDD4;
+  --ring: #8C5E3C;
   --chart-1: #159d9a;
   --chart-2: #1261a0;
   --chart-3: #f2b544;
   --chart-4: #48a66a;
   --chart-5: #f28c38;
   --sidebar: #ffffff;
-  --sidebar-foreground: #172b3a;
-  --sidebar-primary: #159d9a;
+  --sidebar-foreground: #2D1E12;
+  --sidebar-primary: #6E472D;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f3f8f7;
-  --sidebar-accent-foreground: #172b3a;
-  --sidebar-border: #e1ebe8;
-  --sidebar-ring: #159d9a;
+  --sidebar-accent: #FAF6F0;
+  --sidebar-accent-foreground: #2D1E12;
+  --sidebar-border: #E6DDD4;
+  --sidebar-ring: #8C5E3C;
 }
 
 .dark {
