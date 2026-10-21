@@ -73,10 +73,10 @@ function WaranusaAIEmblem({ className }: { className?: string }) {
 
       {/* Piringan Luar Emas Nusantara */}
       <circle cx="50" cy="50" r="48" fill="url(#waranusaAIGoldPlate)" stroke="#2B1E05" strokeWidth="1.5" />
-      <circle cx="50" cy="50" r="44" fill="none" stroke="#FDE047" strokeWidth="0.8" strokeDasharray="2,2" />
+      <circle cx="50" cy="50" r="44" fill="none" stroke="#D4AF37" strokeWidth="0.8" strokeDasharray="2,2" opacity="0.6" />
 
       {/* Piringan Dalam Gelap Elegan */}
-      <circle cx="50" cy="50" r="32" fill="#2D1E12" stroke="#FDE047" strokeWidth="1.5" />
+      <circle cx="50" cy="50" r="32" fill="#2D1E12" stroke="#D4AF37" strokeWidth="1.2" opacity="0.8" />
 
       {/* Siluet Gunungan AI Kayon Minimalis */}
       <path
@@ -90,7 +90,7 @@ function WaranusaAIEmblem({ className }: { className?: string }) {
       <path d="M50 64 Q42 58 38 61" stroke="#2D1E12" strokeWidth="1.8" strokeLinecap="round" fill="none" />
 
       {/* Bintang AI di Puncak */}
-      <circle cx="50" cy="24" r="3.5" fill="#FFF" stroke="#FDE047" strokeWidth="1" />
+      <circle cx="50" cy="24" r="3.5" fill="#FFF" stroke="#D4AF37" strokeWidth="1" />
     </svg>
   );
 }
@@ -125,9 +125,9 @@ function KarsaMascotIllustration({ className }: { className?: string }) {
             opacity: 0.88;
           }
           50% {
-            transform: scale(1.3) rotate(25deg);
-            opacity: 1;
-            filter: drop-shadow(0 0 6px #FDE047);
+            transform: scale(1.2) rotate(20deg);
+            opacity: 0.95;
+            filter: drop-shadow(0 0 4px rgba(212,175,55,0.4));
           }
         }
         @keyframes karsaPulse {
@@ -344,19 +344,18 @@ export function UnifiedAssistantWidget() {
           className={cn(
             "fixed right-0 top-1/2 -translate-y-1/2 z-40",
             "group flex flex-col items-center justify-between",
-            "py-3.5 px-2 sm:px-2.5",
-            "rounded-l-2xl border-l-2 border-y border-[#D4AF37]/80",
-            "bg-gradient-to-b from-[#2B1B10] via-[#1D120B] to-[#2B1B10]",
-            "text-[#F5E6CA] shadow-[-6px_0_24px_rgba(0,0,0,0.6),0_0_14px_rgba(212,175,55,0.25)]",
-            "hover:border-[#FDE047] hover:shadow-[-8px_0_30px_rgba(212,175,55,0.45)]",
+            "py-3 px-2 sm:px-2.5",
+            "rounded-l-2xl border-l border-y border-[#8C5E3C]/40 hover:border-[#8C5E3C]",
+            "bg-[#5C3B24]/95 hover:bg-[#4A3222]",
+            "text-[#FAF6F0] shadow-[-4px_0_16px_rgba(45,30,18,0.22)]",
             "hover:-translate-x-1 transition-all duration-300",
-            "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
           aria-label="Buka WaraNusa AI Assistant"
           title="Buka WaraNusa AI Assistant"
         >
           {/* Panah Indikator Buka */}
-          <ChevronLeft className="w-4 h-4 text-[#D4AF37] group-hover:scale-125 transition-transform" />
+          <ChevronLeft className="w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
 
           {/* Emblem Mini & Status Ping */}
           <div className="relative my-2">
@@ -369,7 +368,7 @@ export function UnifiedAssistantWidget() {
 
           {/* Teks Vertikal: WARANUSA AI ASSISTANT (Arah baca alami dari atas ke bawah) */}
           <span
-            className="font-bold text-[10px] sm:text-[11px] tracking-widest text-[#F5E6CA] group-hover:text-amber-200 transition-colors uppercase whitespace-nowrap my-2.5"
+            className="font-bold text-[10px] sm:text-[11px] tracking-widest text-[#FAF6F0] group-hover:text-[#FDF8EE] transition-colors uppercase whitespace-nowrap my-2.5"
             style={{
               writingMode: "vertical-rl",
             }}
@@ -378,7 +377,7 @@ export function UnifiedAssistantWidget() {
           </span>
 
           {/* Panah Indikator Bawah */}
-          <ChevronLeft className="w-4 h-4 text-[#D4AF37] group-hover:scale-125 transition-transform" />
+          <ChevronLeft className="w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
         </button>
       )}
 
@@ -399,23 +398,23 @@ export function UnifiedAssistantWidget() {
             className={cn(
               "fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50",
               "w-[440px] max-w-[94vw] h-[640px] max-h-[88vh]",
-              "rounded-3xl bg-[#FFFDF9] border border-stone-200/90",
-              "shadow-[0_24px_60px_rgba(45,30,18,0.28)]",
+              "rounded-3xl bg-[#FAF7F2] border border-stone-300/80",
+              "shadow-[0_20px_50px_rgba(45,30,18,0.22)]",
               "flex flex-col overflow-hidden",
               "animate-in zoom-in-95 slide-in-from-right-4 duration-250 font-sans"
             )}
           >
             {/* ============ 1. HEADER KAPSUL WARANUSA AI ASSISTANT ============ */}
-            <div className="p-3 mx-3 mt-3 rounded-2xl bg-gradient-to-r from-[#2D1E12] via-[#482D19] to-[#2D1E12] text-white flex items-center justify-between shadow-sm">
+            <div className="p-3 mx-3 mt-3 rounded-2xl bg-gradient-to-r from-[#5C3B24] via-[#6E472D] to-[#5C3B24] text-white flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-amber-400/20 border border-amber-300/40 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
                   <WaranusaAIEmblem className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm tracking-wide text-[#FDF8EE] flex items-center gap-1.5 leading-none">
+                  <h3 className="font-bold text-sm tracking-wide text-[#FAF6F0] flex items-center gap-1.5 leading-none">
                     WaraNusa AI Assistant
                   </h3>
-                  <p className="text-[11px] text-amber-200/80 mt-1 leading-none font-normal">
+                  <p className="text-[11px] text-[#E6DDD4]/90 mt-1 leading-none font-normal">
                     siap memandu jelajah budaya
                   </p>
                 </div>
@@ -445,7 +444,7 @@ export function UnifiedAssistantWidget() {
             </div>
 
             {/* ============ 2. AREA KONTEN CHATBOT BERSIH ============ */}
-            <div className="flex-1 flex flex-col min-h-0 bg-[#FFFDF9]">
+            <div className="flex-1 flex flex-col min-h-0 bg-[#FAF7F2]">
               {/* 2A. SAMBUTAN AWAL BERSIH (MASKOT ANIMASI + HEADING RINGKAS + GRID 2x2) */}
               {messages.length <= 1 ? (
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col items-center justify-center text-center">
@@ -464,9 +463,9 @@ export function UnifiedAssistantWidget() {
                         key={idx}
                         type="button"
                         onClick={() => handleSendMessage(chip.prompt)}
-                        className="p-3.5 rounded-2xl border border-stone-200/90 bg-white hover:border-[#8C5E3C] hover:bg-[#FAF6F0] hover:shadow-xs transition-all text-left flex items-center justify-between group cursor-pointer"
+                        className="p-3.5 rounded-2xl border border-stone-200/80 bg-[#F5EFEB]/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs transition-all text-left flex items-center justify-between group cursor-pointer"
                       >
-                        <span className="text-[11px] sm:text-xs font-semibold text-stone-800 group-hover:text-[#8C5E3C] transition-colors leading-snug">
+                        <span className="text-[11px] sm:text-xs font-semibold text-stone-700 group-hover:text-[#6E472D] transition-colors leading-snug">
                           {chip.title}
                         </span>
                       </button>
@@ -489,7 +488,7 @@ export function UnifiedAssistantWidget() {
                           "rounded-2xl px-4 py-2.5 shadow-xs",
                           msg.role === "user"
                             ? "bg-[#8C5E3C] text-white rounded-br-xs"
-                            : "bg-white border border-stone-200/90 text-stone-800 rounded-bl-xs"
+                            : "bg-white border border-stone-200/80 text-stone-800 rounded-bl-xs"
                         )}
                       >
                         <ReactMarkdown className="prose prose-xs max-w-none text-current">
@@ -500,7 +499,7 @@ export function UnifiedAssistantWidget() {
                   ))}
 
                   {isLoading && (
-                    <div className="mr-auto flex items-center gap-1.5 bg-white border border-stone-200/90 text-stone-500 rounded-2xl px-4 py-2.5 rounded-bl-xs text-xs shadow-xs">
+                    <div className="mr-auto flex items-center gap-1.5 bg-white border border-stone-200/80 text-stone-500 rounded-2xl px-4 py-2.5 rounded-bl-xs text-xs shadow-xs">
                       <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce" />
                       <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.2s]" />
                       <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.4s]" />
@@ -512,8 +511,8 @@ export function UnifiedAssistantWidget() {
               )}
 
               {/* 2C. INPUT BAR & DISCLAIMER DI BAWAH */}
-              <div className="p-3 bg-white border-t border-stone-100 flex flex-col gap-1.5 shrink-0">
-                <div className="flex items-center gap-2 bg-[#F9F6F0] border border-stone-200/90 rounded-full px-3.5 py-1.5 focus-within:border-[#8C5E3C] focus-within:ring-2 focus-within:ring-[#8C5E3C]/20 transition-all">
+              <div className="p-3 bg-[#FAF7F2] border-t border-stone-200/60 flex flex-col gap-1.5 shrink-0">
+                <div className="flex items-center gap-2 bg-[#F5EFEB] border border-stone-200/80 rounded-full px-3.5 py-1.5 focus-within:border-[#8C5E3C] focus-within:ring-2 focus-within:ring-[#8C5E3C]/20 transition-all">
                   <input
                     ref={inputRef}
                     type="text"
