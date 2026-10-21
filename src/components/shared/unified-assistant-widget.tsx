@@ -335,20 +335,21 @@ export function UnifiedAssistantWidget() {
   return (
     <>
       {/* ========================================================================= */}
-      {/* TRIGGER: SIDE DOCKED TAB (WARANUSA AI ASSISTANT DI KANAN LAYAR)           */}
+      {/* TRIGGER: FLOATING PILL DI MOBILE (KANAN BAWAH), SIDE TAB DI DESKTOP        */}
       {/* ========================================================================= */}
       {!isOpen && (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed right-0 top-1/2 -translate-y-1/2 z-40",
-            "group flex flex-col items-center justify-center",
-            "py-2 sm:py-3 px-1.5 sm:px-2.5",
-            "rounded-l-2xl border-l border-y border-[#8C5E3C]/40 hover:border-[#8C5E3C]",
-            "bg-[#5C3B24]/95 hover:bg-[#4A3222]",
-            "text-[#FAF6F0] shadow-[-4px_0_16px_rgba(45,30,18,0.22)]",
-            "hover:-translate-x-1 transition-all duration-300",
+            // Di Mobile: Tombol kapsul mengambang empuk di pojok kanan bawah (sejajar dengan tombol aksesibilitas)
+            "fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full px-3.5 py-2.5 min-h-[44px]",
+            "bg-gradient-to-r from-[#5C3B24] via-[#6E472D] to-[#5C3B24] text-[#FAF6F0]",
+            "border border-[#8C5E3C]/60 shadow-[0_8px_24px_rgba(45,30,18,0.35)]",
+            "hover:shadow-[0_12px_28px_rgba(45,30,18,0.45)] active:scale-95 transition-all duration-300",
+            // Di Desktop (md+): Menempel anggun di sisi kanan tengah layar
+            "md:fixed md:bottom-auto md:right-0 md:top-1/2 md:-translate-y-1/2 md:flex-col md:py-3 md:px-2.5",
+            "md:rounded-r-none md:rounded-l-2xl md:border-l md:border-y md:border-r-0 md:hover:-translate-x-1",
             "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
           aria-label="Buka WaraNusa AI Assistant"
@@ -358,7 +359,7 @@ export function UnifiedAssistantWidget() {
           <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
 
           {/* Emblem Mini & Status Ping */}
-          <div className="relative my-0.5 sm:my-2">
+          <div className="relative shrink-0">
             <WaranusaAIEmblem className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -366,9 +367,9 @@ export function UnifiedAssistantWidget() {
             </span>
           </div>
 
-          {/* Label Ringkas Khusus Mobile: 'AI' Horizontal Kecil (Tidak Menutupi Teks Konten) */}
-          <span className="md:hidden text-[9px] font-black tracking-wider text-amber-300 uppercase leading-none mt-0.5">
-            AI
+          {/* Teks Mobile: 'Tanya AI' Terbaca Jelas & Proporsional */}
+          <span className="md:hidden text-xs font-bold tracking-wide text-[#FAF6F0] pr-0.5">
+            Tanya AI
           </span>
 
           {/* Teks Vertikal: WARANUSA AI ASSISTANT (Hanya Tampil di Desktop/Layar Lebar md+) */}
