@@ -501,7 +501,7 @@ function NusantaraCurvedTicker() {
     const unit = phraseWidth > 0 ? phraseWidth : 560;
 
     const step = () => {
-      offset -= 0.5;
+      offset -= 0.85;
       if (Math.abs(offset) >= unit) {
         offset += unit;
       }
@@ -518,37 +518,47 @@ function NusantaraCurvedTicker() {
   return (
     <div
       aria-hidden="true"
-      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-4 sm:py-6"
+      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-8 sm:py-14"
     >
       {/* Soft Ambient Background Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-3/4 rounded-full bg-[#EFE8DE]/60 blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-44 w-3/4 rounded-full bg-[#EFE8DE]/80 blur-3xl" />
 
-      {/* Floating Micro-Orbs & Minimalist Rings */}
+      {/* Floating Cultural Micro-Orbs & Geometric Rings (Enlarged & Prominent) */}
       <motion.div
-        className="pointer-events-none absolute left-[7%] top-[20%] h-3 w-3 rounded-full bg-[#8C5E3C]/40 shadow-sm"
-        animate={{ y: [-5, 5, -5], x: [-3, 3, -3] }}
+        className="pointer-events-none absolute left-[6%] top-[18%] h-6 w-6 rounded-full bg-gradient-to-br from-[#8C5E3C] to-[#6E472D] shadow-md opacity-85"
+        animate={{ y: [-7, 7, -7], x: [-4, 4, -4] }}
         transition={{ repeat: Infinity, duration: 5.5, ease: "easeInOut" }}
       />
       <motion.div
-        className="pointer-events-none absolute left-[34%] bottom-[16%] h-2 w-2 rounded-full bg-[#D4AF37]/65 shadow-sm"
-        animate={{ y: [-4, 4, -4], x: [2, -2, 2] }}
+        className="pointer-events-none absolute left-[28%] bottom-[16%] h-4 w-4 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B38F26] shadow-md opacity-90"
+        animate={{ y: [-5, 5, -5], x: [3, -3, 3] }}
         transition={{ repeat: Infinity, duration: 4.8, ease: "easeInOut" }}
       />
       <motion.div
-        className="pointer-events-none absolute left-[64%] top-[14%] h-5 w-5 rounded-full border border-[#D4AF37]/40"
-        animate={{ y: [5, -5, 5], rotate: [0, 90, 0] }}
-        transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-[55%] top-[12%] h-9 w-9 rounded-full border-2 border-[#D4AF37]/50 shadow-sm"
+        animate={{ y: [7, -7, 7], rotate: [0, 90, 0] }}
+        transition={{ repeat: Infinity, duration: 7.2, ease: "easeInOut" }}
       />
       <motion.div
-        className="pointer-events-none absolute right-[8%] bottom-[18%] h-4 w-4 rounded-full border border-[#8C5E3C]/35"
-        animate={{ y: [4, -5, 4], x: [-2, 3, -2] }}
-        transition={{ repeat: Infinity, duration: 6.2, ease: "easeInOut" }}
+        className="pointer-events-none absolute right-[22%] bottom-[14%] h-5 w-5 rounded-full bg-[#8C5E3C]/60 shadow-sm"
+        animate={{ y: [-6, 6, -6], x: [-2, 3, -2] }}
+        transition={{ repeat: Infinity, duration: 5.2, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute right-[7%] top-[22%] h-8 w-8 rounded-full border-2 border-[#8C5E3C]/45 shadow-sm"
+        animate={{ y: [6, -6, 6], x: [-3, 3, -3] }}
+        transition={{ repeat: Infinity, duration: 6.5, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute right-[42%] top-[10%] h-3.5 w-3.5 rounded-full bg-[#D4AF37]/80 shadow-sm"
+        animate={{ y: [-4, 5, -4] }}
+        transition={{ repeat: Infinity, duration: 4.2, ease: "easeInOut" }}
       />
 
-      {/* Curved SVG Wave Ribbon */}
+      {/* Curved SVG Wave Ribbon (Thicker, Bolder, Grand Wave Amplitude) */}
       <svg
-        viewBox="0 0 1440 120"
-        className="relative z-10 w-full h-20 sm:h-28 text-stone-900"
+        viewBox="0 0 1440 180"
+        className="relative z-10 w-full h-32 sm:h-44 md:h-52 text-stone-900"
         preserveAspectRatio="none"
       >
         <defs>
@@ -559,26 +569,26 @@ function NusantaraCurvedTicker() {
             <stop offset="100%" stopColor="#5C3B24" />
           </linearGradient>
           <filter id="ribbon-shadow" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#2D1E12" floodOpacity="0.16" />
+            <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#2D1E12" floodOpacity="0.24" />
           </filter>
         </defs>
 
         {/* Hidden text to measure exact single phrase width for zero-jump seamless loop */}
         <text
           ref={measureRef}
-          className="fill-transparent text-[11.5px] font-sans font-bold tracking-[0.22em] uppercase"
+          className="fill-transparent text-[17px] sm:text-[18px] font-sans font-extrabold tracking-[0.24em] uppercase"
           style={{ visibility: "hidden" }}
         >
           {TICKER_PHRASE}
         </text>
 
-        {/* The Wave Path */}
+        {/* The Wave Path (Larger Amplitude & Dynamic Flow) */}
         <path
           id="nusantara-ribbon-path"
-          d="M -100,60 C 280,110 580,15 880,60 C 1180,105 1380,25 1540,60"
+          d="M -100,90 C 260,165 580,15 900,90 C 1220,165 1420,20 1560,90"
           fill="none"
           stroke="url(#ribbon-gradient)"
-          strokeWidth="38"
+          strokeWidth="58"
           strokeLinecap="round"
           filter="url(#ribbon-shadow)"
         />
@@ -586,7 +596,7 @@ function NusantaraCurvedTicker() {
         {/* The Text running on the path */}
         <text
           dominantBaseline="central"
-          className="fill-[#FAF6F0] text-[11.5px] font-sans font-bold tracking-[0.22em] uppercase select-none"
+          className="fill-[#FAF6F0] text-[17px] sm:text-[18px] font-sans font-extrabold tracking-[0.24em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathRef} href="#nusantara-ribbon-path" startOffset="0px">
             {REPEATED_TICKER}
