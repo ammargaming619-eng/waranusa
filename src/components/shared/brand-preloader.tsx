@@ -170,76 +170,102 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
             {/* Pendar Inti Emas Hangat */}
             <motion.div
               animate={{
-                scale: [0.9, 1.2, 1],
-                opacity: [0.4, 0.7, 0.5],
+                scale: [0.9, 1.25, 1],
+                opacity: [0.4, 0.75, 0.5],
               }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute h-64 w-64 rounded-full bg-[#D4AF37]/25 blur-2xl"
+              className="absolute h-80 w-80 sm:h-96 sm:w-96 rounded-full bg-[#D4AF37]/25 blur-3xl"
             />
 
-            {/* Lingkaran Garis Geometris Nusantara */}
+            {/* Lingkaran Garis Geometris Nusantara (Diperbesar Sesuai Logo) */}
             <motion.div
-              initial={{ scale: 0.6, opacity: 0 }}
+              initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.22 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="absolute h-72 w-72 rounded-full border border-[#D4AF37]/35"
+              transition={{ duration: 1.3, ease: "easeOut" }}
+              className="absolute h-[340px] w-[340px] sm:h-[460px] sm:w-[460px] md:h-[520px] md:w-[520px] rounded-full border border-[#D4AF37]/35"
             />
             <motion.div
-              initial={{ scale: 0.4, opacity: 0 }}
+              initial={{ scale: 0.35, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.15 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="absolute h-88 w-88 rounded-full border border-dashed border-[#D4AF37]/25"
+              transition={{ duration: 1.6, ease: "easeOut" }}
+              className="absolute h-[420px] w-[420px] sm:h-[560px] sm:w-[560px] md:h-[640px] md:w-[640px] rounded-full border border-dashed border-[#D4AF37]/25"
+            />
+
+            {/* Gelombang Kejut Cahaya Emas Merekah saat Logo Muncul Keluar */}
+            <motion.div
+              initial={{ scale: 0.15, opacity: 0 }}
+              animate={{ scale: [0.15, 1.7, 2.4], opacity: [0, 0.75, 0] }}
+              transition={{ delay: 0.25, duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
+              className="pointer-events-none absolute h-72 w-72 rounded-full border-2 border-[#D4AF37]/70 bg-gradient-to-tr from-[#D4AF37]/30 via-[#8C5E3C]/20 to-transparent blur-md"
             />
           </div>
 
           {/* Konten Utama Tengah (Logo & Tipografi) */}
           <motion.div exit={{ y: -80, opacity: 0.75, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }} className="relative z-10 flex flex-col items-center text-center my-auto">
-            {/* Logo Utama Muncul Mengembang */}
+            {/* Logo Utama: Dari Tidak Ada (Kecil + Blur) Melesat Keluar (Pop & Emerge) */}
             <motion.div
-              initial={{ scale: 0.65, opacity: 0, y: 25 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
+              initial={{ scale: 0.15, opacity: 0, filter: "blur(18px)" }}
+              animate={{
+                scale: [0.15, 1.08, 1],
+                opacity: [0, 1, 1],
+                filter: ["blur(18px)", "blur(0px)", "blur(0px)"],
+              }}
               transition={{
-                duration: 0.9,
+                delay: 0.22,
+                duration: 1.05,
+                times: [0, 0.7, 1],
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="relative"
             >
-              <img
-                src="/images/brand/waranusa-logo.png?v=2"
-                alt="Logo WaraNusa"
-                className="h-28 w-auto sm:h-36 object-contain drop-shadow-[0_14px_40px_rgba(212,175,55,0.45)]"
+              {/* Pendaran Emas di Belakang Logo */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-44 w-44 sm:h-64 sm:w-64 rounded-full bg-[#D4AF37]/25 blur-3xl"
               />
+
+              {/* Animasi Mengapung Halus (Floating Physics) Setelah Merekah */}
+              <motion.div
+                animate={{ y: [-4, 5, -4] }}
+                transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 1.3 }}
+              >
+                <img
+                  src="/images/brand/waranusa-logo.png?v=2"
+                  alt="Logo WaraNusa"
+                  className="h-36 w-auto sm:h-48 md:h-56 lg:h-64 object-contain drop-shadow-[0_20px_55px_rgba(212,175,55,0.55)]"
+                />
+              </motion.div>
             </motion.div>
 
             {/* Teks Brand Merekah (Tracking Reveal) */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.8, ease: "easeOut" }}
-              className="mt-6 flex flex-col items-center"
+              transition={{ delay: 0.55, duration: 0.8, ease: "easeOut" }}
+              className="mt-6 sm:mt-8 flex flex-col items-center"
             >
               <motion.h1
                 initial={{ letterSpacing: "0.35em" }}
                 animate={{ letterSpacing: "0.14em" }}
                 transition={{
-                  delay: 0.35,
+                  delay: 0.55,
                   duration: 0.9,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="font-serif text-3xl sm:text-5xl font-extrabold tracking-widest text-[#FCF8EC] drop-shadow-[0_2px_14px_rgba(0,0,0,0.85)]"
+                className="font-serif text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-widest text-[#FCF8EC] drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]"
               >
                 WARANUSA
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
-                className="mt-2 text-xs sm:text-sm font-medium uppercase tracking-[0.24em] text-[#E6DDD4]/90"
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="mt-2 text-xs sm:text-base font-medium uppercase tracking-[0.26em] text-[#E6DDD4]/90"
               >
                 Pelestarian Budaya Nusantara
               </motion.p>
@@ -248,9 +274,9 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
             {/* Garis Pembatas Emas Halus */}
             <motion.div
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "120px", opacity: 0.6 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="mt-6 h-0.5 rounded-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
+              animate={{ width: "160px", opacity: 0.7 }}
+              transition={{ delay: 0.95, duration: 0.8 }}
+              className="mt-6 sm:mt-8 h-0.5 rounded-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
             />
           </motion.div>
 
