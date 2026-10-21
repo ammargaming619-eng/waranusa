@@ -371,6 +371,6 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
