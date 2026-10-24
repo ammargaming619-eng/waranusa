@@ -3,9 +3,10 @@
 /**
  * WaraNusa — CultureDetailView (#/budaya/[slug])
  * Halaman objek budaya: header, model 3D, tab konten (deskripsi/sejarah/makna/sumber),
- * galeri dengan dialog, audio, dan konten terkait. 404 ditangani dengan EmptyState.
+ * galeri dengan dialog, audio, dan konten terkait.
+ * Dilengkapi fallback otomatis untuk seluruh 38 Rumah Adat & Instrumen Nusantara.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Archive,
   ArrowLeft,
@@ -35,6 +36,7 @@ import { useAsyncData } from "@/hooks/use-async-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -47,13 +49,15 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState, ErrorState, Loader } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
+import { HOUSES_38_CATALOGUE } from "@/data/traditional-houses";
+import { INSTRUMENTS_CATALOGUE } from "@/components/explore/exploration-3d-view";
 import dynamic from "next/dynamic";
+import { toast } from "sonner";
 
 const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ssr: false,
-  loading: () => <Skeleton className="h-[460px] w-full rounded-2xl" />,
+  loading: () => <Skeleton className="h-[520px] w-full rounded-2xl" />,
 });
-import { toast } from "sonner";
 
 const fmtDate = (iso: string) =>
   new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(iso));
@@ -67,6 +71,48 @@ const SOURCE_ICON: Record<SourceType, LucideIcon> = {
   OTHER: FolderOpen,
 };
 
+/** Bangun CulturalItem lengkap dari katalog 38 Rumah Adat atau Instrumen bila belum ada di DB */
+function buildCatalogueFallbackItem(slug: string): CulturalItem | null {
+  const house = HOUSES_38_CATALOGUE.find((h) => h.slug === slug || h.id === slug);
+  if (house) {
+    const base = house.fallbackItem;
+    return {
+      ...base,
+      description: `${base.description}\n\nFalsafah Ruang & Adat Leluhur:\n${house.philosophy}`,
+      history: `Sistem Sambungan & Konstruksi:\n${house.specs.structure}\n\nMaterial Tradisional:\n${house.specs.material}`,
+      meaning: `Bentuk & Geometri Atap:\n${house.specs.roofGeometry}\n\nFungsi Ruang & Adat:\n${house.specs.sacredFunction}`,
+      sources: [
+        {
+          id: `src-house-1-${house.id}`,
+          itemId: base.id,
+          title: `Ensiklopedia Arsitektur Tradisional Provinsi ${house.province} (${house.indigenousName})`,
+          creator: "Direktorat Pelestarian Cagar Budaya & Permuseuman",
+          url: "https://warisanbudaya.kemdikbud.go.id/",
+          sourceType: "ARCHIVE",
+          attribution: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi RI",
+          license: "Domain Publik / Rujukan Edukasi",
+          verificationNote: `Dokumentasi arsitektur vernakular suku ${house.ethnicGroup}, Provinsi ${house.province}.`,
+          accessDate: "2026-01-15",
+        },
+      ],
+    };
+  }
+
+  const inst = INSTRUMENTS_CATALOGUE.find((i) => i.slug === slug || i.id === slug);
+  if (inst) {
+    return {
+      ...inst.fallbackItem,
+      title: `${inst.title} (${inst.vernacularName})`,
+      summary: `${inst.organologyLabel} khas suku ${inst.ethnicGroup} dari ${inst.province}.`,
+      description: `${inst.philosophy}\n\nSistem Tangga Nada & Laras:\n${inst.specs.tuningSystem}\n\nMaterial Akustik Alami:\n${inst.specs.materialAcoustic}`,
+      history: `Teknik Memainkan:\n${inst.specs.playingTechnique}`,
+      meaning: `Fungsi Ansambel & Ritus Sosial:\n${inst.specs.ensembleFunction}`,
+    };
+  }
+
+  return null;
+}
+
 interface DetailState {
   loading: boolean;
   error: string | null;
@@ -74,7 +120,7 @@ interface DetailState {
   item: CulturalItem | null;
 }
 
-/** Hook kecil: butuh akses status HTTP (untuk 404) yang tidak diekspos useAsyncData */
+/** Hook kecil: butuh akses status HTTP (untuk 404) + fallback katalog 38 provinsi */
 function useItemDetail(slug: string) {
   const [state, setState] = useState<DetailState>({ loading: true, error: null, status: 0, item: null });
   const [tick, setTick] = useState(0);
@@ -89,6 +135,11 @@ function useItemDetail(slug: string) {
       })
       .catch((e: unknown) => {
         if (!alive) return;
+        const fallback = buildCatalogueFallbackItem(slug);
+        if (fallback) {
+          setState({ loading: false, error: null, status: 200, item: fallback });
+          return;
+        }
         setState({
           loading: false,
           error: e instanceof Error ? e.message : "Gagal memuat objek budaya.",
@@ -112,8 +163,41 @@ export default function CultureDetailView({ route }: { route: { segments: string
 
   const [activeImage, setActiveImage] = useState<MediaAsset | null>(null);
 
+  const houseData = useMemo(
+    () => HOUSES_38_CATALOGUE.find((h) => h.slug === slug || h.id === slug),
+    [slug]
+  );
+  const instData = useMemo(
+    () => INSTRUMENTS_CATALOGUE.find((i) => i.slug === slug || i.id === slug),
+    [slug]
+  );
+  const itemWithModel = useMemo(() => {
+    if (!item) return null;
+    if (houseData?.fallbackItem.modelMedia) {
+      return {
+        ...item,
+        modelMedia: houseData.fallbackItem.modelMedia,
+        hotspots:
+          item.hotspots && item.hotspots.length > 0
+            ? item.hotspots
+            : houseData.fallbackItem.hotspots,
+      };
+    }
+    if (instData?.hasGlbAsset && instData.fallbackItem.modelMedia) {
+      return {
+        ...item,
+        modelMedia: instData.fallbackItem.modelMedia,
+        hotspots:
+          item.hotspots && item.hotspots.length > 0
+            ? item.hotspots
+            : instData.fallbackItem.hotspots,
+      };
+    }
+    return item;
+  }, [item, houseData, instData]);
+
   const hasModel =
-    !!item && (!!item.modelMedia || (PROCEDURAL_MODELS as readonly string[]).includes(slug));
+    !!itemWithModel && (!!itemWithModel.modelMedia || (PROCEDURAL_MODELS as readonly string[]).includes(slug));
 
   const handleShare = async () => {
     if (!item) return;
@@ -126,7 +210,6 @@ export default function CultureDetailView({ route }: { route: { segments: string
       await navigator.clipboard.writeText(url);
       toast.success("Tautan disalin ke papan klip.");
     } catch (err) {
-      // Pembatalan share oleh pengguna bukan error — abaikan diam-diam
       if (err instanceof DOMException && err.name === "AbortError") return;
       try {
         await navigator.clipboard.writeText(url);
@@ -209,18 +292,18 @@ export default function CultureDetailView({ route }: { route: { segments: string
       <header className="mt-6 grid gap-8 lg:grid-cols-5 lg:gap-12">
         <div className="lg:col-span-3">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge className="bg-brand-teal font-semibold text-white hover:bg-brand-teal">
+            <Badge className="bg-[#52331C] font-semibold text-white hover:bg-[#482B18]">
               {item.category.name}
             </Badge>
-            <Badge variant="outline" className="gap-1 border-brand-line font-semibold text-brand-sea">
-              <MapPin className="h-3.5 w-3.5 text-brand-orange" aria-hidden="true" />
+            <Badge variant="outline" className="gap-1 border-[#DFD3C2] bg-white font-semibold text-[#2D1E12]">
+              <MapPin className="h-3.5 w-3.5 text-[#7A4B29]" aria-hidden="true" />
               {item.region.name}
             </Badge>
           </div>
-          <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-brand-ink sm:text-4xl">
+          <h1 className="mt-4 font-serif text-3xl font-bold leading-tight tracking-tight text-brand-ink sm:text-4xl">
             {item.title}
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{item.summary}</p>
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground">{item.summary}</p>
           <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Eye className="h-4 w-4 text-brand-teal" aria-hidden="true" />
@@ -228,7 +311,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
             </span>
             <span aria-hidden="true">&middot;</span>
             <span className="flex items-center gap-1.5">
-              <CalendarClock className="h-4 w-4 text-brand-sea" aria-hidden="true" />
+              <CalendarClock className="h-4 w-4 text-[#7A4B29]" aria-hidden="true" />
               Diperbarui {fmtDate(item.updatedAt)}
             </span>
           </p>
@@ -236,7 +319,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
             <Button
               variant="outline"
               onClick={handleShare}
-              className="min-h-[44px] rounded-full border-brand-teal/40 font-bold text-brand-teal hover:bg-brand-teal/10 hover:text-brand-teal"
+              className="min-h-[44px] rounded-full border-[#6E472D]/40 font-bold text-[#6E472D] hover:bg-[#6E472D]/10 hover:text-[#482B18]"
             >
               <Share2 className="mr-1.5 h-4 w-4" aria-hidden="true" />
               Bagikan
@@ -257,13 +340,13 @@ export default function CultureDetailView({ route }: { route: { segments: string
       {/* ============ MODEL 3D ============ */}
       <section className="mt-12" aria-labelledby="model-3d">
         {hasModel ? (
-          <Card className="overflow-hidden rounded-3xl border-brand-line">
+          <Card className="overflow-hidden rounded-3xl border-[#DFD3C2]">
             <CardHeader className="pb-3">
-              <CardTitle id="model-3d" className="flex items-center gap-2 text-lg text-brand-ink">
-                <Box className="h-5 w-5 text-brand-teal" aria-hidden="true" />
-                Model 3D Interaktif
+              <CardTitle id="model-3d" className="flex items-center gap-2 font-serif text-lg text-brand-ink">
+                <Box className="h-5 w-5 text-[#6E472D]" aria-hidden="true" />
+                Ruang Pamer 3D Interaktif
               </CardTitle>
-              {isEmbedModel(item.modelMedia) ? (
+              {isEmbedModel(itemWithModel?.modelMedia) ? (
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MousePointerClick className="h-3.5 w-3.5 text-brand-gold" aria-hidden="true" />
                   Gunakan kontrol viewer untuk memutar &amp; zoom &middot; Klik chip nama bagian untuk info
@@ -271,12 +354,12 @@ export default function CultureDetailView({ route }: { route: { segments: string
               ) : (
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MousePointerClick className="h-3.5 w-3.5 text-brand-gold" aria-hidden="true" />
-                  Seret untuk memutar &middot; Scroll untuk zoom &middot; Klik titik emas untuk info bagian
+                  Seret untuk memutar 360° &middot; Gulir untuk zoom &middot; Klik titik bernomor untuk info struktur
                 </p>
               )}
             </CardHeader>
             <CardContent>
-              <ModelViewer item={item} height={460} showHotspots />
+              <ModelViewer item={itemWithModel ?? item} height={520} showHotspots />
             </CardContent>
           </Card>
         ) : (
@@ -305,7 +388,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
               Deskripsi
             </TabsTrigger>
             <TabsTrigger value="sejarah" className="min-h-[40px] rounded-xl font-semibold">
-              Sejarah &amp; Konteks
+              Sejarah &amp; Konstruksi
             </TabsTrigger>
             <TabsTrigger value="makna" className="min-h-[40px] rounded-xl font-semibold">
               Makna &amp; Fungsi
@@ -378,7 +461,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
                         <li key={s.id} className="rounded-2xl border border-brand-line p-4">
                           <div className="flex items-start gap-3">
                             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft">
-                              <Icon className="h-5 w-5 text-brand-sea" aria-hidden="true" />
+                              <Icon className="h-5 w-5 text-[#6E472D]" aria-hidden="true" />
                             </span>
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-center gap-2">
@@ -435,7 +518,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
 
       {/* ============ AUDIO ============ */}
       <section className="mt-12" aria-labelledby="audio-judul">
-        <h2 id="audio-judul" className="text-xl font-extrabold text-brand-ink">
+        <h2 id="audio-judul" className="font-serif text-xl font-bold text-brand-ink">
           Rekaman Audio
         </h2>
         {item.audioMedia ? (
@@ -472,7 +555,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
       {/* ============ GALERI ============ */}
       {item.gallery && item.gallery.length > 0 && (
         <section className="mt-12" aria-labelledby="galeri-judul">
-          <h2 id="galeri-judul" className="text-xl font-extrabold text-brand-ink">
+          <h2 id="galeri-judul" className="font-serif text-xl font-bold text-brand-ink">
             Galeri
           </h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -498,7 +581,7 @@ export default function CultureDetailView({ route }: { route: { segments: string
 
       {/* ============ KONTEN TERKAIT ============ */}
       <section className="mt-14" aria-labelledby="terkait-judul">
-        <h2 id="terkait-judul" className="text-xl font-extrabold text-brand-ink">
+        <h2 id="terkait-judul" className="font-serif text-xl font-bold text-brand-ink">
           Konten Terkait
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -544,15 +627,17 @@ function CoverImage({ item }: { item: CulturalItem }) {
           src={cover}
           alt={`Foto utama ${item.title}`}
           onError={() => setFailed(true)}
-          className="aspect-[4/3] w-full rounded-3xl object-cover shadow-lg shadow-brand-sea/10"
+          className="aspect-[4/3] w-full rounded-3xl object-cover shadow-lg border border-[#DFD3C2]"
         />
       ) : (
         <div
           role="img"
-          aria-label={`Sampul belum tersedia untuk ${item.title}`}
-          className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl bg-gradient-to-br from-brand-soft via-[#e8f2f0] to-[#d8e8e4] shadow-inner"
+          aria-label={`Visualisasi ${item.title}`}
+          className="flex flex-col gap-2 aspect-[4/3] w-full items-center justify-center rounded-3xl bg-gradient-to-br from-[#F7F0E4] via-[#EFE4D2] to-[#E5D5BE] border border-[#DFD3C2] p-6 text-center shadow-inner"
         >
-          <ImageIcon className="h-12 w-12 text-brand-teal/50" aria-hidden="true" />
+          <Landmark className="h-10 w-10 text-[#6E472D]/70" aria-hidden="true" />
+          <span className="font-serif text-sm font-bold text-[#2D1E12]">{item.title}</span>
+          <span className="text-xs text-stone-600">{item.region.name}</span>
         </div>
       )}
     </div>

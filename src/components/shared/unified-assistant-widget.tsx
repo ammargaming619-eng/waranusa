@@ -502,13 +502,13 @@ export function UnifiedAssistantWidget() {
           onClick={() => setIsOpen(true)}
           className={cn(
             // Di Mobile: Tombol kapsul mengambang empuk di pojok kanan bawah (sejajar dengan tombol aksesibilitas)
-            "fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full px-3.5 py-2.5 min-h-[44px]",
-            "bg-gradient-to-r from-[#5C3B24] via-[#6E472D] to-[#5C3B24] text-[#FAF6F0]",
-            "border border-[#8C5E3C]/60 shadow-[0_8px_24px_rgba(45,30,18,0.35)]",
+            "!fixed bottom-4 right-4 z-[9990] flex items-center gap-2 rounded-full px-3.5 py-2.5 min-h-[44px]",
+            "btn-waranusa text-white",
+            "shadow-[0_8px_24px_rgba(45,30,18,0.35)]",
             "hover:shadow-[0_12px_28px_rgba(45,30,18,0.45)] active:scale-95 transition-all duration-300",
-            // Di Desktop (md+): Menempel anggun di sisi kanan tengah layar
-            "md:fixed md:bottom-auto md:right-0 md:top-1/2 md:-translate-y-1/2 md:flex-col md:py-3 md:px-2.5",
-            "md:rounded-r-none md:rounded-l-2xl md:border-l md:border-y md:border-r-0 md:hover:-translate-x-1",
+            // Di Desktop (md+): Kapsul mengambang lembut tanpa sudut kotak kaku
+            "md:!fixed md:bottom-auto md:right-3 md:top-1/2 md:-translate-y-1/2 md:flex-col md:py-3.5 md:px-2.5",
+            "md:rounded-full md:border md:border-[#8C5E3C]/40 md:hover:scale-105",
             "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
           aria-label="Buka WaraNusa AI Assistant"
@@ -570,7 +570,7 @@ export function UnifiedAssistantWidget() {
             )}
           >
             {/* ============ 1. HEADER KAPSUL WARANUSA AI ASSISTANT ============ */}
-            <div className="p-3 mx-3 mt-3 rounded-2xl bg-gradient-to-r from-[#5C3B24] via-[#6E472D] to-[#5C3B24] text-white flex items-center justify-between shadow-xs">
+            <div className="p-3 mx-3 mt-3 rounded-2xl btn-waranusa text-white flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
                   <WaranusaAIEmblem className="w-6 h-6" />
@@ -652,7 +652,7 @@ export function UnifiedAssistantWidget() {
                         className={cn(
                           "rounded-2xl px-4 py-2.5 shadow-xs",
                           msg.role === "user"
-                            ? "bg-[#8C5E3C] text-white rounded-br-xs"
+                            ? "btn-waranusa text-white rounded-br-xs"
                             : "bg-white border border-stone-200/80 text-stone-800 rounded-bl-xs"
                         )}
                       >
@@ -692,7 +692,7 @@ export function UnifiedAssistantWidget() {
                     type="button"
                     onClick={() => handleSendMessage()}
                     disabled={!inputValue.trim() || isLoading}
-                    className="w-7 h-7 rounded-full bg-[#8C5E3C] hover:bg-[#70492E] disabled:opacity-40 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer"
+                    className="w-7 h-7 rounded-full btn-waranusa disabled:opacity-40 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer"
                     aria-label="Kirim Pesan"
                   >
                     <Send className="w-3.5 h-3.5" />

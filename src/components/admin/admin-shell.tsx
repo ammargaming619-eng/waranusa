@@ -125,7 +125,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
         <div className="flex h-16 items-center px-4 border-b border-border">
           <a href="#/" className="flex items-center gap-2.5 group" aria-label="Kembali ke situs publik">
             <img
-              src="/images/brand/waranusa-logo.png?v=2"
+              src="/images/brand/waranusa-logo.png?v=3"
               alt="Logo WaraNusa"
               className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
             />
@@ -164,7 +164,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
               <SheetTitle className="sr-only">Menu CMS</SheetTitle>
               <div className="flex h-16 items-center px-4 border-b border-border">
                 <img
-                  src="/images/brand/waranusa-logo.png?v=2"
+                  src="/images/brand/waranusa-logo.png?v=3"
                   alt="Logo WaraNusa"
                   className="h-8 w-auto object-contain"
                 />

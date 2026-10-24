@@ -13,8 +13,9 @@
 
 import * as React from "react";
 import * as THREE from "three";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { AlertTriangle, Box, ExternalLink, Pause, Rotate3d, RotateCcw, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -85,6 +86,26 @@ class SilentErrorBoundary extends React.Component<BoundaryProps, { hasError: boo
   }
 }
 
+// ---------- Studio Environment (Zero-network procedural IBL) ----------
+
+function StudioEnvironment() {
+  const { gl, scene } = useThree();
+  React.useEffect(() => {
+    const pmremGenerator = new THREE.PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+    const envScene = new RoomEnvironment();
+    const envTexture = pmremGenerator.fromScene(envScene).texture;
+    scene.environment = envTexture;
+    return () => {
+      scene.environment = null;
+      envTexture.dispose();
+      envScene.dispose();
+      pmremGenerator.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
+
 // ---------- Model GLB ----------
 
 function GltfModel({ url }: { url: string }) {
@@ -95,8 +116,34 @@ function GltfModel({ url }: { url: string }) {
     clone.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
         obj.castShadow = true;
-        if (obj.material instanceof THREE.MeshStandardMaterial) {
-          obj.material.side = THREE.FrontSide;
+        obj.receiveShadow = true;
+        if (obj.material) {
+          const mat = obj.material as THREE.MeshStandardMaterial;
+          // Render kedua sisi agar bagian bawah atap dan dalam pendapa tidak bolong/gelap pekat
+          mat.side = THREE.DoubleSide;
+          // Sesuaikan roughness & metalness agar tekstur kayu & ornamen terpancar jelas
+          if (typeof mat.roughness === "number") {
+            mat.roughness = Math.max(0.35, Math.min(0.7, mat.roughness));
+          }
+          if (typeof mat.metalness === "number") {
+            mat.metalness = Math.min(mat.metalness, 0.08);
+          }
+          // Kompresi tone adaptif: teduhkan elemen yang terlalu terang agar tekstur & serat kelihatan
+          mat.onBeforeCompile = (shader) => {
+            shader.fragmentShader = shader.fragmentShader.replace(
+              "#include <dithering_fragment>",
+              `
+              #include <dithering_fragment>
+              float texLum = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
+              if (texLum > 0.52) {
+                gl_FragColor.rgb *= mix(1.0, 0.72, smoothstep(0.52, 0.95, texLum));
+              } else if (texLum < 0.22) {
+                gl_FragColor.rgb += vec3(0.08 * smoothstep(0.22, 0.05, texLum));
+              }
+              `
+            );
+          };
+          mat.needsUpdate = true;
         }
       }
     });
@@ -147,7 +194,7 @@ function StatusPanel({
   );
 }
 
-// ---------- Kamera Responsif (Cegah model terpotong di HP / layar potret) ----------
+// ---------- Kamera Responsif (Framing Dekat & Megah, Proporsional di Semua Layar) ----------
 
 function ResponsiveCamera() {
   const { camera, size } = useThree();
@@ -155,11 +202,11 @@ function ResponsiveCamera() {
     const aspect = size.width / size.height;
     if (camera instanceof THREE.PerspectiveCamera) {
       if (aspect < 1.15) {
-        // Layar portrait / mobile: mundurkan kamera proporsional agar model rumah adat yang lebar muat utuh
-        const factor = Math.min(Math.max(1.15 / aspect, 1.1), 1.6);
-        camera.position.set(3 * factor, 2.2 * factor, 3.2 * factor);
+        // Layar portrait / mobile: mundurkan kamera proporsional
+        const factor = Math.min(Math.max(1.15 / aspect, 1.05), 1.45);
+        camera.position.set(2.3 * factor, 1.65 * factor, 2.5 * factor);
       } else {
-        camera.position.set(3, 2.2, 3.2);
+        camera.position.set(2.3, 1.65, 2.5);
       }
       camera.updateProjectionMatrix();
     }
@@ -167,11 +214,36 @@ function ResponsiveCamera() {
   return null;
 }
 
+// ---------- Grup Rotasi Persisten (Tetap Berputar Mulus Saat Scroll Halaman) ----------
+
+function ContinuouslyRotatingGroup({
+  spin,
+  children,
+  speed = 0.55,
+}: {
+  spin: boolean;
+  children: React.ReactNode;
+  speed?: number;
+}) {
+  const groupRef = React.useRef<THREE.Group>(null);
+  useFrame((_, delta) => {
+    if (spin && groupRef.current) {
+      // Rotasi kontinu mulus yang tidak terputus saat pengguna melakukan scroll pada halaman
+      groupRef.current.rotation.y += delta * speed;
+    }
+  });
+  return (
+    <group ref={groupRef} position={[0, -0.9, 0]} scale={[1.35, 1.35, 1.35]}>
+      {children}
+    </group>
+  );
+}
+
 // ---------- Komponen utama ----------
 
 export interface ModelViewerProps {
   item: CulturalItem;
-  height?: number;
+  height?: number | string;
   showHotspots?: boolean;
   autoRotate?: boolean;
   className?: string;
@@ -261,11 +333,11 @@ export default function ModelViewer({
     <div
       ref={wrapRef}
       className={cn(
-        "relative w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft",
+        "relative w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft min-h-[300px]",
         embedUrl && "flex flex-col",
         className,
       )}
-      style={{ height }}
+      style={height !== undefined ? { height } : undefined}
       data-item-slug={item.slug}
     >
       {embedUrl ? (
@@ -391,16 +463,26 @@ export default function ModelViewer({
               key={renderKey}
               shadows="soft"
               dpr={[1, 2]}
-              camera={{ position: [3, 2.2, 3.2], fov: 45 }}
+              camera={{ position: [2.3, 1.65, 2.5], fov: 45 }}
               frameloop={spin ? "always" : "demand"}
+              gl={{
+                toneMapping: THREE.NeutralToneMapping,
+                toneMappingExposure: 0.98,
+                antialias: true,
+              }}
               onPointerMissed={() => setOpenHotspotId(null)}
               style={{ width: "100%", height: "100%" }}
             >
               <ResponsiveCamera />
-              <ambientLight intensity={0.7} />
+              <StudioEnvironment />
+              {/* Pencahayaan Studio Alami & Terkalibrasi: Hangat, jernih, dan tidak membakar tekstur terang */}
+              <ambientLight intensity={0.60} />
+              <hemisphereLight color="#FFFDF2" groundColor="#4A3522" intensity={0.68} />
+              
+              {/* Lampu Utama (Key Light) */}
               <directionalLight
-                position={[4, 6, 4]}
-                intensity={1.15}
+                position={[5, 9, 5]}
+                intensity={1.05}
                 castShadow
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
@@ -412,9 +494,15 @@ export default function ModelViewer({
                 shadow-camera-far={20}
                 shadow-bias={-0.0004}
               />
-              <spotLight position={[-4, 5, -3]} intensity={30} angle={0.5} penumbra={1} color="#FFF3DC" />
 
-              <group position={[0, -1, 0]}>
+              {/* Lampu Pengisi Depan (Front Fill Light dari arah kamera) */}
+              <directionalLight position={[0, 4.5, 6.5]} intensity={0.80} color="#FFFBF5" />
+
+              {/* Lampu Pengisi Lawan Arah (Back Fill Light) */}
+              <directionalLight position={[-5, 5, -5]} intensity={0.55} color="#FFF8EE" />
+              <directionalLight position={[0, 6, -6]} intensity={0.40} color="#FFF5E4" />
+
+              <ContinuouslyRotatingGroup spin={spin}>
                 {glbUrl && !glbFailed ? (
                   <SilentErrorBoundary key={`glb-${renderKey}-${glbUrl}`} onError={handleGlbError}>
                     <React.Suspense
@@ -465,30 +553,28 @@ export default function ModelViewer({
                     />
                   </group>
                 ))}
-              </group>
+              </ContinuouslyRotatingGroup>
 
               {/* Lantai lingkaran */}
               <mesh
                 receiveShadow
                 rotation={[-Math.PI / 2, 0, 0]}
-                position={[0, -1.01, 0]}
+                position={[0, -0.91, 0]}
               >
-                <circleGeometry args={[3, 48]} />
-                <meshStandardMaterial color="#F3F8F7" roughness={1} metalness={0} />
+                <circleGeometry args={[3.4, 48]} />
+                <meshStandardMaterial color="#FAF5EB" roughness={0.85} metalness={0} />
               </mesh>
 
               <OrbitControls
                 ref={controlsRef}
                 makeDefault
                 enablePan={false}
-                enableZoom
-                minDistance={2}
-                maxDistance={9}
+                enableZoom={false}
+                minDistance={1.8}
+                maxDistance={8}
                 maxPolarAngle={1.45}
                 enableDamping
                 dampingFactor={0.08}
-                autoRotate={spin}
-                autoRotateSpeed={1.4}
               />
               <AutoInvalidate />
             </Canvas>

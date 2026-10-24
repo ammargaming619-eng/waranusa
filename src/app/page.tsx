@@ -7,7 +7,12 @@
  * Setiap view bertanggung jawab mengambil datanya sendiri via REST API.
  */
 import { useEffect, useState } from "react";
-import { BrandPreloader } from "@/components/shared/brand-preloader";
+import dynamic from "next/dynamic";
+
+const BrandPreloader = dynamic(
+  () => import("@/components/shared/brand-preloader").then((m) => m.BrandPreloader),
+  { ssr: false }
+);
 import { useRoute, navigate } from "@/lib/router";
 import { useAuth } from "@/lib/auth-store";
 
@@ -30,6 +35,7 @@ import { Loader } from "@/components/shared/states";
 import { useSiteSettings } from "@/lib/settings-store";
 
 export default function WaraNusaApp() {
+  const [mounted, setMounted] = useState(false);
   const route = useRoute();
   const { init, initialized } = useAuth();
   const settings = useSiteSettings((s) => s.settings);
@@ -38,16 +44,13 @@ export default function WaraNusaApp() {
   const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     init();
     loadSettings();
   }, [init, loadSettings]);
 
-  // Pengaturan situs (untuk footer) diambil ringan dari settings API publik
-  const isAdmin = route.segments[0] === "admin";
-  const isLogin = route.segments[0] === "masuk";
-  const isDirectNonLanding = Boolean(route.segments[0] && route.segments[0] !== "");
-
   // Jika membuka langsung sub-halaman (bukan beranda), lewati animasi pembuka agar instan
+  const isDirectNonLanding = Boolean(route.segments[0] && route.segments[0] !== "");
   useEffect(() => {
     if (isDirectNonLanding) {
       setIntroRevealed(true);
@@ -55,12 +58,31 @@ export default function WaraNusaApp() {
     }
   }, [isDirectNonLanding]);
 
+  // Hindari perbedaan SSR vs Client Hydration pada hash router SPA
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900 overflow-x-hidden">
+        <div className="h-16 w-full border-b border-stone-200/40 bg-[#FCF8EC]" />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <span className="h-9 w-9 animate-pulse rounded-full bg-[#159D9A]/30" />
+            <p className="text-xs font-medium text-stone-500">Memuat WaraNusa…</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Pengaturan situs (untuk footer) diambil ringan dari settings API publik
+  const isAdmin = route.segments[0] === "admin";
+  const isLogin = route.segments[0] === "masuk";
+
   // CMS: layout sendiri (sidebar) tanpa header/footer publik
   if (isAdmin) {
     if (!initialized) {
       return (
         <div className="flex min-h-screen items-center justify-center bg-stone-900 text-stone-200">
-          <Loader text="Menyiapkan panel admin..." />
+          <Loader label="Menyiapkan panel admin..." />
         </div>
       );
     }
@@ -118,7 +140,7 @@ export default function WaraNusaApp() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900">
+    <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900 overflow-x-hidden">
       {!introDone && (
         <BrandPreloader
           onStartDismiss={() => setIntroRevealed(true)}

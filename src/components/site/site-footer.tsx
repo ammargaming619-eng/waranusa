@@ -17,32 +17,26 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
 }) {
   const name = siteName || "WaraNusa";
   return (
-    <footer className="mt-auto border-t border-border bg-secondary/60">
-      <div className="mx-auto max-w-7xl px-4 py-10 pb-24 sm:pb-10 sm:px-6 lg:px-8">
+    <footer className="relative mt-auto border-t border-[#D4A843]/20 bg-gradient-to-b from-[#1C120B] via-[#160E08] to-[#0E0704] text-stone-300">
+      {/* Garis aksen emas halus penegas tema museum digital */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4A843]/35 to-transparent"
+      />
+
+      <div className="mx-auto max-w-7xl px-4 py-12 pb-24 sm:pb-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2 space-y-3">
-            <BrandLogo />
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+            <BrandLogo dark />
+            <p className="max-w-md text-sm leading-relaxed text-stone-400">
               {tagline ||
                 "Platform eksplorasi & pelestarian budaya Indonesia — peta interaktif, katalog bersumber, model 3D, dan instrumen musik virtual."}
             </p>
-            {/* Badges SDGs & UINIC 8.0 */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="inline-flex items-center rounded-full bg-amber-500/10 border border-amber-600/20 px-2.5 py-0.5 text-[10px] font-bold text-[#8C5E3C]">
-                SDG 11.4 Pelestarian Budaya
-              </span>
-              <span className="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-600/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                SDG 4 Pendidikan Berkualitas
-              </span>
-              <span className="inline-flex items-center rounded-full bg-sky-500/10 border border-sky-600/20 px-2.5 py-0.5 text-[10px] font-bold text-sky-700">
-                Web Interoperabilitas UINIC 8.0
-              </span>
-            </div>
-            {footerNote && <p className="max-w-md text-xs text-muted-foreground/80">{footerNote}</p>}
+            {footerNote && <p className="max-w-md text-xs text-stone-500">{footerNote}</p>}
           </div>
 
           <nav aria-label="Navigasi footer">
-            <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-brand-ink">Jelajahi</h3>
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">Jelajahi</h3>
             <ul className="space-y-2 text-sm">
               {[
                 { href: "#/jelajah", label: "Peta Wilayah", icon: Compass },
@@ -51,8 +45,8 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
                 { href: "#/arsip", label: "Arsip & Sumber", icon: Archive },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-brand-teal">
-                    <l.icon className="h-3.5 w-3.5" /> {l.label}
+                  <Link href={l.href} className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
+                    <l.icon className="h-3.5 w-3.5 text-[#D4A843]/80" /> {l.label}
                   </Link>
                 </li>
               ))}
@@ -60,34 +54,34 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
           </nav>
 
           <div>
-            <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-brand-ink">Ikut Serta</h3>
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">Ikut Serta</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#/kontribusi" className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-brand-teal">
-                  <HandHeart className="h-3.5 w-3.5" /> Kirim Dokumentasi
+                <Link href="#/kontribusi" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
+                  <HandHeart className="h-3.5 w-3.5 text-[#D4A843]/80" /> Kirim Dokumentasi
                 </Link>
               </li>
               <li>
-                <Link href="#/masuk" className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-brand-teal">
-                  <ShieldCheck className="h-3.5 w-3.5" /> Akun Pengelola
+                <Link href="#/masuk" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#D4A843]/80" /> Akun Pengelola
                 </Link>
               </li>
             </ul>
             {contactEmail && (
-              <p className="mt-4 text-xs text-muted-foreground">
-                Kontak: <a className="font-medium text-brand-teal hover:underline" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+              <p className="mt-4 text-xs text-stone-400">
+                Kontak: <a className="font-medium text-[#E5B869] hover:underline" href={`mailto:${contactEmail}`}>{contactEmail}</a>
               </p>
             )}
           </div>
         </div>
 
-        <Separator className="my-6" />
+        <Separator className="my-7 bg-[#2E1E14]" />
 
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3 text-xs text-stone-400 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {name}. {tagline || "Platform Eksplorasi & Pelestarian Budaya Indonesia"}.
           </p>
-          <p className="text-[11px] leading-relaxed sm:text-right">
+          <p className="text-[11px] leading-relaxed text-stone-500 sm:text-right">
             Konten menampilkan sumber &amp; atribusi. Media ilustrasi demo dibuat dengan generator AI,{" "}
             <span className="whitespace-nowrap">bukan foto arsip asli.</span>
           </p>

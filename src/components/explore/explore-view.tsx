@@ -2,11 +2,23 @@
 
 /**
  * WaraNusa — ExploreView (#/jelajah)
- * Peta interaktif wilayah budaya (kiri) + panel detail wilayah (kanan).
- * Wilayah terpilih disinkronkan dengan query URL ?region=CODE.
+ * Peta interaktif wilayah budaya 38 Provinsi Indonesia (kiri) + panel kuratorial wilayah (kanan).
+ * Mengusung tata letak editorial bersih, gradasi marun-jati, dan navigasi kepulauan tanpa emoji.
  */
-import { useMemo } from "react";
-import { Building2, MapPin, MoveRight, Pin } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import {
+  Box,
+  Building2,
+  Compass,
+  ExternalLink,
+  Layers,
+  MapPin,
+  MoveRight,
+  Music4,
+  Pin,
+  Search,
+  Sparkles,
+} from "lucide-react";
 import type { Route } from "@/lib/router";
 import { buildQuery, navigate } from "@/lib/router";
 import { api } from "@/lib/api-client";
@@ -14,167 +26,359 @@ import type { Region } from "@/lib/types";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { EmptyState, ErrorState, SectionHeading } from "@/components/shared/states";
+import { Input } from "@/components/ui/input";
 import IndonesiaMap from "@/components/map/indonesia-map";
 import { cn } from "@/lib/utils";
+import {
+  PROVINCES_38_DATASET,
+  ISLAND_FILTER_TABS,
+  type Province38,
+} from "@/data/regions-38";
+import { INSTRUMENTS_38_CATALOGUE } from "@/data/instruments-data";
+
+void Compass;
+void Pin;
+void Sparkles;
 
 export default function ExploreView({ route }: { route: Route }) {
-  const regionsQ = useAsyncData(() => api.regions.list(), []);
-  const regions = regionsQ.data ?? [];
+  const [selectedIsland, setSelectedIsland] = useState<Province38["islandGroup"] | "ALL">("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Wilayah terpilih diturunkan dari URL (?region=CODE) agar dapat dibagikan
-  const selected = useMemo(
-    () => regions.find((r) => r.code === route.query.region) ?? null,
-    [regions, route.query.region]
-  );
+  const regionsQ = useAsyncData(() => api.regions.list(), []);
+
+  // Sinkronkan 38 dataset provinsi komprehensif dengan data API/DB jika tersedia
+  const allProvincesAsRegions = useMemo<Region[]>(() => {
+    const dbRegions = regionsQ.data ?? [];
+    const dbMap = new Map<string, Region>();
+    for (const r of dbRegions) {
+      dbMap.set(r.code, r);
+      dbMap.set(r.name.toLowerCase(), r);
+    }
+
+    return PROVINCES_38_DATASET.map((p) => {
+      const matchDb = dbMap.get(p.code) ?? dbMap.get(p.name.toLowerCase());
+      return {
+        id: matchDb?.id ?? p.id,
+        code: p.code,
+        name: p.name,
+        islandGroup: p.islandGroup,
+        capital: p.capital,
+        lat: p.lat,
+        lng: p.lng,
+        summary: matchDb?.summary || p.summary,
+        description: matchDb?.description || p.summary,
+        itemCount: matchDb?.itemCount ?? 1,
+        createdAt: matchDb?.createdAt ?? "2026-01-01",
+        updatedAt: matchDb?.updatedAt ?? "2026-01-01",
+      };
+    });
+  }, [regionsQ.data]);
+
+  // Filter provinsi berdasarkan wilayah kepulauan dan pencarian
+  const filteredProvinces = useMemo(() => {
+    return PROVINCES_38_DATASET.filter((p) => {
+      const matchIsland = selectedIsland === "ALL" || p.islandGroup === selectedIsland;
+      if (!matchIsland) return false;
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase().trim();
+      return (
+        p.name.toLowerCase().includes(q) ||
+        p.capital.toLowerCase().includes(q) ||
+        p.traditionalHouseTitle.toLowerCase().includes(q) ||
+        p.culturalHighlights.some((h) => h.toLowerCase().includes(q))
+      );
+    });
+  }, [selectedIsland, searchQuery]);
+
+  // Wilayah terpilih diturunkan dari URL (?region=CODE)
+  const selectedRegion = useMemo(() => {
+    const code = route.query.region;
+    if (!code) return null;
+    return (
+      allProvincesAsRegions.find((r) => r.code === code) ??
+      allProvincesAsRegions.find((r) => r.id === code) ??
+      null
+    );
+  }, [allProvincesAsRegions, route.query.region]);
+
+  const selectedMeta = useMemo(() => {
+    if (!selectedRegion) return null;
+    return (
+      PROVINCES_38_DATASET.find(
+        (p) => p.code === selectedRegion.code || p.name === selectedRegion.name
+      ) ?? null
+    );
+  }, [selectedRegion]);
+
+  // Cari instrumen musik tradisional dari 38 katalog yang bersesuaian dengan provinsi terpilih
+  const matchingInstrument = useMemo(() => {
+    if (!selectedRegion) return null;
+    const pName = selectedRegion.name.toLowerCase();
+    return (
+      INSTRUMENTS_38_CATALOGUE.find(
+        (inst) =>
+          inst.province.toLowerCase() === pName ||
+          inst.provinceSlug === selectedRegion.code.toLowerCase() ||
+          (selectedRegion.name.includes("Yogyakarta") && inst.province.includes("Yogyakarta")) ||
+          (selectedRegion.name.includes("Bangka") && inst.province.includes("Bangka"))
+      ) ?? null
+    );
+  }, [selectedRegion]);
+
+  const detailPanelRef = useRef<HTMLElement>(null);
 
   const selectRegion = (r: Region) => {
     navigate(buildQuery("jelajah", { region: r.code }), { replace: true });
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setTimeout(() => {
+        detailPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 120);
+    }
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-      <SectionHeading
-        eyebrow="Peta Interaktif"
-        title="Jelajahi Wilayah Budaya"
-        description="Klik penanda pada peta untuk mengenal wilayah dan objek budayanya."
-      />
-      <p className="mt-3 flex max-w-2xl items-start gap-2 text-xs text-muted-foreground">
-        <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-teal" aria-hidden="true" />
-        Peta berbasis Leaflet + OpenStreetMap. Penanda menunjukkan titik koordinat wilayah,
-        bukan batas administratif.
-      </p>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-12">
-        {/* ============ PETA ============ */}
-        <div className="lg:col-span-8">
-          {regionsQ.loading ? (
-            <Skeleton className="h-[320px] w-full rounded-3xl lg:h-[560px]" aria-hidden="true" />
-          ) : regionsQ.error ? (
-            <ErrorState
-              title="Peta tidak dapat dimuat"
-              message={regionsQ.error}
-              onRetry={regionsQ.reload}
-              className="lg:h-[560px]"
-            />
-          ) : (
-            <div className="overflow-hidden rounded-3xl border border-brand-line shadow-sm">
-              <IndonesiaMap
-                regions={regions}
-                selectedId={selected?.id ?? null}
-                onSelect={selectRegion}
-                className="h-[320px] w-full lg:h-[560px]"
-              />
+    <div className="min-h-screen bg-lontar-gradient">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+        {/* ============ HEADER EDITORIAL ============ */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6 border-b border-[#DFD3C2]">
+          <div>
+            <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A4B29] mb-2">
+              <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
+              <span>Atlas Geografi &amp; Budaya Nusantara</span>
             </div>
-          )}
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
+              Jelajahi 38 Provinsi Indonesia
+            </h1>
+            <p className="mt-2 max-w-2xl text-xs sm:text-sm text-stone-600 leading-relaxed">
+              Pilih penanda hijau toska pada peta untuk menelaah koordinat wilayah, ibu kota provinsi, arsitektur rumah adat, serta pusaka tradisi dari Sabang sampai Merauke.
+            </p>
+          </div>
 
-          {/* Escape hatch mobile: chips wilayah selalu terlihat di bawah peta */}
-          {!regionsQ.loading && !regionsQ.error && (
-            <div className="mt-4 lg:hidden" aria-label="Daftar wilayah (versi sentuh)">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Atau pilih wilayah:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {regions.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => selectRegion(r)}
-                    aria-pressed={selected?.id === r.id}
-                    className={cn(
-                      "min-h-[44px] rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
-                      selected?.id === r.id
-                        ? "border-brand-teal bg-brand-teal text-white"
-                        : "border-brand-line bg-card text-foreground/80 hover:border-brand-teal/50 hover:text-brand-teal"
-                    )}
-                  >
-                    {r.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Indikator Cakupan */}
+          <div className="flex items-center gap-2.5 text-xs font-semibold text-[#2D1E12] bg-white/90 border border-[#DFD3C2] px-4 py-2 rounded-full shadow-2xs shrink-0 self-start md:self-auto">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-[#159D9A] ring-4 ring-[#159D9A]/15" />
+            <span>38 Provinsi Terpetakan</span>
+          </div>
         </div>
 
-        {/* ============ PANEL DETAIL ============ */}
-        <aside className="lg:col-span-4" aria-label="Detail wilayah">
-          {selected ? (
-            <Card className="overflow-hidden rounded-3xl border-brand-line">
-              <div className="bg-brand-gradient px-6 py-5 text-white">
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/75">
-                  {selected.islandGroup.replaceAll("_", " ")}
-                </p>
-                <h2 className="mt-1 text-xl font-extrabold">{selected.name}</h2>
-                {selected.capital && (
-                  <p className="mt-1 flex items-center gap-1.5 text-xs text-white/85">
-                    <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Ibu kota: {selected.capital}
-                  </p>
+        {/* ============ FILTER TAB KEPULAUAN (BERSIH TANPA EMOJI) ============ */}
+        <div className="mt-6 flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter kepulauan">
+          {ISLAND_FILTER_TABS.map((tab) => {
+            const isActive = selectedIsland === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setSelectedIsland(tab.id)}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer",
+                  isActive
+                    ? "btn-waranusa text-white shadow-sm"
+                    : "bg-white/85 text-stone-700 hover:bg-white hover:text-[#2D1E12] border border-[#DFD3C2]"
                 )}
-              </div>
-              <CardContent className="space-y-4 p-6">
-                <p className="text-sm font-semibold text-brand-ink">{selected.summary}</p>
-                {selected.description && (
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {selected.description}
-                  </p>
-                )}
-                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 text-brand-orange" aria-hidden="true" />
-                  <span>
-                    <strong className="font-bold text-brand-ink">
-                      {selected.itemCount ?? 0}
-                    </strong>{" "}
-                    objek budaya terdokumentasi
-                  </span>
-                </p>
-                <Button
-                  asChild
-                  className="w-full min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90"
-                >
-                  <a href={buildQuery("katalog", { region: selected.code })}>
-                    Lihat objek budaya wilayah ini
-                    <MoveRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <EmptyState
-              icon={MapPin}
-              title="Pilih penanda wilayah pada peta"
-              message="Detail wilayah, ringkasan, dan jumlah objek budaya akan tampil di sini."
-            />
-          )}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Chips wilayah selalu tersedia di panel kanan (desktop) */}
-          {!regionsQ.loading && !regionsQ.error && (
-            <div className="mt-5 hidden lg:block">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Semua wilayah
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {regions.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => selectRegion(r)}
-                    aria-pressed={selected?.id === r.id}
-                    className={cn(
-                      "min-h-[36px] rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors",
-                      selected?.id === r.id
-                        ? "border-brand-teal bg-brand-teal text-white"
-                        : "border-brand-line bg-card text-foreground/75 hover:border-brand-teal/50 hover:text-brand-teal"
-                    )}
-                  >
-                    {r.name}
-                  </button>
-                ))}
+        <div className="mt-6 grid gap-6 lg:grid-cols-12 lg:items-start">
+          {/* ============ PETA UTAMA & INDEKS WILAYAH ============ */}
+          <div className="lg:col-span-8 space-y-5">
+            <div className="overflow-hidden rounded-2xl border border-[#DFD3C2] shadow-md bg-white">
+              <IndonesiaMap
+                regions={allProvincesAsRegions}
+                selectedId={selectedRegion?.id ?? null}
+                onSelect={selectRegion}
+                className="w-full"
+              />
+            </div>
+
+            {/* Indeks Cepat Provinsi */}
+            <div className="rounded-2xl border border-[#DFD3C2] bg-white/90 backdrop-blur-xs p-4 sm:p-5 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-3.5 border-b border-stone-200/80">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-[#7A4B29]" />
+                  <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12]">
+                    Indeks Provinsi ({filteredProvinces.length} Wilayah)
+                  </h3>
+                </div>
+                <div className="relative w-full sm:w-64">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                  <Input
+                    type="search"
+                    placeholder="Cari provinsi, ibu kota, rumah adat..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-8 pl-8 text-xs rounded-full bg-[#FAF7F2] border-[#DFD3C2] focus-visible:ring-1 focus-visible:ring-[#6E472D]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1 nice-scroll">
+                {filteredProvinces.map((p) => {
+                  const isSelected = selectedRegion?.code === p.code;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        const target = allProvincesAsRegions.find((r) => r.code === p.code);
+                        if (target) selectRegion(target);
+                      }}
+                      className={cn(
+                        "rounded-lg border px-2.5 py-1 text-xs font-medium transition-all text-left cursor-pointer",
+                        isSelected
+                          ? "border-[#147A76] bg-[#147A76] text-white shadow-xs font-semibold"
+                          : "border-stone-200/90 bg-[#FAF7F2] text-stone-700 hover:border-[#6E472D]/40 hover:bg-white"
+                      )}
+                    >
+                      {p.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          )}
-        </aside>
+          </div>
+
+          {/* ============ PANEL KURATORIAL WILAYAH ============ */}
+          <aside ref={detailPanelRef} className="lg:col-span-4 scroll-mt-20" aria-label="Detail wilayah budaya">
+            {selectedRegion && selectedMeta ? (
+              <Card className="overflow-hidden rounded-2xl border-[#DFD3C2] shadow-lg bg-white py-0 gap-0">
+                {/* Header Panel Budaya — Gradasi Kayu Kopi Gelap ke Espresso */}
+                <div className="bg-gradient-to-br from-[#3C2517] via-[#2E1B10] to-[#1C1009] px-5 py-5 text-white border-b border-[#D4A843]/25">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-bold uppercase tracking-[0.18em] text-[#D4A843]">
+                      Kepulauan {selectedMeta.islandLabel}
+                    </span>
+                    <span className="text-stone-300/90 font-mono">
+                      {selectedMeta.lat.toFixed(3)}°, {selectedMeta.lng.toFixed(3)}°
+                    </span>
+                  </div>
+                  <h2 className="mt-2 font-serif text-2xl font-bold tracking-tight text-[#FAF6F0]">
+                    {selectedRegion.name}
+                  </h2>
+                  <p className="mt-1.5 flex items-center gap-1.5 text-xs text-stone-200">
+                    <Building2 className="h-3.5 w-3.5 text-[#D4A843]" aria-hidden="true" />
+                    <span>
+                      Ibu Kota Provinsi: <strong className="text-white">{selectedMeta.capital}</strong>
+                    </span>
+                  </p>
+                </div>
+
+                {/* Isi Panel dengan Pemisah Garis Tipis (Tanpa Tumpukan Kotak di Dalam Kotak) */}
+                <CardContent className="divide-y divide-[#EAE0D2] p-5 text-stone-800">
+                  <div className="pb-4">
+                    <h4 className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7A4B29] mb-1.5">
+                      Karakter Budaya &amp; Lanskap
+                    </h4>
+                    <p className="text-xs sm:text-sm leading-relaxed text-stone-700">
+                      {selectedMeta.summary}
+                    </p>
+                  </div>
+
+                  {/* Pusaka & Warisan Tradisi */}
+                  <div className="py-4">
+                    <h4 className="text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500 mb-2.5">
+                      Pusaka &amp; Warisan Tradisi Utama
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedMeta.culturalHighlights.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md bg-[#F7F2E8] px-2.5 py-1 text-xs font-medium text-[#2D1E12] border border-[#E2D6C5]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Arsitektur Adat 3D Terhubung */}
+                  <div className="py-4">
+                    <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-stone-500 font-bold mb-1">
+                      <span>Arsitektur Vernakular</span>
+                      <span className="font-mono text-[10px] text-[#147A76]">Model 3D Tersedia</span>
+                    </div>
+                    <p className="font-serif text-base font-bold text-[#2D1E12]">
+                      {selectedMeta.traditionalHouseTitle}
+                    </p>
+                    <Button
+                      asChild
+                      size="sm"
+                      className="mt-3 w-full rounded-xl btn-waranusa text-white text-xs font-bold shadow-xs"
+                    >
+                      <a href={`#/eksplorasi-3d?house=${selectedMeta.traditionalHouseSlug}&province=${encodeURIComponent(selectedRegion.name)}`}>
+                        <Box className="mr-1.5 h-3.5 w-3.5" />
+                        Bedah Struktur 3D di Ruang Pamer
+                        <ExternalLink className="ml-1.5 h-3 w-3" />
+                      </a>
+                    </Button>
+                  </div>
+
+                  {/* Instrumen Tradisional 3D Terhubung */}
+                  {matchingInstrument && (
+                    <div className="py-4 border-t border-[#E8DEC0]/80">
+                      <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-stone-500 font-bold mb-1">
+                        <span>Alat Musik Tradisional</span>
+                        <span className="font-mono text-[10px] text-[#7A4B29]">Studio 3D Tersedia</span>
+                      </div>
+                      <p className="font-serif text-base font-bold text-[#2D1E12]">
+                        {matchingInstrument.title}
+                      </p>
+                      <p className="text-[11px] text-stone-500 mt-0.5">
+                        {matchingInstrument.organologyLabel} &bull; Suku {matchingInstrument.ethnicGroup}
+                      </p>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="mt-3 w-full rounded-xl btn-waranusa text-white text-xs font-bold shadow-xs"
+                      >
+                        <a href={`#/eksplorasi-3d?instrument=${matchingInstrument.id}&tab=instruments`}>
+                          <Music4 className="mr-1.5 h-3.5 w-3.5" />
+                          Mainkan {matchingInstrument.title} di Studio 3D
+                          <ExternalLink className="ml-1.5 h-3 w-3" />
+                        </a>
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Tombol Ensiklopedia & Katalog */}
+                  <div className="pt-4 space-y-2">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full rounded-xl border-[#D5C6B2] text-[#2D1E12] hover:bg-[#FAF7F2] text-xs font-semibold"
+                    >
+                      <a href={`#/budaya/${selectedMeta.traditionalHouseSlug}`}>
+                        Baca Ensiklopedia {selectedMeta.traditionalHouseTitle}
+                        <MoveRight className="ml-1.5 h-3.5 w-3.5" />
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="rounded-2xl border-[#DFD3C2] bg-white/95 p-6 shadow-sm text-center flex flex-col items-center justify-center min-h-[380px]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#147A76]/15 to-[#D4A843]/15 border border-[#147A76]/25 mb-4">
+                  <MapPin className="h-6 w-6 text-[#147A76]" />
+                </div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29]">
+                  Panduan Peta
+                </p>
+                <h3 className="mt-1 font-serif text-lg font-bold text-[#2D1E12]">
+                  Pilih Provinsi pada Peta
+                </h3>
+                <p className="mt-2 max-w-xs text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  Klik salah satu dari 38 titik penanda hijau toska pada peta atau pilih nama provinsi dari indeks di bawah peta untuk membuka rincian budaya daerah.
+                </p>
+              </Card>
+            )}
+          </aside>
+        </div>
       </div>
     </div>
   );

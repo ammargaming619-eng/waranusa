@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export function BrandMark({ className }: { className?: string }) {
   return (
     <img
-      src="/images/brand/waranusa-logo.png?v=2"
+      src="/images/brand/waranusa-logo.png?v=3"
       alt="Logo WaraNusa"
       className={cn("h-10 w-auto sm:h-11 object-contain select-none drop-shadow-sm", className)}
       aria-hidden="true"
@@ -31,7 +31,7 @@ export function BrandLogo({
         aria-label="WaraNusa — Beranda"
       >
         <img
-          src="/images/brand/waranusa-logo.png?v=2"
+          src="/images/brand/waranusa-logo.png?v=3"
           alt="Logo WaraNusa"
           className="h-8 w-auto sm:h-11 max-h-12 object-contain transition-all duration-300 group-hover:scale-108 group-hover:drop-shadow-[0_4px_14px_rgba(212,175,55,0.45)] drop-shadow-sm shrink-0"
         />
@@ -66,7 +66,7 @@ export function BrandLogo({
               dark ? "text-white/70" : "text-stone-600"
             )}
           >
-            Pelestarian Budaya Nusantara
+            Pelestarian Warisan Nusantara
           </span>
         </span>
       )}

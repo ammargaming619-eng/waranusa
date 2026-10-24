@@ -1,15 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { HashLink as Link } from "@/components/shared/hash-link";
-import { navigate } from "@/lib/router";
-import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { navigate } from "@/lib/router";
 
-export interface CulturalTag {
+interface CulturalTag {
   id: string;
   region: string;
   title: string;
@@ -25,68 +31,68 @@ export const CULTURAL_TAGS: CulturalTag[] = [
   {
     id: "sumbar",
     region: "Sumatra Barat",
-    title: "Rumah Gadang",
+    title: "Rumah Gadang & Saluang",
     image: "/uploads/seed/rumah-gadang.png",
     description:
-      "Arsitektur khas Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang tinggi, dinding ukiran sarat falsafah alam, dan ketahanan terhadap gempa bumi.",
-    routeHref: "#/budaya/rumah-gadang",
+      "Arsitektur vernakular Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang tinggi, bersanding dengan alunan syahdu tiupan bambu instrumen Saluang.",
+    routeHref: "#/eksplorasi-3d",
     pin: { x: 17.2, y: 56.5 },
     card: { x: 17.5, y: 48.5 },
   },
   {
     id: "kalimantan",
     region: "Kalimantan",
-    title: "Rumah Bentang & Tameng",
+    title: "Rumah Betang & Sape'",
     image: "/uploads/seed/rumah-betang.png",
     description:
-      "Rumah Betang panggung suku Dayak dari kayu ulin kokoh sebagai pusat kebersamaan komunitas adat, berdampingan dengan tameng Talawang bermotif magis penjaga rimba Borneo.",
-    routeHref: "#/katalog?wilayah=ID-KB",
+      "Arsitektur panggung kayu ulin suku Dayak sebagai pusat kebersamaan komunitas adat, bersanding dengan petikan dawai merdu instrumen Sape'.",
+    routeHref: "#/eksplorasi-3d",
     pin: { x: 44.5, y: 44.5 },
     card: { x: 47.0, y: 35.5 },
   },
   {
     id: "jogja",
     region: "Yogyakarta",
-    title: "Wayang & Batik",
-    image: "/uploads/seed/wayang-kulit.png",
+    title: "Bangsal Kencono & Gamelan Bonang",
+    image: "/uploads/seed/gamelan.png",
     description:
-      "Warisan agung mahakarya kemanusiaan dunia UNESCO: filosofi kehidupan dalam lakon Wayang Kulit dan kehalusan motif Batik tulis Kraton Yogyakarta.",
-    routeHref: "#/budaya/batik",
+      "Arsitektur adiluhung Kraton Ngayogyakarta beratap lambang gantung bertingkat, bersanding dengan deretan gong perunggu penata gending Gamelan Bonang berlaras Pelog dan Slendro.",
+    routeHref: "#/instrumen",
     pin: { x: 35.8, y: 73.5 },
-    card: { x: 32.5, y: 84.5 },
-    dashedLine: { from: { x: 35.8, y: 73.5 }, to: { x: 34.0, y: 79.5 } },
+    card: { x: 31.0, y: 84.5 },
+    dashedLine: { from: { x: 35.8, y: 73.5 }, to: { x: 32.5, y: 79.5 } },
   },
   {
     id: "bali",
     region: "Bali",
-    title: "Tari Tradisional",
+    title: "Seni Tari & Gamelan Bali",
     image: "/uploads/seed/tari-bali.png",
     description:
-      "Gerak ekspresif mata (seledet), liukan jemari mudra, dan ritme dinamis gamelan gong kebyar yang menyatu dalam persembahan sakral seni tari Pulau Dewata.",
-    routeHref: "#/budaya/kecak",
+      "Gerak ekspresif mata (seledet), liukan jemari anggun berbusana prada emas, dan persembahan sakral seni tari Pulau Dewata yang menyatu dalam ritme dinamis gamelan.",
+    routeHref: "#/eksplorasi-3d",
     pin: { x: 46.2, y: 76.5 },
-    card: { x: 46.5, y: 86.5 },
-    dashedLine: { from: { x: 46.2, y: 76.5 }, to: { x: 46.4, y: 81.5 } },
+    card: { x: 54.0, y: 86.5 },
+    dashedLine: { from: { x: 46.2, y: 76.5 }, to: { x: 51.0, y: 81.5 } },
   },
   {
     id: "sulsel",
     region: "Sulawesi Selatan",
-    title: "Kapal Pinisi",
+    title: "Kapal Pinisi & Keso-Keso",
     image: "/uploads/seed/kapal-pinisi.png",
     description:
-      "Mahakarya pelaut ulung Bugis-Makassar yang dirakit dari kayu bitti tanpa paku besi, mengarungi samudera dunia dengan tujuh hingga delapan layar megah.",
-    routeHref: "#/katalog?wilayah=ID-SN",
+      "Mahakarya maritim pelaut ulung Bugis-Makassar warisan dunia UNESCO yang dirakit dari kayu bitti tanpa paku besi, bersanding dengan alunan gesekan dawai instrumen Keso-Keso khas Sulawesi Selatan.",
+    routeHref: "#/eksplorasi-3d",
     pin: { x: 53.2, y: 65.5 },
     card: { x: 59.5, y: 59.5 },
   },
   {
     id: "papua",
     region: "Papua",
-    title: "Rumah Honai & Noken",
+    title: "Rumah Honai & Tifa",
     image: "/uploads/seed/honai-noken.png",
     description:
-      "Rumah bundar jerami Honai lembah Baliem penahan hawa dingin pegunungan salju tropis, bersanding dengan rajutan Noken serat kayu simbol kehidupan ibu bumi Papua.",
-    routeHref: "#/katalog?wilayah=ID-PA",
+      "Arsitektur bundar beratap jerami penahan dingin pegunungan Baliem dan dentuman ritme sakral alat musik Tifa khas Papua.",
+    routeHref: "#/eksplorasi-3d",
     pin: { x: 86.8, y: 61.5 },
     card: { x: 84.5, y: 51.5 },
   },
@@ -96,84 +102,80 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
   const [activeTag, setActiveTag] = useState<CulturalTag | null>(null);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 
-  const scrollToSection = () => {
-    const el = document.getElementById("fitur");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    } else {
-      navigate("/jelajah");
-    }
-  };
-
   return (
-    <div className="w-full overflow-x-clip">
+    <div className="w-full select-none overflow-x-clip px-2 sm:px-4 md:px-6">
       {/* ========================================================================= */}
-      {/* HEADER JUDUL & CTA: DI ATAS PETA PADA MOBILE, MELAYANG DI ATAS PETA PADA MD+ */}
+      {/* KANVAS PETA NUSANTARA TERPADU — BINGKAI KARTOGRAFI GANDA (DOUBLE NEATLINE) */}
       {/* ========================================================================= */}
-      <div className="relative z-20 pt-2 sm:pt-4 md:pt-6 lg:pt-8 px-4 text-center max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto mb-4 md:mb-0">
-        <motion.div
-          initial={introRevealed ? { opacity: 0, y: 24 } : false}
-          animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
-          transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {/* Badge Kemitraan Pelestarian Budaya & SDGs */}
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-800/20 bg-amber-500/10 px-3.5 py-1 text-[11px] sm:text-xs font-semibold text-[#8C5E3C] mb-2.5 sm:mb-3 shadow-xs">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-            <span>Digital Cultural Heritage &bull; SDG 11.4 &bull; SDG 4</span>
-          </div>
+      <div className="relative w-full max-w-[1560px] mx-auto rounded-2xl sm:rounded-3xl border-2 border-[#CBB8A1] bg-gradient-to-b from-[#FAF4EB]/85 to-[#F5ECE0]/85 p-1.5 sm:p-2.5 shadow-[0_16px_50px_rgba(110,71,45,0.08)] overflow-hidden aspect-[1024/720] sm:aspect-[1024/620] md:aspect-[1024/572] select-none">
+        {/* BINGKAI GARIS DALAM (INNER NEATLINE BORDER SESUAI REFERENSI PENGGUNA) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-1.5 sm:inset-2.5 rounded-xl sm:rounded-2xl border border-[#CBB8A1] z-10"
+        />
 
-          <h1
-            id="hero-title"
-            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#2D1E12] leading-[1.15] drop-shadow-xs"
-          >
-            Kenali Akar, Jelajahi Budaya
-          </h1>
-          <p className="mt-1.5 sm:mt-2.5 md:mt-3 text-xs sm:text-sm md:text-base lg:text-lg text-stone-700 max-w-xl mx-auto font-medium">
-            Dari Sabang hingga Merauke, setiap tradisi punya cerita.
-          </p>
-        </motion.div>
+        {/* POLA KOTAK GRID KARTOGRAFI DIGITAL */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 opacity-55 bg-[linear-gradient(to_right,#8C5E3C18_1px,transparent_1px),linear-gradient(to_bottom,#8C5E3C18_1px,transparent_1px)] bg-[size:36px_36px] sm:bg-[size:52px_52px] md:bg-[size:64px_64px]"
+        />
 
-        {/* Tombol CTA: Mulai Jelajahi & Lihat Peta */}
-        <motion.div
-          initial={introRevealed ? { opacity: 0, y: 18, scale: 0.95 } : false}
-          animate={introRevealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
-          transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-3 sm:mt-4 md:mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
-        >
-          <Button
-            asChild
-            size="lg"
-            className="rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-white px-5 sm:px-7 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg transition-all min-h-[44px]"
-          >
-            <Link href="#/jelajah" className="flex items-center gap-2">
-              Mulai Jelajahi
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </Button>
-
-          <Button
-            type="button"
-            onClick={scrollToSection}
-            size="lg"
-            variant="outline"
-            className="rounded-full border border-stone-400/60 bg-white/80 hover:bg-white text-stone-800 px-5 sm:px-6 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-xs hover:shadow-sm transition-all min-h-[44px]"
-          >
-            Lihat Peta
-          </Button>
-        </motion.div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* KANVAS PETA NUSANTARA — TIDAK GEPENG & RESPONSIF DI SEMUA LAYAR           */}
-      {/* ========================================================================= */}
-      <div className="relative w-full max-w-[1560px] mx-auto aspect-[16/10] sm:aspect-[16/9] md:aspect-[1024/572] min-h-[220px] sm:min-h-[300px] select-none">
-        {/* GAMBAR PETA SEBAGAI FULL BACKGROUND (object-contain agar tidak pernah terdistorsi / gepeng) */}
+        {/* GAMBAR PETA SEBAGAI FULL BACKGROUND (object-contain agar pulau presisi 100%) */}
         <img
-          src="/images/indonesia-map-earth.png?v=4"
+          src="/images/indonesia-map-batik.png?v=7"
           alt="Peta Budaya Kepulauan Nusantara WaraNusa"
           className="absolute inset-0 h-full w-full object-contain object-center pointer-events-none select-none drop-shadow-sm"
           loading="eager"
         />
+
+        {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
+        <div className="relative z-20 pt-3 sm:pt-5 md:pt-6 lg:pt-8 px-4 text-center max-w-2xl sm:max-w-4xl lg:max-w-5xl mx-auto">
+          <motion.div
+            initial={introRevealed ? { opacity: 0, y: 22 } : false}
+            animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
+            transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h1
+              id="hero-title"
+              className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold tracking-tight text-[#2D1E12] leading-tight drop-shadow-xs whitespace-nowrap"
+            >
+              Jelajahi Ragam Budaya Nusantara
+            </h1>
+            <p className="mt-1 sm:mt-2 md:mt-2.5 text-xs sm:text-sm md:text-base text-stone-700 max-w-xl mx-auto font-medium whitespace-nowrap sm:whitespace-normal">
+              Dari Sabang hingga Merauke, setiap tradisi punya cerita.
+            </p>
+          </motion.div>
+
+          {/* Tombol CTA: Peta 38 Provinsi & Katalog Budaya */}
+          <motion.div
+            initial={introRevealed ? { opacity: 0, y: 16, scale: 0.95 } : false}
+            animate={introRevealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
+            transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
+          >
+            <Button
+              asChild
+              size="lg"
+              className="btn-waranusa rounded-full px-5 sm:px-7 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg min-h-[44px]"
+            >
+              <Link href="#/jelajah" className="flex items-center gap-2">
+                Peta 38 Provinsi
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-full border border-stone-400/60 bg-white/85 hover:bg-white text-stone-800 px-5 sm:px-6 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-xs hover:shadow-sm transition-all min-h-[44px]"
+            >
+              <Link href="#/katalog" className="flex items-center gap-2">
+                Katalog Budaya
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
 
         {/* Garis-Garis Petunjuk SVG Relatif (Hanya di layar MD+ agar bersih di layar kecil) */}
         <svg
@@ -204,7 +206,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
           return (
             <div key={tag.id} className="contents">
-              {/* Pin Penanda Lokasi Peta (Touch-friendly min 44x44px target) */}
+              {/* Pin Penanda Lokasi Peta (Touch-friendly target) */}
               <div
                 className="absolute z-20 -translate-x-1/2 -translate-y-full transition-transform duration-300"
                 style={{
@@ -219,29 +221,33 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   onMouseLeave={() => setHoveredTag(null)}
                   aria-label={`Lihat budaya ${tag.title} (${tag.region})`}
                   className={cn(
-                    "group flex items-center justify-center min-w-[40px] min-h-[40px] p-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full",
-                    isHovered ? "scale-125" : "hover:scale-115 active:scale-95"
+                    "flex flex-col items-center group/pin focus:outline-none p-1.5",
+                    isHovered ? "scale-115" : "hover:scale-110"
                   )}
                 >
-                  <svg width="22" height="30" viewBox="0 0 24 32" fill="none" className="drop-shadow-md">
-                    <path
-                      d="M12 0C5.37258 0 0 5.37258 0 12C0 19.5 12 32 12 32C12 32 24 19.5 24 12C24 5.37258 18.6274 0 12 0Z"
-                      fill="#6B4931"
-                      className="transition-colors group-hover:fill-[#53341E]"
-                    />
-                    <circle cx="12" cy="11" r="4.5" fill="#FDFBF7" />
-                  </svg>
-                  {isHovered && (
-                    <span className="absolute -bottom-1 h-2 w-4 rounded-full bg-stone-900/20 blur-[1px] animate-pulse" />
-                  )}
+                  <div
+                    className={cn(
+                      "flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-full shadow-lg border-2 border-white transition-all duration-300",
+                      isHovered
+                        ? "bg-[#482B18] text-white ring-4 ring-[#482B18]/30"
+                        : "bg-[#53341E] text-[#F4EAD4] group-hover/pin:bg-[#3D2514]"
+                    )}
+                  >
+                    <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white shadow-xs" />
+                  </div>
+                  <div className="w-1.5 h-1.5 bg-[#53341E] rotate-45 -mt-1 shadow-xs" />
                 </button>
               </div>
 
-              {/* Floating Glassmorphism Cultural Card (Khusus Tampilan Desktop & Tablet md+) */}
+              {/* Kartu Pratinjau Budaya Melayang (Desktop / Layar Lebar md+) */}
               <motion.div
-                initial={introRevealed ? { opacity: 0, y: 14 } : false}
-                animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
-                transition={{ duration: 0.55, delay: 0.75 + idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                initial={introRevealed ? { opacity: 0, scale: 0.88, y: 12 } : false}
+                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : undefined}
+                transition={{
+                  delay: 0.7 + idx * 0.1,
+                  duration: 0.55,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 className={cn(
                   "hidden md:block absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
                   isHovered ? "z-40" : "z-30"
@@ -250,8 +256,6 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   left: `${tag.card.x}%`,
                   top: `${tag.card.y}%`,
                 }}
-                onMouseEnter={() => setHoveredTag(tag.id)}
-                onMouseLeave={() => setHoveredTag(null)}
               >
                 <button
                   type="button"
@@ -267,7 +271,6 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                       src={tag.image}
                       alt={tag.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
                     />
                   </div>
 
@@ -361,7 +364,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                     setActiveTag(null);
                     navigate(activeTag.routeHref.replace("#", ""));
                   }}
-                  className="rounded-full bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] text-white hover:brightness-110"
+                  className="btn-waranusa rounded-full px-6 py-2.5 font-bold shadow-md text-white hover:brightness-110 active:scale-95 transition-all"
                 >
                   Jelajahi Detail Budaya
                   <ExternalLink className="ml-1.5 h-4 w-4" />

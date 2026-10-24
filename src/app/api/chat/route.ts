@@ -74,7 +74,7 @@ async function getCulturalCatalogContext(): Promise<string> {
 }
 
 function buildSystemPrompt(culturalContext: string): string {
-  return `Anda adalah "Karsa", asisten dan kurator AI resmi untuk platform WaraNusa (Platform Eksplorasi & Pelestarian Budaya Nusantara Indonesia).
+  return `Anda adalah "Karsa", asisten dan kurator AI resmi untuk platform WaraNusa (Platform Eksplorasi & Pelestarian Warisan Nusantara Indonesia).
 
 Karakter & Gaya Komunikasi:
 - Ramah, hangat, santun, berwawasan luas, dan bangga akan warisan budaya Indonesia.

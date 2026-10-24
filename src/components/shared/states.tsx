@@ -72,21 +72,58 @@ export function SectionHeading({
   title,
   description,
   align = "left",
+  variant = "light",
+  titleClassName,
   className,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
+  variant?: "light" | "dark" | "maroon-sans";
+  titleClassName?: string;
   className?: string;
 }) {
+  const isDark = variant === "dark";
+  const isMaroonSans = variant === "maroon-sans";
   return (
     <div className={cn("space-y-2", align === "center" && "text-center mx-auto max-w-2xl", className)}>
       {eyebrow && (
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8C5E3C]">{eyebrow}</p>
+        <div
+          className={cn(
+            "flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em]",
+            align === "center" && "justify-center",
+            isDark ? "text-[#D4A843]" : "text-[#7A4B29]"
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className={cn("inline-block h-[1.5px] w-6", isDark ? "bg-[#D4A843]/70" : "bg-[#7A4B29]/70")}
+          />
+          <span>{eyebrow}</span>
+        </div>
       )}
-      <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#2D1E12]">{title}</h2>
-      {description && <p className="text-muted-foreground md:text-lg text-balance">{description}</p>}
+      <h2
+        className={cn(
+          isMaroonSans
+            ? "font-sans text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-[#482B18]"
+            : "font-serif text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight",
+          !isMaroonSans && (isDark ? "text-[#FAF6F0]" : "text-[#2D1E12]"),
+          titleClassName
+        )}
+      >
+        {title}
+      </h2>
+      {description && (
+        <p
+          className={cn(
+            "text-sm md:text-base leading-relaxed text-balance",
+            isDark ? "text-stone-300" : "text-stone-600"
+          )}
+        >
+          {description}
+        </p>
+      )}
     </div>
   );
 }

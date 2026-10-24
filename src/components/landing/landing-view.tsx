@@ -2,9 +2,10 @@
 
 /**
  * WaraNusa — LandingView (Beranda Publik)
- * Tema "Earthy Nusantara": palet krem hangat, kontur topografi elegan,
- * floating glassmorphism navbar, judul serif anggun, dan peta interaktif
- * kepulauan bernuansa kayu/terakota dengan kartu pin budaya melayang.
+ * Tema "Editorial & Museum Digital Nusantara":
+ * Ritme kontras ruang pamer (Lontar Hangat & Dark Exhibition Stage),
+ * aksen Merah Marun Songket & Emas Gamelan selaras dengan logo WaraNusa,
+ * serta tipografi editorial bersih tanpa elemen dekoratif berlebihan.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { HashLink as Link } from "@/components/shared/hash-link";
@@ -15,13 +16,11 @@ import {
   Box,
   Compass,
   ImageOff,
+  Landmark,
+  MessageSquarePlus,
   Music4,
   Play,
   ShieldCheck,
-  MessageSquarePlus,
-  GraduationCap,
-  Globe,
-  Cpu,
   Sparkles,
 } from "lucide-react";
 import { api } from "@/lib/api-client";
@@ -32,37 +31,103 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
+import { CultureCardCarousel } from "@/components/landing/culture-card-carousel";
+import { HOUSES_38_CATALOGUE } from "@/data/traditional-houses";
+import { INSTRUMENTS_38_CATALOGUE } from "@/data/instruments-data";
 import dynamic from "next/dynamic";
 import type { CulturalItem } from "@/lib/types";
+import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
+import { cn } from "@/lib/utils";
+
+void MessageSquarePlus;
+void Sparkles;
+void HeroImage;
 
 const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ssr: false,
-  loading: () => <Skeleton className="h-[380px] w-full rounded-2xl" />,
+  loading: () => <Skeleton className="h-[480px] w-full rounded-2xl bg-stone-800/60" />,
 });
 
-const FALLBACK_LANDING_GADANG: CulturalItem = {
-  id: "seed-rumah-gadang-landing",
-  slug: "rumah-gadang",
-  title: "Rumah Gadang",
-  summary: "Arsitektur khas Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang megah.",
-  description: "Rumah Gadang adalah rumah adat tradisional suku Minangkabau di Sumatera Barat.",
+const Instrument3DStage = dynamic(
+  () =>
+    import("@/components/three/instrument-3d-stage").then((m) => m.Instrument3DStage),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[460px] w-full rounded-2xl bg-[#EADBCC]/60" />,
+  }
+);
+
+const SARON_DEMUNG_DATA =
+  INSTRUMENTS_38_CATALOGUE.find((inst) => inst.id === "saron-demung-jateng") ??
+  INSTRUMENTS_38_CATALOGUE[0];
+
+const JOGLO_HOUSE_DATA = HOUSES_38_CATALOGUE.find((h) => h.id === "joglo");
+
+const FALLBACK_LANDING_JOGLO: CulturalItem = JOGLO_HOUSE_DATA?.fallbackItem ?? {
+  id: "seed-joglo-landing",
+  slug: "joglo",
+  title: "Joglo",
+  summary:
+    "Mahakarya arsitektur kayu Jawa bertingkat tumpangsari yang dipikul oleh empat pilar saka guru tanpa paku besi.",
+  description:
+    "Rumah Joglo merupakan manifestasi filosofi hidup orang Jawa yang memadukan ruang terbuka egaliter di pendapa dengan ruang sakral.",
   status: "PUBLISHED",
   featured: true,
-  viewCount: 120,
-  category: { id: "cat-arsitektur", slug: "arsitektur", name: "Arsitektur", createdAt: "2026-01-01", updatedAt: "2026-01-01" },
-  region: { id: "ID-SB", code: "ID-SB", name: "Sumatera Barat", islandGroup: "SUMATERA", summary: "Ranah Minang", lat: -0.7399, lng: 100.8000, createdAt: "2026-01-01", updatedAt: "2026-01-01" },
+  viewCount: 150,
+  category: {
+    id: "cat-arsitektur",
+    slug: "arsitektur",
+    name: "Arsitektur",
+    createdAt: "2026-01-01",
+    updatedAt: "2026-01-01",
+  },
+  region: {
+    id: "ID-JT",
+    code: "ID-JT",
+    name: "Jawa Tengah",
+    islandGroup: "JAWA",
+    summary: "Jawa Tengah",
+    lat: -7.0,
+    lng: 110.4,
+    createdAt: "2026-01-01",
+    updatedAt: "2026-01-01",
+  },
+  modelMedia: {
+    id: "model-joglo-landing",
+    name: "Joglo 3D",
+    type: "MODEL_3D",
+    format: "glb",
+    mimeType: "model/gltf-binary",
+    size: 2500000,
+    storagePath: "/api/models/houses/jawa-tengah.glb",
+    url: "/api/models/houses/jawa-tengah.glb",
+    attribution: "Digitalisasi Warisan 3D WaraNusa",
+  },
   hotspots: [
-    { id: "h1", itemId: "seed-rumah-gadang-landing", title: "Atap Gonjong", description: "Bentuk atap melengkung menyerupai tanduk kerbau dari ijuk", x: 0, y: 1.2, z: 0, published: true },
-    { id: "h2", itemId: "seed-rumah-gadang-landing", title: "Tiang Kokoh", description: "Konstruksi pasak kayu tanpa paku tahan terhadap gempa", x: -0.8, y: 0.1, z: 0.5, published: true },
+    {
+      id: "h1",
+      itemId: "seed-joglo-landing",
+      title: "Saka Guru",
+      description: "Empat tiang penyangga utama penopang struktur atap tumpangsari bertingkat",
+      x: 0,
+      y: 0.8,
+      z: 0,
+      published: true,
+    },
+    {
+      id: "h2",
+      itemId: "seed-joglo-landing",
+      title: "Atap Tajug",
+      description: "Bentuk atap Tajug piramidal bertingkat melambangkan kedewasaan spiritual",
+      x: 0,
+      y: 1.5,
+      z: 0,
+      published: true,
+    },
   ],
   createdAt: "2026-01-01",
   updatedAt: "2026-01-01",
 };
-import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
-import { cn } from "@/lib/utils";
-
-const DEFAULT_ABOUT =
-  "WaraNusa adalah platform dokumentasi budaya Indonesia yang transparan sumbernya: jelajahi peta wilayah, katalog objek budaya, model 3D, dan instrumen musik virtual — semuanya terbuka untuk dipelajari dan dikontribusikan siapa pun.";
 
 /** Gambar dengan fallback gradient hangat bila aset belum tersedia */
 function HeroImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -73,7 +138,7 @@ function HeroImage({ src, alt, className }: { src: string; alt: string; classNam
         role="img"
         aria-label={alt}
         className={cn(
-          "flex items-center justify-center rounded-3xl bg-gradient-to-br from-[#8C5E3C]/30 via-[#CBB59D]/40 to-[#785032]/30",
+          "flex items-center justify-center rounded-3xl bg-gradient-to-br from-[#6E472D]/20 via-[#CBB59D]/40 to-[#482B18]/30",
           className
         )}
       >
@@ -94,23 +159,23 @@ function HeroImage({ src, alt, className }: { src: string; alt: string; classNam
 const FEATURES = [
   {
     icon: Compass,
-    title: "Peta Wilayah Budaya",
-    desc: "Temukan asal-usul setiap objek pada peta interaktif Nusantara — dari Sumatera hingga Papua — lengkap dengan ringkasan tiap wilayah.",
+    title: "Peta 38 Wilayah Budaya",
+    desc: "Temukan asal-usul setiap objek pada peta interaktif 38 provinsi — dari Sumatera hingga Papua — lengkap dengan ibu kota dan pusaka tiap daerah.",
   },
   {
     icon: BookOpen,
     title: "Dokumentasi Bersumber",
-    desc: "Setiap artikel dilengkapi rujukan: buku, jurnal, situs museum, atau arsip — dapat diverifikasi langsung dari halaman objek.",
+    desc: "Setiap artikel dilengkapi rujukan buku, jurnal ilmiah, situs museum, atau arsip yang dapat diverifikasi langsung dari halaman objek.",
   },
   {
     icon: Box,
-    title: "Pengalaman 3D Interaktif",
-    desc: "Putar dan perbesar model tiga dimensi rumah adat dan artefak, dengan titik-titik penjelasan pada bagian pentingnya.",
+    title: "Ruang Pamer 3D Interaktif",
+    desc: "Putar dan perbesar model tiga dimensi rumah adat serta artefak, lengkap dengan titik penjelasan anatomi pada struktur utamanya.",
   },
   {
     icon: Music4,
-    title: "Instrumen Musik Virtual",
-    desc: "Mainkan replika digital instrumen nusantara langsung dari peramban — cara menyenangkan mengenal nada dan laras.",
+    title: "Atelier Musik Virtual",
+    desc: "Mainkan replika digital instrumen nusantara langsung dari peramban untuk mengenal tangga nada, laras, dan organologi akustiknya.",
   },
 ] as const;
 
@@ -130,14 +195,14 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
     return {
       data: {
         published: itemsRes.meta?.total ?? 0,
-        regions: regionsRes.data.length,
+        regions: Math.max(regionsRes.data.length, 38),
         categories: categoriesRes.data.length,
       },
     };
   }, []);
 
-  // ---- Sorotan budaya (featured dulu) ----
-  const highlights = useAsyncData(() => api.items.list({ pageSize: 3, sort: "newest" }), []);
+  // ---- Sorotan budaya (featured dulu, muat 7 item untuk panggung 3D carousel) ----
+  const highlights = useAsyncData(() => api.items.list({ pageSize: 7, sort: "newest" }), []);
   const highlightItems = useMemo(
     () =>
       highlights.data
@@ -146,42 +211,30 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
     [highlights.data]
   );
 
-  // ---- Preview 3D: rumah gadang ----
-  const gadang = useAsyncData(() => api.items.detail("rumah-gadang"), []);
-
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative min-h-screen bg-[#FCF8EC] text-stone-900 selection:bg-[#8C5E3C] selection:text-white">
+      <div className="relative min-h-screen bg-[#FDFBF7] text-stone-900 selection:bg-[#6E472D] selection:text-white">
         {/* ========================================================================= */}
-        {/* HERO SECTION — EARTHY NUSANTARA (FULL BACKGROUND MAP)                     */}
+        {/* HERO SECTION — GRADASI LONTAR HANGAT DENGAN SOROTAN CAHAYA RADIAL         */}
         {/* ========================================================================= */}
         <section
-          className="relative w-full overflow-hidden pt-20 sm:pt-24 lg:pt-28 pb-4 sm:pb-8 bg-[#FCF8EC]"
+          className="relative w-full overflow-hidden pt-16 sm:pt-20 lg:pt-22 pb-2 sm:pb-4 bg-[radial-gradient(ellipse_85%_60%_at_50%_38%,#FCF7EB_0%,#F6EEE0_55%,#EDE1CE_100%)]"
           aria-labelledby="hero-title"
         >
           <div id="peta-nusantara" className="relative w-full">
             <ArchipelagoEarthMap introRevealed={introRevealed} />
           </div>
-
-          {/* Floating Feedback Pill (Pojok Kanan Bawah) */}
-          <div className="fixed bottom-6 right-6 z-40 hidden lg:flex items-center">
-            <button
-              type="button"
-              onClick={() => navigate("/kontribusi")}
-              className="flex items-center gap-2.5 rounded-full bg-white/95 backdrop-blur-md px-5 py-2.5 text-sm sm:text-base font-bold text-stone-800 shadow-lg border border-stone-200/90 hover:bg-white hover:border-[#8C5E3C] hover:text-[#8C5E3C] hover:shadow-xl hover:scale-105 transition-all cursor-pointer"
-            >
-              <MessageSquarePlus className="h-4 w-4 sm:h-5 sm:w-5 text-[#8C5E3C]" />
-              <span>Floating feedback</span>
-            </button>
-          </div>
         </section>
 
-        {/* ================= STRIP STATISTIK ================= */}
-        <section aria-label="Statistik platform" className="border-y border-stone-200 bg-[#FAF7F2]">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
+        {/* ================= STRIP STATISTIK EDITORIAL ================= */}
+        <section
+          aria-label="Statistik platform"
+          className="border-y border-[#DFD3C2] bg-gradient-to-r from-[#F8F2E7] via-[#F2E8D7] to-[#F8F2E7]"
+        >
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-9 sm:px-6 md:grid-cols-4 md:divide-x md:divide-[#DFD3C2] lg:px-8">
             {stats.loading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="space-y-2">
+                <div key={i} className="space-y-2 md:px-6 first:md:pl-0">
                   <Skeleton className="h-9 w-20" />
                   <Skeleton className="h-4 w-32" />
                 </div>
@@ -193,20 +246,36 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
             ) : (
               stats.data && (
                 <>
-                  <Stat value={stats.data.published} label="Objek budaya terpublikasi" delay={0.05} />
-                  <Stat value={stats.data.regions} label="Wilayah terpetakan" delay={0.15} />
-                  <Stat value={stats.data.categories} label="Kategori budaya" delay={0.25} />
+                  <Stat
+                    value={stats.data.published}
+                    label="Objek budaya terpublikasi"
+                    delay={0.05}
+                    className="md:pr-6"
+                  />
+                  <Stat
+                    value={stats.data.regions}
+                    label="Provinsi terpetakan penuh"
+                    delay={0.15}
+                    className="md:px-6"
+                  />
+                  <Stat
+                    value={stats.data.categories}
+                    label="Rumpun kategori budaya"
+                    delay={0.25}
+                    className="md:px-6"
+                  />
                   <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: 0.35 }}
+                    className="md:pl-6"
                   >
                     <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
                       <AnimatedCounter value={100} suffix="%" duration={1.6} />
                     </p>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 font-medium">
-                      <ShieldCheck className="h-4 w-4 text-[#8C5E3C]" aria-hidden="true" />
+                    <p className="mt-1.5 flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 font-medium">
+                      <ShieldCheck className="h-4 w-4 text-[#7A4B29]" aria-hidden="true" />
                       Konten bersumber rujukan
                     </p>
                   </motion.div>
@@ -216,297 +285,145 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
           </div>
         </section>
 
-        {/* ================= FITUR UTAMA ================= */}
-        <section id="fitur" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8" aria-labelledby="fitur-title">
-          <SectionHeading
-            eyebrow="Apa yang bisa Anda lakukan"
-            title="Fitur Utama WaraNusa"
-            description="Empat pintu masuk untuk mengenal kekayaan tradisi Nusantara — dirancang untuk pelajar, pendidik, dan siapa pun yang ingin merawat akarnya."
-          />
-          <ul className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
-            {FEATURES.map((f, i) => (
-              <motion.li
-                key={f.title}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="flex gap-4 border-t border-stone-200 pt-6"
-              >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EFE8DE] text-[#6E472D] shadow-sm">
-                  <f.icon className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-serif text-xs font-bold tracking-widest text-[#8C5E3C]">
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-0.5 text-lg font-bold text-[#2D1E12]">{f.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{f.desc}</p>
-                </div>
-              </motion.li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ================= CURVED RIBBON TICKER & FLOATING SHAPES ================= */}
+        {/* ================= CURVED RIBBON TICKER (SESUAI REFERENSI, ORGANIK TANPA KOTAK) ================= */}
         <NusantaraCurvedTicker />
 
-        {/* ================= SOROTAN BUDAYA ================= */}
-        <section className="bg-[#FAF7F2] border-b border-stone-200" aria-labelledby="sorotan">
+        {/* ================= FITUR UTAMA (EDITORIAL LAYOUT - TERANG BERSIH) ================= */}
+        <section
+          id="fitur"
+          className="relative bg-[#FAF7F2] border-b border-[#E8DDD0]"
+          aria-labelledby="fitur-title"
+        >
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+            <SectionHeading
+              title="Empat Pintu Mengenal Tradisi"
+              description="Dirancang layaknya ruang baca dan galeri museum terbuka — memudahkan pelajar, peneliti, maupun masyarakat umum menelusuri akar budaya Nusantara."
+              variant="maroon-sans"
+            />
+            <ul className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
+              {FEATURES.map((f, i) => (
+                <motion.li
+                  key={f.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="group flex gap-5 border-t border-[#E2D6C5] pt-7"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F7EFE2] to-[#EBE0CE] text-[#6E472D] border border-[#DFD2BE] shadow-xs transition-colors group-hover:border-[#6E472D]/40">
+                    <f.icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-bold tracking-widest text-[#7A4B29]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span aria-hidden="true" className="h-[1px] w-4 bg-[#D4A843]" />
+                    </div>
+                    <h3 className="mt-1 font-serif text-lg sm:text-xl font-bold text-[#2D1E12]">
+                      {f.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{f.desc}</p>
+                  </div>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ================= SOROTAN BUDAYA (PARCHMENT WARM CONTRAST) ================= */}
+        <section
+          className="relative bg-gradient-to-b from-[#EFE2D2] via-[#F4E9DC] to-[#EAE0D0] border-b border-[#D8C6AF]"
+          aria-labelledby="sorotan"
+        >
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
-                eyebrow="Pilihan kurator"
                 title="Sorotan Budaya Nusantara"
                 description="Koleksi objek pilihan dari katalog kami — mulai dari arsitektur vernakular hingga seni pertunjukan sakral."
+                variant="maroon-sans"
               />
               <Link
                 href="#/katalog"
-                className="group flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold text-[#6E472D] hover:bg-[#EFE8DE] transition-colors"
+                className="btn-waranusa rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md inline-flex items-center gap-2 text-white hover:brightness-105 active:scale-95 transition-all"
               >
                 Lihat semua katalog
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
               </Link>
             </div>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {highlights.loading &&
-                Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
-                    <Skeleton className="aspect-[4/3] rounded-none" />
-                    <div className="space-y-2.5 p-4">
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-1/2" />
-                    </div>
-                  </div>
-                ))}
-              {highlights.error && (
-                <p className="col-span-full rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center text-sm text-stone-500">
-                  Sorotan budaya sementara tidak dapat dimuat.{" "}
-                  <Link href="#/katalog" className="font-bold text-[#6E472D] underline-offset-2 hover:underline">
-                    Buka katalog langsung
-                  </Link>
-                </p>
-              )}
-              {highlightItems.map((item) => (
-                <CultureCard key={item.id} item={item} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ================= PENGALAMAN 3D ================= */}
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-24 lg:px-8 overflow-hidden" aria-labelledby="pengalaman3d">
-          <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16 min-w-0">
-            <div className="min-w-0">
-              <SectionHeading
-                eyebrow="Lebih dari sekadar bacaan"
-                title="Pengalaman 3D Interaktif"
-                description="Objek budaya didigitalisasi menjadi model tiga dimensi yang bisa diputar, didekati, dan dipelajari — lengkap dengan titik penjelasan pada setiap detail arsitektur."
-              />
-              <ul className="mt-6 space-y-3 text-sm text-stone-600">
-                <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
-                  <span>Seret kursor untuk memutar sudut pandang 360 derajat</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
-                  <span>Klik titik emas interaktif untuk membaca filosofi struktur bangunan</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8C5E3C]" />
-                  <span>Ringan dan responsif di peramban komputer maupun layar ponsel</span>
-                </li>
-              </ul>
-              <Button
-                asChild
-                className="mt-8 rounded-full bg-[#6E472D] hover:bg-[#5A3821] text-white px-7 font-bold shadow-md"
-              >
-                <Link href="#/budaya/rumah-gadang">
-                  Jelajahi Rumah Gadang 3D <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
+            {highlights.error ? (
+              <p className="mt-8 rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center text-sm text-stone-500">
+                Sorotan budaya sementara tidak dapat dimuat.{" "}
+                <Link
+                  href="#/katalog"
+                  className="font-bold text-[#6E472D] underline-offset-2 hover:underline"
+                >
+                  Buka katalog langsung
                 </Link>
-              </Button>
-            </div>
-            <div className="rounded-2xl sm:rounded-3xl border border-stone-200 bg-white p-2 sm:p-6 shadow-md sm:shadow-lg min-w-0 overflow-hidden">
-              <ModelViewer item={gadang.data ?? FALLBACK_LANDING_GADANG} height={330} autoRotate showHotspots />
-            </div>
-          </div>
-        </section>
-
-        {/* ================= INSTRUMEN VIRTUAL ================= */}
-        <section className="bg-[#FAF7F2] border-y border-stone-200" aria-labelledby="instrumen">
-          <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2 lg:gap-16 lg:px-8">
-            <div className="relative order-2 lg:order-1">
-              <HeroImage
-                src="/uploads/seed/gamelan.png"
-                alt="Set gamelan Jawa dengan saron dan gong perunggu"
-                className="aspect-[4/3] w-full rounded-3xl shadow-xl border border-stone-200/80"
+              </p>
+            ) : (
+              <CultureCardCarousel
+                items={highlightItems}
+                loading={highlights.loading}
               />
-              <button
-                type="button"
-                onClick={() => navigate("/instrumen")}
-                aria-label="Coba instrumen musik virtual"
-                className="group absolute inset-0 flex items-center justify-center rounded-3xl focus-visible:outline-2 focus-visible:outline-[#8C5E3C]"
-              >
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 shadow-2xl transition-transform duration-300 group-hover:scale-115">
-                  <Play className="ml-1 h-7 w-7 text-[#6E472D]" aria-hidden="true" />
-                </span>
-              </button>
-            </div>
-            <div className="order-1 lg:order-2">
-              <SectionHeading
-                eyebrow="Belajar lewat alunan nada"
-                title="Instrumen Musik Virtual"
-                description="Coba gamelan saron langsung dari peramban Anda — ketuk bilah perunggunya, nikmati laras pelog tradisional, dan pahami harmoni ensambel karawitan Nusantara."
-              />
-              <Button
-                asChild
-                size="lg"
-                className="mt-8 rounded-full bg-[#8C5E3C] hover:bg-[#785032] text-white px-7 font-bold shadow-md"
-              >
-                <Link href="#/instrumen">
-                  <Music4 className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Mainkan Saron Virtual
-                </Link>
-              </Button>
-            </div>
+            )}
           </div>
         </section>
 
-        {/* ================= DAMPAK KEBERLANJUTAN (SDGs) & EKOSISTEM DIGITAL ================= */}
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8" aria-labelledby="sdg-title">
-          <SectionHeading
-            eyebrow="Komitmen Keberlanjutan & Solusi Digital"
-            title="Empowering a Sustainable Digital Cultural Ecosystem"
-            description="Mengacu pada tema UINIC 8.0, WaraNusa merancang arsitektur web yang scalable, aman, dan berorientasi pada pelestarian nilai budaya serta dampak sosial jangka panjang."
-          />
-
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Kartu 1: SDG 11.4 */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.45 }}
-              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-[#8C5E3C]">
-                    <Globe className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                  <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold text-amber-900 uppercase tracking-wider">
-                    SDG 11.4
-                  </span>
-                </div>
-                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
-                  Perlindungan Warisan Budaya Nusantara
-                </h3>
-                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
-                  Melindungi objek tradisi, rumah adat, motif tenun, dan seni pertunjukan dari kepunahan melalui repositori digital terverifikasi dengan rujukan primer buku dan arsip.
-                </p>
-              </div>
-              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-[#8C5E3C]">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>100% Konten Bersumber Terbuka</span>
-              </div>
-            </motion.div>
-
-            {/* Kartu 2: SDG 4 */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.45, delay: 0.1 }}
-              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-700">
-                    <GraduationCap className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-900 uppercase tracking-wider">
-                    SDG 4
-                  </span>
-                </div>
-                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
-                  Pendidikan Berkualitas & Inklusif
-                </h3>
-                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
-                  Media ajar digital gratis untuk guru, pelajar, dan generasi muda melalui eksplorasi 3D interaktif, notasi kepatihan gamelan, serta fitur ramah difabel (TTS, kontras, font disleksia).
-                </p>
-              </div>
-              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Aksesibilitas Web WCAG 2.1</span>
-              </div>
-            </motion.div>
-
-            {/* Kartu 3: Rekayasa Web Interoperabilitas */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.45, delay: 0.2 }}
-              className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between sm:col-span-2 lg:col-span-1"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-700">
-                    <Cpu className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                  <span className="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-bold text-sky-900 uppercase tracking-wider">
-                    UINIC 8.0
-                  </span>
-                </div>
-                <h3 className="mt-4 font-serif text-lg font-bold text-[#2D1E12]">
-                  Interoperabilitas & AI Berkelanjutan
-                </h3>
-                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-stone-600">
-                  Mendukung ekosistem terintegrasi dengan REST API publik, validasi schema berlapis Zod, session token opaque anti-CSRF, serta AI Vision (Air Gamelan Hand Tracking).
-                </p>
-              </div>
-              <div className="mt-5 pt-4 border-t border-stone-100 flex items-center gap-1.5 text-xs font-semibold text-sky-700">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>REST API & Vision AI Engine</span>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+        {/* ========================================================================= */}
+        {/* RUANG PAMER DIGITAL 3D TERPADU (TAB SWITCHER SESUAI REFERENSI)            */}
+        {/* ========================================================================= */}
+        <Interactive3DPavilion />
 
         {/* ================= AJAKAN BERKONTRIBUSI ================= */}
-        <section id="tentang-kami" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8" aria-labelledby="kontribusi-cta">
+        <section
+          id="tentang-kami"
+          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8"
+          aria-labelledby="kontribusi-cta"
+        >
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5 }}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#4A2E1C] via-[#6E472D] to-[#8C5E3C] px-6 py-12 text-white shadow-2xl sm:px-10 md:py-16"
+            className="relative overflow-hidden rounded-3xl border border-[#4E3528] bg-[#3C2517] px-6 py-12 text-white shadow-xl sm:px-10 md:py-16"
           >
-            <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/10 blur-xl" />
-            <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-white/10 blur-xl" />
+            {/* Bentuk Lingkaran Geometris Bersih (Sesuai Referensi Pengguna — Tanpa Blur) */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-20 -top-20 sm:-right-24 sm:-top-24 h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-[#503B2E]"
+            />
+
             <div className="relative max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EFE3CB]">
-                Gerakan Dokumentasi Bersama
-              </p>
-              <h2 id="kontribusi-cta" className="mt-3 font-serif text-2xl font-bold leading-snug sm:text-3xl md:text-4xl text-[#FAF6F0]">
-                Punya pengetahuan budaya? Rawat bersama kami.
+              <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4A843]">
+                <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#D4A843]" />
+                <span>Gerakan Dokumentasi Bersama</span>
+              </div>
+              <h2
+                id="kontribusi-cta"
+                className="mt-3 font-serif text-2xl font-bold leading-snug sm:text-3xl md:text-4xl text-[#FAF6F0]"
+              >
+                Punya pengetahuan budaya daerah? Rawat bersama kami.
               </h2>
-              <p className="mt-4 text-sm leading-relaxed text-stone-200 md:text-base">
+              <p className="mt-4 text-sm leading-relaxed text-stone-300 md:text-base">
                 {contributionNotice}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full bg-white text-[#4A2E1C] hover:bg-stone-100 px-7 text-sm font-bold shadow-lg"
+                  className="rounded-full bg-[#FAF6F0] text-[#3C2517] hover:bg-white px-7 text-sm font-bold shadow-md"
                 >
                   <Link href="#/kontribusi">
-                    Kirim Dokumentasi <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
+                    Kirim Dokumentasi{" "}
+                    <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
                   </Link>
                 </Button>
-                <span className="text-xs text-stone-300">
+                <span className="text-xs text-stone-400">
                   Tinjauan kurator terpercaya &middot; Hak cipta &amp; atribusi atas nama Anda
                 </span>
               </div>
@@ -515,6 +432,261 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
         </section>
       </div>
     </MotionConfig>
+  );
+}
+
+function Interactive3DPavilion() {
+  const [activeTab, setActiveTab] = useState<"HOUSES" | "INSTRUMENTS">("HOUSES");
+  const [volume, setVolume] = useState<number>(0.8);
+  const activeInstrument = SARON_DEMUNG_DATA;
+
+  return (
+    <section
+      className="relative overflow-hidden bg-gradient-to-b from-[#FAF4EB] via-[#F5EBDD] to-[#EFE4D3] text-[#2D1E12] border-b border-[#E2D5C3]"
+      aria-labelledby="ruang-pamer-3d"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#CBB59D]/50 to-transparent"
+      />
+
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+        {/* Header Seksi & Tab Switcher (Sesuai Desain Referensi Singkat) */}
+        <div className="mx-auto max-w-3xl text-center">
+          <h2
+            id="ruang-pamer-3d"
+            className="font-sans text-2xl font-black tracking-tight text-[#482B18] sm:text-3xl md:text-4xl"
+          >
+            Eksplorasi Budaya 3D
+          </h2>
+
+          {/* Segmented Capsule Tab Buttons */}
+          <div className="mt-6 inline-flex items-center rounded-full border border-[#DCD0BE] bg-[#EFE4D3] p-1.5 shadow-inner">
+            <button
+              type="button"
+              onClick={() => setActiveTab("HOUSES")}
+              className={cn(
+                "flex items-center gap-2 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
+                activeTab === "HOUSES"
+                  ? "bg-[#6E472D] text-white shadow-md border border-[#583720]"
+                  : "text-[#6E472D] hover:text-[#2D1E12]"
+              )}
+              aria-pressed={activeTab === "HOUSES"}
+            >
+              <Landmark className="h-4 w-4" aria-hidden="true" />
+              <span>Arsitektur Rumah Adat</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("INSTRUMENTS")}
+              className={cn(
+                "flex items-center gap-2 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
+                activeTab === "INSTRUMENTS"
+                  ? "bg-[#6E472D] text-white shadow-md border border-[#583720]"
+                  : "text-[#6E472D] hover:text-[#2D1E12]"
+              )}
+              aria-pressed={activeTab === "INSTRUMENTS"}
+            >
+              <Music4 className="h-4 w-4" aria-hidden="true" />
+              <span>Alat Musik Tradisional</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Dynamic 3D Stage & Editorial Columns (Tata Letak Berseling / Zig-Zag Sesuai Tab) */}
+        <div className="mt-12 grid items-start gap-10 lg:grid-cols-12 lg:gap-14 min-w-0">
+          {/* Kolom 3D Interaktif (Rumah Adat di Kanan, Alat Musik di Kiri) */}
+          <div
+            className={cn(
+              "order-2 min-w-0 lg:col-span-7",
+              activeTab === "HOUSES" ? "lg:order-2" : "lg:order-1"
+            )}
+          >
+            <div className="relative rounded-2xl sm:rounded-3xl border border-[#DCD0BE] bg-white/90 backdrop-blur-xs p-3 sm:p-5 shadow-xl overflow-hidden">
+              {activeTab === "HOUSES" ? (
+                <div>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-3 px-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6E472D]/10 text-[#6E472D] shrink-0">
+                        <Landmark className="h-3.5 w-3.5" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12] truncate">
+                          Rumah Joglo — Jawa Tengah
+                        </h3>
+                        <p className="text-[11px] text-stone-500 truncate">
+                          Arsitektur Tradisional &bull; Suku Jawa
+                        </p>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-[#FAF5EC] px-2.5 py-1 text-[10px] font-bold text-[#6E472D] border border-[#E0D2C0]">
+                      Model 3D Interaktif &bull; 360&deg;
+                    </span>
+                  </div>
+
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC]">
+                    <ModelViewer
+                      item={FALLBACK_LANDING_JOGLO}
+                      autoRotate
+                      className="h-[460px] w-full"
+                    />
+                  </div>
+
+                  <p className="mt-3 px-1 text-center text-xs text-stone-500">
+                    Tip: Putar, geser, dan perbesar model 3D untuk mengamati susunan saka guru dan atap tumpangsari.
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-3 px-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6E472D]/10 text-[#6E472D] shrink-0">
+                        <Music4 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12] truncate">
+                          {activeInstrument.title} — {activeInstrument.province}
+                        </h3>
+                        <p className="text-[11px] text-stone-500 truncate">
+                          {activeInstrument.organologyLabel} &bull; Suku {activeInstrument.ethnicGroup}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-[#FAF5EC] px-2.5 py-1 text-[10px] font-bold text-[#6E472D] border border-[#E0D2C0]">
+                      Interaktif 3D &bull; Web Audio
+                    </span>
+                  </div>
+
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC]">
+                    <Instrument3DStage
+                      instrument={activeInstrument}
+                      volume={volume}
+                      onVolumeChange={setVolume}
+                    />
+                  </div>
+
+                  <p className="mt-3 px-1 text-center text-xs text-stone-500">
+                    Tip: Ketuk bilah nada di bawah atau klik/usap pada model 3D untuk memicu suara instrumen.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Kolom Editorial (Rumah Adat di Kiri, Alat Musik di Kanan) */}
+          <div
+            className={cn(
+              "order-1 min-w-0 lg:col-span-5 lg:pt-2",
+              activeTab === "HOUSES" ? "lg:order-1" : "lg:order-2"
+            )}
+          >
+            {activeTab === "HOUSES" ? (
+              <div>
+                <SectionHeading
+                  title="Rancang Bangun Rumah Adat Nusantara"
+                  description="Model 3D interaktif untuk mempelajari struktur bangunan adat."
+                  variant="maroon-sans"
+                />
+
+                <dl className="mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">Saka Guru &amp; Tumpangsari</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Struktur balok kayu bertingkat presisi yang kokoh tanpa paku besi.
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">360&deg; Rotasi &amp; Hotspot</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Amati konstruksi atap tajug dan detail sambungan pasak secara leluasa.
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">38 Rumah Adat Provinsi</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Dokumentasi digital arsitektur adat lengkap dari Sabang sampai Merauke.
+                      </dd>
+                    </div>
+                  </div>
+                </dl>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="btn-waranusa rounded-full px-7 font-bold shadow-md"
+                  >
+                    <Link href="#/eksplorasi-3d">
+                      Buka 38 Rumah Adat
+                      <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <SectionHeading
+                  title="Resonansi Musik Tradisional Nusantara"
+                  description="Instrumen daerah interaktif yang dapat dimainkan langsung dengan simulasi tangga nada dan akustik alami."
+                  variant="maroon-sans"
+                />
+
+                <dl className="mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">Model 3D Nyata</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Amati rancakan kayu ukir berprada emas dan bilah logam perunggu.
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">Tangga Nada Pelog &amp; Slendro</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Sentuh bilah nada 1–7 untuk memicu denting synthesizer Web Audio.
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
+                    <div>
+                      <dt className="font-bold text-[#2D1E12]">38 Instrumen Daerah</dt>
+                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                        Studio lengkap alat musik petik, tabuh, tiup, dan gesek nusantara.
+                      </dd>
+                    </div>
+                  </div>
+                </dl>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="btn-waranusa rounded-full px-7 font-bold shadow-md"
+                  >
+                    <Link href="#/instrumen">
+                      Buka 38 Alat Musik
+                      <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -568,24 +740,35 @@ function AnimatedCounter({
   );
 }
 
-function Stat({ value, label, delay = 0 }: { value: number; label: string; delay?: number }) {
+function Stat({
+  value,
+  label,
+  delay = 0,
+  className,
+}: {
+  value: number;
+  label: string;
+  delay?: number;
+  className?: string;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, delay }}
+      className={className}
     >
       <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
         <AnimatedCounter value={value} />
       </p>
-      <p className="mt-1 text-xs sm:text-sm text-stone-600 font-medium">{label}</p>
+      <p className="mt-1.5 text-xs sm:text-sm text-stone-600 font-medium">{label}</p>
     </motion.div>
   );
 }
 
 const TICKER_PHRASE =
-  "✦ WARISAN BUDAYA NUSANTARA • 3D ARTEFAK & RUMAH ADAT • PETA 38 PROVINSI • GAMELAN DIGITAL • DOKUMENTASI TERVERIFIKASI ";
+  "✦ WARISAN BUDAYA NUSANTARA • 3D ARTEFAK & RUMAH ADAT • PETA 38 PROVINSI • INSTRUMEN VIRTUAL • DOKUMENTASI TERVERIFIKASI ";
 const REPEATED_TICKER = Array(7).fill(TICKER_PHRASE).join("");
 
 function NusantaraCurvedTicker() {
@@ -606,7 +789,7 @@ function NusantaraCurvedTicker() {
     const unit = phraseWidth > 0 ? phraseWidth : 560;
 
     const step = () => {
-      offset -= 0.85;
+      offset -= 0.75;
       if (Math.abs(offset) >= unit) {
         offset += unit;
       }
@@ -623,42 +806,42 @@ function NusantaraCurvedTicker() {
   return (
     <div
       aria-hidden="true"
-      className="relative w-full overflow-hidden border-y border-stone-200/80 bg-[#FAF7F2] py-4 sm:py-8"
+      className="relative w-full overflow-hidden py-4 sm:py-6 md:py-8 select-none [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
     >
-      {/* Soft Ambient Background Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 sm:h-44 w-3/4 rounded-full bg-[#EFE8DE]/70 blur-3xl" />
-
-      {/* Curved SVG Wave Ribbon */}
+      {/* Pita Lengkung Halus Luas — Mengikuti Referensi Telkom (Satu Gelombang Landai Luas, Tidak Bergelombang Curam) */}
       <svg
-        viewBox="0 0 1200 150"
-        className="relative z-10 w-full h-24 sm:h-36 md:h-44 text-stone-900"
+        viewBox="0 0 1600 160"
+        className="relative z-10 w-full h-20 sm:h-28 md:h-36 lg:h-40 text-stone-900 pointer-events-none"
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
+          {/* Gradasi Cokelat Kayu Jati Hangat & Emas (Selaras Harmonis dengan Tema Website) */}
           <linearGradient id="ribbon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#6E472D" />
-            <stop offset="35%" stopColor="#8C5E3C" />
-            <stop offset="70%" stopColor="#784E33" />
-            <stop offset="100%" stopColor="#5C3B24" />
+            <stop offset="0%" stopColor="#4A2E1B" />
+            <stop offset="25%" stopColor="#6C4325" />
+            <stop offset="50%" stopColor="#8A5832" />
+            <stop offset="75%" stopColor="#6C4325" />
+            <stop offset="100%" stopColor="#4A2E1B" />
           </linearGradient>
+
           <filter id="ribbon-shadow" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#2D1E12" floodOpacity="0.22" />
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#26160B" floodOpacity="0.25" />
           </filter>
         </defs>
 
         {/* Hidden text to measure exact single phrase width for zero-jump seamless loop */}
         <text
           ref={measureRef}
-          className="fill-transparent text-[17px] sm:text-[18px] font-sans font-extrabold tracking-[0.24em] uppercase"
+          className="fill-transparent text-[15px] sm:text-[17px] md:text-[19px] font-sans font-black tracking-[0.24em] uppercase"
           style={{ visibility: "hidden" }}
         >
           {TICKER_PHRASE}
         </text>
 
-        {/* The Wave Path (Harmonious S-Curve, Smooth at any screen width) */}
+        {/* Layer 1: Pita Lengkung Halus Tunggal (1 Gelombang Landai Luas Sesuai Pita Telkom) */}
         <path
           id="nusantara-ribbon-path"
-          d="M -100,75 C 200,135 450,15 700,75 C 950,135 1150,20 1300,75"
+          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
           fill="none"
           stroke="url(#ribbon-gradient)"
           strokeWidth="50"
@@ -666,10 +849,21 @@ function NusantaraCurvedTicker() {
           filter="url(#ribbon-shadow)"
         />
 
-        {/* The Text running on the path */}
+        {/* Layer 2: Highlight Punggung Pita 3D Halus */}
+        <path
+          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
+          fill="none"
+          stroke="white"
+          strokeOpacity="0.18"
+          strokeWidth="8"
+          strokeLinecap="round"
+          className="pointer-events-none"
+        />
+
+        {/* Teks Berjalan di Atas Pita */}
         <text
           dominantBaseline="central"
-          className="fill-[#FAF6F0] text-[17px] sm:text-[18px] font-sans font-extrabold tracking-[0.24em] uppercase select-none drop-shadow-sm"
+          className="fill-[#FAF6F0] text-[15px] sm:text-[17px] md:text-[19px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathRef} href="#nusantara-ribbon-path" startOffset="0px">
             {REPEATED_TICKER}

@@ -95,8 +95,8 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
         className={cn(
           "transition-colors duration-300",
           isLanding
-            ? "fixed top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl px-2.5 sm:px-6 py-1.5 sm:py-3 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-md flex items-center justify-between"
-            : "sticky top-0 z-50 border-b border-stone-200/80 bg-[#FCF8EC]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#FCF8EC]/80"
+            ? "fixed top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl px-2.5 sm:px-6 py-1.5 sm:py-3 rounded-full bg-white/80 backdrop-blur-md border border-white/70 shadow-md flex items-center justify-between"
+            : "sticky top-0 z-50 border-b border-stone-200/70 bg-white/85 backdrop-blur-md supports-[backdrop-filter]:bg-white/75"
         )}
       >
         <div
@@ -129,8 +129,8 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                     className={cn(
                       "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
                       isActive(item.href)
-                        ? "text-stone-900 bg-stone-200/60 font-semibold"
-                        : "text-stone-700 hover:text-stone-900 hover:bg-stone-200/40"
+                        ? "text-[#2D1E12] bg-white/85 border border-stone-200/80 shadow-2xs font-semibold"
+                        : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
                     )}
                   >
                     {item.label}
@@ -145,8 +145,8 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   className={cn(
                     "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
                     isActive(item.href)
-                      ? "text-stone-900 bg-stone-200/60 font-semibold"
-                      : "text-stone-700 hover:text-stone-900 hover:bg-stone-200/40"
+                      ? "text-[#2D1E12] bg-white/85 border border-stone-200/80 shadow-2xs font-semibold"
+                      : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
                   )}
                 >
                   {item.label}
@@ -162,7 +162,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
               variant="ghost"
               size="icon"
               onClick={() => setSearchOpen(true)}
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 shrink-0"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-stone-700 hover:text-stone-900 hover:bg-white/60 shrink-0"
               aria-label="Pencarian Budaya"
             >
               <Search className="h-4 w-4" />
@@ -218,7 +218,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                 <Button
                   asChild
                   size="sm"
-                  className="rounded-full bg-[#A38771] hover:bg-[#8F745E] text-white text-xs sm:text-sm font-medium px-5 py-1.5 h-9 shadow-sm transition-colors"
+                  className="btn-waranusa rounded-full text-xs sm:text-sm font-semibold px-5 py-1.5 h-9 shadow-sm"
                 >
                   <Link href="#/masuk">
                     {hasRegistered ? "Masuk" : "Daftar"}
@@ -233,7 +233,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 sm:h-9 px-1.5 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-200/50 flex items-center gap-0.5 sm:gap-1 text-xs font-medium shrink-0"
+                  className="h-8 sm:h-9 px-1.5 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-white/60 flex items-center gap-0.5 sm:gap-1 text-xs font-medium shrink-0"
                   aria-label="Pilih Bahasa"
                 >
                   <span className="font-serif font-bold text-xs sm:text-sm tracking-tighter">文A</span>
@@ -309,8 +309,8 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       className={cn(
                         "flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold transition-all active:scale-[0.98]",
                         isActive(item.href)
-                          ? "bg-stone-200/90 text-stone-900 shadow-xs"
-                          : "text-stone-700 hover:bg-stone-200/50"
+                          ? "bg-white/90 border border-stone-200/80 text-[#2D1E12] shadow-xs"
+                          : "text-stone-700 hover:bg-white/60"
                       )}
                     >
                       <item.icon className="h-4 w-4 text-[#8A5B38] shrink-0" />
@@ -322,9 +322,9 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   <Link
                     href="#/kontribusi"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold text-[#8A5B38] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-600/20 transition-all"
+                    className="flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold text-[#6E472D] bg-[#6E472D]/8 hover:bg-[#6E472D]/15 border border-[#6E472D]/20 transition-all"
                   >
-                    <span className="text-base">✨</span>
+                    <Compass className="h-4 w-4 text-[#6E472D] shrink-0" />
                     <span>Kirim Kontribusi Budaya</span>
                   </Link>
 
@@ -363,7 +363,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                     <div className="flex flex-col gap-2 pt-2">
                       <Button
                         asChild
-                        className="rounded-full bg-[#A38771] hover:bg-[#8F745E] text-white"
+                        className="btn-waranusa rounded-full text-white"
                       >
                         <Link href="#/masuk" onClick={() => setMobileOpen(false)}>
                           <LogIn className="mr-2 h-4 w-4" />

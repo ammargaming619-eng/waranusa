@@ -1,0 +1,1323 @@
+"use client";
+
+import * as React from "react";
+import * as THREE from "three";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls, useGLTF } from "@react-three/drei";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import {
+  Camera,
+  CameraOff,
+  Hand,
+  Keyboard,
+  Loader2,
+  Mic,
+  MicOff,
+  MousePointerClick,
+  Music2,
+  Pause,
+  Play,
+  RotateCcw,
+  Sparkles,
+  Volume2,
+  Waves,
+  Wind,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import {
+  INTERACTION_META,
+  type InteractionType,
+  type TraditionalInstrument38,
+} from "@/data/instruments-data";
+import { soundEngine } from "@/lib/sound-engine";
+import {
+  drawHandSkeleton,
+  getHandLandmarker,
+  type NormalizedLandmark,
+} from "@/components/three/air-gamelan";
+
+interface BoundaryProps {
+  onError: () => void;
+  children: React.ReactNode;
+}
+
+class GlbErrorBoundary extends React.Component<BoundaryProps, { hasError: boolean }> {
+  constructor(props: BoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch() {
+    this.props.onError();
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
+function StudioEnvironment() {
+  const { gl, scene } = useThree();
+  React.useEffect(() => {
+    const pmremGenerator = new THREE.PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+    const envScene = new RoomEnvironment();
+    const envTexture = pmremGenerator.fromScene(envScene).texture;
+    scene.environment = envTexture;
+    return () => {
+      scene.environment = null;
+      envTexture.dispose();
+      envScene.dispose();
+      pmremGenerator.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
+
+function ResponsiveInstrumentCamera() {
+  const { camera, size } = useThree();
+  React.useEffect(() => {
+    const aspect = size.width / size.height;
+    if (camera instanceof THREE.PerspectiveCamera) {
+      if (aspect < 1.15) {
+        // Layar potret / ponsel / tablet: mundurkan kamera proporsional agar model lebar muat penuh
+        const factor = Math.min(Math.max(1.15 / aspect, 1.05), 1.55);
+        camera.position.set(0, 1.85 * factor, 3.65 * factor);
+      } else {
+        camera.position.set(0, 1.85, 3.65);
+      }
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, size]);
+  return null;
+}
+
+function LoadedGlbModel({ url }: { url: string }) {
+  const { scene } = useGLTF(url);
+
+  const normalized = React.useMemo(() => {
+    const clone = scene.clone(true);
+    clone.traverse((obj) => {
+      if (obj instanceof THREE.Mesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+        if (obj.material) {
+          const mat = obj.material as THREE.MeshStandardMaterial;
+          mat.side = THREE.DoubleSide;
+          if (typeof mat.metalness === "number") {
+            mat.metalness = Math.min(mat.metalness, 0.75);
+          }
+          if (typeof mat.roughness === "number") {
+            mat.roughness = Math.max(0.25, Math.min(0.75, mat.roughness));
+          }
+          // Kompresi tone adaptif: teduhkan elemen yang terlalu terang agar warna & tekstur kelihatan
+          mat.onBeforeCompile = (shader) => {
+            shader.fragmentShader = shader.fragmentShader.replace(
+              "#include <dithering_fragment>",
+              `
+              #include <dithering_fragment>
+              // Kompresi tone: teduhkan elemen yang terlalu terang agar tekstur & kontur kelihatan
+              float texLum = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
+              if (texLum > 0.52) {
+                gl_FragColor.rgb *= mix(1.0, 0.72, smoothstep(0.52, 0.95, texLum));
+              } else if (texLum < 0.22) {
+                gl_FragColor.rgb += vec3(0.08 * smoothstep(0.22, 0.05, texLum));
+              }
+              `
+            );
+          };
+          mat.needsUpdate = true;
+        }
+      }
+    });
+
+    const box = new THREE.Box3().setFromObject(clone);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    clone.scale.setScalar(2.35 / maxDim);
+
+    const box2 = new THREE.Box3().setFromObject(clone);
+    const center = box2.getCenter(new THREE.Vector3());
+    clone.position.set(-center.x, clone.position.y - box2.min.y + 0.1, -center.z);
+    return clone;
+  }, [scene]);
+
+  return <primitive object={normalized} />;
+}
+
+/**
+ * Model 3D Prosedural Kontekstual (Digunakan bila provinsi ke-18..38 belum memiliki file .glb)
+ * Menyesuaikan geometri dengan kategori interaksi: strike, pluck, bow, shake, atau blow.
+ */
+function ProceduralInstrumentFallback({
+  interactionType,
+  activeNoteIdx,
+}: {
+  interactionType: InteractionType;
+  activeNoteIdx: number | null;
+}) {
+  if (interactionType === "pluck") {
+    // Bentuk Lute / Sasando / Sape' Berdawai
+    return (
+      <group position={[0, 0.25, 0]}>
+        <mesh position={[0, 0.45, 0]} castShadow receiveShadow>
+          <sphereGeometry args={[0.62, 28, 20]} />
+          <meshStandardMaterial color="#8B4A24" roughness={0.45} metalness={0.12} />
+        </mesh>
+        <mesh position={[0, 1.35, 0]} castShadow>
+          <cylinderGeometry args={[0.09, 0.13, 1.65, 16]} />
+          <meshStandardMaterial color="#5C2E14" roughness={0.5} />
+        </mesh>
+        {[-0.18, -0.12, -0.06, 0, 0.06, 0.12, 0.18].map((x, idx) => (
+          <mesh key={idx} position={[x, 1.0, 0.56]}>
+            <cylinderGeometry args={[0.008, 0.008, 1.75, 8]} />
+            <meshStandardMaterial
+              color={activeNoteIdx === idx ? "#F5C451" : "#E5D3B3"}
+              emissive={activeNoteIdx === idx ? "#D49B27" : "#000000"}
+              emissiveIntensity={activeNoteIdx === idx ? 0.8 : 0}
+              metalness={0.85}
+              roughness={0.2}
+            />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+
+  if (interactionType === "bow") {
+    // Bentuk Instrumen Gesek (Rebab / Keso-Keso / Tehyan)
+    return (
+      <group position={[0, 0.2, 0]}>
+        <mesh position={[0, 0.45, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.45, 0.38, 0.35, 24]} />
+          <meshStandardMaterial color="#7A3E1D" roughness={0.42} />
+        </mesh>
+        <mesh position={[0, 1.35, 0]} castShadow>
+          <cylinderGeometry args={[0.055, 0.07, 1.85, 16]} />
+          <meshStandardMaterial color="#3E1F0D" roughness={0.38} />
+        </mesh>
+        {[-0.04, 0.04].map((x, i) => (
+          <mesh key={i} position={[x, 1.15, 0.22]}>
+            <cylinderGeometry args={[0.009, 0.009, 1.65, 8]} />
+            <meshStandardMaterial color="#F3E5AB" metalness={0.8} roughness={0.2} />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+
+  if (interactionType === "shake") {
+    // Bentuk Tabung Bambu Angklung Bertingkat
+    return (
+      <group position={[0, 0.2, 0]}>
+        <mesh position={[0, 0.12, 0]} castShadow>
+          <cylinderGeometry args={[0.06, 0.06, 1.7, 16]} rotation={[0, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#9C6B30" roughness={0.5} />
+        </mesh>
+        {[-0.45, 0, 0.45].map((x, idx) => (
+          <mesh key={idx} position={[x, 0.85 - idx * 0.14, 0]} castShadow>
+            <cylinderGeometry args={[0.11, 0.12, 1.25 - idx * 0.22, 20]} />
+            <meshStandardMaterial color="#C89D54" roughness={0.42} metalness={0.08} />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+
+  if (interactionType === "blow") {
+    // Bentuk Kerang Tahuri / Seruling Bambu
+    return (
+      <group position={[0, 0.75, 0]} rotation={[0.15, 0.3, -0.35]}>
+        <mesh castShadow receiveShadow>
+          <coneGeometry args={[0.52, 1.85, 28]} />
+          <meshStandardMaterial color="#D9C2A3" roughness={0.35} metalness={0.15} />
+        </mesh>
+        <mesh position={[0, -0.65, 0]}>
+          <torusGeometry args={[0.38, 0.08, 16, 32]} />
+          <meshStandardMaterial color="#B38852" roughness={0.4} />
+        </mesh>
+      </group>
+    );
+  }
+
+  // Default: Strike (Bilah Perunggu / Gendang Tabuh)
+  return (
+    <group position={[0, 0.25, 0]}>
+      <mesh position={[0, 0.22, 0]} castShadow receiveShadow>
+        <boxGeometry args={[2.1, 0.38, 0.78]} />
+        <meshStandardMaterial color="#5E2C14" roughness={0.55} />
+      </mesh>
+      {[-0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75].map((x, idx) => {
+        const isHit = activeNoteIdx === idx;
+        return (
+          <mesh
+            key={idx}
+            position={[x, isHit ? 0.44 : 0.47, 0]}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={[0.2, 0.07, 0.62 - idx * 0.03]} />
+            <meshStandardMaterial
+              color={isHit ? "#FFE082" : "#D4A843"}
+              emissive={isHit ? "#D49B27" : "#000000"}
+              emissiveIntensity={isHit ? 0.65 : 0}
+              metalness={0.78}
+              roughness={0.24}
+            />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+/**
+ * Panggung Adegan 3D dengan Animasi Fisika Reaktif Sesuai 5 Cara Main
+ */
+function ReactiveInstrumentScene({
+  instrument,
+  activeNoteIdx,
+  strikePulseRef,
+  shakeEnergyRef,
+  bowStateRef,
+  blowEnergyRef,
+  onStageStrike,
+}: {
+  instrument: TraditionalInstrument38;
+  activeNoteIdx: number | null;
+  strikePulseRef: React.MutableRefObject<number>;
+  shakeEnergyRef: React.MutableRefObject<number>;
+  bowStateRef: React.MutableRefObject<{ active: boolean; pos: number }>;
+  blowEnergyRef: React.MutableRefObject<number>;
+  onStageStrike: () => void;
+}) {
+  const groupRef = React.useRef<THREE.Group>(null);
+  const ringRef = React.useRef<THREE.Mesh>(null);
+  const bowMeshRef = React.useRef<THREE.Group>(null);
+  const [glbFailed, setGlbFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    setGlbFailed(false);
+  }, [instrument.id, instrument.modelUrl]);
+
+  useFrame((state, delta) => {
+    const group = groupRef.current;
+    if (!group) return;
+
+    // 1. Animasi pantul (Strike Recoil)
+    if (strikePulseRef.current > 0.005) {
+      strikePulseRef.current = Math.max(0, strikePulseRef.current - delta * 4.2);
+      const p = strikePulseRef.current;
+      group.position.y = -Math.sin(p * Math.PI) * 0.14;
+      const squash = 1 + Math.sin(p * Math.PI * 2) * 0.055;
+      group.scale.set(squash, 1 / squash, squash);
+    } else {
+      group.position.y = THREE.MathUtils.lerp(group.position.y, 0, 0.15);
+      group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.15);
+    }
+
+    // 2. Animasi goyang (Shake Oscillation)
+    if (shakeEnergyRef.current > 0.01) {
+      shakeEnergyRef.current = Math.max(0, shakeEnergyRef.current - delta * 2.2);
+      group.rotation.z =
+        Math.sin(state.clock.elapsedTime * 38) * 0.18 * shakeEnergyRef.current;
+    } else {
+      group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, 0, 0.18);
+    }
+
+    // 3. Animasi busur gesek (Bow)
+    if (bowMeshRef.current) {
+      const targetX = bowStateRef.current.active
+        ? (bowStateRef.current.pos - 0.5) * 1.35
+        : 0.45;
+      bowMeshRef.current.position.x = THREE.MathUtils.lerp(
+        bowMeshRef.current.position.x,
+        targetX,
+        0.22
+      );
+      bowMeshRef.current.position.y = bowStateRef.current.active ? 0.88 : 0.72;
+    }
+
+    // 4. Gelombang akustik bawah (Strike / Blow / Pluck)
+    if (ringRef.current) {
+      const energy = Math.max(
+        strikePulseRef.current,
+        blowEnergyRef.current,
+        shakeEnergyRef.current
+      );
+      const scale = 1 + energy * 1.15 + Math.sin(state.clock.elapsedTime * 5) * 0.04;
+      ringRef.current.scale.set(scale, scale, 1);
+      const mat = ringRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.16 + energy * 0.45;
+    }
+  });
+
+  const shouldTryGlb = !glbFailed && Boolean(instrument.modelUrl);
+
+  return (
+    <group>
+      {/* Podium Kayu Jati Museum Cerah */}
+      <mesh position={[0, -0.06, 0]} receiveShadow>
+        <cylinderGeometry args={[1.65, 1.82, 0.12, 48]} />
+        <meshStandardMaterial color="#FAF5EB" roughness={0.75} metalness={0.02} />
+      </mesh>
+
+      {/* Cincin Resonansi Suara Emas */}
+      <mesh ref={ringRef} position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.15, 1.32, 48]} />
+        <meshBasicMaterial color="#D4A843" transparent opacity={0.45} side={THREE.DoubleSide} />
+      </mesh>
+
+      {/* Grup Instrumen Utama */}
+      <group
+        ref={groupRef}
+        onClick={(e) => {
+          e.stopPropagation();
+          onStageStrike();
+        }}
+      >
+        {shouldTryGlb ? (
+          <GlbErrorBoundary onError={() => setGlbFailed(true)}>
+            <React.Suspense
+              fallback={
+                <ProceduralInstrumentFallback
+                  interactionType={instrument.interactionType}
+                  activeNoteIdx={activeNoteIdx}
+                />
+              }
+            >
+              <LoadedGlbModel url={instrument.modelUrl} />
+            </React.Suspense>
+          </GlbErrorBoundary>
+        ) : (
+          <ProceduralInstrumentFallback
+            interactionType={instrument.interactionType}
+            activeNoteIdx={activeNoteIdx}
+          />
+        )}
+      </group>
+
+      {/* Busur Gesek Virtual 3D khusus instrumen bertipe BOW */}
+      {instrument.interactionType === "bow" && (
+        <group ref={bowMeshRef} position={[0.45, 0.72, 0.65]} rotation={[0, 0, -0.12]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.018, 0.018, 1.85, 12]} rotation={[0, 0, Math.PI / 2]} />
+            <meshStandardMaterial color="#5C2E14" roughness={0.4} />
+          </mesh>
+          <mesh position={[0, -0.05, 0]}>
+            <boxGeometry args={[1.78, 0.008, 0.015]} />
+            <meshStandardMaterial
+              color={bowStateRef.current.active ? "#FFE082" : "#F5EFE6"}
+              emissive={bowStateRef.current.active ? "#D49B27" : "#000000"}
+              emissiveIntensity={bowStateRef.current.active ? 0.6 : 0}
+            />
+          </mesh>
+        </group>
+      )}
+    </group>
+  );
+}
+
+export interface Instrument3DStageProps {
+  instrument: TraditionalInstrument38;
+  volume?: number;
+  onVolumeChange?: (v: number) => void;
+}
+
+export function Instrument3DStage({
+  instrument,
+  volume = 0.78,
+  onVolumeChange,
+}: Instrument3DStageProps) {
+  const [activeNoteIdx, setActiveNoteIdx] = React.useState<number | null>(null);
+  const [autoRotate, setAutoRotate] = React.useState<boolean>(true);
+  const [cameraKey, setCameraKey] = React.useState<number>(0);
+
+  // State untuk Mode Gesek (Bow), Goyang (Shake), dan Tiup (Blow)
+  const [isBowingUI, setIsBowingUI] = React.useState(false);
+  const [isBlowingHold, setIsBlowingHold] = React.useState(false);
+  const [micBlowEnabled, setMicBlowEnabled] = React.useState(false);
+  const [micBlowLevel, setMicBlowLevel] = React.useState(0);
+  const [selectedPitchIdx, setSelectedPitchIdx] = React.useState(0);
+
+  // State Mode Kamera AI (MediaPipe Hands)
+  const [cameraAiEnabled, setCameraAiEnabled] = React.useState(false);
+  const [cameraAiLoading, setCameraAiLoading] = React.useState(false);
+  const [cameraHandDetected, setCameraHandDetected] = React.useState(false);
+  const [handCursor, setHandCursor] = React.useState<{ x: number; y: number } | null>(null);
+
+  // Refs animasi 3D & deteksi gerakan
+  const strikePulseRef = React.useRef(0);
+  const shakeEnergyRef = React.useRef(0);
+  const bowStateRef = React.useRef({ active: false, pos: 0.5 });
+  const blowEnergyRef = React.useRef(0);
+  const lastShakeTriggerRef = React.useRef(0);
+  const lastMouseXRef = React.useRef<number | null>(null);
+
+  // Refs Kamera AI
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const overlayCanvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const prevHandPosRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
+  const lastAiTriggerTimeRef = React.useRef(0);
+
+  // Sinkronisasi volume ke SoundEngine & preload sampel MP3 jika ada
+  React.useEffect(() => {
+    soundEngine.setVolume(volume);
+  }, [volume]);
+
+  React.useEffect(() => {
+    void soundEngine.preloadInstrumentSample(instrument.id);
+    soundEngine.stopContinuousVoice();
+    setIsBowingUI(false);
+    setIsBlowingHold(false);
+    setSelectedPitchIdx(0);
+  }, [instrument.id]);
+
+  // Cleanup saat unmount
+  React.useEffect(() => {
+    return () => {
+      soundEngine.stopContinuousVoice();
+      soundEngine.stopMicBlowDetector();
+    };
+  }, []);
+
+  // Fungsi memicu nada tunggal (Strike / Pluck / Shake / Tap)
+  const playNoteByIndex = React.useCallback(
+    (idx: number, velocity = 0.9) => {
+      const note = instrument.notes[idx] ?? instrument.notes[0];
+      if (!note) return;
+
+      setActiveNoteIdx(idx);
+      setSelectedPitchIdx(idx);
+
+      soundEngine.triggerNote({
+        instrumentId: instrument.id,
+        synthPreset: instrument.synthPreset,
+        freq: note.freq,
+        baseFreq: instrument.notes[0]?.freq ?? 261.63,
+        velocity,
+      });
+
+      if (instrument.interactionType === "shake") {
+        shakeEnergyRef.current = 1.0;
+      } else if (instrument.interactionType === "blow") {
+        blowEnergyRef.current = 0.85;
+      } else {
+        strikePulseRef.current = 1.0;
+      }
+
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate(14);
+      }
+
+      window.setTimeout(() => {
+        setActiveNoteIdx((curr) => (curr === idx ? null : curr));
+      }, 280);
+    },
+    [instrument]
+  );
+
+  // Pintasan Keyboard 1-7
+  React.useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= instrument.notes.length) {
+        playNoteByIndex(num - 1, 0.92);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [instrument.notes.length, playNoteByIndex]);
+
+  // Handler Mikrofon Tiup (AnalyserNode)
+  const toggleMicBlow = async () => {
+    if (micBlowEnabled) {
+      soundEngine.stopMicBlowDetector();
+      soundEngine.stopContinuousVoice();
+      setMicBlowEnabled(false);
+      setMicBlowLevel(0);
+      blowEnergyRef.current = 0;
+      return;
+    }
+
+    const ok = await soundEngine.startMicBlowDetector((level, isBlowing) => {
+      setMicBlowLevel(level);
+      blowEnergyRef.current = level;
+      const currentNote =
+        instrument.notes[selectedPitchIdx] ?? instrument.notes[0];
+      if (isBlowing && currentNote) {
+        soundEngine.startContinuousVoice("blow", currentNote.freq, Math.min(1, level * 1.35));
+      } else {
+        soundEngine.stopContinuousVoice();
+      }
+    });
+
+    if (!ok) {
+      toast.error("Mikrofon tidak dapat diakses", {
+        description:
+          "Pastikan izin mikrofon diaktifkan di peramban, atau gunakan tombol Tahan Tiup di layar.",
+      });
+      return;
+    }
+
+    setMicBlowEnabled(true);
+    toast.success("Sensor Tiup Mikrofon Aktif", {
+      description: "Tiup perlahan ke arah mikrofon perangkat Anda untuk membunyikan instrumen.",
+    });
+  };
+
+  // Handler Mode Kamera AI (MediaPipe Hands)
+  React.useEffect(() => {
+    if (!cameraAiEnabled) {
+      setCameraHandDetected(false);
+      setHandCursor(null);
+      return;
+    }
+
+    let cancelled = false;
+    let stream: MediaStream | null = null;
+    let rafId: number | null = null;
+
+    async function initHandCamera() {
+      setCameraAiLoading(true);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 320, height: 240, facingMode: "user" },
+          audio: false,
+        });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = stream;
+          await video.play();
+        }
+        const landmarker = await getHandLandmarker();
+        if (cancelled) return;
+        setCameraAiLoading(false);
+
+        const detectLoop = () => {
+          if (cancelled || !videoRef.current) return;
+          const v = videoRef.current;
+          if (v.readyState >= 2) {
+            const nowMs = performance.now();
+            const res = landmarker.detectForVideo(v, nowMs);
+            const hand = res.landmarks?.[0] as NormalizedLandmark[] | undefined;
+
+            const canvas = overlayCanvasRef.current;
+            const ctx = canvas?.getContext("2d");
+
+            if (hand && hand[8]) {
+              setCameraHandDetected(true);
+              // Mirror X agar sesuai gerakan cermin pengguna
+              const normX = 1 - hand[8].x;
+              const normY = hand[8].y;
+              setHandCursor({ x: normX, y: normY });
+
+              const noteIdx = Math.min(
+                instrument.notes.length - 1,
+                Math.max(0, Math.floor(normX * instrument.notes.length))
+              );
+              const note = instrument.notes[noteIdx] ?? instrument.notes[0];
+
+              const prev = prevHandPosRef.current;
+              if (prev) {
+                const dt = Math.max(8, nowMs - prev.time);
+                const vx = (normX - prev.x) / (dt / 1000);
+                const vy = (normY - prev.y) / (dt / 1000);
+
+                // Deteksi gestur sesuai tipe cara main instrumen
+                if (instrument.interactionType === "strike") {
+                  if (vy > 0.85 && nowMs - lastAiTriggerTimeRef.current > 210) {
+                    lastAiTriggerTimeRef.current = nowMs;
+                    playNoteByIndex(noteIdx, Math.min(1, 0.65 + vy * 0.25));
+                  }
+                } else if (instrument.interactionType === "pluck") {
+                  const prevBucket = Math.floor(prev.x * instrument.notes.length);
+                  const currBucket = Math.floor(normX * instrument.notes.length);
+                  if (
+                    prevBucket !== currBucket &&
+                    nowMs - lastAiTriggerTimeRef.current > 120
+                  ) {
+                    lastAiTriggerTimeRef.current = nowMs;
+                    playNoteByIndex(noteIdx, 0.88);
+                  }
+                } else if (instrument.interactionType === "shake") {
+                  if (Math.abs(vx) > 1.05 && nowMs - lastAiTriggerTimeRef.current > 155) {
+                    lastAiTriggerTimeRef.current = nowMs;
+                    playNoteByIndex(noteIdx, 0.9);
+                  }
+                } else if (instrument.interactionType === "bow") {
+                  const speed = Math.abs(vx);
+                  if (speed > 0.25 && note) {
+                    bowStateRef.current = { active: true, pos: normX };
+                    setActiveNoteIdx(noteIdx);
+                    soundEngine.startContinuousVoice(
+                      "bow",
+                      note.freq,
+                      Math.min(1, 0.35 + speed * 0.5)
+                    );
+                  } else {
+                    bowStateRef.current.active = false;
+                    soundEngine.stopContinuousVoice();
+                  }
+                } else if (instrument.interactionType === "blow") {
+                  if (normY < 0.72 && note) {
+                    const breathPower = Math.max(0.25, Math.min(1, 1 - normY));
+                    blowEnergyRef.current = breathPower;
+                    setActiveNoteIdx(noteIdx);
+                    soundEngine.startContinuousVoice("blow", note.freq, breathPower);
+                  } else {
+                    blowEnergyRef.current = 0;
+                    soundEngine.stopContinuousVoice();
+                  }
+                }
+              }
+
+              prevHandPosRef.current = { x: normX, y: normY, time: nowMs };
+
+              if (ctx && canvas) {
+                drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, false);
+              }
+            } else {
+              setCameraHandDetected(false);
+              setHandCursor(null);
+              prevHandPosRef.current = null;
+              if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+              }
+            }
+          }
+          rafId = requestAnimationFrame(detectLoop);
+        };
+
+        rafId = requestAnimationFrame(detectLoop);
+      } catch {
+        setCameraAiLoading(false);
+        setCameraAiEnabled(false);
+        toast.error("Kamera tidak dapat diakses", {
+          description: "Pastikan izin webcam diberikan untuk mencoba fitur Gestur Tangan AI.",
+        });
+      }
+    }
+
+    void initHandCamera();
+
+    return () => {
+      cancelled = true;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+      soundEngine.stopContinuousVoice();
+    };
+  }, [cameraAiEnabled, instrument, playNoteByIndex]);
+
+  const meta = INTERACTION_META[instrument.interactionType];
+
+  return (
+    <div className="space-y-4">
+      {/* BARIS KONTROL ATAS: STATUS CARA MAIN, SENSOR MIKROFON, & KAMERA AI */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-[#DFD3C2] bg-[#FAF6EE] px-3.5 py-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge className="bg-[#52331C] text-white hover:bg-[#482B18] text-xs font-bold px-3 py-1 rounded-full">
+            Cara Main: {meta.badge}
+          </Badge>
+          <span className="text-xs font-medium text-stone-700">
+            {instrument.hasGlbAsset
+              ? `Model 3D Asli (${instrument.province})`
+              : `Simulasi 3D Interaktif (${instrument.province})`}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Tombol Sensor Tiup Mikrofon khusus instrumen BLOW */}
+          {instrument.interactionType === "blow" && (
+            <Button
+              type="button"
+              size="sm"
+              variant={micBlowEnabled ? "default" : "outline"}
+              onClick={toggleMicBlow}
+              className={cn(
+                "h-8 rounded-full text-xs font-semibold",
+                micBlowEnabled
+                  ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                  : "border-[#6E472D]/40 text-[#6E472D] bg-white hover:bg-[#6E472D]/5"
+              )}
+            >
+              {micBlowEnabled ? (
+                <>
+                  <Mic className="mr-1.5 h-3.5 w-3.5 animate-pulse" />
+                  Mikrofon Tiup Aktif
+                </>
+              ) : (
+                <>
+                  <MicOff className="mr-1.5 h-3.5 w-3.5" />
+                  Aktifkan Tiup Mikrofon
+                </>
+              )}
+            </Button>
+          )}
+
+          {/* Tombol Mode Kamera AI (MediaPipe Hands) */}
+          <Button
+            type="button"
+            size="sm"
+            variant={cameraAiEnabled ? "default" : "outline"}
+            onClick={() => setCameraAiEnabled((prev) => !prev)}
+            className={cn(
+              "h-8 rounded-full text-xs font-semibold",
+              cameraAiEnabled
+                ? "btn-waranusa text-white"
+                : "border-[#6E472D]/40 text-[#2D1E12] bg-white hover:bg-[#FAF3E6]"
+            )}
+          >
+            {cameraAiLoading ? (
+              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+            ) : cameraAiEnabled ? (
+              <CameraOff className="mr-1.5 h-3.5 w-3.5" />
+            ) : (
+              <Camera className="mr-1.5 h-3.5 w-3.5 text-[#6E472D]" />
+            )}
+            {cameraAiEnabled ? "Matikan Kamera AI" : "Mode Kamera AI (Gestur Tangan)"}
+          </Button>
+        </div>
+      </div>
+
+      {/* PANGGUNG KANVAS 3D + OVERLAY INTERAKSI MULTI-INPUT */}
+      <div
+        className="relative h-[340px] xs:h-[380px] sm:h-[430px] md:h-[470px] w-full overflow-hidden rounded-2xl border border-[#C8B69F] bg-gradient-to-b from-[#DCCAB3] via-[#CBB69C] to-[#B79F81] select-none touch-none"
+        onTouchStart={(e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            const rect = e.currentTarget.getBoundingClientRect();
+            const relX = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+            if (instrument.interactionType === "bow") {
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.floor(relX * instrument.notes.length)
+              );
+              const note = instrument.notes[idx] ?? instrument.notes[0];
+              setIsBowingUI(true);
+              bowStateRef.current = { active: true, pos: relX };
+              setActiveNoteIdx(idx);
+              if (note) {
+                soundEngine.startContinuousVoice("bow", note.freq, 0.85);
+              }
+            } else if (instrument.interactionType === "shake") {
+              lastMouseXRef.current = relX;
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.floor(relX * instrument.notes.length)
+              );
+              playNoteByIndex(idx, 0.95);
+            }
+          }
+        }}
+        onTouchMove={(e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            const rect = e.currentTarget.getBoundingClientRect();
+            const relX = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+
+            if (instrument.interactionType === "shake") {
+              if (lastMouseXRef.current !== null) {
+                const deltaX = Math.abs(relX - lastMouseXRef.current);
+                const now = performance.now();
+                if (deltaX > 0.075 && now - lastShakeTriggerRef.current > 130) {
+                  lastShakeTriggerRef.current = now;
+                  const idx = Math.min(
+                    instrument.notes.length - 1,
+                    Math.floor(relX * instrument.notes.length)
+                  );
+                  playNoteByIndex(idx, Math.min(1, 0.65 + deltaX * 2.5));
+                }
+              }
+              lastMouseXRef.current = relX;
+            }
+
+            if (instrument.interactionType === "bow" && isBowingUI) {
+              bowStateRef.current = { active: true, pos: relX };
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.floor(relX * instrument.notes.length)
+              );
+              const note = instrument.notes[idx] ?? instrument.notes[0];
+              setActiveNoteIdx(idx);
+              if (note) {
+                soundEngine.updateContinuousVoice(note.freq, 0.85);
+              }
+            }
+          }
+        }}
+        onTouchEnd={() => {
+          lastMouseXRef.current = null;
+          if (instrument.interactionType === "bow" && isBowingUI) {
+            setIsBowingUI(false);
+            bowStateRef.current.active = false;
+            setActiveNoteIdx(null);
+            soundEngine.stopContinuousVoice();
+          }
+        }}
+        onTouchCancel={() => {
+          lastMouseXRef.current = null;
+          if (instrument.interactionType === "bow" && isBowingUI) {
+            setIsBowingUI(false);
+            bowStateRef.current.active = false;
+            setActiveNoteIdx(null);
+            soundEngine.stopContinuousVoice();
+          }
+        }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+
+          // Mode SHAKE: Goyangkan kursor cepat kiri-kanan di atas panggung
+          if (instrument.interactionType === "shake") {
+            if (lastMouseXRef.current !== null) {
+              const deltaX = Math.abs(relX - lastMouseXRef.current);
+              const now = performance.now();
+              if (deltaX > 0.085 && now - lastShakeTriggerRef.current > 140) {
+                lastShakeTriggerRef.current = now;
+                const idx = Math.min(
+                  instrument.notes.length - 1,
+                  Math.floor(relX * instrument.notes.length)
+                );
+                playNoteByIndex(idx, Math.min(1, 0.65 + deltaX * 2.5));
+              }
+            }
+            lastMouseXRef.current = relX;
+          }
+
+          // Mode BOW: Drag & Hold kiri-kanan untuk menggesek dawai
+          if (instrument.interactionType === "bow" && isBowingUI) {
+            bowStateRef.current = { active: true, pos: relX };
+            const idx = Math.min(
+              instrument.notes.length - 1,
+              Math.floor(relX * instrument.notes.length)
+            );
+            const note = instrument.notes[idx] ?? instrument.notes[0];
+            setActiveNoteIdx(idx);
+            if (note) {
+              soundEngine.updateContinuousVoice(note.freq, 0.85);
+            }
+          }
+        }}
+        onMouseDown={(e) => {
+          if (instrument.interactionType === "bow") {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const idx = Math.min(
+              instrument.notes.length - 1,
+              Math.floor(relX * instrument.notes.length)
+            );
+            const note = instrument.notes[idx] ?? instrument.notes[0];
+            setIsBowingUI(true);
+            bowStateRef.current = { active: true, pos: relX };
+            setActiveNoteIdx(idx);
+            if (note) {
+              soundEngine.startContinuousVoice("bow", note.freq, 0.82);
+            }
+          }
+        }}
+        onMouseUp={() => {
+          if (instrument.interactionType === "bow" && isBowingUI) {
+            setIsBowingUI(false);
+            bowStateRef.current.active = false;
+            setActiveNoteIdx(null);
+            soundEngine.stopContinuousVoice();
+          }
+        }}
+        onMouseLeave={() => {
+          lastMouseXRef.current = null;
+          if (instrument.interactionType === "bow" && isBowingUI) {
+            setIsBowingUI(false);
+            bowStateRef.current.active = false;
+            setActiveNoteIdx(null);
+            soundEngine.stopContinuousVoice();
+          }
+        }}
+      >
+        {/* OVERLAY PANDUAN CARA BERMAIN DI POJOK KIRI ATAS */}
+        <div className="pointer-events-none absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-20 max-w-[calc(100%-125px)] sm:max-w-xs rounded-xl border border-[#DFD3C2]/90 bg-white/90 backdrop-blur-md p-2 sm:p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold text-[#2D1E12]">
+            <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#6E472D] shrink-0" />
+            <span className="truncate">Panduan ({meta.badge})</span>
+          </div>
+          <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] leading-snug sm:leading-relaxed text-stone-600 line-clamp-2 sm:line-clamp-none">
+            {cameraAiEnabled ? instrument.cameraGuide : instrument.mouseGuide}
+          </p>
+        </div>
+
+        {/* KONTROL ROTASI & RESET KAMERA DI POJOK KANAN ATAS */}
+        <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-20 flex items-center gap-1 sm:gap-1.5 rounded-full border border-[#DFD3C2] bg-white/90 px-2 sm:px-2.5 py-1 shadow-xs backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => setAutoRotate((prev) => !prev)}
+            className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-stone-700 hover:text-[#6E472D] px-1 sm:px-1.5 py-0.5 cursor-pointer"
+          >
+            {autoRotate ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+            <span className="hidden xs:inline">{autoRotate ? "Jeda" : "360°"}</span>
+          </button>
+          <span className="h-3 w-[1px] bg-stone-300" />
+          <button
+            type="button"
+            onClick={() => setCameraKey((k) => k + 1)}
+            className="p-1 text-stone-600 hover:text-[#6E472D] cursor-pointer"
+            title="Reset Kamera"
+          >
+            <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+          </button>
+        </div>
+
+        {/* OVERLAY SENAR VIRTUAL INTERAKTIF KHUSUS INSTRUMEN PETIK (PLUCK) */}
+        {instrument.interactionType === "pluck" && (
+          <div className="pointer-events-none absolute inset-x-8 sm:inset-x-16 bottom-14 top-20 z-10 flex items-stretch justify-between">
+            {instrument.notes.map((note, idx) => {
+              const isStruck = activeNoteIdx === idx;
+              return (
+                <div
+                  key={note.code}
+                  onMouseEnter={() => playNoteByIndex(idx, 0.88)}
+                  onClick={() => playNoteByIndex(idx, 0.95)}
+                  className="pointer-events-auto group relative flex w-7 cursor-pointer flex-col items-center justify-end pb-2"
+                  title={`Petik Senar ${note.label} (${note.freq} Hz)`}
+                >
+                  <div
+                    className={cn(
+                      "h-full w-[2px] transition-all duration-150",
+                      isStruck
+                        ? "w-[3.5px] bg-[#D49B27] shadow-[0_0_12px_#D49B27]"
+                        : "bg-[#8B5A2B]/45 group-hover:bg-[#6E472D]"
+                    )}
+                  />
+                  <span className="mt-1 rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[#2D1E12] shadow-xs border border-[#DFD3C2]">
+                    {note.code}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* KURSOR TANGAN VIRTUAL SAAT MODE KAMERA AI AKTIF */}
+        {cameraAiEnabled && handCursor && (
+          <div
+            className="pointer-events-none absolute z-30 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#6E472D] bg-[#F5C451]/80 shadow-lg transition-transform duration-75"
+            style={{
+              left: `${handCursor.x * 100}%`,
+              top: `${handCursor.y * 100}%`,
+            }}
+          />
+        )}
+
+        {/* PREVIEW WEBCAM KERANGKA TANGAN DI POJOK KANAN BAWAH */}
+        {cameraAiEnabled && (
+          <div className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 z-20 w-28 xs:w-32 sm:w-44 overflow-hidden rounded-xl border-2 border-[#6E472D]/60 bg-stone-950 shadow-lg">
+            <div className="relative aspect-4/3 w-full">
+              <video
+                ref={videoRef}
+                playsInline
+                muted
+                className="h-full w-full -scale-x-100 object-cover opacity-75"
+              />
+              <canvas
+                ref={overlayCanvasRef}
+                width={176}
+                height={132}
+                className="pointer-events-none absolute inset-0 h-full w-full -scale-x-100"
+              />
+            </div>
+            <div className="bg-stone-900/95 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-medium text-amber-100 flex items-center justify-between">
+              <span className="truncate">{cameraHandDetected ? "Tangan OK" : "Arahkan Tangan"}</span>
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 sm:h-2 sm:w-2 shrink-0 rounded-full",
+                  cameraHandDetected ? "bg-emerald-400 animate-ping" : "bg-amber-400"
+                )}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* KANVAS THREE.JS */}
+        <Canvas
+          key={`${instrument.id}-${cameraKey}`}
+          shadows
+          camera={{ position: [0, 1.85, 3.65], fov: 42 }}
+          gl={{
+            toneMapping: THREE.NeutralToneMapping,
+            toneMappingExposure: 0.98,
+            antialias: true,
+          }}
+        >
+          <ResponsiveInstrumentCamera />
+          <StudioEnvironment />
+          {/* Pencahayaan Studio Alami & Terkalibrasi: Hangat, jernih, dan tidak membakar warna terang */}
+          <ambientLight intensity={0.60} />
+          <hemisphereLight args={["#FFFDF2", "#4A3522", 0.68]} />
+          <directionalLight
+            position={[5, 8, 5]}
+            intensity={1.05}
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+          />
+          <directionalLight position={[0, 3.5, 5.5]} intensity={0.55} color="#FFF8EE" />
+          <directionalLight position={[-4, 4, -4]} intensity={0.42} color="#FFF2DB" />
+
+          <ReactiveInstrumentScene
+            instrument={instrument}
+            activeNoteIdx={activeNoteIdx}
+            strikePulseRef={strikePulseRef}
+            shakeEnergyRef={shakeEnergyRef}
+            bowStateRef={bowStateRef}
+            blowEnergyRef={blowEnergyRef}
+            onStageStrike={() => {
+              const nextIdx =
+                activeNoteIdx !== null
+                  ? (activeNoteIdx + 1) % instrument.notes.length
+                  : 0;
+              playNoteByIndex(nextIdx, 0.92);
+            }}
+          />
+
+          <OrbitControls
+            enablePan={false}
+            enableZoom={true}
+            enableRotate={instrument.interactionType !== "bow"}
+            autoRotate={autoRotate && !isBowingUI && !isBlowingHold}
+            autoRotateSpeed={1.1}
+            minDistance={2.1}
+            maxDistance={5.5}
+            maxPolarAngle={Math.PI / 2 - 0.04}
+          />
+        </Canvas>
+      </div>
+
+      {/* PANEL AKSI SPESIFIK TIPE INTERAKSI (GESEK / GOYANG / TIUP) */}
+      {instrument.interactionType === "bow" && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#DFD3C2] bg-[#FAF6EE] px-4 py-3">
+          <div className="text-xs text-stone-700">
+            <strong className="font-bold text-[#2D1E12]">Kontrol Busur Gesek:</strong>{" "}
+            Tahan &amp; geser mouse kiri-kanan di atas panggung 3D, atau tahan tombol gesek di samping.
+          </div>
+          <Button
+            type="button"
+            onMouseDown={() => {
+              const note = instrument.notes[selectedPitchIdx] ?? instrument.notes[0];
+              setIsBowingUI(true);
+              bowStateRef.current = { active: true, pos: 0.65 };
+              if (note) soundEngine.startContinuousVoice("bow", note.freq, 0.85);
+            }}
+            onMouseUp={() => {
+              setIsBowingUI(false);
+              bowStateRef.current.active = false;
+              soundEngine.stopContinuousVoice();
+            }}
+            onMouseLeave={() => {
+              if (isBowingUI) {
+                setIsBowingUI(false);
+                bowStateRef.current.active = false;
+                soundEngine.stopContinuousVoice();
+              }
+            }}
+            onTouchStart={() => {
+              const note = instrument.notes[selectedPitchIdx] ?? instrument.notes[0];
+              setIsBowingUI(true);
+              bowStateRef.current = { active: true, pos: 0.65 };
+              if (note) soundEngine.startContinuousVoice("bow", note.freq, 0.85);
+            }}
+            onTouchEnd={() => {
+              setIsBowingUI(false);
+              bowStateRef.current.active = false;
+              soundEngine.stopContinuousVoice();
+            }}
+            className="btn-waranusa rounded-full px-5 text-xs font-bold text-white"
+          >
+            <Waves className="mr-1.5 h-3.5 w-3.5" />
+            {isBowingUI ? "Sedang Menggesek Dawai..." : "Tahan untuk Gesek Dawai"}
+          </Button>
+        </div>
+      )}
+
+      {instrument.interactionType === "shake" && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#DFD3C2] bg-[#FAF6EE] px-4 py-3">
+          <div className="text-xs text-stone-700">
+            <strong className="font-bold text-[#2D1E12]">Kontrol Goyang Bambu:</strong>{" "}
+            Gerakkan kursor cepat kiri-kanan di atas model 3D atau klik tombol goyang untuk memicu getaran tabung.
+          </div>
+          <Button
+            type="button"
+            onClick={() => playNoteByIndex(selectedPitchIdx, 0.95)}
+            className="btn-waranusa rounded-full px-5 text-xs font-bold text-white"
+          >
+            <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+            Goyangkan {instrument.title}
+          </Button>
+        </div>
+      )}
+
+      {instrument.interactionType === "blow" && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#DFD3C2] bg-[#FAF6EE] px-4 py-3">
+          <div className="flex-1 min-w-[200px] space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <strong className="font-bold text-[#2D1E12]">
+                Tekanan Udara / Tiupan ({instrument.notes[selectedPitchIdx]?.label ?? "Nada 1"}):
+              </strong>
+              <span className="font-mono text-[11px] text-[#7A4B29]">
+                {micBlowEnabled
+                  ? `Sensor Mic: ${Math.round(micBlowLevel * 100)}%`
+                  : isBlowingHold
+                  ? "Meniup Aktif"
+                  : "Siap Ditiup"}
+              </span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-stone-200">
+              <div
+                className="h-full bg-gradient-to-r from-[#6E472D] to-[#D49B27] transition-all duration-75"
+                style={{
+                  width: `${Math.max(
+                    isBlowingHold ? 85 : 0,
+                    Math.round(micBlowLevel * 100)
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            onMouseDown={() => {
+              const note = instrument.notes[selectedPitchIdx] ?? instrument.notes[0];
+              setIsBlowingHold(true);
+              blowEnergyRef.current = 0.85;
+              if (note) soundEngine.startContinuousVoice("blow", note.freq, 0.88);
+            }}
+            onMouseUp={() => {
+              setIsBlowingHold(false);
+              blowEnergyRef.current = 0;
+              soundEngine.stopContinuousVoice();
+            }}
+            onMouseLeave={() => {
+              if (isBlowingHold) {
+                setIsBlowingHold(false);
+                blowEnergyRef.current = 0;
+                soundEngine.stopContinuousVoice();
+              }
+            }}
+            onTouchStart={() => {
+              const note = instrument.notes[selectedPitchIdx] ?? instrument.notes[0];
+              setIsBlowingHold(true);
+              blowEnergyRef.current = 0.85;
+              if (note) soundEngine.startContinuousVoice("blow", note.freq, 0.88);
+            }}
+            onTouchEnd={() => {
+              setIsBlowingHold(false);
+              blowEnergyRef.current = 0;
+              soundEngine.stopContinuousVoice();
+            }}
+            className="btn-waranusa rounded-full px-5 text-xs font-bold text-white"
+          >
+            <Wind className="mr-1.5 h-3.5 w-3.5" />
+            {isBlowingHold ? "Sedang Meniup..." : "Tahan untuk Tiup"}
+          </Button>
+        </div>
+      )}
+
+      {/* DERETAN 7 BILAH / TOMBOL NADA INTERAKTIF (UNTUK SEMUA INSTRUMEN) */}
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-600">
+          <span className="flex items-center gap-1.5 font-semibold text-[#2D1E12]">
+            <Music2 className="h-3.5 w-3.5 text-[#6E472D]" />
+            <span>
+              Tangga Nada &amp; Laras ({instrument.notes.length} Tingkat Nada — Ketuk atau Tekan{" "}
+              <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
+                1
+              </kbd>
+              –
+              <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
+                {instrument.notes.length}
+              </kbd>
+              )
+            </span>
+          </span>
+
+          {onVolumeChange && (
+            <div className="flex items-center gap-2 min-w-[150px]">
+              <Volume2 className="h-3.5 w-3.5 text-[#6E472D]" />
+              <Slider
+                value={[volume]}
+                min={0}
+                max={1}
+                step={0.05}
+                onValueChange={(v) => onVolumeChange(v[0] ?? 0.78)}
+                aria-label="Volume instrumen"
+                className="w-24"
+              />
+              <span className="font-mono text-[11px] font-bold text-[#2D1E12]">
+                {Math.round(volume * 100)}%
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="overflow-x-auto no-scrollbar pb-1.5 -mx-1 px-1 sm:mx-0 sm:px-0 sm:overflow-visible">
+          <div
+            className="grid gap-1.5 sm:gap-2.5 min-w-[320px] sm:min-w-0"
+            style={{
+              gridTemplateColumns: `repeat(${Math.max(1, instrument.notes.length)}, minmax(0, 1fr))`,
+            }}
+          >
+            {instrument.notes.map((note, idx) => {
+              const isPlaying = activeNoteIdx === idx;
+              const isSelected = selectedPitchIdx === idx;
+              return (
+                <button
+                  key={note.code}
+                  type="button"
+                  onClick={() => playNoteByIndex(idx, 0.92)}
+                  className={cn(
+                    "group relative flex flex-col items-center justify-center rounded-xl border py-2 sm:py-2.5 px-1 sm:px-1.5 transition-all cursor-pointer select-none min-h-[52px] sm:min-h-[58px]",
+                    isPlaying
+                      ? "scale-95 border-[#D49B27] bg-gradient-to-b from-[#FFE082] to-[#D49B27] text-[#2D1E12] shadow-md"
+                      : isSelected
+                      ? "border-[#6E472D]/50 bg-[#FAF3E6] text-[#2D1E12] hover:bg-[#F3E6D0]"
+                      : "border-[#DFD3C2] bg-white text-stone-700 hover:border-[#6E472D]/40 hover:bg-[#FAF6EE]"
+                  )}
+                >
+                  <span className="font-mono text-[9px] xs:text-[10px] font-bold uppercase tracking-wider text-[#7A4B29]">
+                    {note.code}
+                  </span>
+                  <span className="mt-0.5 font-serif text-[11px] sm:text-sm font-bold text-[#2D1E12] line-clamp-1">
+                    {note.label}
+                  </span>
+                  <span className="mt-0.5 font-mono text-[8px] xs:text-[9px] sm:text-[10px] text-stone-500">
+                    {note.subLabel ? note.subLabel : `${Math.round(note.freq)}Hz`}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Void unused icons to prevent HMR issues
+void Keyboard;
+void MousePointerClick;

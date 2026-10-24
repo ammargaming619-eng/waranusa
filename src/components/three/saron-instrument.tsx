@@ -27,6 +27,7 @@ import {
   Volume2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -253,7 +254,7 @@ export function SaronInstrument({ volume = 0.7 }: SaronInstrumentProps) {
       <div
         role="application"
         aria-label="Saron virtual — klik bilah atau gunakan gestur udara untuk membunyikan"
-        className="relative h-[280px] sm:h-[380px] w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft shadow-sm"
+        className="relative h-[320px] sm:h-[440px] md:h-[480px] w-full overflow-hidden rounded-2xl border border-brand-line bg-brand-soft shadow-sm"
       >
         <Canvas
           shadows="soft"

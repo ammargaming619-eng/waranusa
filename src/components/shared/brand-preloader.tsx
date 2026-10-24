@@ -11,11 +11,16 @@ interface BrandPreloaderProps {
 }
 
 export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: BrandPreloaderProps) {
+  const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(true);
   const [readyToScroll, setReadyToScroll] = useState(false);
   const [progress, setProgress] = useState(30);
   const touchStartY = useRef<number | null>(null);
   const dismissedRef = useRef(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const dismiss = useCallback(() => {
     if (dismissedRef.current) return;
@@ -134,6 +139,10 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [visible, dismiss]);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -262,7 +271,7 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
                 transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 1.3 }}
               >
                 <img
-                  src="/images/brand/waranusa-logo.png?v=2"
+                  src="/images/brand/waranusa-logo.png?v=3"
                   alt="Logo WaraNusa"
                   className="h-36 w-auto sm:h-48 md:h-56 lg:h-64 object-contain drop-shadow-[0_20px_55px_rgba(212,175,55,0.55)]"
                 />
@@ -295,7 +304,7 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
                 transition={{ delay: 0.8, duration: 0.6 }}
                 className="mt-2 text-xs sm:text-base font-medium uppercase tracking-[0.26em] text-[#E6DDD4]/90"
               >
-                Pelestarian Budaya Nusantara
+                Pelestarian Warisan Nusantara
               </motion.p>
             </motion.div>
 

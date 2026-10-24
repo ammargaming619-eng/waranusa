@@ -187,10 +187,10 @@ export function CulturalChatWidget() {
             "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50",
             "group flex items-center justify-center",
             "w-12 h-12 sm:w-14 sm:h-14 rounded-full",
-            "bg-[#111722] border-2 border-[#D4AF37]/80 hover:border-[#D4AF37]",
-            "shadow-[0_0_24px_rgba(212,175,55,0.4)] hover:shadow-[0_0_32px_rgba(212,175,55,0.65)]",
+            "btn-waranusa",
+            "shadow-[0_8px_24px_rgba(45,30,18,0.35)] hover:shadow-[0_12px_28px_rgba(45,30,18,0.45)]",
             "transition-all duration-300 transform hover:scale-105 active:scale-95",
-            "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+            "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
           aria-label="Buka Chatbot Budaya Karsa"
           title="Tanya Karsa - Panduan Budaya AI"

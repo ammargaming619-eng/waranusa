@@ -43,10 +43,12 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   /* Warna brand WaraNusa */
-  --color-brand-teal: #8C5E3C;
+  --color-brand-teal: #147A76;
+  --color-brand-maroon: #52331C;
+  --color-brand-espresso: #1A110B;
   --color-brand-sea: #1261a0;
   --color-brand-tropic: #48a66a;
-  --color-brand-gold: #f2b544;
+  --color-brand-gold: #D4A843;
   --color-brand-orange: #f28c38;
   --color-brand-ivory: #fffefa;
   --color-brand-ink: #2D1E12;
@@ -63,18 +65,18 @@
   --card-foreground: #2D1E12;
   --popover: #ffffff;
   --popover-foreground: #2D1E12;
-  --primary: #6E472D;              /* teal utama */
+  --primary: #6E472D;              /* kayu jati utama */
   --primary-foreground: #ffffff;
   --secondary: #FAF6F0;            /* latar sekunder */
   --secondary-foreground: #2D1E12;
   --muted: #FAF6F0;
   --muted-foreground: #64748b;     /* teks sekunder */
-  --accent: #f2b544;               /* emas hangat */
+  --accent: #D4A843;               /* emas gamelan */
   --accent-foreground: #172b3a;
   --destructive: #dc2626;
   --border: #E6DDD4;               /* border */
   --input: #E6DDD4;
-  --ring: #8C5E3C;
+  --ring: #6E472D;
   --chart-1: #159d9a;
   --chart-2: #1261a0;
   --chart-3: #f2b544;
@@ -87,7 +89,7 @@
   --sidebar-accent: #FAF6F0;
   --sidebar-accent-foreground: #2D1E12;
   --sidebar-border: #E6DDD4;
-  --sidebar-ring: #8C5E3C;
+  --sidebar-ring: #6E472D;
 }
 
 .dark {
@@ -138,12 +140,12 @@
     overflow-x: hidden;
   }
   :focus-visible {
-    outline: 2px solid #159d9a;
+    outline: 2px solid #147A76;
     outline-offset: 2px;
   }
 }
 
-/* ====== Utilitas brand ====== */
+/* ====== Utilitas brand & gradasi editorial ====== */
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .no-scrollbar::-webkit-scrollbar {
@@ -154,23 +156,52 @@
     scrollbar-width: none;
   }
   .bg-brand-gradient {
-    background: linear-gradient(135deg, #159d9a 0%, #1261a0 100%);
+    background: linear-gradient(135deg, #7A2320 0%, #6E472D 55%, #4A2E1C 100%);
   }
   .bg-brand-gradient-soft {
-    background: linear-gradient(135deg, rgba(21, 157, 154, 0.08), rgba(18, 97, 160, 0.06));
+    background: linear-gradient(135deg, rgba(139, 38, 36, 0.06), rgba(212, 168, 67, 0.08));
+  }
+  .bg-lontar-gradient {
+    background:
+      radial-gradient(ellipse 80% 55% at 50% 0%, rgba(212, 168, 67, 0.12) 0%, transparent 70%),
+      linear-gradient(180deg, #FDFBF7 0%, #F7F1E5 50%, #F2E9DA 100%);
+  }
+  .bg-museum-stage {
+    background:
+      radial-gradient(ellipse 65% 55% at 70% 50%, rgba(212, 168, 67, 0.14) 0%, rgba(139, 38, 36, 0.08) 45%, transparent 75%),
+      linear-gradient(145deg, #160F0A 0%, #241710 52%, #130C08 100%);
+  }
+  /* Tombol Utama WaraNusa: Nuansa coklat kayu jati dengan kilau cahaya lembut di posisi tengah (rapi & tidak melebar) */
+  .btn-waranusa {
+    background-color: #482B18;
+    background-image:
+      radial-gradient(ellipse 45% 75% at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 65%),
+      linear-gradient(90deg, #442816 0%, #56351F 50%, #442816 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 3px 10px -2px rgba(40, 22, 10, 0.22);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-waranusa:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 5px 14px -2px rgba(40, 22, 10, 0.3);
+  }
+  .btn-waranusa:active {
+    filter: brightness(0.97);
+    transform: translateY(1px);
   }
   .bg-ivory-pattern {
     background-color: #fffefa;
-    background-image: radial-gradient(#e1ebe8 1px, transparent 1px);
-    background-size: 22px 22px;
+    background-image: radial-gradient(#e5ddd0 1px, transparent 1px);
+    background-size: 24px 24px;
   }
   .card-hover {
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .card-hover:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px -12px rgba(23, 43, 58, 0.18);
-    border-color: #b9d8d4;
+    box-shadow: 0 14px 36px -12px rgba(45, 30, 18, 0.18);
+    border-color: #CBB59D;
   }
 }
 
@@ -215,6 +246,32 @@ html.font-scale-100 { font-size: 100% !important; }
 html.font-scale-110 { font-size: 110% !important; }
 html.font-scale-120 { font-size: 120% !important; }
 html.font-scale-130 { font-size: 130% !important; }
+html.font-scale-140 { font-size: 140% !important; }
+
+/* Multi-step Line Height */
+html.line-height-1 p, html.line-height-1 li, html.line-height-1 span { line-height: 1.8 !important; }
+html.line-height-2 p, html.line-height-2 li, html.line-height-2 span { line-height: 2.2 !important; }
+html.line-height-3 p, html.line-height-3 li, html.line-height-3 span { line-height: 2.6 !important; }
+html.line-height-expanded p, html.line-height-expanded li { line-height: 2.2 !important; }
+
+/* Multi-step Letter Spacing */
+html.letter-spacing-1 body, html.letter-spacing-1 p, html.letter-spacing-1 h1, html.letter-spacing-1 h2, html.letter-spacing-1 h3, html.letter-spacing-1 a, html.letter-spacing-1 span { letter-spacing: 0.05em !important; word-spacing: 0.1em !important; }
+html.letter-spacing-2 body, html.letter-spacing-2 p, html.letter-spacing-2 h1, html.letter-spacing-2 h2, html.letter-spacing-2 h3, html.letter-spacing-2 a, html.letter-spacing-2 span { letter-spacing: 0.12em !important; word-spacing: 0.22em !important; }
+html.letter-spacing-3 body, html.letter-spacing-3 p, html.letter-spacing-3 h1, html.letter-spacing-3 h2, html.letter-spacing-3 h3, html.letter-spacing-3 a, html.letter-spacing-3 span { letter-spacing: 0.20em !important; word-spacing: 0.35em !important; }
+
+/* Mode Kontras & Warna (Saturasi Rendah & Balikan Warna) */
+html.low-saturation {
+  filter: grayscale(85%) contrast(105%) !important;
+}
+
+html.invert-colors {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+html.invert-colors img,
+html.invert-colors video,
+html.invert-colors canvas {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
 
 /* 1. Mode Kontras Tinggi */
 html.high-contrast {

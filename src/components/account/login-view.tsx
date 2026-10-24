@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from "react";
 import { HashLink as Link } from "@/components/shared/hash-link";
-import { ArrowLeft, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, Box, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { navigate } from "@/lib/router";
 import { BrandLogo, BrandMark } from "@/components/shared/brand-logo";
@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+
+void Sparkles;
 
 const DEMO_ACCOUNTS = [
   { email: "admin@waranusa.id", password: "Admin#2025", role: "Super Admin" },
@@ -94,7 +96,7 @@ export default function LoginView() {
           {/* Logo baru resmi WaraNusa */}
           <a href="#/" className="inline-flex items-center gap-3 group" aria-label="WaraNusa — Beranda">
             <img
-              src="/images/brand/waranusa-logo.png?v=2"
+              src="/images/brand/waranusa-logo.png?v=3"
               alt="Logo WaraNusa"
               className="h-12 w-auto object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
             />
@@ -103,7 +105,7 @@ export default function LoginView() {
                 WaraNusa
               </span>
               <span className="text-[0.6rem] font-medium uppercase tracking-[0.14em] text-stone-300 mt-0.5">
-                Pelestarian Budaya Nusantara
+                Pelestarian Warisan Nusantara
               </span>
             </span>
           </a>
@@ -120,8 +122,8 @@ export default function LoginView() {
         </figure>
         <ul className="relative space-y-4 mb-4">
           {[
-            { icon: MapPinned, text: "Peta interaktif 34 wilayah budaya Nusantara" },
-            { icon: Sparkles, text: "Model 3D & instrumen musik virtual yang bisa dimainkan" },
+            { icon: MapPinned, text: "Peta interaktif 38 provinsi budaya Nusantara" },
+            { icon: Box, text: "Model 3D & instrumen musik virtual yang bisa dimainkan" },
             { icon: ShieldCheck, text: "Dokumentasi transparan dengan sumber terverifikasi" },
           ].map((f) => (
             <li key={f.text} className="flex items-center gap-3 text-sm text-stone-200">

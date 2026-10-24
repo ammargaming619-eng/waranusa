@@ -1,47 +1,40 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import {
-  X,
-  RotateCcw,
-  Volume2,
-  Contrast,
-  Pause,
-  MousePointer2,
-  Link2,
-  MoveVertical,
-  AlignLeft,
-  CheckCircle2,
-} from "lucide-react";
+import { X, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface A11yState {
-  fontScale: number; // 90, 100, 110, 120, 130
-  highContrast: boolean;
+  fontStep: number; // 0 (100%), 1 (110%), 2 (120%), 3 (130%), 4 (140%)
+  lineHeightStep: number; // 0 (Normal 1.0X), 1 (1.5X), 2 (1.75X), 3 (2.0X)
+  letterSpacingStep: number; // 0 (Normal), 1 (Ringan), 2 (Sedang), 3 (Luas)
+  contrastStep: number; // 0 (Normal), 1 (Kontras Tinggi), 2 (Saturasi Rendah), 3 (Balikan Warna)
   dyslexicFont: boolean;
   pauseAnimations: boolean;
   largeCursor: boolean;
   underlineLinks: boolean;
-  lineHeight: boolean;
   textAlignLeft: boolean;
 }
 
 const DEFAULT_STATE: A11yState = {
-  fontScale: 100,
-  highContrast: false,
+  fontStep: 0,
+  lineHeightStep: 0,
+  letterSpacingStep: 0,
+  contrastStep: 0,
   dyslexicFont: false,
   pauseAnimations: false,
   largeCursor: false,
   underlineLinks: false,
-  lineHeight: false,
   textAlignLeft: false,
 };
 
-const STORAGE_KEY = "waranusa_a11y_prefs_v2";
+const STORAGE_KEY = "waranusa_a11y_prefs_v3";
 
-/**
- * Ikon Universal Aksesibilitas Manusia dalam Lingkaran (Khas Emblem A11y)
- */
+// =========================================================================
+// IKON-IKON AKSESIBILITAS MODEREN SESUAI REFERENSI VISUAL (USERWAY / A11Y)
+// =========================================================================
+
+/** Ikon Utama Aksesibilitas Manusia Universal */
 function AccessibilityIcon({ className = "w-5 h-5 text-amber-400" }: { className?: string }) {
   return (
     <svg
@@ -62,43 +55,145 @@ function AccessibilityIcon({ className = "w-5 h-5 text-amber-400" }: { className
   );
 }
 
-/**
- * Ikon A+ untuk Increase Text
- */
-function APlusIcon({ className }: { className?: string }) {
+/** Ikon TT untuk Perbesar Teks */
+function TTIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className={className}>
-      <path d="M4 19L9.5 5L15 19" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6 14H13" strokeLinecap="round" />
-      <path d="M18 9V15" strokeLinecap="round" />
-      <path d="M15 12H21" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className={className}>
+      <path d="M3 6H13M8 6V19" />
+      <path d="M14 10H21M17.5 10V19" strokeWidth="2" />
     </svg>
   );
 }
 
-/**
- * Ikon A- untuk Decrease Text
- */
-function AMinusIcon({ className }: { className?: string }) {
+/** Ikon Gelombang Suara (Mode Suara / TTS) */
+function VoiceWaveIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className={className}>
-      <path d="M4 19L9.5 5L15 19" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6 14H13" strokeLinecap="round" />
-      <path d="M16 12H22" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className={className}>
+      <path d="M4 10V14" />
+      <path d="M8 7V17" />
+      <path d="M12 4V20" />
+      <path d="M16 7V17" />
+      <path d="M20 10V14" />
     </svg>
   );
 }
 
-/**
- * Ikon T Serif untuk Dyslexic Font
- */
-function DyslexicIcon({ className }: { className?: string }) {
+/** Ikon Tinggi Garis (Panah Vertikal Berdamping Garis) */
+function LineHeightIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-      <path d="M6 5H18" strokeLinecap="round" />
-      <path d="M12 5V19" strokeLinecap="round" />
-      <path d="M9 19H15" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M5 4L2.5 7.5H7.5L5 4Z" fill="currentColor" />
+      <path d="M5 20L2.5 16.5H7.5L5 20Z" fill="currentColor" />
+      <path d="M5 7V17" />
+      <path d="M12 6H21" />
+      <path d="M12 12H21" />
+      <path d="M12 18H21" />
     </svg>
+  );
+}
+
+/** Ikon Spasi Huruf (Huruf T dengan Panah Kiri-Kanan) */
+function LetterSpacingIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M8 5H16M12 5V15" />
+      <path d="M3 19L5.5 16.5V21.5L3 19Z" fill="currentColor" />
+      <path d="M21 19L18.5 16.5V21.5L21 19Z" fill="currentColor" />
+      <path d="M5 19H19" />
+    </svg>
+  );
+}
+
+/** Ikon Kontras / Saturasi / Balikan Warna */
+function ContrastIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 3V21" />
+      <path d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21" fill="currentColor" opacity="0.3" />
+    </svg>
+  );
+}
+
+/** Ikon Df untuk Ramah Disleksia */
+function DyslexicDfIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className={className}>
+      <text x="3" y="17" fontSize="16" fontFamily="sans-serif" fontWeight="900" fill="currentColor" stroke="none">
+        Df
+      </text>
+    </svg>
+  );
+}
+
+/** Ikon Jeda Animasi */
+function PauseAnimIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className={className}>
+      <circle cx="12" cy="12" r="9" strokeDasharray="4 3" />
+      <path d="M10 8V16M14 8V16" strokeWidth="2.5" />
+    </svg>
+  );
+}
+
+/** Ikon Kursor Besar */
+function CursorIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
+      <path d="M4 3L4 18L8.5 14L13.5 21L16 19.5L11 12.5L17 12L4 3Z" />
+    </svg>
+  );
+}
+
+/** Ikon Garis Bawahi Tautan */
+function UnderlineLinkIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className={className}>
+      <path d="M7 4V10C7 12.7614 9.23858 15 12 15C14.7614 15 17 12.7614 17 10V4" />
+      <path d="M5 20H19" strokeWidth="2.5" />
+    </svg>
+  );
+}
+
+/** Ikon Rata Kiri */
+function AlignLeftIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" className={className}>
+      <path d="M4 6H20" />
+      <path d="M4 11H14" />
+      <path d="M4 16H18" />
+      <path d="M4 21H10" />
+    </svg>
+  );
+}
+
+// =========================================================================
+// KOMPONEN INDIKATOR BATANG TINGKAT ("UKURAN" SESUAI REFERENSI FOTO)
+// =========================================================================
+function StepIndicator({
+  total = 3,
+  current = 0,
+}: {
+  total?: number;
+  current?: number;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-1 sm:gap-1.5 mt-2 w-full">
+      {Array.from({ length: total }).map((_, i) => {
+        const isActive = i < current;
+        return (
+          <span
+            key={i}
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-200",
+              isActive
+                ? "w-4 sm:w-5 bg-[#6E472D] shadow-xs"
+                : "w-2.5 sm:w-3 bg-stone-300/80"
+            )}
+          />
+        );
+      })}
+    </div>
   );
 }
 
@@ -116,41 +211,63 @@ export function AccessibilityWidget() {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
 
-    // 1. Font scale
+    // 1. Font scale (0 -> 100%, 1 -> 110%, 2 -> 120%, 3 -> 130%, 4 -> 140%)
     root.classList.remove(
       "font-scale-90",
       "font-scale-100",
       "font-scale-110",
       "font-scale-120",
-      "font-scale-130"
+      "font-scale-130",
+      "font-scale-140"
     );
-    root.classList.add(`font-scale-${s.fontScale}`);
+    const fontScales = [100, 110, 120, 130, 140];
+    const scale = fontScales[s.fontStep] ?? 100;
+    root.classList.add(`font-scale-${scale}`);
 
-    // 2. High contrast
-    if (s.highContrast) root.classList.add("high-contrast");
-    else root.classList.remove("high-contrast");
+    // 2. Line height
+    root.classList.remove(
+      "line-height-1",
+      "line-height-2",
+      "line-height-3",
+      "line-height-expanded"
+    );
+    if (s.lineHeightStep === 1) root.classList.add("line-height-1");
+    else if (s.lineHeightStep === 2) root.classList.add("line-height-2");
+    else if (s.lineHeightStep === 3) root.classList.add("line-height-3");
 
-    // 3. Dyslexic font
+    // 3. Letter spacing
+    root.classList.remove(
+      "letter-spacing-1",
+      "letter-spacing-2",
+      "letter-spacing-3"
+    );
+    if (s.letterSpacingStep === 1) root.classList.add("letter-spacing-1");
+    else if (s.letterSpacingStep === 2) root.classList.add("letter-spacing-2");
+    else if (s.letterSpacingStep === 3) root.classList.add("letter-spacing-3");
+
+    // 4. Contrast & Color Mode (0: Normal, 1: High Contrast, 2: Low Saturation, 3: Invert)
+    root.classList.remove("high-contrast", "low-saturation", "invert-colors");
+    if (s.contrastStep === 1) root.classList.add("high-contrast");
+    else if (s.contrastStep === 2) root.classList.add("low-saturation");
+    else if (s.contrastStep === 3) root.classList.add("invert-colors");
+
+    // 5. Dyslexic font
     if (s.dyslexicFont) root.classList.add("dyslexic-font");
     else root.classList.remove("dyslexic-font");
 
-    // 4. Pause animations
+    // 6. Pause animations
     if (s.pauseAnimations) root.classList.add("pause-animations");
     else root.classList.remove("pause-animations");
 
-    // 5. Large cursor
+    // 7. Large cursor
     if (s.largeCursor) root.classList.add("large-cursor");
     else root.classList.remove("large-cursor");
 
-    // 6. Underline links
+    // 8. Underline links
     if (s.underlineLinks) root.classList.add("underline-links");
     else root.classList.remove("underline-links");
 
-    // 7. Line height
-    if (s.lineHeight) root.classList.add("line-height-expanded");
-    else root.classList.remove("line-height-expanded");
-
-    // 8. Text align
+    // 9. Text align left
     if (s.textAlignLeft) root.classList.add("text-align-left");
     else root.classList.remove("text-align-left");
   };
@@ -210,9 +327,9 @@ export function AccessibilityWidget() {
     };
   }, []);
 
-  // ================= AKSESOR FITUR =================
+  // ================= HANDLERS FITUR BERTINGKAT ("UKURAN") =================
 
-  // 1. Voice Mode (Web Speech API TTS)
+  // 1. Mode Suara (Web Speech API TTS)
   const toggleVoiceMode = () => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
@@ -238,7 +355,8 @@ export function AccessibilityWidget() {
       if (t && t.length > 2) textPieces.push(t);
     });
 
-    const readableText = textPieces.length > 0 ? textPieces.join(". ") : clone.innerText?.trim() || "";
+    const readableText =
+      textPieces.length > 0 ? textPieces.join(". ") : clone.innerText?.trim() || "";
     if (!readableText) return;
 
     const utterance = new SpeechSynthesisUtterance(readableText);
@@ -261,58 +379,64 @@ export function AccessibilityWidget() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // 2. Increase Text
-  const handleIncreaseText = () => {
+  // 2. Siklus Perbesar Teks (4 Tahap: 100% -> 110% -> 120% -> 130% -> 140% -> Reset)
+  const handleCycleFont = () => {
     updateState((prev) => ({
       ...prev,
-      fontScale: Math.min(130, prev.fontScale + 10),
+      fontStep: (prev.fontStep + 1) % 5,
     }));
   };
 
-  // 3. Decrease Text
-  const handleDecreaseText = () => {
+  // 3. Siklus Tinggi Garis (3 Tahap: Normal -> 1.5X -> 1.75X -> 2.0X -> Reset)
+  const handleCycleLineHeight = () => {
     updateState((prev) => ({
       ...prev,
-      fontScale: Math.max(90, prev.fontScale - 10),
+      lineHeightStep: (prev.lineHeightStep + 1) % 4,
     }));
   };
 
-  // 4. High Contrast
-  const handleToggleHighContrast = () => {
-    updateState((prev) => ({ ...prev, highContrast: !prev.highContrast }));
+  // 4. Siklus Spasi Huruf (3 Tahap: Normal -> Ringan -> Sedang -> Luas -> Reset)
+  const handleCycleLetterSpacing = () => {
+    updateState((prev) => ({
+      ...prev,
+      letterSpacingStep: (prev.letterSpacingStep + 1) % 4,
+    }));
   };
 
-  // 5. Dyslexic Font
+  // 5. Siklus Warna & Kontras (3 Tahap: Normal -> Kontras Tinggi -> Saturasi Rendah -> Balikan Warna -> Reset)
+  const handleCycleContrast = () => {
+    updateState((prev) => ({
+      ...prev,
+      contrastStep: (prev.contrastStep + 1) % 4,
+    }));
+  };
+
+  // 6. Ramah Disleksia (Toggle)
   const handleToggleDyslexic = () => {
     updateState((prev) => ({ ...prev, dyslexicFont: !prev.dyslexicFont }));
   };
 
-  // 6. Pause Animations
+  // 7. Jeda Animasi (Toggle)
   const handleToggleAnimations = () => {
     updateState((prev) => ({ ...prev, pauseAnimations: !prev.pauseAnimations }));
   };
 
-  // 7. Large Cursor
+  // 8. Kursor Besar (Toggle)
   const handleToggleCursor = () => {
     updateState((prev) => ({ ...prev, largeCursor: !prev.largeCursor }));
   };
 
-  // 8. Underline Links
+  // 9. Garis Bawahi Tautan (Toggle)
   const handleToggleUnderline = () => {
     updateState((prev) => ({ ...prev, underlineLinks: !prev.underlineLinks }));
   };
 
-  // 9. Line Height
-  const handleToggleLineHeight = () => {
-    updateState((prev) => ({ ...prev, lineHeight: !prev.lineHeight }));
-  };
-
-  // 10. Text Align
+  // 10. Rata Kiri Teks (Toggle)
   const handleToggleTextAlign = () => {
     updateState((prev) => ({ ...prev, textAlignLeft: !prev.textAlignLeft }));
   };
 
-  // Reset
+  // Reset Semua Pengaturan
   const handleReset = () => {
     setState(DEFAULT_STATE);
     applyDOMState(DEFAULT_STATE);
@@ -328,21 +452,28 @@ export function AccessibilityWidget() {
   };
 
   const hasAnyActive =
-    state.fontScale !== 100 ||
-    state.highContrast ||
+    state.fontStep > 0 ||
+    state.lineHeightStep > 0 ||
+    state.letterSpacingStep > 0 ||
+    state.contrastStep > 0 ||
     state.dyslexicFont ||
     state.pauseAnimations ||
     state.largeCursor ||
     state.underlineLinks ||
-    state.lineHeight ||
     state.textAlignLeft ||
     isSpeaking;
 
   if (!mounted) return null;
 
+  // Nilai teks dinamis untuk sublabel
+  const fontPercentLabels = ["Normal", "110%", "120%", "130%", "140%"];
+  const lineHeightLabels = ["Normal", "1.5X", "1.75X", "2.0X"];
+  const letterSpacingLabels = ["Normal", "Ringan", "Sedang", "Luas"];
+  const contrastLabels = ["Normal", "Kontras", "Monokrom", "Invert"];
+
   return (
     <div data-a11y-ignore className="select-none">
-      {/* ================= FLOATING TRIGGER BUTTON (Pojok Kiri Bawah - Agak Gede) ================= */}
+      {/* ================= FLOATING TRIGGER BUTTON (Pojok Kiri Bawah) ================= */}
       <button
         ref={triggerRef}
         type="button"
@@ -350,25 +481,24 @@ export function AccessibilityWidget() {
         aria-expanded={isOpen}
         aria-haspopup="dialog"
         className={cn(
-          "fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[9999]",
+          "!fixed bottom-5 left-8 sm:bottom-8 sm:left-12 md:left-14 z-[9999]",
           "group flex items-center justify-center",
-          "w-14 h-14 sm:w-16 sm:h-16 rounded-full",
-          "bg-[#4A3222]/95 hover:bg-[#3D2817]",
-          "border border-[#8C5E3C]/50 hover:border-[#8C5E3C]",
-          "shadow-[0_8px_24px_rgba(45,30,18,0.28)] hover:shadow-[0_10px_28px_rgba(45,30,18,0.38)]",
+          "w-16 h-16 sm:w-18 sm:h-18 rounded-full",
+          "btn-waranusa",
+          "shadow-[0_10px_30px_rgba(45,30,18,0.38)] hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)]",
           "backdrop-blur-md transition-all duration-300 transform hover:scale-105 active:scale-95",
           "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
         )}
         aria-label="Buka Menu Aksesibilitas Ramah Difabel"
         title="Menu Aksesibilitas (Ramah Difabel)"
       >
-        <AccessibilityIcon className="w-7 h-7 sm:w-8 sm:h-8 text-[#FAF6F0] pointer-events-none transition-transform duration-300 group-hover:scale-110" />
+        <AccessibilityIcon className="w-8 h-8 sm:w-9 sm:h-9 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
         {/* Badge pendar aktif */}
         {hasAnyActive && (
           <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 flex h-3 w-3 pointer-events-none">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500 border border-[#2D1E12]"></span>
+            <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500 border border-[#533019]"></span>
           </span>
         )}
       </button>
@@ -380,8 +510,8 @@ export function AccessibilityWidget() {
           role="dialog"
           aria-label="Panel Kontrol Aksesibilitas"
           className={cn(
-            "fixed bottom-22 sm:bottom-26 left-3 right-3 sm:left-6 sm:right-auto z-[9999]",
-            "w-auto sm:w-[380px] max-w-[calc(100vw-1.5rem)] rounded-[24px] sm:rounded-[28px] overflow-hidden",
+            "fixed bottom-24 sm:bottom-28 left-4 right-4 sm:left-12 md:left-14 sm:right-auto z-[9999]",
+            "w-auto sm:w-[410px] max-w-[calc(100vw-2rem)] rounded-[24px] sm:rounded-[28px] overflow-hidden",
             "max-h-[82vh] overflow-y-auto",
             "bg-[#FAF7F2] shadow-[0_24px_60px_rgba(45,30,18,0.25)]",
             "border border-stone-300/80",
@@ -389,7 +519,7 @@ export function AccessibilityWidget() {
           )}
         >
           {/* ============ 1. HEADER PANEL ============ */}
-          <div className="bg-gradient-to-r from-[#5C3B24] via-[#6E472D] to-[#5C3B24] px-3.5 sm:px-4 py-3 sm:py-3.5 flex items-center justify-between text-white">
+          <div className="btn-waranusa px-4 py-3.5 flex items-center justify-between text-white border-b border-white/10">
             {/* Sisi Kiri: Ikon + Judul */}
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
@@ -429,272 +559,330 @@ export function AccessibilityWidget() {
             </div>
           </div>
 
-          {/* ============ 2. GRID 10 KONTROL (EARTHY NUSANTARA & BAHASA INDONESIA) ============ */}
-          <div className="p-2.5 sm:p-3.5 bg-[#FAF7F2] grid grid-cols-2 gap-2 sm:gap-2.5">
-            {/* 1. Baca Layar (Voice Mode TTS) */}
+          {/* ============ 2. GRID KONTROL BER-INDIKATOR TINGKAT ("UKURAN") ============ */}
+          <div className="p-3 sm:p-3.5 bg-[#FAF7F2] grid grid-cols-2 gap-2 sm:gap-2.5">
+            {/* 1. Mode Suara (TTS) */}
             <button
               type="button"
               onClick={toggleVoiceMode}
               aria-label="Baca teks halaman dengan sintesis suara"
               aria-pressed={isSpeaking}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 isSpeaking
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  isSpeaking ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  isSpeaking ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <VoiceWaveIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", isSpeaking ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Baca<br />Layar
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", isSpeaking ? "text-[#6E472D]" : "text-stone-800")}>
+                  Mode Suara
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {isSpeaking ? "Membaca..." : "Nonaktif"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={isSpeaking ? 2 : 0} />
             </button>
 
-            {/* 2. Perbesar Teks */}
+            {/* 2. Perbesar Teks (4 Ukuran / Steps) */}
             <button
               type="button"
-              onClick={handleIncreaseText}
-              aria-label="Perbesar ukuran teks bacaan"
+              onClick={handleCycleFont}
+              aria-label={`Perbesar ukuran teks (aktif: ${fontPercentLabels[state.fontStep]})`}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
-                state.fontScale > 100
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
+                state.fontStep > 0
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.fontScale > 100 ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.fontStep > 0 ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <APlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <TTIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.fontScale > 100 ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Perbesar<br />Teks
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.fontStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
+                  Perbesar Teks
+                </span>
+                <span className={cn("text-[10px] font-semibold mt-0.5", state.fontStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
+                  {fontPercentLabels[state.fontStep]}
+                </span>
+              </div>
+              <StepIndicator total={4} current={state.fontStep} />
             </button>
 
-            {/* 3. Perkecil Teks */}
+            {/* 3. Tinggi Garis (3 Ukuran / Steps) */}
             <button
               type="button"
-              onClick={handleDecreaseText}
-              aria-label="Perkecil ukuran teks bacaan"
+              onClick={handleCycleLineHeight}
+              aria-label={`Sesuaikan jarak antar baris teks (aktif: ${lineHeightLabels[state.lineHeightStep]})`}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
-                state.fontScale < 100
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
+                state.lineHeightStep > 0
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.fontScale < 100 ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.lineHeightStep > 0 ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <AMinusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <LineHeightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.fontScale < 100 ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Perkecil<br />Teks
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.lineHeightStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
+                  Tinggi Garis
+                </span>
+                <span className={cn("text-[10px] font-semibold mt-0.5", state.lineHeightStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
+                  {lineHeightLabels[state.lineHeightStep]}
+                </span>
+              </div>
+              <StepIndicator total={3} current={state.lineHeightStep} />
             </button>
 
-            {/* 4. Kontras Tinggi */}
+            {/* 4. Spasi Huruf (3 Ukuran / Steps) */}
             <button
               type="button"
-              onClick={handleToggleHighContrast}
-              aria-label="Aktifkan mode kontras tinggi"
-              aria-pressed={state.highContrast}
+              onClick={handleCycleLetterSpacing}
+              aria-label={`Sesuaikan spasi antar huruf (aktif: ${letterSpacingLabels[state.letterSpacingStep]})`}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
-                state.highContrast
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
+                state.letterSpacingStep > 0
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.highContrast ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.letterSpacingStep > 0 ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <Contrast className="w-4 h-4 sm:w-5 sm:h-5" />
+                <LetterSpacingIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.highContrast ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Kontras<br />Tinggi
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.letterSpacingStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
+                  Spasi Huruf
+                </span>
+                <span className={cn("text-[10px] font-semibold mt-0.5", state.letterSpacingStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
+                  {letterSpacingLabels[state.letterSpacingStep]}
+                </span>
+              </div>
+              <StepIndicator total={3} current={state.letterSpacingStep} />
             </button>
 
-            {/* 5. Font Disleksia */}
+            {/* 5. Warna & Kontras (3 Ukuran / Mode) */}
+            <button
+              type="button"
+              onClick={handleCycleContrast}
+              aria-label={`Ganti mode kontras dan warna (aktif: ${contrastLabels[state.contrastStep]})`}
+              className={cn(
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
+                state.contrastStep > 0
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+              )}
+            >
+              <div
+                className={cn(
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.contrastStep > 0 ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                )}
+              >
+                <ContrastIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.contrastStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
+                  Kontras &amp; Warna
+                </span>
+                <span className={cn("text-[10px] font-semibold mt-0.5", state.contrastStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
+                  {contrastLabels[state.contrastStep]}
+                </span>
+              </div>
+              <StepIndicator total={3} current={state.contrastStep} />
+            </button>
+
+            {/* 6. Ramah Disleksia (Toggle) */}
             <button
               type="button"
               onClick={handleToggleDyslexic}
               aria-label="Ganti ke font khusus disleksia"
               aria-pressed={state.dyslexicFont}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.dyslexicFont
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.dyslexicFont ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.dyslexicFont ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <DyslexicIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <DyslexicDfIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.dyslexicFont ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Font<br />Disleksia
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.dyslexicFont ? "text-[#6E472D]" : "text-stone-800")}>
+                  Ramah Disleksia
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {state.dyslexicFont ? "Aktif" : "Bawaan"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={state.dyslexicFont ? 2 : 0} />
             </button>
 
-            {/* 6. Jeda Animasi */}
+            {/* 7. Jeda Animasi (Toggle) */}
             <button
               type="button"
               onClick={handleToggleAnimations}
-              aria-label="Jeda animasi visual"
+              aria-label="Jeda animasi visual di halaman"
               aria-pressed={state.pauseAnimations}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.pauseAnimations
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.pauseAnimations ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.pauseAnimations ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <Pause className="w-4 h-4 sm:w-5 sm:h-5" />
+                <PauseAnimIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.pauseAnimations ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Jeda<br />Animasi
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.pauseAnimations ? "text-[#6E472D]" : "text-stone-800")}>
+                  Jeda Animasi
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {state.pauseAnimations ? "Dijeda" : "Normal"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={state.pauseAnimations ? 2 : 0} />
             </button>
 
-            {/* 7. Kursor Besar */}
+            {/* 8. Kursor Besar (Toggle) */}
             <button
               type="button"
               onClick={handleToggleCursor}
-              aria-label="Perbesar ukuran kursor mouse"
+              aria-label="Perbesar ukuran penunjuk kursor mouse"
               aria-pressed={state.largeCursor}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.largeCursor
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.largeCursor ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.largeCursor ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <MousePointer2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <CursorIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.largeCursor ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Kursor<br />Besar
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.largeCursor ? "text-[#6E472D]" : "text-stone-800")}>
+                  Kursor Besar
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {state.largeCursor ? "Aktif" : "Standar"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={state.largeCursor ? 2 : 0} />
             </button>
 
-            {/* 8. Garis Tautan */}
+            {/* 9. Garis Bawahi Tautan (Toggle) */}
             <button
               type="button"
               onClick={handleToggleUnderline}
-              aria-label="Beri garis bawah pada semua tautan"
+              aria-label="Beri garis bawah pada semua tautan link"
               aria-pressed={state.underlineLinks}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.underlineLinks
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.underlineLinks ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.underlineLinks ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <Link2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <UnderlineLinkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.underlineLinks ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Garis<br />Tautan
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.underlineLinks ? "text-[#6E472D]" : "text-stone-800")}>
+                  Garis Tautan
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {state.underlineLinks ? "Aktif" : "Standar"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={state.underlineLinks ? 2 : 0} />
             </button>
 
-            {/* 9. Jarak Baris */}
-            <button
-              type="button"
-              onClick={handleToggleLineHeight}
-              aria-label="Tingkatkan jarak antar baris teks"
-              aria-pressed={state.lineHeight}
-              className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
-                state.lineHeight
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
-              )}
-            >
-              <div
-                className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.lineHeight ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
-                )}
-              >
-                <MoveVertical className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.lineHeight ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Jarak<br />Baris
-              </span>
-            </button>
-
-            {/* 10. Rata Kiri */}
+            {/* 10. Rata Kiri Teks (Toggle) */}
             <button
               type="button"
               onClick={handleToggleTextAlign}
-              aria-label="Format perataan teks rata kiri"
+              aria-label="Ratakan semua teks bacaan ke sisi kiri"
               aria-pressed={state.textAlignLeft}
               className={cn(
-                "p-2 sm:p-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 transition-all duration-150 cursor-pointer text-left min-h-[44px]",
+                "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.textAlignLeft
-                  ? "bg-[#8C5E3C]/12 border-2 border-[#8C5E3C] shadow-xs"
-                  : "bg-[#F5EFEB]/90 border border-stone-200/80 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                  ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/10"
+                  : "bg-[#F5EFEB]/90 border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
               )}
             >
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                  state.textAlignLeft ? "bg-[#8C5E3C] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
+                  "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  state.textAlignLeft ? "bg-[#6E472D] text-white shadow-xs" : "bg-[#EAE2D8] text-[#6E472D]"
                 )}
               >
-                <AlignLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <AlignLeftIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.textAlignLeft ? "text-[#8C5E3C]" : "text-stone-800")}>
-                Rata<br />Kiri
-              </span>
+              <div className="mt-1 flex flex-col items-center">
+                <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.textAlignLeft ? "text-[#6E472D]" : "text-stone-800")}>
+                  Rata Kiri
+                </span>
+                <span className="text-[10px] text-stone-500 mt-0.5">
+                  {state.textAlignLeft ? "Aktif" : "Standar"}
+                </span>
+              </div>
+              <StepIndicator total={2} current={state.textAlignLeft ? 2 : 0} />
             </button>
           </div>
 
-          {/* ============ 3. FOOTER PANEL ============ */}
-          <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 bg-[#FAF7F2] border-t border-stone-200/70 flex items-center gap-2">
-            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600/80 shrink-0" />
-            <span className="text-[10px] sm:text-[11px] text-stone-600 font-medium leading-tight">
-              Pengaturan tersimpan otomatis di perangkat
+          {/* ============ 3. FOOTER STATUS TERKUNCI ============ */}
+          <div className="px-3.5 py-2.5 bg-[#FAF6EE] border-t border-stone-200/80 flex items-center justify-between text-[11px] text-stone-600">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+              <span>Pengaturan tersimpan otomatis di perangkat</span>
             </span>
           </div>
         </div>
