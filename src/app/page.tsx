@@ -20,16 +20,46 @@ import { useAuth } from "@/lib/auth-store";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import LandingView from "@/components/landing/landing-view";
-import ExploreView from "@/components/explore/explore-view";
-import CatalogView from "@/components/catalog/catalog-view";
-import CultureDetailView from "@/components/culture/culture-detail-view";
-import InstrumentView from "@/components/instrument/instrument-view";
-import Exploration3DView from "@/components/explore/exploration-3d-view";
-import ArchiveView from "@/components/archive/archive-view";
-import ContributeView from "@/components/contribute/contribute-view";
-import LoginView from "@/components/account/login-view";
-import MyContributionsView from "@/components/account/my-contributions-view";
-import AdminApp from "@/components/admin/admin-app";
+
+function ViewSkeleton({ label = "Memuat halaman..." }: { label?: string }) {
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
+      <span className="h-8 w-8 animate-spin rounded-full border-2 border-[#159D9A]/30 border-t-[#159D9A]" />
+      <p className="text-xs font-medium text-stone-500">{label}</p>
+    </div>
+  );
+}
+
+const ExploreView = dynamic(() => import("@/components/explore/explore-view"), {
+  loading: () => <ViewSkeleton label="Memuat Peta Atlas Nusantara..." />,
+});
+const CatalogView = dynamic(() => import("@/components/catalog/catalog-view"), {
+  loading: () => <ViewSkeleton label="Memuat Katalog Budaya..." />,
+});
+const CultureDetailView = dynamic(() => import("@/components/culture/culture-detail-view"), {
+  loading: () => <ViewSkeleton label="Memuat Dokumentasi Budaya..." />,
+});
+const InstrumentView = dynamic(() => import("@/components/instrument/instrument-view"), {
+  loading: () => <ViewSkeleton label="Menyiapkan Studio Musik 3D..." />,
+});
+const Exploration3DView = dynamic(() => import("@/components/explore/exploration-3d-view"), {
+  loading: () => <ViewSkeleton label="Memuat Ruang Pamer 3D..." />,
+});
+const ArchiveView = dynamic(() => import("@/components/archive/archive-view"), {
+  loading: () => <ViewSkeleton label="Memuat Arsip Sumber..." />,
+});
+const ContributeView = dynamic(() => import("@/components/contribute/contribute-view"), {
+  loading: () => <ViewSkeleton label="Memuat Formulir Kontribusi..." />,
+});
+const LoginView = dynamic(() => import("@/components/account/login-view"), {
+  loading: () => <ViewSkeleton label="Memuat Halaman Masuk..." />,
+});
+const MyContributionsView = dynamic(() => import("@/components/account/my-contributions-view"), {
+  loading: () => <ViewSkeleton label="Memuat Riwayat Kontribusi..." />,
+});
+const AdminApp = dynamic(() => import("@/components/admin/admin-app"), {
+  loading: () => <ViewSkeleton label="Menyiapkan Panel CMS..." />,
+});
 
 import { Loader } from "@/components/shared/states";
 import { useSiteSettings } from "@/lib/settings-store";

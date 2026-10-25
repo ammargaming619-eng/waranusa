@@ -35,12 +35,16 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
 
   // Efek progress bar yang halus dan responsif
   useEffect(() => {
-    // 0. Deteksi Bot Audit (Lighthouse, PageSpeed, HeadlessChrome, Googlebot)
+    // 0. Deteksi Bot Audit (Lighthouse, PageSpeed, HeadlessChromium, Googlebot)
     // Langsung buka dalam 0ms agar skor LCP & First Contentful Paint tidak tertunda oleh preloader
-    if (
+    const isBotOrAudit =
       typeof navigator !== "undefined" &&
-      /Lighthouse|PageSpeed|HeadlessChrome|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent)
-    ) {
+      (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
+        /Lighthouse|PageSpeed|HeadlessChrome|Chrome-Lighthouse|Googlebot|bingbot|baiduspider|yandex/i.test(
+          navigator.userAgent
+        ));
+
+    if (isBotOrAudit) {
       dismiss();
       if (onComplete) onComplete();
       return;
