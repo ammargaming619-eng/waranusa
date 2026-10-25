@@ -470,7 +470,9 @@ export function Instrument3DStage({
   // Refs Kamera AI & Gesture Tracking (Air Tap & Pinch)
   const wasPinchingRef = React.useRef(false);
   const wasAirTappingRef = React.useRef(false);
-  const prevIndexTipRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
+  const prevIndexTipRef = React.useRef<{ x: number; y: number; relY?: number; time: number } | null>(null);
+  const lastNoteIdxRef = React.useRef<number | null>(null);
+  const lastNoteChangeTimeRef = React.useRef(0);
   const smoothCursorRef = React.useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const strikeResetTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -764,37 +766,74 @@ export function Instrument3DStage({
                   : 0.25;
                 const pinchRatio = rawPinchDist / (palmSize || 0.25);
 
-                // Histeresis: aktif saat rapat (< 0.052 raw atau rasio < 0.28), lepas saat terbuka
+                // Histeresis: aktif saat benar-benar rapat (< 0.042 raw atau rasio < 0.22), lepas saat terbuka
                 if (!wasPinchingRef.current) {
-                  isPinching = rawPinchDist < 0.052 || pinchRatio < 0.28;
+                  isPinching = rawPinchDist < 0.042 && pinchRatio < 0.22;
                 } else {
-                  isPinching = rawPinchDist < 0.082 && pinchRatio < 0.38;
+                  isPinching = rawPinchDist < 0.070 && pinchRatio < 0.32;
                 }
               }
               setIsPinchingState(isPinching);
+
+              // Periksa kecepatan horizontal: apakah tangan sedang digeser antar nada (misal nada 2 ke 1)?
+              const prev = prevHandPosRef.current;
+              let isMovingHorizontally = false;
+              let vx = 0;
+              if (prev) {
+                const dt = Math.max(8, nowMs - prev.time);
+                vx = (normX - prev.x) / (dt / 1000);
+                // Kecepatan horizontal di atas 0.26 menandakan tangan sedang bergeser membidik
+                isMovingHorizontally = Math.abs(vx) > 0.26;
+              }
+
+              // Catat momen perpindahan nada untuk mencegah trigger palsu akibat momentum geser
+              if (lastNoteIdxRef.current !== noteIdx) {
+                lastNoteChangeTimeRef.current = nowMs;
+                lastNoteIdxRef.current = noteIdx;
+              }
+              const justChangedNote = nowMs - lastNoteChangeTimeRef.current < 90;
 
               // -------------------------------------------------------------
               // 2. DETEKSI AIR TAP (Kecepatan Sentakan Vertikal Telunjuk ke Bawah)
               // -------------------------------------------------------------
               let isAirTap = false;
               const prevTip = prevIndexTipRef.current;
-              if (prevTip) {
+              if (prevTip && !isMovingHorizontally && !justChangedNote) {
                 const dt = Math.max(8, nowMs - prevTip.time);
                 // Arah bawah layar bernilai Y positif
                 const tipVy = (hand[8].y - prevTip.y) / (dt / 1000);
                 const deltaY = hand[8].y - prevTip.y;
 
-                // Air Tap: sentakan tajam ke bawah (tipVy > 0.44 atau deltaY > 0.024)
-                if (dt < 90 && (tipVy > 0.44 || deltaY > 0.024)) {
+                // Gerakan relatif ujung telunjuk terhadap buku jari telunjuk (hand[5])
+                const relY = hand[8].y - hand[5].y;
+                const prevRelY = prevTip.relY ?? relY;
+                const deltaRelY = relY - prevRelY;
+
+                // Syarat Air Tap murni (sentakan ke bawah saat membidik, bukan geseran):
+                // 1. Kecepatan vertikal tegas (tipVy > 0.58)
+                // 2. Jarak sentakan nyata (deltaY > 0.032)
+                // 3. Tekukan ujung telunjuk relatif terhadap pangkal (deltaRelY >= -0.005)
+                // 4. Dominan vertikal (tipVy > |vx| * 2)
+                if (
+                  dt < 90 &&
+                  tipVy > 0.58 &&
+                  deltaY > 0.032 &&
+                  deltaRelY >= -0.005 &&
+                  tipVy > Math.abs(vx) * 2
+                ) {
                   isAirTap = true;
                 }
               }
-              prevIndexTipRef.current = { x: hand[8].x, y: hand[8].y, time: nowMs };
+              prevIndexTipRef.current = {
+                x: hand[8].x,
+                y: hand[8].y,
+                relY: hand[8].y - hand[5].y,
+                time: nowMs,
+              };
 
               // -------------------------------------------------------------
               // 3. EKSEKUSI TRIGGER MENABUH (AIR TAP ATAU PINCH)
               // -------------------------------------------------------------
-              const prev = prevHandPosRef.current;
               const isPinchTrigger = isPinching && !wasPinchingRef.current;
               const isAirTapTrigger = isAirTap && !wasAirTappingRef.current;
               const canTrigger = nowMs - lastAiTriggerTimeRef.current > 200;
