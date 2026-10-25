@@ -481,10 +481,10 @@ export function AccessibilityWidget() {
         aria-expanded={isOpen}
         aria-haspopup="dialog"
         className={cn(
-          "!fixed bottom-4 left-4 sm:bottom-8 sm:left-8 md:left-14 z-[9999]",
+          "!fixed bottom-4 left-4 z-[9999]",
           "group flex items-center justify-center",
-          "w-12 h-12 sm:w-16 sm:h-16 rounded-full",
-          "btn-waranusa",
+          "h-12 w-12 sm:h-14 sm:w-14 rounded-full",
+          "btn-waranusa text-white",
           "shadow-[0_8px_24px_rgba(45,30,18,0.38)] hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)]",
           "backdrop-blur-md transition-all duration-300 transform hover:scale-105 active:scale-95",
           "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
@@ -492,11 +492,11 @@ export function AccessibilityWidget() {
         aria-label="Buka Menu Aksesibilitas Ramah Difabel"
         title="Menu Aksesibilitas (Ramah Difabel)"
       >
-        <AccessibilityIcon className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
+        <AccessibilityIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
         {/* Badge pendar aktif (Kuning Emas Nusantara) */}
         {hasAnyActive && (
-          <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 flex h-3 w-3 pointer-events-none">
+          <span className="absolute top-0.5 right-0.5 flex h-2.5 w-2.5 pointer-events-none">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
             <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
           </span>
