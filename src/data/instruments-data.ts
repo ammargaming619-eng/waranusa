@@ -206,35 +206,35 @@ function getGestureGuide(interactionType: PlayInteractionType): InstrumentGestur
       return {
         badgeLabel: "Cara Main: Pukul / Tabuh",
         mouseTouch: "Klik/Ketuk pada model 3D atau panel bilah nada di bawah untuk menabuh.",
-        cameraAi: "Ayunkan jari telunjuk ke bawah (gerakan mengetuk udara) di depan kamera.",
+        cameraAi: "Geser tangan kiri-kanan untuk memilih nada, lalu ketuk ke bawah atau cubit (pinch) jari untuk menabuh.",
         micOrKey: "Gunakan tombol angka 1–7 atau Space pada keyboard komputer.",
       };
     case "pluck":
       return {
         badgeLabel: "Cara Main: Petik Dawai",
         mouseTouch: "Usap (swipe/hover) kursor melintasi garis senar virtual di atas model 3D.",
-        cameraAi: "Sapukan jari tangan secara horizontal melintasi dawai virtual di layar.",
+        cameraAi: "Geser tangan kiri-kanan melintasi senar virtual, atau cubit (pinch) jari untuk memetik nada.",
         micOrKey: "Tekan tombol angka 1–7 untuk memetik masing-masing dawai.",
       };
     case "bow":
       return {
         badgeLabel: "Cara Main: Gesek Busur",
         mouseTouch: "Klik tahan (drag & hold) lalu geser kiri-kanan untuk membunyikan gesekan dawai.",
-        cameraAi: "Gerakkan telapak tangan ke kiri dan kanan secara berkesinambungan di depan kamera.",
+        cameraAi: "Gerakkan tangan kiri-kanan secara berkesinambungan; posisi tangan menentukan nada yang digesek.",
         micOrKey: "Tahan tombol angka 1–7 untuk memilih posisi nada saat menggesek.",
       };
     case "shake":
       return {
         badgeLabel: "Cara Main: Goyang Bambu",
         mouseTouch: "Gerakkan kursor cepat kiri-kanan di atas model 3D atau tahan tombol Goyangkan.",
-        cameraAi: "Goyangkan tangan ke kiri-kanan dengan cepat di depan kamera untuk menggetarkan bambu.",
+        cameraAi: "Goyangkan tangan ke kiri-kanan dengan santai di depan kamera untuk menggetarkan tabung nada.",
         micOrKey: "Tahan tombol angka 1–7 atau Space untuk menggoyangkan nada angklung.",
       };
     case "blow":
       return {
         badgeLabel: "Cara Main: Tiup (Mikrofon / Tahan)",
         mouseTouch: "Tahan tombol 'Tiup Instrumen' atau pilih lubang nada 1–7 di bawah kanvas.",
-        cameraAi: "Angkat tangan di depan kamera untuk mengatur tinggi nada tiupan.",
+        cameraAi: "Gerakkan tangan kiri-kanan untuk memilih nada, dan naik-turunkan tangan untuk mengatur tiupan.",
         micOrKey: "Aktifkan 'Sensor Tiup Mikrofon' lalu tiup langsung ke mikrofon perangkat Anda!",
       };
   }
