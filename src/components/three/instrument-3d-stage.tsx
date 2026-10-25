@@ -14,11 +14,13 @@ import {
   Mic,
   MicOff,
   MousePointerClick,
+  Music,
   Music2,
   Pause,
   Play,
   RotateCcw,
   Sparkles,
+  Square,
   Volume2,
   Waves,
   Wind,
@@ -33,6 +35,10 @@ import {
   type InteractionType,
   type TraditionalInstrument38,
 } from "@/data/instruments-data";
+import {
+  getInstrumentMelody,
+  getScaleTestSequence,
+} from "@/data/instrument-melodies";
 import { soundEngine } from "@/lib/sound-engine";
 import {
   drawHandSkeleton,
@@ -473,6 +479,22 @@ export function Instrument3DStage({
   const prevHandPosRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
   const lastAiTriggerTimeRef = React.useRef(0);
 
+  // State Demo Autoplay (Tes Tangga Nada & Melodi Lagu Daerah)
+  const [demoMode, setDemoMode] = React.useState<"idle" | "scale" | "melody">("idle");
+  const [demoLabel, setDemoLabel] = React.useState<string | null>(null);
+  const demoTimerRef = React.useRef<number | null>(null);
+
+  const stopDemo = React.useCallback(() => {
+    if (demoTimerRef.current !== null) {
+      window.clearTimeout(demoTimerRef.current);
+      demoTimerRef.current = null;
+    }
+    setDemoMode("idle");
+    setDemoLabel(null);
+  }, []);
+
+  const instrumentMelody = React.useMemo(() => getInstrumentMelody(instrument), [instrument]);
+
   // Sinkronisasi volume ke SoundEngine & preload sampel MP3 jika ada
   React.useEffect(() => {
     soundEngine.setVolume(volume);
@@ -484,15 +506,17 @@ export function Instrument3DStage({
     setIsBowingUI(false);
     setIsBlowingHold(false);
     setSelectedPitchIdx(0);
-  }, [instrument.id]);
+    stopDemo();
+  }, [instrument.id, stopDemo]);
 
   // Cleanup saat unmount
   React.useEffect(() => {
     return () => {
+      stopDemo();
       soundEngine.stopContinuousVoice();
       soundEngine.stopMicBlowDetector();
     };
-  }, []);
+  }, [stopDemo]);
 
   // Fungsi memicu nada tunggal (Strike / Pluck / Shake / Tap)
   const playNoteByIndex = React.useCallback(
@@ -530,6 +554,71 @@ export function Instrument3DStage({
     [instrument]
   );
 
+  // Handler Memulai Tes Tangga Nada
+  const startScaleTest = React.useCallback(() => {
+    stopDemo();
+    const steps = getScaleTestSequence(instrument.notes.length);
+    if (!steps.length) return;
+
+    setDemoMode("scale");
+    setDemoLabel("Tangga Nada Laras");
+    let currentStep = 0;
+
+    const runStep = () => {
+      const step = steps[currentStep];
+      if (!step) {
+        setDemoMode("idle");
+        setDemoLabel(null);
+        return;
+      }
+      playNoteByIndex(step.noteIndex, 0.92);
+      currentStep++;
+      if (currentStep < steps.length) {
+        demoTimerRef.current = window.setTimeout(runStep, step.durationMs);
+      } else {
+        demoTimerRef.current = window.setTimeout(() => {
+          setDemoMode("idle");
+          setDemoLabel(null);
+        }, 600);
+      }
+    };
+
+    runStep();
+  }, [instrument.notes.length, playNoteByIndex, stopDemo]);
+
+  // Handler Memulai Melodi Contoh Lagu Daerah
+  const startMelodyDemo = React.useCallback(() => {
+    stopDemo();
+    const melody = getInstrumentMelody(instrument);
+    if (!melody.notes.length) return;
+
+    setDemoMode("melody");
+    setDemoLabel(melody.songName);
+    let currentStep = 0;
+
+    const runStep = () => {
+      const step = melody.notes[currentStep];
+      if (!step) {
+        setDemoMode("idle");
+        setDemoLabel(null);
+        return;
+      }
+      const safeIdx = Math.min(instrument.notes.length - 1, Math.max(0, step.noteIndex));
+      playNoteByIndex(safeIdx, 0.95);
+      currentStep++;
+      if (currentStep < melody.notes.length) {
+        demoTimerRef.current = window.setTimeout(runStep, step.durationMs);
+      } else {
+        demoTimerRef.current = window.setTimeout(() => {
+          setDemoMode("idle");
+          setDemoLabel(null);
+        }, 750);
+      }
+    };
+
+    runStep();
+  }, [instrument, playNoteByIndex, stopDemo]);
+
   // Pintasan Keyboard 1-7
   React.useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -539,12 +628,13 @@ export function Instrument3DStage({
 
       const num = parseInt(e.key, 10);
       if (num >= 1 && num <= instrument.notes.length) {
+        stopDemo();
         playNoteByIndex(num - 1, 0.92);
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [instrument.notes.length, playNoteByIndex]);
+  }, [instrument.notes.length, playNoteByIndex, stopDemo]);
 
   // Handler Mikrofon Tiup (AnalyserNode)
   const toggleMicBlow = async () => {
@@ -787,6 +877,47 @@ export function Instrument3DStage({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {/* Tombol Demo Tangga Nada & Melodi Lagu Tradisional */}
+          {demoMode !== "idle" ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="default"
+              onClick={stopDemo}
+              className="h-8 rounded-full text-xs font-bold bg-[#8F331D] hover:bg-[#782814] text-white shadow-xs animate-pulse cursor-pointer"
+              title="Hentikan pemutaran demo"
+            >
+              <Square className="mr-1.5 h-3 w-3 fill-current" />
+              <span>Hentikan Demo</span>
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={startScaleTest}
+                className="h-8 rounded-full text-xs font-semibold border-[#6E472D]/40 text-[#2D1E12] bg-white hover:bg-[#FAF3E6] shadow-2xs cursor-pointer"
+                title="Uji tangga nada lengkap dari nada dasar ke tinggi lalu kembali"
+              >
+                <Music className="mr-1.5 h-3.5 w-3.5 text-[#6E472D]" />
+                <span>Tes Nada</span>
+              </Button>
+
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={startMelodyDemo}
+                className="h-8 rounded-full text-xs font-semibold border-[#6E472D]/40 text-[#2D1E12] bg-white hover:bg-[#FAF3E6] shadow-2xs cursor-pointer max-w-[210px] sm:max-w-none"
+                title={`Dengarkan contoh lagu ${instrumentMelody.songName}`}
+              >
+                <Play className="mr-1.5 h-3.5 w-3.5 text-[#6E472D] fill-[#6E472D]/20 shrink-0" />
+                <span className="truncate">Contoh Lagu: {instrumentMelody.songName}</span>
+              </Button>
+            </>
+          )}
+
           {/* Tombol Sensor Tiup Mikrofon khusus instrumen BLOW */}
           {instrument.interactionType === "blow" && (
             <Button
@@ -1035,7 +1166,10 @@ export function Instrument3DStage({
                 <div
                   key={note.code}
                   onMouseEnter={() => playNoteByIndex(idx, 0.88)}
-                  onClick={() => playNoteByIndex(idx, 0.95)}
+                  onClick={() => {
+                    stopDemo();
+                    playNoteByIndex(idx, 0.95);
+                  }}
                   className="pointer-events-auto group relative flex w-7 cursor-pointer flex-col items-center justify-end pb-2"
                   title={`Petik Senar ${note.label} (${note.freq} Hz)`}
                 >
@@ -1333,20 +1467,29 @@ export function Instrument3DStage({
       {/* DERETAN 7 BILAH / TOMBOL NADA INTERAKTIF (UNTUK SEMUA INSTRUMEN) */}
       <div className="space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-600">
-          <span className="flex items-center gap-1.5 font-semibold text-[#2D1E12]">
-            <Music2 className="h-3.5 w-3.5 text-[#6E472D]" />
-            <span>
-              Tangga Nada &amp; Laras ({instrument.notes.length} Tingkat Nada — Ketuk atau Tekan{" "}
-              <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
-                1
-              </kbd>
-              –
-              <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
-                {instrument.notes.length}
-              </kbd>
-              )
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="flex items-center gap-1.5 font-semibold text-[#2D1E12]">
+              <Music2 className="h-3.5 w-3.5 text-[#6E472D]" />
+              <span>
+                Tangga Nada &amp; Laras ({instrument.notes.length} Tingkat Nada — Ketuk atau Tekan{" "}
+                <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
+                  1
+                </kbd>
+                –
+                <kbd className="rounded border border-stone-300 bg-white px-1 py-0.5 font-mono text-[10px]">
+                  {instrument.notes.length}
+                </kbd>
+                )
+              </span>
             </span>
-          </span>
+
+            {demoMode !== "idle" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100/90 border border-amber-300/80 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 animate-pulse">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-600" />
+                <span>Memutar: {demoLabel}</span>
+              </span>
+            )}
+          </div>
 
           {onVolumeChange && (
             <div className="flex items-center gap-2 min-w-[150px]">
@@ -1382,7 +1525,10 @@ export function Instrument3DStage({
                 <button
                   key={note.code}
                   type="button"
-                  onClick={() => playNoteByIndex(idx, 0.92)}
+                  onClick={() => {
+                    stopDemo();
+                    playNoteByIndex(idx, 0.92);
+                  }}
                   className={cn(
                     "group relative flex flex-col items-center justify-center rounded-xl border py-2 sm:py-2.5 px-1 sm:px-1.5 transition-all cursor-pointer select-none min-h-[52px] sm:min-h-[58px]",
                     isPlaying
