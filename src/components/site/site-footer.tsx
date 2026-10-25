@@ -77,13 +77,9 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
 
         <Separator className="my-7 bg-[#2E1E14]" />
 
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-stone-300 sm:flex-row">
+        <div className="flex flex-col items-center justify-center gap-2 text-xs text-stone-400 text-center">
           <p>
             © {new Date().getFullYear()} {name}. {tagline || "Platform Eksplorasi & Pelestarian Budaya Indonesia"}.
-          </p>
-          <p className="text-[11px] leading-relaxed text-stone-400 sm:text-right">
-            Konten menampilkan sumber &amp; atribusi. Media ilustrasi demo dibuat dengan generator AI,{" "}
-            <span className="whitespace-nowrap">bukan foto arsip asli.</span>
           </p>
         </div>
       </div>
