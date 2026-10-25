@@ -136,13 +136,20 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       }
                     }}
                     className={cn(
-                      "rounded-full px-3.5 py-1.5 text-sm transition-all duration-200",
+                      "relative rounded-full px-3.5 py-1.5 text-sm transition-colors duration-200 select-none",
                       active
-                        ? "text-[#3C2213] bg-white/95 border border-stone-200 shadow-xs font-bold"
-                        : "text-stone-700 hover:text-[#3C2213] hover:bg-white/60 font-medium"
+                        ? "text-[#3C2213] font-bold"
+                        : "text-stone-700 hover:text-[#3C2213] hover:bg-white/50 font-medium"
                     )}
                   >
-                    {label}
+                    {active && (
+                      <motion.span
+                        layoutId="navbar-active-pill"
+                        className="absolute inset-0 rounded-full bg-white/95 border border-stone-200/90 shadow-xs"
+                        transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                      />
+                    )}
+                    <span className="relative z-10">{label}</span>
                   </Link>
                 );
               }
@@ -152,13 +159,20 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-full px-3.5 py-1.5 text-sm transition-all duration-200",
+                    "relative rounded-full px-3.5 py-1.5 text-sm transition-colors duration-200 select-none",
                     active
-                      ? "text-[#3C2213] bg-white/95 border border-stone-200 shadow-xs font-bold"
-                      : "text-stone-700 hover:text-[#3C2213] hover:bg-white/60 font-medium"
+                      ? "text-[#3C2213] font-bold"
+                      : "text-stone-700 hover:text-[#3C2213] hover:bg-white/50 font-medium"
                   )}
                 >
-                  {label}
+                  {active && (
+                    <motion.span
+                      layoutId="navbar-active-pill"
+                      className="absolute inset-0 rounded-full bg-white/95 border border-stone-200/90 shadow-xs"
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{label}</span>
                 </Link>
               );
             })}

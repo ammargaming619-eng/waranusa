@@ -6,6 +6,7 @@
  * Mengusung tata letak editorial bersih, gradasi marun-jati, dan navigasi kepulauan tanpa emoji.
  */
 import { useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import {
   Box,
   Building2,
@@ -157,7 +158,12 @@ export default function ExploreView({ route }: { route: Route }) {
     <div className="min-h-screen bg-lontar-gradient">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
         {/* ============ HEADER EDITORIAL ============ */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6 border-b border-[#DFD3C2]">
+        <motion.div
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6 border-b border-[#DFD3C2]"
+        >
           <div>
             <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A4B29] mb-2">
               <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
@@ -176,7 +182,7 @@ export default function ExploreView({ route }: { route: Route }) {
             <span className="flex h-2.5 w-2.5 rounded-full bg-[#159D9A] ring-4 ring-[#159D9A]/15" />
             <span>38 Provinsi Terpetakan</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* ============ FILTER TAB KEPULAUAN (BERSIH TANPA EMOJI) ============ */}
         <div className="mt-6 flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter kepulauan">

@@ -294,7 +294,12 @@ export default function Exploration3DView() {
     <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-20 pt-8 sm:pt-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ================= HERO HEADER ================= */}
-        <div className="text-center max-w-3xl mx-auto pt-2 pb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto pt-2 pb-10"
+        >
           <div className="inline-flex items-center justify-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A4B29] mb-3">
             <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
             <span>Ruang Pamer Digital Nusantara</span>
@@ -348,7 +353,7 @@ export default function Exploration3DView() {
               Atelier Musik Tradisional
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* ================= BAGIAN 1: RUMAH ADAT 3D NUSANTARA ================= */}
         {(activeMainTab === "all" || activeMainTab === "architecture") && (

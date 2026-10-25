@@ -6,6 +6,7 @@
  * yang sepenuhnya disinkronkan ke query URL: ?q=&kategori=&wilayah=&sort=&page=
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { FilterX, SearchX, SlidersHorizontal } from "lucide-react";
 import type { Route } from "@/lib/router";
 import { buildQuery, navigate } from "@/lib/router";
@@ -165,11 +166,17 @@ export default function CatalogView({ route }: { route: Route }) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-      <SectionHeading
-        eyebrow="Katalog"
-        title="Objek Budaya Nusantara"
-        description="Telusuri dokumentasi budaya berdasarkan kata kunci, kategori, dan wilayah asal."
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <SectionHeading
+          eyebrow="Katalog"
+          title="Objek Budaya Nusantara"
+          description="Telusuri dokumentasi budaya berdasarkan kata kunci, kategori, dan wilayah asal."
+        />
+      </motion.div>
 
       {/* ============ TOOLBAR ============ */}
       <div className="sticky top-16 z-30 mt-6 rounded-2xl border border-brand-line bg-card/95 p-4 shadow-sm backdrop-blur">

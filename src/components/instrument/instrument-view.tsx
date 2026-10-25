@@ -8,6 +8,7 @@
  * - Hybrid Audio Engine (MP3 + 6-Mode Procedural Web Audio Synthesizer) + Sensor Tiup Mikrofon + Gestur Kamera AI.
  */
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -144,7 +145,12 @@ export default function InstrumentView({ route }: { route: Route }) {
   const interactionMeta = INTERACTION_META[activeInstrument.interactionType];
 
   return (
-    <div className="mx-auto max-w-7xl px-3.5 py-4 sm:px-6 md:py-8 lg:px-8 pb-32 sm:pb-36">
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="mx-auto max-w-7xl px-3.5 py-4 sm:px-6 md:py-8 lg:px-8 pb-32 sm:pb-36"
+    >
       {/* ============ STUDIO HEADER RINGKAS & ELEGAN (ABOVE THE FOLD) ============ */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-[#E5DACB]">
         <div className="min-w-0">
@@ -172,26 +178,26 @@ export default function InstrumentView({ route }: { route: Route }) {
                 className="rounded-full border-[#DFD3C2] bg-white hover:bg-stone-50 text-[#3C2213] text-xs font-bold px-3.5 h-9 shadow-2xs gap-1.5 cursor-pointer"
               >
                 <LayoutGrid className="h-3.5 w-3.5 text-[#8C5E3C]" />
-                <span>Pilih Alat Musik (38)</span>
+                <span>Pilih dari 38 Alat Musik</span>
                 <ChevronDown className="h-3 w-3 text-stone-400" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl rounded-3xl border border-stone-200 bg-[#FCFAF6] p-5 sm:p-6 text-stone-900 shadow-2xl max-h-[85vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="font-serif text-xl font-bold text-[#2D1E12]">
+            <DialogContent className="w-[95vw] max-w-4xl rounded-3xl border border-stone-200 bg-[#FCFAF6] p-5 sm:p-7 text-stone-900 shadow-2xl max-h-[85vh] overflow-hidden flex flex-col">
+              <DialogHeader className="shrink-0">
+                <DialogTitle className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12]">
                   Pilih dari 38 Alat Musik Nusantara
                 </DialogTitle>
               </DialogHeader>
 
               {/* Filter Kepulauan & Pencarian di dalam Dialog */}
-              <div className="mt-3 space-y-3">
+              <div className="mt-3 space-y-2.5 shrink-0">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
                   <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Cari provinsi, nama alat musik, suku..."
-                    className="pl-9 h-9.5 rounded-full border-stone-300 bg-white text-xs"
+                    className="pl-10 h-10 rounded-full border-stone-300 bg-white text-xs sm:text-sm"
                   />
                 </div>
 
@@ -219,83 +225,64 @@ export default function InstrumentView({ route }: { route: Route }) {
                     );
                   })}
                 </div>
+              </div>
 
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar border-t border-stone-200/60 pt-2">
-                  {INTERACTION_TABS.map((tab) => {
-                    const isCurrent = selectedInteraction === tab.id;
+              {/* Grid 38 Alat Musik di dalam Dialog (Tanpa Scrollbar Horizontal) */}
+              <div className="mt-4 flex-1 overflow-y-auto overflow-x-hidden pr-1 scrollbar-thin">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1">
+                  {filteredInstruments.map((inst) => {
+                    const isActive = inst.id === activeInstrument.id;
+                    const meta = INTERACTION_META[inst.interactionType];
                     return (
                       <button
-                        key={tab.id}
+                        key={inst.id}
                         type="button"
-                        onClick={() => setSelectedInteraction(tab.id)}
+                        onClick={() => {
+                          setActiveId(inst.id);
+                          setSelectorOpen(false);
+                        }}
                         className={cn(
-                          "whitespace-nowrap rounded-full px-3 py-0.5 text-[11px] font-medium transition-all border cursor-pointer",
-                          isCurrent
-                            ? "bg-[#6E472D]/10 text-[#6E472D] border-[#6E472D]/40 font-bold"
-                            : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
+                          "group text-left rounded-2xl p-3 border transition-all duration-150 flex flex-col justify-between cursor-pointer min-w-0",
+                          isActive
+                            ? "bg-[#6E472D] text-white border-[#4A2D19] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.01]"
+                            : "bg-white text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-amber-50/50"
                         )}
                       >
-                        {tab.label}
+                        <div className="flex items-center justify-between gap-1 mb-1.5">
+                          <span
+                            className={cn(
+                              "text-[10px] font-bold uppercase tracking-wider truncate block",
+                              isActive ? "text-amber-200/95" : "text-[#8A5B38]"
+                            )}
+                          >
+                            {inst.province}
+                          </span>
+                          <span
+                            className={cn(
+                              "text-[9px] font-semibold px-1.5 py-0.5 rounded-full shrink-0",
+                              isActive
+                                ? "bg-white/20 text-white"
+                                : "bg-[#6E472D]/10 text-[#6E472D]"
+                            )}
+                          >
+                            {meta.label}
+                          </span>
+                        </div>
+                        <span className="font-serif font-bold text-sm leading-snug block truncate">
+                          {inst.title}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-[11px] mt-1 block truncate",
+                            isActive ? "text-stone-200" : "text-stone-500"
+                          )}
+                        >
+                          Suku {inst.ethnicGroup}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
-              </div>
-
-              {/* Grid 38 Alat Musik di dalam Dialog */}
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-[50vh] overflow-y-auto p-1 scrollbar-thin">
-                {filteredInstruments.map((inst) => {
-                  const isActive = inst.id === activeInstrument.id;
-                  const meta = INTERACTION_META[inst.interactionType];
-                  return (
-                    <button
-                      key={inst.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveId(inst.id);
-                        setSelectorOpen(false);
-                      }}
-                      className={cn(
-                        "group text-left rounded-xl p-2.5 border transition-all duration-150 flex flex-col justify-between cursor-pointer",
-                        isActive
-                          ? "bg-[#6E472D] text-white border-[#583720] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.02]"
-                          : "bg-white text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-amber-50/50"
-                      )}
-                    >
-                      <div className="flex items-center justify-between gap-1 mb-1">
-                        <span
-                          className={cn(
-                            "text-[9px] font-bold uppercase tracking-wider truncate block",
-                            isActive ? "text-amber-200/90" : "text-[#8A5B38]"
-                          )}
-                        >
-                          {inst.province}
-                        </span>
-                        <span
-                          className={cn(
-                            "text-[8px] font-semibold px-1 py-0.2 rounded shrink-0",
-                            isActive
-                              ? "bg-white/20 text-white"
-                              : "bg-[#6E472D]/10 text-[#6E472D]"
-                          )}
-                        >
-                          {meta.label}
-                        </span>
-                      </div>
-                      <span className="font-serif font-bold text-xs leading-snug mt-0.5 block truncate">
-                        {inst.title}
-                      </span>
-                      <span
-                        className={cn(
-                          "text-[10px] mt-1 block truncate",
-                          isActive ? "text-stone-200" : "text-stone-500"
-                        )}
-                      >
-                        Suku {inst.ethnicGroup}
-                      </span>
-                    </button>
-                  );
-                })}
               </div>
             </DialogContent>
           </Dialog>
@@ -309,21 +296,44 @@ export default function InstrumentView({ route }: { route: Route }) {
         </div>
       </div>
 
-      {/* ============ PANGGUNG 3D UTAMA (ABOVE THE FOLD) ============ */}
-      <div className="mt-3.5 sm:mt-4">
-        <div className="rounded-3xl border border-[#DFD3C2] bg-white/95 p-2 sm:p-5 shadow-md overflow-hidden">
-          <Instrument3DStage
-            instrument={activeInstrument}
-            volume={volume}
-            onVolumeChange={setVolume}
-          />
+      {/* ============ MENU PEMILIH ALAT MUSIK (DI ATAS CARA MAIN DENGAN CELAH & JARAK LEGA) ============ */}
+      <div className="mt-3.5 sm:mt-4 space-y-2.5 rounded-2xl border border-[#DFD3C2]/90 bg-white/90 p-3 sm:p-4 shadow-xs">
+        {/* Baris 1: Filter Kepulauan yang jelas */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#7A4B29] mr-1 shrink-0 flex items-center gap-1">
+            <SlidersHorizontal className="h-3 w-3 text-[#7A4B29]" />
+            Wilayah:
+          </span>
+          {ISLAND_TABS.filter((island) =>
+            island.id === "ALL" ||
+            INSTRUMENTS_38_CATALOGUE.some((inst) => inst.islandRegion === island.id)
+          ).map((island) => {
+            const isCurrent = selectedIsland === island.id;
+            return (
+              <button
+                key={island.id}
+                type="button"
+                onClick={() => setSelectedIsland(island.id)}
+                className={cn(
+                  "whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold transition-all cursor-pointer",
+                  isCurrent
+                    ? "btn-waranusa text-white shadow-xs font-bold"
+                    : "bg-[#FAF7F2] text-stone-700 hover:bg-stone-200/80 border border-stone-200/80"
+                )}
+              >
+                {island.label}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* ============ STRIP HORIZONTAL RAMPING PEMILIH 38 INSTRUMEN ============ */}
-      <div className="mt-3.5 flex items-center gap-2">
-        <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 no-scrollbar snap-x">
-          {INSTRUMENTS_38_CATALOGUE.map((inst) => {
+        {/* Baris 2: Strip Koleksi Alat Musik dengan celah-celah lega (gap-2.5) */}
+        <div className="flex items-center gap-2 overflow-x-auto pt-1 pb-1 no-scrollbar snap-x border-t border-stone-200/60">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#7A4B29] mr-1 shrink-0 flex items-center gap-1">
+            <Music2 className="h-3 w-3 text-[#7A4B29]" />
+            Koleksi:
+          </span>
+          {filteredInstruments.map((inst) => {
             const isActive = inst.id === activeInstrument.id;
             return (
               <button
@@ -331,20 +341,35 @@ export default function InstrumentView({ route }: { route: Route }) {
                 type="button"
                 onClick={() => setActiveId(inst.id)}
                 className={cn(
-                  "shrink-0 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all border cursor-pointer snap-start min-h-[36px]",
+                  "shrink-0 inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-medium transition-all border cursor-pointer snap-start min-h-[38px]",
                   isActive
-                    ? "bg-[#6E472D] text-white border-[#583720] shadow-xs font-bold ring-1 ring-[#6E472D]/30"
-                    : "bg-white/95 text-stone-700 border-stone-200/90 hover:border-stone-300 hover:bg-stone-50"
+                    ? "bg-[#6E472D] text-white border-[#4A2D19] shadow-sm font-bold ring-2 ring-[#6E472D]/20"
+                    : "bg-[#FAF7F2] text-stone-800 border-stone-200/90 hover:border-stone-300 hover:bg-white"
                 )}
               >
-                <Music2 className={cn("h-3.5 w-3.5 shrink-0", isActive ? "text-amber-200" : "text-[#8A5B38]")} />
-                <span>{inst.title}</span>
-                <span className={cn("text-[10px]", isActive ? "text-amber-100/80" : "text-stone-400")}>
-                  &bull; {inst.province}
+                <span className="font-semibold">{inst.title}</span>
+                <span
+                  className={cn(
+                    "text-[10px] px-1.5 py-0.5 rounded-full font-mono",
+                    isActive ? "bg-white/20 text-white" : "bg-stone-200/70 text-stone-600"
+                  )}
+                >
+                  {inst.province}
                 </span>
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* ============ PANGGUNG 3D UTAMA (ABOVE THE FOLD) ============ */}
+      <div className="mt-3 sm:mt-4">
+        <div className="rounded-3xl border border-[#DFD3C2] bg-white/95 p-2 sm:p-5 shadow-md overflow-hidden">
+          <Instrument3DStage
+            instrument={activeInstrument}
+            volume={volume}
+            onVolumeChange={setVolume}
+          />
         </div>
       </div>
 
@@ -512,6 +537,6 @@ export default function InstrumentView({ route }: { route: Route }) {
           </Card>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

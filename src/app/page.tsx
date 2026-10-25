@@ -8,6 +8,7 @@
  */
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BrandPreloader = dynamic(
   () => import("@/components/shared/brand-preloader").then((m) => m.BrandPreloader),
@@ -147,8 +148,19 @@ export default function WaraNusaApp() {
         />
       )}
       <SiteHeader route={route} introRevealed={introRevealed} />
-      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none" role="main">
-        {view}
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none relative" role="main">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={route.segments[0] || "beranda"}
+            initial={{ opacity: 0, y: 16, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.99 }}
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full"
+          >
+            {view}
+          </motion.div>
+        </AnimatePresence>
       </main>
       <SiteFooter
         siteName={settings.siteName}
