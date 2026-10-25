@@ -106,7 +106,7 @@ export function drawHandSkeleton(
   height: number,
   isHovering: boolean,
   isStriking: boolean,
-  isThumbBent = false
+  isPinching = false
 ) {
   ctx.clearRect(0, 0, width, height);
 
@@ -114,7 +114,7 @@ export function drawHandSkeleton(
   ctx.lineWidth = 2.5;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  ctx.strokeStyle = isStriking || isThumbBent
+  ctx.strokeStyle = isStriking || isPinching
     ? "#F2B544"
     : isHovering
     ? "rgba(242, 181, 68, 0.9)"
@@ -130,6 +130,16 @@ export function drawHandSkeleton(
     ctx.stroke();
   }
 
+  // Garis sambungan cubitan jika telunjuk & jempol mencubit
+  if (isPinching && landmarks[8] && landmarks[4]) {
+    ctx.beginPath();
+    ctx.moveTo(landmarks[8].x * width, landmarks[8].y * height);
+    ctx.lineTo(landmarks[4].x * width, landmarks[4].y * height);
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+  }
+
   // 2. Gambar titik sendi
   for (let i = 0; i < landmarks.length; i++) {
     if (i === 8 || i === 4) continue; // Telunjuk & jempol digambar khusus
@@ -140,41 +150,50 @@ export function drawHandSkeleton(
     ctx.fill();
   }
 
-  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP — PENUNJUK)
+  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP — PENUNJUK & AIR TAP)
   const tip = landmarks[8];
   if (tip) {
     const tx = tip.x * width;
     const ty = tip.y * height;
 
-    // Lingkaran luar berdenyut
+    if (isStriking) {
+      // Efek shockwave luar saat menabuh / air tap
+      ctx.beginPath();
+      ctx.arc(tx, ty, 16, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Lingkaran luar
     ctx.beginPath();
-    ctx.arc(tx, ty, isStriking || isThumbBent ? 12 : isHovering ? 9 : 7, 0, Math.PI * 2);
-    ctx.strokeStyle = "#F2B544";
-    ctx.lineWidth = 2.5;
+    ctx.arc(tx, ty, isStriking ? 13 : isPinching ? 10 : isHovering ? 8 : 6, 0, Math.PI * 2);
+    ctx.strokeStyle = isStriking ? "#FFFFFF" : "#F2B544";
+    ctx.lineWidth = isStriking ? 3 : 2;
     ctx.stroke();
 
     // Titik pusat
     ctx.beginPath();
-    ctx.arc(tx, ty, 4, 0, Math.PI * 2);
-    ctx.fillStyle = isStriking || isThumbBent ? "#FFFFFF" : "#F2B544";
+    ctx.arc(tx, ty, isStriking ? 5 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = isStriking || isPinching ? "#FFFFFF" : "#F2B544";
     ctx.fill();
   }
 
-  // 4. Ujung Ibu Jari (Landmark 4: THUMB_TIP — PEMUKUL / TRIGGER)
+  // 4. Ujung Ibu Jari (Landmark 4: THUMB_TIP — PINCH SENSOR)
   const thumb = landmarks[4];
   if (thumb) {
     const thx = thumb.x * width;
     const thy = thumb.y * height;
 
     ctx.beginPath();
-    ctx.arc(thx, thy, isThumbBent ? 11 : 7, 0, Math.PI * 2);
-    ctx.strokeStyle = isThumbBent ? "#FFFFFF" : "#F59E0B";
-    ctx.lineWidth = isThumbBent ? 3 : 2;
+    ctx.arc(thx, thy, isPinching ? 8 : 5, 0, Math.PI * 2);
+    ctx.strokeStyle = isPinching ? "#FFFFFF" : "#F59E0B";
+    ctx.lineWidth = isPinching ? 2.5 : 1.5;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(thx, thy, isThumbBent ? 5 : 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = isThumbBent ? "#F59E0B" : "#FCD34D";
+    ctx.arc(thx, thy, isPinching ? 4 : 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = isPinching ? "#F59E0B" : "#FCD34D";
     ctx.fill();
   }
 }

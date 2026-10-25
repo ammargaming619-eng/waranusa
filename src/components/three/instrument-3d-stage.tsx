@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import {
   INTERACTION_META,
@@ -444,6 +445,7 @@ export function Instrument3DStage({
   volume = 0.78,
   onVolumeChange,
 }: Instrument3DStageProps) {
+  const isMobile = useIsMobile();
   const [activeNoteIdx, setActiveNoteIdx] = React.useState<number | null>(null);
   const [autoRotate, setAutoRotate] = React.useState<boolean>(true);
   const [cameraKey, setCameraKey] = React.useState<number>(0);
@@ -462,11 +464,22 @@ export function Instrument3DStage({
   const [handCursor, setHandCursor] = React.useState<{ x: number; y: number } | null>(null);
   const [cameraTargetNoteIdx, setCameraTargetNoteIdx] = React.useState<number | null>(null);
   const [isPinchingState, setIsPinchingState] = React.useState(false);
-  const [isThumbBentState, setIsThumbBentState] = React.useState(false);
-  const [isCursorInDock, setIsCursorInDock] = React.useState(false);
+  const [isStrikingState, setIsStrikingState] = React.useState(false);
+  const [hitRippleNoteIdx, setHitRippleNoteIdx] = React.useState<number | null>(null);
+
+  // Refs Kamera AI & Gesture Tracking (Air Tap & Pinch)
   const wasPinchingRef = React.useRef(false);
-  const wasThumbBentRef = React.useRef(false);
-  const lastDwellNoteRef = React.useRef<{ idx: number; startTime: number } | null>(null);
+  const wasAirTappingRef = React.useRef(false);
+  const prevIndexTipRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
+  const smoothCursorRef = React.useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const strikeResetTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Nonaktifkan Kamera AI otomatis pada layar HP untuk menghemat baterai & memori
+  React.useEffect(() => {
+    if (isMobile && cameraAiEnabled) {
+      setCameraAiEnabled(false);
+    }
+  }, [isMobile, cameraAiEnabled]);
 
   // Refs animasi 3D & deteksi gerakan
   const strikePulseRef = React.useRef(0);
@@ -479,7 +492,7 @@ export function Instrument3DStage({
   // Refs Kamera AI
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const overlayCanvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const prevHandPosRef = React.useRef<{ x: number; y: number; inDock: boolean; time: number } | null>(null);
+  const prevHandPosRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
   const lastAiTriggerTimeRef = React.useRef(0);
 
   // State Demo Autoplay (Tes Tangga Nada & Melodi Lagu Daerah)
@@ -721,113 +734,127 @@ export function Instrument3DStage({
 
             if (hand && hand[8]) {
               setCameraHandDetected(true);
-              // Mirror X agar sesuai gerakan cermin pengguna
+              // Mirror X agar gerakan telunjuk sinkron dengan cermin pengguna
               const normX = 1 - hand[8].x;
               const rawY = hand[8].y;
 
-              // Kalibrasi jangkauan tangan alami (0.16 s/d 0.84) agar seluruh nada mudah dijangkau dari kursi
-              const calibratedX = Math.max(0, Math.min(1, (normX - 0.16) / 0.68));
+              // Smoothing kursor target (lerp/damping) agar pergerakan lingkaran oranye halus
+              const LERP_FACTOR = 0.35;
+              smoothCursorRef.current.x += (normX - smoothCursorRef.current.x) * LERP_FACTOR;
+              smoothCursorRef.current.y += (rawY - smoothCursorRef.current.y) * LERP_FACTOR;
+              setHandCursor({ x: smoothCursorRef.current.x, y: smoothCursorRef.current.y });
+
+              // Kalibrasi jangkauan tangan horizontal (0.12 s/d 0.88)
+              const calibratedX = Math.max(0, Math.min(1, (smoothCursorRef.current.x - 0.12) / 0.76));
               const noteIdx = Math.min(
                 instrument.notes.length - 1,
                 Math.max(0, Math.floor(calibratedX * instrument.notes.length))
               );
               const note = instrument.notes[noteIdx] ?? instrument.notes[0];
-
-              // Kursor aktif membidik nada yang ditunjuk telunjuk
               setCameraTargetNoteIdx(noteIdx);
-              setIsCursorInDock(true);
-              setHandCursor({ x: normX, y: rawY });
 
-              // Deteksi tekukan jempol (Thumb Bend Trigger) dengan sistem Histeresis (Schmitt Trigger):
-              // hand[4] = Thumb Tip, hand[2] = Thumb MCP, hand[5] = Index Knuckle, hand[9] = Middle Knuckle, hand[0] = Wrist
-              const wasBent = wasThumbBentRef.current;
-              let isThumbBent = wasBent;
+              // -------------------------------------------------------------
+              // 1. DETEKSI PINCH (Jarak Antara Telunjuk [8] & Jempol [4])
+              // -------------------------------------------------------------
               let isPinching = false;
+              if (hand[4]) {
+                const rawPinchDist = Math.hypot(hand[8].x - hand[4].x, hand[8].y - hand[4].y);
+                const palmSize = hand[0] && hand[9]
+                  ? Math.hypot(hand[0].x - hand[9].x, hand[0].y - hand[9].y)
+                  : 0.25;
+                const pinchRatio = rawPinchDist / (palmSize || 0.25);
 
-              if (hand[4] && hand[5] && hand[2] && hand[0]) {
-                const palmSize = Math.hypot(hand[0].x - hand[9].x, hand[0].y - hand[9].y) || 0.25;
-                const distToIndexKnuckle = Math.hypot(hand[4].x - hand[5].x, hand[4].y - hand[5].y) / palmSize;
-                const distToMiddleKnuckle = Math.hypot(hand[4].x - hand[9].x, hand[4].y - hand[9].y) / palmSize;
-                const thumbSpan = Math.hypot(hand[4].x - hand[2].x, hand[4].y - hand[2].y) / palmSize;
-                const pinchDist = hand[8] ? Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y) / palmSize : 1.0;
-
-                isPinching = pinchDist < 0.32;
-
-                if (!wasBent) {
-                  // Syarat tegas untuk memicu tabuhan (Trigger ON):
-                  // Jempol ditekuk ke dalam mendekati telapak tangan atau mencubit telunjuk
-                  const isFlexed =
-                    isPinching ||
-                    distToIndexKnuckle < 0.48 ||
-                    distToMiddleKnuckle < 0.44 ||
-                    thumbSpan < 0.34;
-                  if (isFlexed) {
-                    isThumbBent = true;
-                  }
+                // Histeresis: aktif saat rapat (< 0.052 raw atau rasio < 0.28), lepas saat terbuka
+                if (!wasPinchingRef.current) {
+                  isPinching = rawPinchDist < 0.052 || pinchRatio < 0.28;
                 } else {
-                  // Histeresis: tetap terkunci 'bent' sampai jempol benar-benar dibuka kembali (mencegah double hit dari jitter kamera)
-                  const isClearlyReleased =
-                    !isPinching &&
-                    distToIndexKnuckle > 0.55 &&
-                    distToMiddleKnuckle > 0.50 &&
-                    thumbSpan > 0.40;
-                  if (isClearlyReleased) {
-                    isThumbBent = false;
-                  }
+                  isPinching = rawPinchDist < 0.082 && pinchRatio < 0.38;
                 }
               }
               setIsPinchingState(isPinching);
-              setIsThumbBentState(isThumbBent);
 
+              // -------------------------------------------------------------
+              // 2. DETEKSI AIR TAP (Kecepatan Sentakan Vertikal Telunjuk ke Bawah)
+              // -------------------------------------------------------------
+              let isAirTap = false;
+              const prevTip = prevIndexTipRef.current;
+              if (prevTip) {
+                const dt = Math.max(8, nowMs - prevTip.time);
+                // Arah bawah layar bernilai Y positif
+                const tipVy = (hand[8].y - prevTip.y) / (dt / 1000);
+                const deltaY = hand[8].y - prevTip.y;
+
+                // Air Tap: sentakan tajam ke bawah (tipVy > 0.44 atau deltaY > 0.024)
+                if (dt < 90 && (tipVy > 0.44 || deltaY > 0.024)) {
+                  isAirTap = true;
+                }
+              }
+              prevIndexTipRef.current = { x: hand[8].x, y: hand[8].y, time: nowMs };
+
+              // -------------------------------------------------------------
+              // 3. EKSEKUSI TRIGGER MENABUH (AIR TAP ATAU PINCH)
+              // -------------------------------------------------------------
               const prev = prevHandPosRef.current;
-              if (prev) {
+              const isPinchTrigger = isPinching && !wasPinchingRef.current;
+              const isAirTapTrigger = isAirTap && !wasAirTappingRef.current;
+              const canTrigger = nowMs - lastAiTriggerTimeRef.current > 200;
+
+              if ((isPinchTrigger || isAirTapTrigger) && canTrigger) {
+                lastAiTriggerTimeRef.current = nowMs;
+                playNoteByIndex(noteIdx, 0.96);
+                setHitRippleNoteIdx(noteIdx);
+                setIsStrikingState(true);
+
+                if (strikeResetTimerRef.current) clearTimeout(strikeResetTimerRef.current);
+                strikeResetTimerRef.current = setTimeout(() => {
+                  setIsStrikingState(false);
+                  setHitRippleNoteIdx(null);
+                }, 350);
+              }
+              // Mode Gesek (Bow) untuk instrumen dawai (misal Rebab)
+              else if (instrument.interactionType === "bow" && prev) {
                 const dt = Math.max(8, nowMs - prev.time);
                 const vx = (normX - prev.x) / (dt / 1000);
-
-                // =========================================================================
-                // ATURAN EKSKLUSIF: HANYA TEKUKAN JEMPOL YANG MEMICU SUARA (SINGLE NOTE)
-                // Hapus ayunan gerak (vy) agar perpindahan telunjuk membidik nada tidak memicu nada ganda
-                // =========================================================================
-                // 1. UTAMA: Tekukan Jempol (Thumb Bend Trigger) — hanya berbunyi 1 kali saat jempol ditekuk
-                if (isThumbBent && !wasThumbBentRef.current && nowMs - lastAiTriggerTimeRef.current > 240) {
-                  lastAiTriggerTimeRef.current = nowMs;
-                  playNoteByIndex(noteIdx, 0.96);
-                }
-                // 2. Mode Gesek (Bow) untuk instrumen berdawai
-                else if (instrument.interactionType === "bow") {
-                  const speed = Math.abs(vx);
-                  if ((isThumbBent || speed > 0.16) && note) {
-                    bowStateRef.current = { active: true, pos: normX };
-                    setActiveNoteIdx(noteIdx);
-                    soundEngine.startContinuousVoice(
-                      "bow",
-                      note.freq,
-                      Math.min(1, 0.4 + (isThumbBent ? 0.4 : speed * 0.5))
-                    );
-                  } else {
-                    bowStateRef.current.active = false;
-                    soundEngine.stopContinuousVoice();
-                  }
+                const speed = Math.abs(vx);
+                if ((isPinching || speed > 0.16) && note) {
+                  bowStateRef.current = { active: true, pos: normX };
+                  setActiveNoteIdx(noteIdx);
+                  soundEngine.startContinuousVoice(
+                    "bow",
+                    note.freq,
+                    Math.min(1, 0.4 + (isPinching ? 0.4 : speed * 0.5))
+                  );
+                } else {
+                  bowStateRef.current.active = false;
+                  soundEngine.stopContinuousVoice();
                 }
               }
 
               wasPinchingRef.current = isPinching;
-              wasThumbBentRef.current = isThumbBent;
-              prevHandPosRef.current = { x: normX, y: rawY, inDock: true, time: nowMs };
+              wasAirTappingRef.current = isAirTap;
+              prevHandPosRef.current = { x: normX, y: rawY, time: nowMs };
 
               if (ctx && canvas) {
-                drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, isPinching || isThumbBent, isThumbBent);
+                drawHandSkeleton(
+                  ctx,
+                  hand,
+                  canvas.width,
+                  canvas.height,
+                  true,
+                  isStrikingState || isPinchTrigger || isAirTapTrigger,
+                  isPinching
+                );
               }
             } else {
               setCameraHandDetected(false);
               setHandCursor(null);
               setCameraTargetNoteIdx(null);
-              setIsCursorInDock(false);
-              setIsThumbBentState(false);
+              setIsPinchingState(false);
+              setIsStrikingState(false);
               prevHandPosRef.current = null;
+              prevIndexTipRef.current = null;
               wasPinchingRef.current = false;
-              wasThumbBentRef.current = false;
-              lastDwellNoteRef.current = null;
+              wasAirTappingRef.current = false;
               if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
               }
@@ -943,28 +970,30 @@ export function Instrument3DStage({
             </Button>
           )}
 
-          {/* Tombol Mode Kamera AI (MediaPipe Hands) */}
-          <Button
-            type="button"
-            size="sm"
-            variant={cameraAiEnabled ? "default" : "outline"}
-            onClick={() => setCameraAiEnabled((prev) => !prev)}
-            className={cn(
-              "h-8 rounded-full text-xs font-semibold",
-              cameraAiEnabled
-                ? "btn-waranusa text-white"
-                : "border-[#6E472D]/40 text-[#2D1E12] bg-white hover:bg-[#FAF3E6]"
-            )}
-          >
-            {cameraAiLoading ? (
-              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-            ) : cameraAiEnabled ? (
-              <CameraOff className="mr-1.5 h-3.5 w-3.5" />
-            ) : (
-              <Camera className="mr-1.5 h-3.5 w-3.5 text-[#6E472D]" />
-            )}
-            {cameraAiEnabled ? "Matikan Kamera AI" : "Mode Kamera AI (Gestur Tangan)"}
-          </Button>
+          {/* Tombol Mode Kamera AI (MediaPipe Hands) — Khusus Layar Desktop (Nonaktif di HP untuk performa & hemat daya) */}
+          {!isMobile && (
+            <Button
+              type="button"
+              size="sm"
+              variant={cameraAiEnabled ? "default" : "outline"}
+              onClick={() => setCameraAiEnabled((prev) => !prev)}
+              className={cn(
+                "h-8 rounded-full text-xs font-semibold",
+                cameraAiEnabled
+                  ? "btn-waranusa text-white"
+                  : "border-[#6E472D]/40 text-[#2D1E12] bg-white hover:bg-[#FAF3E6]"
+              )}
+            >
+              {cameraAiLoading ? (
+                <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+              ) : cameraAiEnabled ? (
+                <CameraOff className="mr-1.5 h-3.5 w-3.5" />
+              ) : (
+                <Camera className="mr-1.5 h-3.5 w-3.5 text-[#6E472D]" />
+              )}
+              {cameraAiEnabled ? "Matikan Kamera AI" : "Mode Kamera AI (Gestur Tangan)"}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -1130,7 +1159,7 @@ export function Instrument3DStage({
           </div>
           <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] leading-snug sm:leading-relaxed text-stone-600 line-clamp-2 sm:line-clamp-none">
             {cameraAiEnabled
-              ? "Arahkan jari telunjuk ke bilah nada bawah, lalu tekuk jempol untuk menabuh."
+              ? "Arahkan jari telunjuk ke bilah nada, lalu sentakkan jari ke bawah (atau cubit telunjuk-jempol) untuk menabuh."
               : instrument.mouseGuide}
           </p>
         </div>
@@ -1189,96 +1218,52 @@ export function Instrument3DStage({
           </div>
         )}
 
-        {/* KURSOR TANGAN VIRTUAL SAAT MODE KAMERA AI AKTIF — HANYA MUNCUL JIKA TANGAN DIDELATKAN KE BAR NADA */}
-        {cameraAiEnabled && handCursor && isCursorInDock && (
+        {/* KURSOR TARGET ORANYE (LERP/DAMPING SMOOTH) MENGIKUTI POSISI JARI TELUNJUK */}
+        {cameraAiEnabled && handCursor && (
           <div
-            className="pointer-events-none absolute z-30 -translate-x-1/2 flex flex-col items-center gap-1 transition-all duration-75"
+            className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1.5 transition-transform duration-75"
             style={{
-              left: `${Math.max(6, Math.min(76, handCursor.x * 100))}%`,
-              bottom: "4.5rem",
+              left: `${Math.max(5, Math.min(95, handCursor.x * 100))}%`,
+              top: `${Math.max(8, Math.min(90, handCursor.y * 100))}%`,
             }}
           >
-            {/* Indikator Titik Jari & Efek Tekukan Jempol */}
+            {/* Lingkaran Target Oranye Mulus dengan Efek Tabuh / Ripple */}
             <div
               className={cn(
-                "rounded-full border-2 transition-all duration-100 flex items-center justify-center",
-                isThumbBentState
-                  ? "h-9 w-9 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_26px_rgba(251,191,36,1)]"
-                  : "h-7 w-7 scale-105 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
+                "rounded-full border-2 transition-all duration-150 flex items-center justify-center relative",
+                isStrikingState
+                  ? "h-12 w-12 scale-125 bg-amber-400/80 border-white ring-4 ring-amber-300 shadow-[0_0_30px_rgba(251,191,36,1)]"
+                  : isPinchingState
+                  ? "h-10 w-10 scale-110 bg-amber-500/60 border-amber-200 ring-3 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.9)]"
+                  : "h-8 w-8 bg-amber-500/25 border-amber-400 ring-2 ring-amber-400/50 shadow-[0_0_16px_rgba(245,158,11,0.6)]"
               )}
             >
-              <div className="h-2 w-2 rounded-full bg-white shadow-xs" />
+              <div
+                className={cn(
+                  "rounded-full transition-all duration-100",
+                  isStrikingState ? "h-3.5 w-3.5 bg-white shadow-md animate-ping" : "h-2 w-2 bg-white shadow-xs"
+                )}
+              />
+              {isStrikingState && (
+                <span className="absolute inset-0 rounded-full border-2 border-amber-300 animate-ping" />
+              )}
             </div>
 
             {/* Label Nada yang Sedang Dibidik Kursor */}
             {cameraTargetNoteIdx !== null && instrument.notes[cameraTargetNoteIdx] && (
               <span
                 className={cn(
-                  "whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-md border transition-all",
-                  isThumbBentState
-                    ? "bg-amber-500 text-stone-950 border-white ring-2 ring-amber-300 scale-110 font-extrabold"
-                    : "bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30"
+                  "whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-md border transition-all select-none",
+                  isStrikingState
+                    ? "bg-amber-400 text-stone-950 border-white ring-2 ring-amber-300 scale-110 font-extrabold"
+                    : "bg-stone-900/90 text-amber-200 border-amber-400/80 ring-1 ring-amber-400/40"
                 )}
               >
-                {isThumbBentState
+                {isStrikingState
                   ? `💥 ${instrument.notes[cameraTargetNoteIdx].label} (Tabuh!)`
-                  : `👉 ${instrument.notes[cameraTargetNoteIdx].label} • Tekuk Jempol`}
+                  : `👉 ${instrument.notes[cameraTargetNoteIdx].label}`}
               </span>
             )}
-          </div>
-        )}
-
-        {/* STRIP ZONA NADA KAMERA AI (FOTO 2 — AREA AKTIF PERMAINAN) */}
-        {cameraAiEnabled && (
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-x-2 xs:inset-x-4 sm:inset-x-8 bottom-2.5 sm:bottom-3 z-15 flex items-center justify-between gap-1 sm:gap-1.5 rounded-2xl p-1 sm:p-1.5 backdrop-blur-md border transition-all duration-200 mr-32 xs:mr-36 sm:mr-48",
-              isCursorInDock
-                ? isThumbBentState
-                  ? "bg-stone-950/95 border-amber-300 ring-4 ring-amber-400/40 shadow-[0_0_24px_rgba(251,191,36,0.5)]"
-                  : "bg-stone-950/90 border-amber-400/80 ring-2 ring-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.3)]"
-                : "bg-stone-950/75 border-white/20 shadow-md"
-            )}
-          >
-            {instrument.notes.map((note, idx) => {
-              const isTarget = cameraTargetNoteIdx === idx;
-              const isPlaying = activeNoteIdx === idx;
-              const isTargetInDock = isTarget && isCursorInDock;
-              return (
-                <div
-                  key={note.code}
-                  className={cn(
-                    "flex-1 flex flex-col items-center justify-center py-1 sm:py-1.5 rounded-xl transition-all duration-100 min-w-0 relative",
-                    isPlaying
-                      ? "bg-amber-400 text-stone-950 scale-105 shadow-[0_0_12px_rgba(251,191,36,0.9)] font-extrabold"
-                      : isTargetInDock
-                      ? isThumbBentState
-                        ? "bg-amber-400 text-stone-950 scale-110 ring-4 ring-white font-extrabold shadow-lg"
-                        : "bg-white text-stone-900 scale-105 ring-3 ring-amber-400 font-extrabold shadow-md"
-                      : "bg-white/10 text-stone-300"
-                  )}
-                >
-                  {isTargetInDock && (
-                    <span
-                      className={cn(
-                        "absolute -top-2 left-1/2 -translate-x-1/2 rounded-full px-1.5 py-0.2 text-[8px] font-bold shadow-xs uppercase tracking-tighter transition-all",
-                        isThumbBentState
-                          ? "bg-white text-stone-950 ring-2 ring-amber-400 font-extrabold"
-                          : "bg-amber-500 text-stone-950"
-                      )}
-                    >
-                      {isThumbBentState ? "Pukul!" : "Bidik"}
-                    </span>
-                  )}
-                  <span className="font-mono text-[8px] sm:text-[10px] uppercase font-bold truncate">
-                    {note.code}
-                  </span>
-                  <span className="text-[9px] sm:text-xs font-serif font-bold truncate max-w-full px-0.5">
-                    {note.label}
-                  </span>
-                </div>
-              );
-            })}
           </div>
         )}
 
@@ -1302,16 +1287,20 @@ export function Instrument3DStage({
             <div className="bg-stone-900/95 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-medium text-amber-100 flex items-center justify-between">
               <span className="truncate">
                 {cameraHandDetected
-                  ? isThumbBentState
-                    ? "💥 Jempol: Pukul!"
-                    : "👍 Jempol: Terdeteksi"
+                  ? isStrikingState
+                    ? "💥 Tabuh!"
+                    : isPinchingState
+                    ? "👌 Cubit (Pinch)"
+                    : cameraTargetNoteIdx !== null && instrument.notes[cameraTargetNoteIdx]
+                    ? `🎯 ${instrument.notes[cameraTargetNoteIdx].label}`
+                    : "Tangan Terdeteksi"
                   : "Arahkan Tangan"}
               </span>
               <span
                 className={cn(
                   "h-1.5 w-1.5 sm:h-2 sm:w-2 shrink-0 rounded-full",
                   cameraHandDetected
-                    ? isThumbBentState
+                    ? isStrikingState
                       ? "bg-amber-300 ring-2 ring-white animate-pulse"
                       : "bg-emerald-400 animate-ping"
                     : "bg-amber-400"
@@ -1563,37 +1552,53 @@ export function Instrument3DStage({
               const isPlaying = activeNoteIdx === idx;
               const isSelected = selectedPitchIdx === idx;
               const isCameraTarget = cameraAiEnabled && cameraTargetNoteIdx === idx;
+              const isHitRippling = hitRippleNoteIdx === idx;
+
               return (
                 <button
                   key={note.code}
                   type="button"
-                  onClick={() => {
+                  onPointerDown={(e) => {
+                    // Mencegah delay sentuh 300ms & mendukung multi-touch cepat pada perangkat mobile/layar sentuh
+                    e.preventDefault();
                     stopDemo();
-                    playNoteByIndex(idx, 0.92);
+                    playNoteByIndex(idx, 0.95);
+                  }}
+                  onClick={() => {
+                    // Fallback untuk klik mouse standar
+                    stopDemo();
+                    playNoteByIndex(idx, 0.95);
                   }}
                   className={cn(
-                    "group relative flex flex-col items-center justify-center rounded-xl border py-2 sm:py-2.5 px-1 sm:px-1.5 transition-all cursor-pointer select-none min-h-[52px] sm:min-h-[58px]",
-                    isPlaying
-                      ? "scale-95 border-[#D49B27] bg-gradient-to-b from-[#FFE082] to-[#D49B27] text-[#2D1E12] shadow-md ring-2 ring-amber-400"
+                    "group relative flex flex-col items-center justify-center rounded-xl border py-2.5 sm:py-3 px-1.5 sm:px-2 transition-all duration-100 cursor-pointer select-none touch-manipulation min-h-[64px] xs:min-h-[70px] sm:min-h-[76px]",
+                    isHitRippling
+                      ? "scale-105 border-amber-400 bg-gradient-to-b from-[#FFF5D6] to-[#F59E0B] text-stone-950 shadow-[0_0_24px_rgba(251,191,36,0.9)] ring-4 ring-amber-300 font-extrabold z-10"
+                      : isPlaying
+                      ? "scale-98 border-[#D49B27] bg-gradient-to-b from-[#FFE082] to-[#D49B27] text-[#2D1E12] shadow-md ring-2 ring-amber-400"
                       : isCameraTarget
-                      ? "border-amber-500 bg-amber-50 text-[#2D1E12] ring-3 ring-amber-400 shadow-sm scale-102 font-bold"
+                      ? "border-amber-500 bg-amber-50/95 text-[#2D1E12] ring-3 ring-amber-400 shadow-md scale-102 font-bold"
                       : isSelected
                       ? "border-[#6E472D]/50 bg-[#FAF3E6] text-[#2D1E12] hover:bg-[#F3E6D0]"
-                      : "border-[#DFD3C2] bg-white text-stone-700 hover:border-[#6E472D]/40 hover:bg-[#FAF6EE]"
+                      : "border-[#DFD3C2] bg-white text-stone-700 hover:border-[#6E472D]/40 hover:bg-[#FAF6EE] active:scale-95"
                   )}
                 >
+                  {/* Efek visual ripple melingkar saat bilah nada terkena tabuhan (Air Tap / Pinch) */}
+                  {isHitRippling && (
+                    <span className="pointer-events-none absolute inset-0 -m-1 rounded-2xl border-2 border-amber-300 bg-amber-400/20 animate-ping" />
+                  )}
+
                   {isCameraTarget && (
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-amber-600 px-1.5 py-0.5 text-[8px] font-bold text-white shadow-xs">
-                      Bidik
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-amber-500 text-stone-950 px-2 py-0.5 text-[8.5px] font-extrabold shadow-sm uppercase tracking-wider">
+                      🎯 Bidik
                     </span>
                   )}
-                  <span className="font-mono text-[9px] xs:text-[10px] font-bold uppercase tracking-wider text-[#7A4B29]">
+                  <span className="font-mono text-[10px] xs:text-xs font-extrabold uppercase tracking-wider text-[#7A4B29]">
                     {note.code}
                   </span>
-                  <span className="mt-0.5 font-serif text-[11px] sm:text-sm font-bold text-[#2D1E12] line-clamp-1">
+                  <span className="mt-0.5 font-serif text-xs xs:text-sm sm:text-base font-bold text-[#2D1E12] line-clamp-1">
                     {note.label}
                   </span>
-                  <span className="mt-0.5 font-mono text-[8px] xs:text-[9px] sm:text-[10px] text-stone-500">
+                  <span className="mt-0.5 font-mono text-[9px] xs:text-[10px] text-stone-500">
                     {note.subLabel ? note.subLabel : `${Math.round(note.freq)}Hz`}
                   </span>
                 </button>
