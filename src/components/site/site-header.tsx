@@ -69,13 +69,11 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
 
   const isLanding = !route.segments[0] || route.segments[0] === "";
   const isActive = (href: string) => {
-    if (href === "#/" || href === "#") {
+    const targetPath = href.replace(/^#\/?/, "");
+    if (!targetPath) {
       return isLanding;
     }
-    if (href.startsWith("#/")) {
-      return route.raw.startsWith(href.slice(1));
-    }
-    return false;
+    return route.path === targetPath || route.raw.startsWith(targetPath);
   };
 
   const cmsUser = user && ["SUPER_ADMIN", "EDITOR", "REVIEWER"].includes(user.role);
@@ -126,6 +124,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
           >
             {NAV_ITEMS.map((item) => {
               const label = t(item.labelKey, item.fallback);
+              const active = isActive(item.href);
               if (item.href === "#/") {
                 return (
                   <Link
@@ -137,10 +136,10 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       }
                     }}
                     className={cn(
-                      "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
-                      isActive(item.href)
-                        ? "text-[#2D1E12] bg-white/85 border border-stone-200/80 shadow-2xs font-semibold"
-                        : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
+                      "rounded-full px-3.5 py-1.5 text-sm transition-all duration-200",
+                      active
+                        ? "text-[#3C2213] bg-white/95 border border-stone-200 shadow-xs font-bold"
+                        : "text-stone-700 hover:text-[#3C2213] hover:bg-white/60 font-medium"
                     )}
                   >
                     {label}
@@ -153,10 +152,10 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
-                    isActive(item.href)
-                      ? "text-[#2D1E12] bg-white/85 border border-stone-200/80 shadow-2xs font-semibold"
-                      : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
+                    "rounded-full px-3.5 py-1.5 text-sm transition-all duration-200",
+                    active
+                      ? "text-[#3C2213] bg-white/95 border border-stone-200 shadow-xs font-bold"
+                      : "text-stone-700 hover:text-[#3C2213] hover:bg-white/60 font-medium"
                   )}
                 >
                   {label}
@@ -316,27 +315,30 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   <span className="truncate">{t("nav.search_placeholder", "Cari objek budaya, tradisi...")}</span>
                 </button>
                 <nav className="mt-6 flex flex-col gap-1.5" aria-label="Navigasi seluler">
-                  {NAV_ITEMS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => {
-                        setMobileOpen(false);
-                        if (item.href === "#/" && isLanding) {
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }
-                      }}
-                      className={cn(
-                        "flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm font-semibold transition-all active:scale-[0.98]",
-                        isActive(item.href)
-                          ? "bg-white/90 border border-stone-200/80 text-[#2D1E12] shadow-xs"
-                          : "text-stone-700 hover:bg-white/60"
-                      )}
-                    >
-                      <item.icon className="h-4 w-4 text-[#8A5B38] shrink-0" />
-                      <span>{t(item.labelKey, item.fallback)}</span>
-                    </Link>
-                  ))}
+                  {NAV_ITEMS.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => {
+                          setMobileOpen(false);
+                          if (item.href === "#/" && isLanding) {
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }
+                        }}
+                        className={cn(
+                          "flex items-center gap-3 rounded-2xl px-4 py-3 min-h-[44px] text-sm transition-all active:scale-[0.98]",
+                          active
+                            ? "bg-white/95 border border-stone-200/90 text-[#3C2213] shadow-xs font-bold"
+                            : "text-stone-700 hover:bg-white/60 font-medium"
+                        )}
+                      >
+                        <item.icon className={cn("h-4 w-4 shrink-0 transition-colors", active ? "text-[#8C5E3C]" : "text-stone-500")} />
+                        <span>{t(item.labelKey, item.fallback)}</span>
+                      </Link>
+                    );
+                  })}
 
                   {/* Pintasan Kontribusi Budaya untuk Pelestarian */}
                   <Link
