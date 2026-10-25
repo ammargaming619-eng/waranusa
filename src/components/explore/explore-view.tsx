@@ -90,6 +90,12 @@ export default function ExploreView({ route }: { route: Route }) {
     });
   }, [selectedIsland, searchQuery]);
 
+  // Sinkronkan provinsi yang terfilter dengan data Region untuk komponen peta
+  const filteredRegions = useMemo(() => {
+    const allowedCodes = new Set(filteredProvinces.map((p) => p.code));
+    return allProvincesAsRegions.filter((r) => allowedCodes.has(r.code));
+  }, [allProvincesAsRegions, filteredProvinces]);
+
   // Wilayah terpilih diturunkan dari URL (?region=CODE)
   const selectedRegion = useMemo(() => {
     const code = route.query.region;
@@ -136,6 +142,17 @@ export default function ExploreView({ route }: { route: Route }) {
     }
   };
 
+  const handleIslandChange = (islandId: Province38["islandGroup"] | "ALL") => {
+    setSelectedIsland(islandId);
+    // Jika provinsi terpilih saat ini berada di luar pulau yang baru dipilih, bersihkan pemilihan agar peta auto-fit ke pulau baru
+    if (selectedRegion && islandId !== "ALL") {
+      const currentMeta = PROVINCES_38_DATASET.find((p) => p.code === selectedRegion.code);
+      if (currentMeta && currentMeta.islandGroup !== islandId) {
+        navigate(buildQuery("jelajah", {}), { replace: true });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-lontar-gradient">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
@@ -171,7 +188,7 @@ export default function ExploreView({ route }: { route: Route }) {
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => setSelectedIsland(tab.id)}
+                onClick={() => handleIslandChange(tab.id)}
                 className={cn(
                   "rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer",
                   isActive
@@ -190,7 +207,7 @@ export default function ExploreView({ route }: { route: Route }) {
           <div className="lg:col-span-8 space-y-5">
             <div className="overflow-hidden rounded-2xl border border-[#DFD3C2] shadow-md bg-white">
               <IndonesiaMap
-                regions={allProvincesAsRegions}
+                regions={filteredRegions}
                 selectedId={selectedRegion?.id ?? null}
                 onSelect={selectRegion}
                 className="w-full"

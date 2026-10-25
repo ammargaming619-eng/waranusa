@@ -196,6 +196,38 @@ export default function IndonesiaMap({
     }
   }, [map, selectedId, regions]);
 
+  // Sesuaikan batas pandangan kamera peta saat daftar wilayah terfilter berubah (filter pulau / pencarian)
+  React.useEffect(() => {
+    if (!map || regions.length === 0) return;
+    // Jika sedang memilih provinsi tertentu, biarkan flyTo provinsi yang mengontrol
+    if (selectedId) return;
+
+    if (regions.length >= 34) {
+      map.fitBounds(INDONESIA_BOUNDS, { padding: [20, 20] });
+    } else {
+      const lats = regions.map((r) => r.lat).filter((v): v is number => typeof v === "number" && !isNaN(v));
+      const lngs = regions.map((r) => r.lng).filter((v): v is number => typeof v === "number" && !isNaN(v));
+      if (lats.length > 0 && lngs.length > 0) {
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        const minLng = Math.min(...lngs);
+        const maxLng = Math.max(...lngs);
+
+        // Beri bantalan (margin buffer) agar penanda tidak menempel persis di tepi peta
+        const latDelta = Math.max(maxLat - minLat, 1.2);
+        const lngDelta = Math.max(maxLng - minLng, 2.0);
+
+        map.fitBounds(
+          [
+            [minLat - latDelta * 0.15, minLng - lngDelta * 0.15],
+            [maxLat + latDelta * 0.15, maxLng + lngDelta * 0.15],
+          ],
+          { padding: [35, 35], maxZoom: 7 }
+        );
+      }
+    }
+  }, [map, regions, selectedId]);
+
   const ready = mounted && rl !== null;
   const currentProvider = MAP_PROVIDERS[activeStyle];
 
@@ -350,7 +382,11 @@ export default function IndonesiaMap({
 
       <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-stone-600 px-1">
         <span>
-          Klik salah satu dari <strong className="text-[#2D1E12]">38 penanda provinsi</strong> untuk menelaah khazanah arsitektur adat dan tradisinya.
+          Klik salah satu dari{" "}
+          <strong className="text-[#2D1E12]">
+            {regions.length === 38 ? "38 penanda provinsi" : `${regions.length} penanda provinsi terfilter`}
+          </strong>{" "}
+          untuk menelaah khazanah arsitektur adat dan tradisinya.
         </span>
         <span className="hidden sm:inline font-mono text-[10px] text-stone-500">
           Peta: {currentProvider.label}
