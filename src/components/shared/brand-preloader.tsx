@@ -46,17 +46,8 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
       return;
     }
 
-    // Jika sudah pernah melihat intro di sesi ini, langsung buka
-    try {
-      if (sessionStorage.getItem("waranusa_intro_seen") === "true") {
-        dismiss();
-        if (onComplete) onComplete();
-        return;
-      }
-    } catch {}
-
     const startTime = Date.now();
-    const duration = 550; // target durasi progress bar
+    const duration = 450; // target durasi progress bar
 
     const pInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -67,17 +58,18 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
         clearInterval(pInterval);
         setReadyToScroll(true);
       }
-    }, 25);
+    }, 20);
 
-    // Failsafe timer: pastikan dalam 800ms siap scroll/tap, dan maksimal 1.4 detik otomatis lanjut
+    // Failsafe timer: pastikan dalam 500ms siap scroll/tap
     const safetyTimer = setTimeout(() => {
       setProgress(100);
       setReadyToScroll(true);
-    }, 800);
+    }, 500);
 
+    // Failsafe cadangan jika pengguna membiarkan layar tanpa interaksi selama 8 detik
     const autoContinueTimer = setTimeout(() => {
       dismiss();
-    }, 1400);
+    }, 8000);
 
     return () => {
       clearInterval(pInterval);
@@ -97,15 +89,15 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
-    // 1. Mouse Wheel (Scroll) — cegah scrollbar belakang bergeser
+    // 1. Mouse Wheel (Scroll) — usapan roda mouse atau trackpad ke bawah/atas
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      if (e.deltaY > 10) {
+      if (Math.abs(e.deltaY) > 2 || Math.abs(e.deltaX) > 2) {
         dismiss();
       }
     };
 
-    // 2. Touch (Usapan layar HP ke atas = scroll ke bawah)
+    // 2. Touch (Usapan layar HP ke atas/bawah)
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         touchStartY.current = e.touches[0].clientY;
@@ -115,7 +107,7 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
     const handleTouchMove = (e: TouchEvent) => {
       if (touchStartY.current !== null && e.touches.length > 0) {
         const delta = touchStartY.current - e.touches[0].clientY;
-        if (delta > 15) {
+        if (Math.abs(delta) > 6) {
           e.preventDefault();
           dismiss();
         }
@@ -164,6 +156,14 @@ export function BrandPreloader({ onStartDismiss, onComplete, minDuration }: Bran
           exit={{
             y: "-100%",
             transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+          }}
+          drag="y"
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0.85, bottom: 0 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.y < -25 || info.velocity.y < -100) {
+              dismiss();
+            }
           }}
           onAnimationComplete={() => {
             window.scrollTo({ top: 0, left: 0, behavior: "instant" });
