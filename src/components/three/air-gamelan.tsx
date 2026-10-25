@@ -142,7 +142,7 @@ export function drawHandSkeleton(
 
   // 2. Gambar titik sendi
   for (let i = 0; i < landmarks.length; i++) {
-    if (i === 8 || i === 4) continue; // Telunjuk & jempol digambar khusus
+    if (i === 8) continue; // Hanya telunjuk (landmark 8) yang digambar khusus sebagai kursor
     const p = landmarks[i];
     ctx.beginPath();
     ctx.arc(p.x * width, p.y * height, 3, 0, Math.PI * 2);
@@ -150,7 +150,7 @@ export function drawHandSkeleton(
     ctx.fill();
   }
 
-  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP — PENUNJUK & AIR TAP)
+  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP — SATU-SATUNYA KURSOR & AIR TAP)
   const tip = landmarks[8];
   if (tip) {
     const tx = tip.x * width;
@@ -176,24 +176,6 @@ export function drawHandSkeleton(
     ctx.beginPath();
     ctx.arc(tx, ty, isStriking ? 5 : 4, 0, Math.PI * 2);
     ctx.fillStyle = isStriking || isPinching ? "#FFFFFF" : "#F2B544";
-    ctx.fill();
-  }
-
-  // 4. Ujung Ibu Jari (Landmark 4: THUMB_TIP — PINCH SENSOR)
-  const thumb = landmarks[4];
-  if (thumb) {
-    const thx = thumb.x * width;
-    const thy = thumb.y * height;
-
-    ctx.beginPath();
-    ctx.arc(thx, thy, isPinching ? 8 : 5, 0, Math.PI * 2);
-    ctx.strokeStyle = isPinching ? "#FFFFFF" : "#F59E0B";
-    ctx.lineWidth = isPinching ? 2.5 : 1.5;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(thx, thy, isPinching ? 4 : 2.5, 0, Math.PI * 2);
-    ctx.fillStyle = isPinching ? "#F59E0B" : "#FCD34D";
     ctx.fill();
   }
 }
