@@ -501,10 +501,10 @@ export function UnifiedAssistantWidget() {
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            // 1. DI MOBILE (< md): Tombol Lingkaran di pojok kanan bawah (kembar simetris dengan tombol aksesibilitas)
+            // 1. DI MOBILE (< md): Tombol Lingkaran di pojok kanan bawah (Ukuran persis kembar dengan aksesibilitas: h-12 w-12 sm:h-14 sm:w-14)
             "!fixed bottom-4 right-4 z-[9990]",
-            "flex items-center justify-center",
-            "w-12 h-12 rounded-full",
+            "group flex items-center justify-center",
+            "h-12 w-12 sm:h-14 sm:w-14 rounded-full",
             "btn-waranusa text-white shadow-[0_8px_24px_rgba(45,30,18,0.38)]",
             "hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)] active:scale-95 transition-all duration-300",
             // 2. DI DESKTOP (md+): Tab Samping Pinned di Sisi Kanan Layar (Vertikal Center)
@@ -524,7 +524,7 @@ export function UnifiedAssistantWidget() {
             <WaranusaAIEmblem className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
             {/* Badge pendar aktif Kuning Emas Nusantara */}
-            <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
+            <span className="absolute top-0.5 right-0.5 flex h-2.5 w-2.5 pointer-events-none">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
               <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
             </span>
