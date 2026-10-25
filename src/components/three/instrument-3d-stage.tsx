@@ -1191,36 +1191,38 @@ export function Instrument3DStage({
         }}
       >
         {/* OVERLAY PANDUAN CARA BERMAIN DI POJOK KIRI ATAS */}
-        <div className="pointer-events-none absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-20 max-w-[calc(100%-125px)] sm:max-w-xs rounded-xl border border-[#DFD3C2]/90 bg-white/90 backdrop-blur-md p-2 sm:p-3 shadow-xs">
+        <div className="pointer-events-none absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-20 max-w-[calc(100%-125px)] sm:max-w-xs rounded-xl border border-[#B8977E]/80 bg-white/95 backdrop-blur-md p-2.5 sm:p-3 shadow-xs">
           <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold text-[#2D1E12]">
-            <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#6E472D] shrink-0" />
+            <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#6E472D] shrink-0" aria-hidden="true" />
             <span className="truncate">Panduan ({meta.badge})</span>
           </div>
-          <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] leading-snug sm:leading-relaxed text-stone-600 line-clamp-2 sm:line-clamp-none">
+          <p className="mt-0.5 sm:mt-1 text-[10.5px] sm:text-[11.5px] leading-snug sm:leading-relaxed text-stone-800 font-medium line-clamp-2 sm:line-clamp-none">
             {cameraAiEnabled
-              ? "Arahkan jari telunjuk ke bilah nada, lalu sentakkan jari ke bawah (atau cubit telunjuk-jempol) untuk menabuh."
+              ? "Arahkan jari telunjuk ke bilah nada, lalu sentakkan jari ke bawah untuk menabuh."
               : instrument.mouseGuide}
           </p>
         </div>
 
         {/* KONTROL ROTASI & RESET KAMERA DI POJOK KANAN ATAS */}
-        <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-20 flex items-center gap-1 sm:gap-1.5 rounded-full border border-[#DFD3C2] bg-white/90 px-2 sm:px-2.5 py-1 shadow-xs backdrop-blur-md">
+        <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-20 flex items-center gap-1 sm:gap-1.5 rounded-full border border-[#DFD3C2] bg-white/95 px-2 sm:px-2.5 py-1 shadow-xs backdrop-blur-md">
           <button
             type="button"
             onClick={() => setAutoRotate((prev) => !prev)}
+            aria-label={autoRotate ? "Jeda rotasi 360 derajat" : "Putar instrumen 360 derajat otomatis"}
             className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-stone-700 hover:text-[#6E472D] px-1 sm:px-1.5 py-0.5 cursor-pointer"
           >
-            {autoRotate ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+            {autoRotate ? <Pause className="h-3 w-3" aria-hidden="true" /> : <Play className="h-3 w-3" aria-hidden="true" />}
             <span className="hidden xs:inline">{autoRotate ? "Jeda" : "360°"}</span>
           </button>
-          <span className="h-3 w-[1px] bg-stone-300" />
+          <span className="h-3 w-[1px] bg-stone-300" aria-hidden="true" />
           <button
             type="button"
             onClick={() => setCameraKey((k) => k + 1)}
+            aria-label="Atur ulang sudut kamera instrumen"
             className="p-1 text-stone-600 hover:text-[#6E472D] cursor-pointer"
             title="Reset Kamera"
           >
-            <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
         </div>
 
@@ -1232,12 +1234,21 @@ export function Instrument3DStage({
               return (
                 <div
                   key={note.code}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Petik Senar ${note.label} (${note.code}), frekuensi ${Math.round(note.freq)} Hertz`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      stopDemo();
+                      playNoteByIndex(idx, 0.95);
+                    }
+                  }}
                   onMouseEnter={() => playNoteByIndex(idx, 0.88)}
                   onClick={() => {
                     stopDemo();
                     playNoteByIndex(idx, 0.95);
                   }}
-                  className="pointer-events-auto group relative flex w-7 cursor-pointer flex-col items-center justify-end pb-2"
+                  className="pointer-events-auto group relative flex w-7 cursor-pointer flex-col items-center justify-end pb-2 outline-hidden"
                   title={`Petik Senar ${note.label} (${note.freq} Hz)`}
                 >
                   <div
@@ -1597,6 +1608,7 @@ export function Instrument3DStage({
                 <button
                   key={note.code}
                   type="button"
+                  aria-label={`Nada ${note.label} (${note.code}), frekuensi ${Math.round(note.freq)} Hertz`}
                   onPointerDown={(e) => {
                     // Mencegah delay sentuh 300ms & mendukung multi-touch cepat pada perangkat mobile/layar sentuh
                     e.preventDefault();
