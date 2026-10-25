@@ -877,14 +877,14 @@ function NusantaraCurvedTicker() {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className="relative w-full overflow-hidden py-3 sm:py-6 md:py-8 select-none [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
+      className="relative w-full overflow-hidden py-4 sm:py-7 md:py-10 select-none [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
     >
       {/* ========================================================================= */}
-      {/* 1. KHUSUS MOBILE (< md): PITA BESAR, TEBAL, DAN TEKS TERBACA JELAS         */}
+      {/* 1. KHUSUS MOBILE (< md): PITA LEBAR, TEBAL KE BAWAH, DAN BOLD MAJESTIC   */}
       {/* ========================================================================= */}
       <svg
-        viewBox="0 0 540 100"
-        className="relative z-10 w-full h-20 sm:h-24 text-stone-900 pointer-events-none md:hidden"
+        viewBox="0 0 540 110"
+        className="relative z-10 w-full h-26 sm:h-32 text-stone-900 pointer-events-none md:hidden"
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
@@ -897,13 +897,13 @@ function NusantaraCurvedTicker() {
           </linearGradient>
 
           <filter id="ribbon-shadow-mobile" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#26160B" floodOpacity="0.28" />
+            <feDropShadow dx="0" dy="5" stdDeviation="7" floodColor="#26160B" floodOpacity="0.32" />
           </filter>
         </defs>
 
         <text
           ref={measureMobileRef}
-          className="fill-transparent text-[13.5px] font-sans font-black tracking-[0.2em] uppercase"
+          className="fill-transparent text-[15.5px] font-sans font-black tracking-[0.2em] uppercase"
           style={{ visibility: "hidden" }}
         >
           {TICKER_PHRASE}
@@ -911,27 +911,27 @@ function NusantaraCurvedTicker() {
 
         <path
           id="nusantara-ribbon-path-mobile"
-          d="M -300,50 C -150,50 -70,32 100,32 C 270,32 320,68 490,68 C 660,68 710,32 880,32 C 1050,32 1100,68 1270,68"
+          d="M -300,55 C -150,55 -70,34 100,34 C 270,34 320,76 490,76 C 660,76 710,34 880,34 C 1050,34 1100,76 1270,76"
           fill="none"
           stroke="url(#ribbon-gradient-mobile)"
-          strokeWidth="44"
+          strokeWidth="62"
           strokeLinecap="round"
           filter="url(#ribbon-shadow-mobile)"
         />
 
         <path
-          d="M -300,50 C -150,50 -70,32 100,32 C 270,32 320,68 490,68 C 660,68 710,32 880,32 C 1050,32 1100,68 1270,68"
+          d="M -300,55 C -150,55 -70,34 100,34 C 270,34 320,76 490,76 C 660,76 710,34 880,34 C 1050,34 1100,76 1270,76"
           fill="none"
           stroke="white"
-          strokeOpacity="0.18"
-          strokeWidth="6"
+          strokeOpacity="0.2"
+          strokeWidth="10"
           strokeLinecap="round"
           className="pointer-events-none"
         />
 
         <text
           dominantBaseline="central"
-          className="fill-[#FAF6F0] text-[13.5px] font-sans font-black tracking-[0.2em] uppercase select-none drop-shadow-sm"
+          className="fill-[#FAF6F0] text-[15.5px] font-sans font-black tracking-[0.2em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathMobileRef} href="#nusantara-ribbon-path-mobile" startOffset="0px">
             {REPEATED_TICKER}
@@ -940,11 +940,11 @@ function NusantaraCurvedTicker() {
       </svg>
 
       {/* ========================================================================= */}
-      {/* 2. KHUSUS DESKTOP (>= md): PITA MEWAH BENTANG LUAS 1600PX                   */}
+      {/* 2. KHUSUS DESKTOP (>= md): PITA MEWAH TEBAL BENTANG LUAS 1600PX            */}
       {/* ========================================================================= */}
       <svg
-        viewBox="0 0 1600 160"
-        className="relative z-10 w-full hidden md:block h-32 lg:h-40 text-stone-900 pointer-events-none"
+        viewBox="0 0 1600 170"
+        className="relative z-10 w-full hidden md:block h-38 md:h-44 lg:h-48 text-stone-900 pointer-events-none"
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
@@ -957,13 +957,13 @@ function NusantaraCurvedTicker() {
           </linearGradient>
 
           <filter id="ribbon-shadow-desktop" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#26160B" floodOpacity="0.25" />
+            <feDropShadow dx="0" dy="7" stdDeviation="9" floodColor="#26160B" floodOpacity="0.28" />
           </filter>
         </defs>
 
         <text
           ref={measureDesktopRef}
-          className="fill-transparent text-[18px] font-sans font-black tracking-[0.24em] uppercase"
+          className="fill-transparent text-[20px] font-sans font-black tracking-[0.24em] uppercase"
           style={{ visibility: "hidden" }}
         >
           {TICKER_PHRASE}
@@ -971,27 +971,27 @@ function NusantaraCurvedTicker() {
 
         <path
           id="nusantara-ribbon-path-desktop"
-          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
+          d="M -450,85 C -90,85 -10,54 350,54 C 710,54 790,116 1150,116 C 1510,116 1590,54 1950,54 C 2310,54 2390,116 2750,116"
           fill="none"
           stroke="url(#ribbon-gradient-desktop)"
-          strokeWidth="50"
+          strokeWidth="66"
           strokeLinecap="round"
           filter="url(#ribbon-shadow-desktop)"
         />
 
         <path
-          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
+          d="M -450,85 C -90,85 -10,54 350,54 C 710,54 790,116 1150,116 C 1510,116 1590,54 1950,54 C 2310,54 2390,116 2750,116"
           fill="none"
           stroke="white"
-          strokeOpacity="0.18"
-          strokeWidth="8"
+          strokeOpacity="0.2"
+          strokeWidth="11"
           strokeLinecap="round"
           className="pointer-events-none"
         />
 
         <text
           dominantBaseline="central"
-          className="fill-[#FAF6F0] text-[18px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
+          className="fill-[#FAF6F0] text-[20px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathDesktopRef} href="#nusantara-ribbon-path-desktop" startOffset="0px">
             {REPEATED_TICKER}

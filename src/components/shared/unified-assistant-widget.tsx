@@ -517,12 +517,12 @@ export function UnifiedAssistantWidget() {
           {/* Panah Indikator Buka (Desktop & Mobile) */}
           <ChevronLeft className="w-3.5 h-3.5 text-[#CBB59D] group-hover:text-white transition-all shrink-0" />
 
-          {/* Emblem Mini & Status Ping */}
+          {/* Emblem Mini & Status Ping (Kuning Emas Nusantara) */}
           <div className="relative shrink-0">
             <WaranusaAIEmblem className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-85"></span>
+              <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
             </span>
           </div>
 

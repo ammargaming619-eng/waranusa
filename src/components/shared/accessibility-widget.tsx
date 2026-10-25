@@ -494,11 +494,11 @@ export function AccessibilityWidget() {
       >
         <AccessibilityIcon className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
-        {/* Badge pendar aktif */}
+        {/* Badge pendar aktif (Kuning Emas Nusantara) */}
         {hasAnyActive && (
           <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 flex h-3 w-3 pointer-events-none">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500 border border-[#533019]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
+            <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
           </span>
         )}
       </button>
@@ -881,7 +881,7 @@ export function AccessibilityWidget() {
           {/* ============ 3. FOOTER STATUS TERKUNCI ============ */}
           <div className="px-3.5 py-2.5 bg-[#FAF6EE] border-t border-stone-200/80 flex items-center justify-between text-[11px] text-stone-600">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
               <span>Pengaturan tersimpan otomatis di perangkat</span>
             </span>
           </div>
