@@ -105,7 +105,8 @@ export function drawHandSkeleton(
   width: number,
   height: number,
   isHovering: boolean,
-  isStriking: boolean
+  isStriking: boolean,
+  isThumbBent = false
 ) {
   ctx.clearRect(0, 0, width, height);
 
@@ -113,7 +114,7 @@ export function drawHandSkeleton(
   ctx.lineWidth = 2.5;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  ctx.strokeStyle = isStriking
+  ctx.strokeStyle = isStriking || isThumbBent
     ? "#F2B544"
     : isHovering
     ? "rgba(242, 181, 68, 0.9)"
@@ -131,7 +132,7 @@ export function drawHandSkeleton(
 
   // 2. Gambar titik sendi
   for (let i = 0; i < landmarks.length; i++) {
-    if (i === 8) continue; // Telunjuk digambar khusus
+    if (i === 8 || i === 4) continue; // Telunjuk & jempol digambar khusus
     const p = landmarks[i];
     ctx.beginPath();
     ctx.arc(p.x * width, p.y * height, 3, 0, Math.PI * 2);
@@ -139,7 +140,7 @@ export function drawHandSkeleton(
     ctx.fill();
   }
 
-  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP)
+  // 3. Ujung Jari Telunjuk (Landmark 8: INDEX_FINGER_TIP — PENUNJUK)
   const tip = landmarks[8];
   if (tip) {
     const tx = tip.x * width;
@@ -147,7 +148,7 @@ export function drawHandSkeleton(
 
     // Lingkaran luar berdenyut
     ctx.beginPath();
-    ctx.arc(tx, ty, isStriking ? 12 : isHovering ? 9 : 7, 0, Math.PI * 2);
+    ctx.arc(tx, ty, isStriking || isThumbBent ? 12 : isHovering ? 9 : 7, 0, Math.PI * 2);
     ctx.strokeStyle = "#F2B544";
     ctx.lineWidth = 2.5;
     ctx.stroke();
@@ -155,7 +156,25 @@ export function drawHandSkeleton(
     // Titik pusat
     ctx.beginPath();
     ctx.arc(tx, ty, 4, 0, Math.PI * 2);
-    ctx.fillStyle = isStriking ? "#FFFFFF" : "#F2B544";
+    ctx.fillStyle = isStriking || isThumbBent ? "#FFFFFF" : "#F2B544";
+    ctx.fill();
+  }
+
+  // 4. Ujung Ibu Jari (Landmark 4: THUMB_TIP — PEMUKUL / TRIGGER)
+  const thumb = landmarks[4];
+  if (thumb) {
+    const thx = thumb.x * width;
+    const thy = thumb.y * height;
+
+    ctx.beginPath();
+    ctx.arc(thx, thy, isThumbBent ? 11 : 7, 0, Math.PI * 2);
+    ctx.strokeStyle = isThumbBent ? "#FFFFFF" : "#F59E0B";
+    ctx.lineWidth = isThumbBent ? 3 : 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(thx, thy, isThumbBent ? 5 : 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = isThumbBent ? "#F59E0B" : "#FCD34D";
     ctx.fill();
   }
 }
