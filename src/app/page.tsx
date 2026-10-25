@@ -18,20 +18,100 @@ import { useAuth } from "@/lib/auth-store";
 
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
+import { Loader } from "@/components/shared/states";
 
 import LandingView from "@/components/landing/landing-view";
-import ExploreView from "@/components/explore/explore-view";
-import CatalogView from "@/components/catalog/catalog-view";
-import CultureDetailView from "@/components/culture/culture-detail-view";
-import InstrumentView from "@/components/instrument/instrument-view";
-import Exploration3DView from "@/components/explore/exploration-3d-view";
-import ArchiveView from "@/components/archive/archive-view";
-import ContributeView from "@/components/contribute/contribute-view";
-import LoginView from "@/components/account/login-view";
-import MyContributionsView from "@/components/account/my-contributions-view";
-import AdminApp from "@/components/admin/admin-app";
 
-import { Loader } from "@/components/shared/states";
+// Code Splitting Dinamis: Pisahkan bundle berat sub-halaman agar landing page super ringan & instan
+const ExploreView = dynamic(() => import("@/components/explore/explore-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Peta Jelajah Budaya..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const CatalogView = dynamic(() => import("@/components/catalog/catalog-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Katalog Budaya..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const CultureDetailView = dynamic(() => import("@/components/culture/culture-detail-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Detail Warisan..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const InstrumentView = dynamic(() => import("@/components/instrument/instrument-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Studio Musik Tradisional..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const Exploration3DView = dynamic(() => import("@/components/explore/exploration-3d-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Pameran 3D Nusantara..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const ArchiveView = dynamic(() => import("@/components/archive/archive-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Membuka Arsip Digital..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const ContributeView = dynamic(() => import("@/components/contribute/contribute-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Menyiapkan Formulir..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const LoginView = dynamic(() => import("@/components/account/login-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Memuat Masuk Akun..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const MyContributionsView = dynamic(() => import("@/components/account/my-contributions-view"), {
+  loading: () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader label="Memuat Kontribusi..." />
+    </div>
+  ),
+  ssr: false,
+});
+
+const AdminApp = dynamic(() => import("@/components/admin/admin-app"), {
+  loading: () => (
+    <div className="min-h-screen flex items-center justify-center bg-stone-900 text-stone-200">
+      <Loader label="Menyiapkan Panel Kelola..." />
+    </div>
+  ),
+  ssr: false,
+});
 import { useSiteSettings } from "@/lib/settings-store";
 
 export default function WaraNusaApp() {

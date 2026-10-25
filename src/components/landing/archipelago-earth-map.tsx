@@ -221,7 +221,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   onMouseLeave={() => setHoveredTag(null)}
                   aria-label={`Lihat budaya ${tag.title} (${tag.region})`}
                   className={cn(
-                    "flex flex-col items-center group/pin focus:outline-none p-1.5",
+                    "flex flex-col items-center justify-center group/pin focus:outline-none min-w-[48px] min-h-[48px] p-1.5",
                     isHovered ? "scale-115" : "hover:scale-110"
                   )}
                 >
@@ -276,7 +276,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
                   {/* Teks Wilayah & Nama Budaya */}
                   <div className="pr-2">
-                    <p className="text-[10px] lg:text-[11px] font-medium text-stone-500 leading-tight">
+                    <p className="text-[10px] lg:text-[11px] font-semibold text-stone-700 leading-tight">
                       {tag.region}:
                     </p>
                     <p className="text-xs lg:text-sm font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors whitespace-nowrap">
@@ -294,8 +294,8 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
       {/* KHUSUS MOBILE: STRIP KARTU BUDAYA HORIZONTAL (TOUCH-FRIENDLY & NO OVERFLOW) */}
       {/* ========================================================================= */}
       <div className="block md:hidden px-4 mt-2">
-        <p className="text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-          <Sparkles className="h-3 w-3 text-amber-600" />
+        <p className="text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <Sparkles className="h-3 w-3 text-amber-700" />
           <span>Sentuh Pin Peta atau Jelajahi Ikon Budaya:</span>
         </p>
         <div className="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-4 px-4 snap-x">
@@ -316,7 +316,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 />
               </div>
               <div className="leading-tight">
-                <p className="text-[10px] text-stone-500 font-medium">{tag.region}</p>
+                <p className="text-[10px] text-stone-700 font-semibold">{tag.region}</p>
                 <p className="text-xs font-bold text-stone-900">{tag.title}</p>
               </div>
             </button>

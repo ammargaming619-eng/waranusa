@@ -450,7 +450,7 @@ function Interactive3DPavilion() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#CBB59D]/50 to-transparent"
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 md:py-24 lg:px-8">
         {/* Header Seksi & Tab Switcher (Sesuai Desain Referensi Singkat) */}
         <div className="mx-auto max-w-3xl text-center">
           <h2
@@ -461,12 +461,12 @@ function Interactive3DPavilion() {
           </h2>
 
           {/* Segmented Capsule Tab Buttons */}
-          <div className="mt-6 inline-flex items-center rounded-full border border-[#DCD0BE] bg-[#EFE4D3] p-1.5 shadow-inner">
+          <div className="mt-5 sm:mt-6 inline-flex items-center rounded-full border border-[#DCD0BE] bg-[#EFE4D3] p-1.5 shadow-inner">
             <button
               type="button"
               onClick={() => setActiveTab("HOUSES")}
               className={cn(
-                "flex items-center gap-2 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
+                "flex items-center gap-2 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
                 activeTab === "HOUSES"
                   ? "bg-[#6E472D] text-white shadow-md border border-[#583720]"
                   : "text-[#6E472D] hover:text-[#2D1E12]"
@@ -480,7 +480,7 @@ function Interactive3DPavilion() {
               type="button"
               onClick={() => setActiveTab("INSTRUMENTS")}
               className={cn(
-                "flex items-center gap-2 rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
+                "flex items-center gap-2 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer",
                 activeTab === "INSTRUMENTS"
                   ? "bg-[#6E472D] text-white shadow-md border border-[#583720]"
                   : "text-[#6E472D] hover:text-[#2D1E12]"
@@ -493,19 +493,19 @@ function Interactive3DPavilion() {
           </div>
         </div>
 
-        {/* Dynamic 3D Stage & Editorial Columns (Tata Letak Berseling / Zig-Zag Sesuai Tab) */}
-        <div className="mt-12 grid items-start gap-10 lg:grid-cols-12 lg:gap-14 min-w-0">
-          {/* Kolom 3D Interaktif (Rumah Adat di Kanan, Alat Musik di Kiri) */}
+        {/* Dynamic 3D Stage & Editorial Columns (Di Mobile: 3D Stage Tampil Pertama / order-1) */}
+        <div className="mt-6 sm:mt-10 lg:mt-12 grid items-start gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-14 min-w-0">
+          {/* Kolom 3D Interaktif (Mobile: order-1 agar langsung kelihatan tanpa scroll) */}
           <div
             className={cn(
-              "order-2 min-w-0 lg:col-span-7",
+              "order-1 min-w-0 lg:col-span-7",
               activeTab === "HOUSES" ? "lg:order-2" : "lg:order-1"
             )}
           >
             <div className="relative rounded-2xl sm:rounded-3xl border border-[#DCD0BE] bg-white/90 backdrop-blur-xs p-3 sm:p-5 shadow-xl overflow-hidden">
               {activeTab === "HOUSES" ? (
                 <div>
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-3 px-1">
+                  <div className="mb-2.5 sm:mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-2.5 sm:pb-3 px-1">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6E472D]/10 text-[#6E472D] shrink-0">
                         <Landmark className="h-3.5 w-3.5" aria-hidden="true" />
@@ -514,7 +514,7 @@ function Interactive3DPavilion() {
                         <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12] truncate">
                           Rumah Joglo — Jawa Tengah
                         </h3>
-                        <p className="text-[11px] text-stone-500 truncate">
+                        <p className="text-[11px] text-stone-600 truncate">
                           Arsitektur Tradisional &bull; Suku Jawa
                         </p>
                       </div>
@@ -528,17 +528,17 @@ function Interactive3DPavilion() {
                     <ModelViewer
                       item={FALLBACK_LANDING_JOGLO}
                       autoRotate
-                      className="h-[460px] w-full"
+                      className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full"
                     />
                   </div>
 
-                  <p className="mt-3 px-1 text-center text-xs text-stone-500">
+                  <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">
                     Tip: Putar, geser, dan perbesar model 3D untuk mengamati susunan saka guru dan atap tumpangsari.
                   </p>
                 </div>
               ) : (
                 <div>
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-3 px-1">
+                  <div className="mb-2.5 sm:mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EADBCC] pb-2.5 sm:pb-3 px-1">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6E472D]/10 text-[#6E472D] shrink-0">
                         <Music4 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -547,7 +547,7 @@ function Interactive3DPavilion() {
                         <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12] truncate">
                           {activeInstrument.title} — {activeInstrument.province}
                         </h3>
-                        <p className="text-[11px] text-stone-500 truncate">
+                        <p className="text-[11px] text-stone-600 truncate">
                           {activeInstrument.organologyLabel} &bull; Suku {activeInstrument.ethnicGroup}
                         </p>
                       </div>
@@ -565,7 +565,7 @@ function Interactive3DPavilion() {
                     />
                   </div>
 
-                  <p className="mt-3 px-1 text-center text-xs text-stone-500">
+                  <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">
                     Tip: Ketuk bilah nada di bawah atau klik/usap pada model 3D untuk memicu suara instrumen.
                   </p>
                 </div>
@@ -573,10 +573,10 @@ function Interactive3DPavilion() {
             </div>
           </div>
 
-          {/* Kolom Editorial (Rumah Adat di Kiri, Alat Musik di Kanan) */}
+          {/* Kolom Editorial (Mobile: order-2 berada di bawah kanvas dengan teks padat & chip ringkas) */}
           <div
             className={cn(
-              "order-1 min-w-0 lg:col-span-5 lg:pt-2",
+              "order-2 min-w-0 lg:col-span-5 lg:pt-2",
               activeTab === "HOUSES" ? "lg:order-1" : "lg:order-2"
             )}
           >
@@ -584,45 +584,62 @@ function Interactive3DPavilion() {
               <div>
                 <SectionHeading
                   title="Rancang Bangun Rumah Adat Nusantara"
-                  description="Model 3D interaktif untuk mempelajari struktur bangunan adat."
+                  description="Model 3D interaktif untuk mempelajari struktur konstruksi tahan gempa tanpa paku besi."
                   variant="maroon-sans"
                 />
 
-                <dl className="mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm">
-                  <div className="flex items-start gap-3">
+                {/* Tampilan Mobile (< lg): 3 Chip Fitur Ringkas & Hemat Ruang */}
+                <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    Saka Guru &amp; Tumpangsari
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    360&deg; Rotasi Bebas
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    38 Rumah Adat Lengkap
+                  </span>
+                </div>
+
+                {/* Tampilan Desktop (>= lg): Penjelasan Lengkap dengan Semantik <ol> / <li> Valid */}
+                <ol className="hidden lg:block mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm list-none p-0">
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">Saka Guru &amp; Tumpangsari</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">Saka Guru &amp; Tumpangsari</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Struktur balok kayu bertingkat presisi yang kokoh tanpa paku besi.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
+                  </li>
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">360&deg; Rotasi &amp; Hotspot</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">360&deg; Rotasi &amp; Hotspot</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Amati konstruksi atap tajug dan detail sambungan pasak secara leluasa.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
+                  </li>
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">38 Rumah Adat Provinsi</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">38 Rumah Adat Provinsi</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Dokumentasi digital arsitektur adat lengkap dari Sabang sampai Merauke.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                </dl>
+                  </li>
+                </ol>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3">
+                <div className="mt-5 sm:mt-8 flex flex-wrap items-center gap-3">
                   <Button
                     asChild
                     size="lg"
-                    className="btn-waranusa rounded-full px-7 font-bold shadow-md"
+                    className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
                     <Link href="#/eksplorasi-3d">
                       Buka 38 Rumah Adat
@@ -639,41 +656,58 @@ function Interactive3DPavilion() {
                   variant="maroon-sans"
                 />
 
-                <dl className="mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm">
-                  <div className="flex items-start gap-3">
+                {/* Tampilan Mobile (< lg): 3 Chip Fitur Ringkas & Hemat Ruang */}
+                <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    Bilah Logam Perunggu
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    Tangga Pelog &amp; Slendro
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
+                    38 Instrumen Nusantara
+                  </span>
+                </div>
+
+                {/* Tampilan Desktop (>= lg): Penjelasan Lengkap dengan Semantik <ol> / <li> Valid */}
+                <ol className="hidden lg:block mt-8 space-y-4 border-t border-[#DFD2BF] pt-6 text-sm list-none p-0">
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">Model 3D Nyata</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">Model 3D Nyata</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Amati rancakan kayu ukir berprada emas dan bilah logam perunggu.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
+                  </li>
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">Tangga Nada Pelog &amp; Slendro</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">Tangga Nada Pelog &amp; Slendro</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Sentuh bilah nada 1–7 untuk memicu denting synthesizer Web Audio.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
+                  </li>
+                  <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
                     <div>
-                      <dt className="font-bold text-[#2D1E12]">38 Instrumen Daerah</dt>
-                      <dd className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                      <h4 className="font-bold text-[#2D1E12]">38 Instrumen Daerah</h4>
+                      <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
                         Studio lengkap alat musik petik, tabuh, tiup, dan gesek nusantara.
-                      </dd>
+                      </p>
                     </div>
-                  </div>
-                </dl>
+                  </li>
+                </ol>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3">
+                <div className="mt-5 sm:mt-8 flex flex-wrap items-center gap-3">
                   <Button
                     asChild
                     size="lg"
-                    className="btn-waranusa rounded-full px-7 font-bold shadow-md"
+                    className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
                     <Link href="#/instrumen">
                       Buka 38 Alat Musik
@@ -772,51 +806,89 @@ const TICKER_PHRASE =
 const REPEATED_TICKER = Array(7).fill(TICKER_PHRASE).join("");
 
 function NusantaraCurvedTicker() {
-  const textPathRef = useRef<SVGTextPathElement>(null);
-  const measureRef = useRef<SVGTextElement>(null);
-  const [phraseWidth, setPhraseWidth] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textPathMobileRef = useRef<SVGTextPathElement>(null);
+  const textPathDesktopRef = useRef<SVGTextPathElement>(null);
+  const measureMobileRef = useRef<SVGTextElement>(null);
+  const measureDesktopRef = useRef<SVGTextElement>(null);
+  const [phraseWidthMobile, setPhraseWidthMobile] = useState(0);
+  const [phraseWidthDesktop, setPhraseWidthDesktop] = useState(0);
 
   useEffect(() => {
-    if (measureRef.current) {
-      const len = measureRef.current.getComputedTextLength();
-      if (len > 0) setPhraseWidth(len);
+    if (measureMobileRef.current) {
+      const len = measureMobileRef.current.getComputedTextLength();
+      if (len > 0) setPhraseWidthMobile(len);
+    }
+    if (measureDesktopRef.current) {
+      const len = measureDesktopRef.current.getComputedTextLength();
+      if (len > 0) setPhraseWidthDesktop(len);
     }
   }, []);
 
   useEffect(() => {
     let animId: number;
-    let offset = 0;
-    const unit = phraseWidth > 0 ? phraseWidth : 560;
+    let offsetMobile = 0;
+    let offsetDesktop = 0;
+    let isVisible = true;
+    const unitMobile = phraseWidthMobile > 0 ? phraseWidthMobile : 420;
+    const unitDesktop = phraseWidthDesktop > 0 ? phraseWidthDesktop : 560;
 
     const step = () => {
-      offset -= 0.75;
-      if (Math.abs(offset) >= unit) {
-        offset += unit;
+      if (!isVisible) return;
+      offsetMobile -= 0.65;
+      if (Math.abs(offsetMobile) >= unitMobile) {
+        offsetMobile += unitMobile;
       }
-      if (textPathRef.current) {
-        textPathRef.current.setAttribute("startOffset", `${offset}px`);
+      if (textPathMobileRef.current) {
+        textPathMobileRef.current.setAttribute("startOffset", `${offsetMobile}px`);
       }
+
+      offsetDesktop -= 0.85;
+      if (Math.abs(offsetDesktop) >= unitDesktop) {
+        offsetDesktop += unitDesktop;
+      }
+      if (textPathDesktopRef.current) {
+        textPathDesktopRef.current.setAttribute("startOffset", `${offsetDesktop}px`);
+      }
+
       animId = requestAnimationFrame(step);
     };
 
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = !!entry?.isIntersecting;
+      if (isVisible) {
+        cancelAnimationFrame(animId);
+        animId = requestAnimationFrame(step);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
     animId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animId);
-  }, [phraseWidth]);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(animId);
+    };
+  }, [phraseWidthMobile, phraseWidthDesktop]);
 
   return (
     <div
+      ref={containerRef}
       aria-hidden="true"
-      className="relative w-full overflow-hidden py-4 sm:py-6 md:py-8 select-none [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
+      className="relative w-full overflow-hidden py-3 sm:py-6 md:py-8 select-none [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
     >
-      {/* Pita Lengkung Halus Luas — Mengikuti Referensi Telkom (Satu Gelombang Landai Luas, Tidak Bergelombang Curam) */}
+      {/* ========================================================================= */}
+      {/* 1. KHUSUS MOBILE (< md): PITA BESAR, TEBAL, DAN TEKS TERBACA JELAS         */}
+      {/* ========================================================================= */}
       <svg
-        viewBox="0 0 1600 160"
-        className="relative z-10 w-full h-20 sm:h-28 md:h-36 lg:h-40 text-stone-900 pointer-events-none"
+        viewBox="0 0 540 100"
+        className="relative z-10 w-full h-20 sm:h-24 text-stone-900 pointer-events-none md:hidden"
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
-          {/* Gradasi Cokelat Kayu Jati Hangat & Emas (Selaras Harmonis dengan Tema Website) */}
-          <linearGradient id="ribbon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient id="ribbon-gradient-mobile" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#4A2E1B" />
             <stop offset="25%" stopColor="#6C4325" />
             <stop offset="50%" stopColor="#8A5832" />
@@ -824,32 +896,89 @@ function NusantaraCurvedTicker() {
             <stop offset="100%" stopColor="#4A2E1B" />
           </linearGradient>
 
-          <filter id="ribbon-shadow" x="-5%" y="-20%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#26160B" floodOpacity="0.25" />
+          <filter id="ribbon-shadow-mobile" x="-5%" y="-20%" width="110%" height="160%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#26160B" floodOpacity="0.28" />
           </filter>
         </defs>
 
-        {/* Hidden text to measure exact single phrase width for zero-jump seamless loop */}
         <text
-          ref={measureRef}
-          className="fill-transparent text-[15px] sm:text-[17px] md:text-[19px] font-sans font-black tracking-[0.24em] uppercase"
+          ref={measureMobileRef}
+          className="fill-transparent text-[13.5px] font-sans font-black tracking-[0.2em] uppercase"
           style={{ visibility: "hidden" }}
         >
           {TICKER_PHRASE}
         </text>
 
-        {/* Layer 1: Pita Lengkung Halus Tunggal (1 Gelombang Landai Luas Sesuai Pita Telkom) */}
         <path
-          id="nusantara-ribbon-path"
-          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
+          id="nusantara-ribbon-path-mobile"
+          d="M -300,50 C -150,50 -70,32 100,32 C 270,32 320,68 490,68 C 660,68 710,32 880,32 C 1050,32 1100,68 1270,68"
           fill="none"
-          stroke="url(#ribbon-gradient)"
-          strokeWidth="50"
+          stroke="url(#ribbon-gradient-mobile)"
+          strokeWidth="44"
           strokeLinecap="round"
-          filter="url(#ribbon-shadow)"
+          filter="url(#ribbon-shadow-mobile)"
         />
 
-        {/* Layer 2: Highlight Punggung Pita 3D Halus */}
+        <path
+          d="M -300,50 C -150,50 -70,32 100,32 C 270,32 320,68 490,68 C 660,68 710,32 880,32 C 1050,32 1100,68 1270,68"
+          fill="none"
+          stroke="white"
+          strokeOpacity="0.18"
+          strokeWidth="6"
+          strokeLinecap="round"
+          className="pointer-events-none"
+        />
+
+        <text
+          dominantBaseline="central"
+          className="fill-[#FAF6F0] text-[13.5px] font-sans font-black tracking-[0.2em] uppercase select-none drop-shadow-sm"
+        >
+          <textPath ref={textPathMobileRef} href="#nusantara-ribbon-path-mobile" startOffset="0px">
+            {REPEATED_TICKER}
+          </textPath>
+        </text>
+      </svg>
+
+      {/* ========================================================================= */}
+      {/* 2. KHUSUS DESKTOP (>= md): PITA MEWAH BENTANG LUAS 1600PX                   */}
+      {/* ========================================================================= */}
+      <svg
+        viewBox="0 0 1600 160"
+        className="relative z-10 w-full hidden md:block h-32 lg:h-40 text-stone-900 pointer-events-none"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <linearGradient id="ribbon-gradient-desktop" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#4A2E1B" />
+            <stop offset="25%" stopColor="#6C4325" />
+            <stop offset="50%" stopColor="#8A5832" />
+            <stop offset="75%" stopColor="#6C4325" />
+            <stop offset="100%" stopColor="#4A2E1B" />
+          </linearGradient>
+
+          <filter id="ribbon-shadow-desktop" x="-5%" y="-20%" width="110%" height="160%">
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#26160B" floodOpacity="0.25" />
+          </filter>
+        </defs>
+
+        <text
+          ref={measureDesktopRef}
+          className="fill-transparent text-[18px] font-sans font-black tracking-[0.24em] uppercase"
+          style={{ visibility: "hidden" }}
+        >
+          {TICKER_PHRASE}
+        </text>
+
+        <path
+          id="nusantara-ribbon-path-desktop"
+          d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
+          fill="none"
+          stroke="url(#ribbon-gradient-desktop)"
+          strokeWidth="50"
+          strokeLinecap="round"
+          filter="url(#ribbon-shadow-desktop)"
+        />
+
         <path
           d="M -450,80 C -90,80 -10,52 350,52 C 710,52 790,108 1150,108 C 1510,108 1590,52 1950,52 C 2310,52 2390,108 2750,108"
           fill="none"
@@ -860,12 +989,11 @@ function NusantaraCurvedTicker() {
           className="pointer-events-none"
         />
 
-        {/* Teks Berjalan di Atas Pita */}
         <text
           dominantBaseline="central"
-          className="fill-[#FAF6F0] text-[15px] sm:text-[17px] md:text-[19px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
+          className="fill-[#FAF6F0] text-[18px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
         >
-          <textPath ref={textPathRef} href="#nusantara-ribbon-path" startOffset="0px">
+          <textPath ref={textPathDesktopRef} href="#nusantara-ribbon-path-desktop" startOffset="0px">
             {REPEATED_TICKER}
           </textPath>
         </text>

@@ -208,8 +208,8 @@ export function CultureCardCarousel({ items, loading }: CultureCardCarouselProps
         </button>
       </div>
 
-      {/* Indikator Titik (Dot Pagination) */}
-      <div className="mt-4 sm:mt-6 flex items-center justify-center gap-2">
+      {/* Indikator Titik (Dot Pagination) dengan Touch Target Ramah Mobile (Min 44-48px) */}
+      <div className="mt-3 sm:mt-6 flex items-center justify-center gap-0.5 sm:gap-1">
         {items.map((it, idx) => {
           const isActive = idx === activeIndex;
           return (
@@ -219,13 +219,17 @@ export function CultureCardCarousel({ items, loading }: CultureCardCarouselProps
               onClick={() => setActiveIndex(idx)}
               aria-label={`Buka sorotan nomor ${idx + 1}: ${it.title}`}
               aria-current={isActive ? "true" : undefined}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300 cursor-pointer",
-                isActive
-                  ? "w-7 sm:w-8 bg-[#442816] shadow-xs"
-                  : "w-2 bg-stone-300 hover:bg-stone-400"
-              )}
-            />
+              className="group flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center cursor-pointer p-0 focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50 rounded-full"
+            >
+              <span
+                className={cn(
+                  "h-2.5 rounded-full transition-all duration-300",
+                  isActive
+                    ? "w-7 sm:w-8 bg-[#442816] shadow-xs"
+                    : "w-2.5 bg-stone-400 group-hover:bg-stone-500"
+                )}
+              />
+            </button>
           );
         })}
       </div>

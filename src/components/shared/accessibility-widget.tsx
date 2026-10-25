@@ -481,18 +481,18 @@ export function AccessibilityWidget() {
         aria-expanded={isOpen}
         aria-haspopup="dialog"
         className={cn(
-          "!fixed bottom-5 left-8 sm:bottom-8 sm:left-12 md:left-14 z-[9999]",
+          "!fixed bottom-4 left-4 sm:bottom-8 sm:left-8 md:left-14 z-[9999]",
           "group flex items-center justify-center",
-          "w-16 h-16 sm:w-18 sm:h-18 rounded-full",
+          "w-12 h-12 sm:w-16 sm:h-16 rounded-full",
           "btn-waranusa",
-          "shadow-[0_10px_30px_rgba(45,30,18,0.38)] hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)]",
+          "shadow-[0_8px_24px_rgba(45,30,18,0.38)] hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)]",
           "backdrop-blur-md transition-all duration-300 transform hover:scale-105 active:scale-95",
           "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
         )}
         aria-label="Buka Menu Aksesibilitas Ramah Difabel"
         title="Menu Aksesibilitas (Ramah Difabel)"
       >
-        <AccessibilityIcon className="w-8 h-8 sm:w-9 sm:h-9 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
+        <AccessibilityIcon className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
         {/* Badge pendar aktif */}
         {hasAnyActive && (

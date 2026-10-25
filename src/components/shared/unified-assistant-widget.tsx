@@ -494,19 +494,19 @@ export function UnifiedAssistantWidget() {
   return (
     <>
       {/* ========================================================================= */}
-      {/* TRIGGER: FLOATING PILL DI MOBILE (KANAN BAWAH), SIDE TAB DI DESKTOP        */}
+      {/* TRIGGER: SIDE TAB DI SISI KANAN (MOBILE & DESKTOP MELEKAT DI KANAN LAYAR) */}
       {/* ========================================================================= */}
       {!isOpen && (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            // Di Mobile: Tombol kapsul mengambang empuk di pojok kanan bawah (sejajar dengan tombol aksesibilitas)
-            "!fixed bottom-4 right-4 z-[9990] flex items-center gap-2 rounded-full px-3.5 py-2.5 min-h-[44px]",
-            "btn-waranusa text-white",
-            "shadow-[0_8px_24px_rgba(45,30,18,0.35)]",
-            "hover:shadow-[0_12px_28px_rgba(45,30,18,0.45)] active:scale-95 transition-all duration-300",
-            // Di Desktop (md+): Kapsul mengambang lembut tanpa sudut kotak kaku
+            // Di Mobile: Melekat di sisi kanan samping layar (tidak menumpuk di bawah atau menutupi konten)
+            "!fixed right-0 top-1/2 -translate-y-1/2 z-[9990]",
+            "flex items-center gap-1.5 rounded-l-2xl border-y border-l border-[#8C5E3C]/50 px-3 py-2.5 min-h-[44px]",
+            "btn-waranusa text-white shadow-[-4px_4px_18px_rgba(45,30,18,0.38)]",
+            "hover:pl-3.5 active:scale-95 transition-all duration-300",
+            // Di Desktop (md+): Kapsul mengambang lembut vertikal di sisi kanan
             "md:!fixed md:bottom-auto md:right-3 md:top-1/2 md:-translate-y-1/2 md:flex-col md:py-3.5 md:px-2.5",
             "md:rounded-full md:border md:border-[#8C5E3C]/40 md:hover:scale-105",
             "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
@@ -514,8 +514,8 @@ export function UnifiedAssistantWidget() {
           aria-label="Buka WaraNusa AI Assistant"
           title="Buka WaraNusa AI Assistant"
         >
-          {/* Panah Indikator Buka (Hanya Desktop) */}
-          <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
+          {/* Panah Indikator Buka (Desktop & Mobile) */}
+          <ChevronLeft className="w-3.5 h-3.5 text-[#CBB59D] group-hover:text-white transition-all shrink-0" />
 
           {/* Emblem Mini & Status Ping */}
           <div className="relative shrink-0">
@@ -527,7 +527,7 @@ export function UnifiedAssistantWidget() {
           </div>
 
           {/* Teks Mobile: 'Tanya AI' Terbaca Jelas & Proporsional */}
-          <span className="md:hidden text-xs font-bold tracking-wide text-[#FAF6F0] pr-0.5">
+          <span className="md:hidden text-xs font-bold tracking-wide text-[#FAF6F0] pr-0.5 whitespace-nowrap">
             Tanya AI
           </span>
 

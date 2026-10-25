@@ -1,10 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { UnifiedAssistantWidget } from "@/components/shared/unified-assistant-widget";
-import { AccessibilityWidget } from "@/components/shared/accessibility-widget";
+
+// Dynamic import untuk floating widget agar tidak membebani First Contentful Paint & bundle awal
+const AccessibilityWidget = dynamic(
+  () => import("@/components/shared/accessibility-widget").then((m) => m.AccessibilityWidget),
+  { ssr: false }
+);
+
+const UnifiedAssistantWidget = dynamic(
+  () => import("@/components/shared/unified-assistant-widget").then((m) => m.UnifiedAssistantWidget),
+  { ssr: false }
+);
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -45,6 +55,17 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        {/* Preload gambar peta batik LCP (Largest Contentful Paint) agar tampil instan */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/indonesia-map-batik.png?v=7"
+          type="image/png"
+          // @ts-expect-error fetchpriority is standard HTML5 attribute
+          fetchpriority="high"
+        />
+      </head>
       <body suppressHydrationWarning className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
         {children}
         <Toaster />
