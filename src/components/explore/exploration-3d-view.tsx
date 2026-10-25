@@ -508,17 +508,6 @@ export default function Exploration3DView() {
                           >
                             {house.province}
                           </span>
-                          <span
-                            className={cn(
-                              "inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-md shrink-0",
-                              isActive
-                                ? "bg-white/20 text-white"
-                                : "bg-[#147A76]/10 text-[#147A76] border border-[#147A76]/20"
-                            )}
-                          >
-                            <Box className="h-2.5 w-2.5" />
-                            3D
-                          </span>
                         </div>
 
                         <div className="font-serif font-bold text-sm sm:text-base leading-tight truncate">
