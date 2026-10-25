@@ -134,9 +134,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
         <div className="relative z-20 pt-3 sm:pt-5 md:pt-6 lg:pt-8 px-4 text-center max-w-2xl sm:max-w-4xl lg:max-w-5xl mx-auto">
           <motion.div
-            initial={introRevealed ? { opacity: 0, y: 22 } : false}
-            animate={introRevealed ? { opacity: 1, y: 0 } : undefined}
-            transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
           >
             <h1
               id="hero-title"
@@ -151,9 +151,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
           {/* Tombol CTA: Peta 38 Provinsi & Katalog Budaya */}
           <motion.div
-            initial={introRevealed ? { opacity: 0, y: 16, scale: 0.95 } : false}
-            animate={introRevealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
-            transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
           >
             <Button
@@ -244,11 +244,11 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
               {/* Kartu Pratinjau Budaya Melayang (Desktop / Layar Lebar md+) */}
               <motion.div
-                initial={introRevealed ? { opacity: 0, scale: 0.88, y: 12 } : false}
-                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : undefined}
+                initial={{ opacity: 0, scale: 0.88, y: 12 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{
-                  delay: 0.7 + idx * 0.1,
-                  duration: 0.55,
+                  delay: 0.15 + idx * 0.08,
+                  duration: 0.45,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className={cn(

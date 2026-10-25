@@ -7,13 +7,8 @@
  * Setiap view bertanggung jawab mengambil datanya sendiri via REST API.
  */
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BrandPreloader = dynamic(
-  () => import("@/components/shared/brand-preloader").then((m) => m.BrandPreloader),
-  { ssr: false }
-);
 import { useRoute, navigate } from "@/lib/router";
 import { useAuth } from "@/lib/auth-store";
 
@@ -40,23 +35,12 @@ export default function WaraNusaApp() {
   const { init, initialized } = useAuth();
   const settings = useSiteSettings((s) => s.settings);
   const loadSettings = useSiteSettings((s) => s.load);
-  const [introRevealed, setIntroRevealed] = useState(false);
-  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     init();
     loadSettings();
   }, [init, loadSettings]);
-
-  // Jika membuka langsung sub-halaman (bukan beranda), lewati animasi pembuka agar instan
-  const isDirectNonLanding = Boolean(route.segments[0] && route.segments[0] !== "");
-  useEffect(() => {
-    if (isDirectNonLanding) {
-      setIntroRevealed(true);
-      setIntroDone(true);
-    }
-  }, [isDirectNonLanding]);
 
   // Hindari perbedaan SSR vs Client Hydration pada hash router SPA
   if (!mounted) {
@@ -99,7 +83,7 @@ export default function WaraNusaApp() {
   switch (route.segments[0]) {
     case undefined:
     case "":
-      view = <LandingView introRevealed={introRevealed} />;
+      view = <LandingView />;
       break;
     case "jelajah":
       view = <ExploreView route={route} />;
@@ -141,13 +125,7 @@ export default function WaraNusaApp() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900 overflow-x-hidden">
-      {!introDone && (
-        <BrandPreloader
-          onStartDismiss={() => setIntroRevealed(true)}
-          onComplete={() => setIntroDone(true)}
-        />
-      )}
-      <SiteHeader route={route} introRevealed={introRevealed} />
+      <SiteHeader route={route} />
       <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none relative" role="main">
         <AnimatePresence mode="wait">
           <motion.div
