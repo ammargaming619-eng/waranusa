@@ -291,34 +291,34 @@ export default function Exploration3DView() {
   }, [activeInstrumentId, filteredInstruments]);
 
   return (
-    <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-20 pt-8 sm:pt-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* ================= HERO HEADER ================= */}
+    <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-12 pt-3 sm:pt-5">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+        {/* ================= HERO HEADER (COMPACT & ELEVATED) ================= */}
         <motion.div
           initial={{ opacity: 0, y: 16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-3xl mx-auto pt-2 pb-10"
+          className="text-center max-w-3xl mx-auto pt-0 pb-3 sm:pb-4"
         >
-          <div className="inline-flex items-center justify-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A4B29] mb-3">
-            <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
+          <div className="inline-flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29] mb-1.5">
+            <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
             <span>Ruang Pamer Digital Nusantara</span>
-            <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
+            <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
           </div>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#2D1E12]">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
             Eksplorasi 3D &amp; Musik Virtual
           </h1>
-          <p className="mt-3.5 text-stone-600 text-sm sm:text-base leading-relaxed">
+          <p className="mt-1.5 text-stone-600 text-xs sm:text-sm leading-relaxed">
             Jelajahi model 3D rumah adat dan instrumen tradisional 38 provinsi secara interaktif.
           </p>
 
           {/* TAB FILTER UTAMA */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={() => setActiveMainTab("all")}
               className={cn(
-                "rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer",
+                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer",
                 activeMainTab === "all"
                   ? "btn-waranusa text-white shadow-sm"
                   : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
@@ -330,26 +330,26 @@ export default function Exploration3DView() {
               type="button"
               onClick={() => setActiveMainTab("architecture")}
               className={cn(
-                "rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
+                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
                 activeMainTab === "architecture"
                   ? "btn-waranusa text-white shadow-sm"
                   : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
               )}
             >
-              <Building2 className="h-4 w-4" />
+              <Building2 className="h-3.5 w-3.5" />
               Arsitektur Adat 38 Provinsi
             </button>
             <button
               type="button"
               onClick={() => setActiveMainTab("instruments")}
               className={cn(
-                "rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
+                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
                 activeMainTab === "instruments"
                   ? "btn-waranusa text-white shadow-sm"
                   : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
               )}
             >
-              <Music4 className="h-4 w-4" />
+              <Music4 className="h-3.5 w-3.5" />
               Atelier Musik Tradisional
             </button>
           </div>
@@ -357,25 +357,22 @@ export default function Exploration3DView() {
 
         {/* ================= BAGIAN 1: RUMAH ADAT 3D NUSANTARA ================= */}
         {(activeMainTab === "all" || activeMainTab === "architecture") && (
-          <section className="mt-4 mb-16 rounded-3xl border border-[#DFD3C2] bg-white/95 p-5 sm:p-8 lg:p-10 shadow-lg">
+          <section className="mt-2 mb-10 rounded-3xl border border-[#DFD3C2] bg-white/95 p-3.5 sm:p-5 lg:p-6 shadow-md">
             {/* Header Bagian Arsitektur */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E6DCD0] pb-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E6DCD0] pb-2.5 mb-2.5">
               <div>
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29]">
-                  <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A4B29]">
+                  <span aria-hidden="true" className="inline-block h-[1.5px] w-4 bg-[#7A4B29]" />
                   <span>Katalog Arsitektur Vernakular Nusantara</span>
                 </div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D1E12] mt-1.5">
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12] mt-0.5">
                   Bedah Struktur Rumah Adat
                 </h2>
-                <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-xl">
-                  Pilih rumah adat dari 38 provinsi untuk menelaah model 3D, filosofi tata ruang, sistem sambungan kayu tahan gempa, dan material alaminya.
-                </p>
               </div>
 
               {/* Status hitungan katalog */}
-              <div className="flex items-center gap-2 self-start md:self-auto">
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-4 py-1.5 text-xs font-semibold text-[#2D1E12]">
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-3 py-1 text-xs font-semibold text-[#2D1E12]">
                   <span className="h-2 w-2 rounded-full bg-[#147A76]" />
                   <span>38 Model 3D Interaktif</span>
                 </span>
@@ -383,8 +380,8 @@ export default function Exploration3DView() {
             </div>
 
             {/* TAB WILAYAH / PULAU */}
-            <div className="mb-4">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+            <div className="mb-2">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none">
                 {ISLAND_TABS.map((island) => {
                   const isCurrent = selectedHouseIsland === island.id;
                   return (
@@ -395,10 +392,10 @@ export default function Exploration3DView() {
                         setSelectedHouseIsland(island.id);
                       }}
                       className={cn(
-                        "whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
+                        "whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold transition-all cursor-pointer",
                         isCurrent
-                          ? "bg-[#6E472D] text-white shadow-sm"
-                          : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/70 hover:text-stone-900"
+                          ? "bg-[#6E472D] text-white shadow-xs font-bold"
+                          : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/70 hover:text-stone-900 border border-stone-200/60"
                       )}
                     >
                       {island.label}
@@ -409,22 +406,22 @@ export default function Exploration3DView() {
             </div>
 
             {/* PENCARIAN & SWITCHER TAMPILAN (STRIP VS GRID) */}
-            <div className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FBF8F2] p-3 rounded-2xl border border-stone-200/70">
+            <div className="mb-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#FBF8F2] p-2 sm:p-2.5 rounded-2xl border border-stone-200/70">
               {/* Kotak Pencarian */}
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
                 <Input
                   type="text"
                   placeholder="Cari provinsi, nama rumah, suku..."
                   value={houseSearchQuery}
                   onChange={(e) => setHouseSearchQuery(e.target.value)}
-                  className="pl-9 pr-8 h-9 text-xs rounded-full bg-white border-stone-200 focus-visible:ring-[#8A5B38]"
+                  className="pl-8 pr-8 h-8 text-xs rounded-full bg-white border-stone-200 focus-visible:ring-[#8A5B38]"
                 />
                 {houseSearchQuery && (
                   <button
                     type="button"
                     onClick={() => setHouseSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -432,33 +429,33 @@ export default function Exploration3DView() {
               </div>
 
               {/* Mode Tampilan Switcher */}
-              <div className="flex items-center justify-center gap-1 bg-white p-1 rounded-full border border-stone-200 w-full sm:w-auto shadow-xs">
+              <div className="flex items-center justify-center gap-1 bg-white p-0.5 rounded-full border border-stone-200 w-full sm:w-auto shadow-xs">
                 <button
                   type="button"
                   onClick={() => setHouseViewMode("strip")}
                   className={cn(
-                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
                     houseViewMode === "strip"
                       ? "bg-[#6E472D] text-white shadow-xs"
                       : "text-stone-600 hover:text-stone-900"
                   )}
                   title="Tampilan Strip Mendatar"
                 >
-                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  <SlidersHorizontal className="h-3 w-3" />
                   <span>Strip</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setHouseViewMode("grid")}
                   className={cn(
-                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
                     houseViewMode === "grid"
                       ? "bg-[#6E472D] text-white shadow-xs"
                       : "text-stone-600 hover:text-stone-900"
                   )}
                   title="Tampilan Kisi-Kisi 38 Provinsi"
                 >
-                  <LayoutGrid className="h-3.5 w-3.5" />
+                  <LayoutGrid className="h-3 w-3" />
                   <span>Grid ({filteredHouses.length})</span>
                 </button>
               </div>
@@ -466,7 +463,7 @@ export default function Exploration3DView() {
 
             {/* DAFTAR PEMILIH RUMAH ADAT */}
             {filteredHouses.length === 0 ? (
-              <div className="mb-8 rounded-2xl border border-dashed border-stone-300 p-8 text-center bg-[#FAF7F2]">
+              <div className="mb-4 rounded-2xl border border-dashed border-stone-300 p-6 text-center bg-[#FAF7F2]">
                 <p className="text-sm font-semibold text-stone-700">Tidak ada rumah adat yang sesuai pencarian "{houseSearchQuery}"</p>
                 <p className="text-xs text-stone-500 mt-1">Coba gunakan kata kunci lain atau pilih tab Semua Wilayah.</p>
                 <Button
@@ -476,15 +473,15 @@ export default function Exploration3DView() {
                     setHouseSearchQuery("");
                     setSelectedHouseIsland("ALL");
                   }}
-                  className="mt-3 rounded-full text-xs"
+                  className="mt-2.5 rounded-full text-xs"
                 >
                   Reset Pencarian
                 </Button>
               </div>
             ) : houseViewMode === "strip" ? (
               /* DOCK / STRIP HORIZONTAL SCROLLABLE */
-              <div className="mb-8">
-                <div className="flex items-stretch gap-2.5 overflow-x-auto pb-3 pt-1 scrollbar-thin">
+              <div className="mb-3 sm:mb-3.5">
+                <div className="flex items-stretch gap-2 overflow-x-auto pb-2 pt-0.5 scrollbar-thin">
                   {filteredHouses.map((house) => {
                     const isActive = house.id === activeHouse.id;
                     return (
@@ -493,16 +490,16 @@ export default function Exploration3DView() {
                         type="button"
                         onClick={() => handleSelectHouse(house.id)}
                         className={cn(
-                          "group flex-shrink-0 text-left rounded-2xl p-3 sm:p-3.5 border transition-all duration-200 min-w-[200px] sm:min-w-[220px] cursor-pointer",
+                          "group flex-shrink-0 text-left rounded-xl p-2 sm:p-2.5 border transition-all duration-200 min-w-[170px] sm:min-w-[190px] cursor-pointer",
                           isActive
                             ? "bg-[#6E472D] text-white border-[#583720] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.01]"
                             : "bg-[#FAF7F2] text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-white"
                         )}
                       >
-                        <div className="flex items-center justify-between gap-1 mb-1.5">
+                        <div className="flex items-center justify-between gap-1 mb-1">
                           <span
                             className={cn(
-                              "text-[10px] font-bold uppercase tracking-wider truncate",
+                              "text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate",
                               isActive ? "text-amber-200/90" : "text-[#8A5B38]"
                             )}
                           >
@@ -510,13 +507,13 @@ export default function Exploration3DView() {
                           </span>
                         </div>
 
-                        <div className="font-serif font-bold text-sm sm:text-base leading-tight truncate">
+                        <div className="font-serif font-bold text-xs sm:text-sm leading-snug truncate">
                           {house.title}
                         </div>
 
                         <div
                           className={cn(
-                            "text-[11px] mt-1 line-clamp-1",
+                            "text-[10px] sm:text-[11px] mt-0.5 line-clamp-1",
                             isActive ? "text-stone-200" : "text-stone-500"
                           )}
                         >
@@ -529,7 +526,7 @@ export default function Exploration3DView() {
               </div>
             ) : (
               /* GRID KOLEKSI PENUH 38 PROVINSI */
-              <div className="mb-8 max-h-[360px] overflow-y-auto p-1 scrollbar-thin">
+              <div className="mb-4 max-h-[300px] overflow-y-auto p-1 scrollbar-thin">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
                   {filteredHouses.map((house) => {
                     const isActive = house.id === activeHouse.id;
