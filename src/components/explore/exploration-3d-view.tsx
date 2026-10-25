@@ -309,7 +309,7 @@ export default function Exploration3DView() {
             Eksplorasi 3D &amp; Musik Virtual
           </h1>
           <p className="mt-3.5 text-stone-600 text-sm sm:text-base leading-relaxed">
-            Bedah anatomi arsitektur vernakular 38 provinsi dalam sudut pandang 360° dan pelajari instrumen gamelan tradisional langsung dari peramban Anda.
+            Jelajahi model 3D rumah adat dan instrumen tradisional 38 provinsi secara interaktif.
           </p>
 
           {/* TAB FILTER UTAMA */}
