@@ -23,7 +23,6 @@ import {
   SlidersHorizontal,
   Sparkles,
   Volume2,
-  Waves,
   Search,
 } from "lucide-react";
 import type { Route } from "@/lib/router";
@@ -155,7 +154,7 @@ export default function InstrumentView({ route }: { route: Route }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-[#E5DACB]">
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#8A5B38]">
-            <Waves className="h-3.5 w-3.5" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#8A5B38]" />
             <span>Studio Musik Tradisional 3D</span>
             <span className="text-stone-300">•</span>
             <span className="text-stone-500 font-semibold">38 Provinsi</span>
