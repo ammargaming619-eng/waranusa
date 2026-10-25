@@ -494,33 +494,54 @@ export function UnifiedAssistantWidget() {
   return (
     <>
       {/* ========================================================================= */}
-      {/* TRIGGER: FLOATING CIRCLE DI POJOK KANAN BAWAH (KEMBAR DENGAN AKSESIBILITAS) */}
+      {/* TRIGGER: DESKTOP SIDE TAB DI SISI KANAN, MOBILE LINGKARAN DI KANAN BAWAH   */}
       {/* ========================================================================= */}
       {!isOpen && (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            // Lingkaran di pojok kanan bawah (simetris kembar dengan tombol aksesibilitas di kiri)
-            "!fixed bottom-4 right-4 sm:bottom-8 sm:right-8 md:right-14 z-[9990]",
-            "group flex items-center justify-center",
-            "w-12 h-12 sm:w-16 sm:h-16 rounded-full",
-            "btn-waranusa text-white",
-            "shadow-[0_8px_24px_rgba(45,30,18,0.38)] hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)]",
-            "backdrop-blur-md transition-all duration-300 transform hover:scale-105 active:scale-95",
+            // 1. DI MOBILE (< md): Tombol Lingkaran di pojok kanan bawah (kembar simetris dengan tombol aksesibilitas)
+            "!fixed bottom-4 right-4 z-[9990]",
+            "flex items-center justify-center",
+            "w-12 h-12 rounded-full",
+            "btn-waranusa text-white shadow-[0_8px_24px_rgba(45,30,18,0.38)]",
+            "hover:shadow-[0_14px_36px_rgba(45,30,18,0.5)] active:scale-95 transition-all duration-300",
+            // 2. DI DESKTOP (md+): Tab Samping Pinned di Sisi Kanan Layar (Vertikal Center)
+            "md:!fixed md:bottom-auto md:right-3 md:top-1/2 md:-translate-y-1/2",
+            "md:w-auto md:h-auto md:flex-col md:py-3.5 md:px-2.5",
+            "md:rounded-full md:border md:border-[#8C5E3C]/40 md:hover:scale-105",
             "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
           aria-label="Buka WaraNusa AI Assistant"
-          title="Tanya WaraNusa AI"
+          title="Buka WaraNusa AI Assistant"
         >
-          {/* Emblem Mini Angklung Emas */}
-          <WaranusaAIEmblem className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
+          {/* Panah Indikator Atas (Hanya Tampil di Desktop md+) */}
+          <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
 
-          {/* Badge pendar aktif Kuning Emas Nusantara */}
-          <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 flex h-3 w-3 pointer-events-none">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
-            <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
+          {/* Emblem Mini Angklung Emas */}
+          <div className="relative shrink-0 flex items-center justify-center">
+            <WaranusaAIEmblem className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
+
+            {/* Badge pendar aktif Kuning Emas Nusantara */}
+            <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-80"></span>
+              <span className="relative inline-flex rounded-full h-full w-full bg-amber-400 border border-[#533019]"></span>
+            </span>
+          </div>
+
+          {/* Teks Vertikal: WARANUSA AI ASSISTANT (Hanya Tampil di Desktop md+) */}
+          <span
+            className="hidden md:inline-block font-bold text-[10px] sm:text-[11px] tracking-widest text-[#FAF6F0] group-hover:text-[#FDF8EE] transition-colors uppercase whitespace-nowrap my-2.5"
+            style={{
+              writingMode: "vertical-rl",
+            }}
+          >
+            Waranusa AI Assistant
           </span>
+
+          {/* Panah Indikator Bawah (Hanya Tampil di Desktop md+) */}
+          <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
         </button>
       )}
 
