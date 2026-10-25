@@ -128,8 +128,6 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           alt="Peta Budaya Kepulauan Nusantara WaraNusa"
           className="absolute inset-0 h-full w-full object-contain object-center pointer-events-none select-none drop-shadow-sm"
           loading="eager"
-          // @ts-expect-error React 19 fetchPriority
-          fetchPriority="high"
           decoding="async"
         />
 
