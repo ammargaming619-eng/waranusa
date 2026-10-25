@@ -462,8 +462,10 @@ export function Instrument3DStage({
   const [handCursor, setHandCursor] = React.useState<{ x: number; y: number } | null>(null);
   const [cameraTargetNoteIdx, setCameraTargetNoteIdx] = React.useState<number | null>(null);
   const [isPinchingState, setIsPinchingState] = React.useState(false);
+  const [isThumbBentState, setIsThumbBentState] = React.useState(false);
   const [isCursorInDock, setIsCursorInDock] = React.useState(false);
   const wasPinchingRef = React.useRef(false);
+  const wasThumbBentRef = React.useRef(false);
   const lastDwellNoteRef = React.useRef<{ idx: number; startTime: number } | null>(null);
 
   // Refs animasi 3D & deteksi gerakan
@@ -737,13 +739,22 @@ export function Instrument3DStage({
               setCameraTargetNoteIdx(inDockZone ? noteIdx : null);
               setHandCursor({ x: normX, y: rawY });
 
-              // Deteksi cubitan jari (Pinch antara ibu jari landmark 4 dan telunjuk landmark 8)
+              // Deteksi tekukan jempol (Thumb Bend / Thumb Trigger):
+              // hand[4] = Thumb Tip, hand[2] = Thumb MCP, hand[5] = Index Finger Knuckle, hand[9] = Middle Knuckle, hand[0] = Wrist
+              let isThumbBent = false;
               let isPinching = false;
-              if (hand[4]) {
-                const pDist = Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y);
-                isPinching = pDist < 0.082;
+              if (hand[4] && hand[5] && hand[2] && hand[0]) {
+                const palmSize = Math.hypot(hand[0].x - hand[9].x, hand[0].y - hand[9].y) || 0.25;
+                const thumbToIndexMcp = Math.hypot(hand[4].x - hand[5].x, hand[4].y - hand[5].y) / palmSize;
+                const thumbFlexRatio = Math.hypot(hand[4].x - hand[2].x, hand[4].y - hand[2].y) / palmSize;
+                const pinchDist = hand[8] ? Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y) / palmSize : 1.0;
+
+                isPinching = pinchDist < 0.30;
+                // Jempol dianggap ditekuk jika jarak ujung jempol ke pangkal telunjuk merapat atau jempol melengkung ke telapak
+                isThumbBent = isPinching || thumbToIndexMcp < 0.42 || thumbFlexRatio < 0.35;
               }
               setIsPinchingState(isPinching);
+              setIsThumbBentState(isThumbBent);
 
               const prev = prevHandPosRef.current;
               if (prev) {
@@ -753,21 +764,21 @@ export function Instrument3DStage({
                 const wasInDock = prev.inDock;
 
                 // =========================================================================
-                // ATURAN MUTLAK: HANYA BISA MEMAINKAN NADA KETIKA BERADA DI ZONA BAR NADA
+                // ATURAN MUTLAK: TELUNJUK MEMBIDIK NADA, JEMPOL DITEKUK UNTUK MENABUH
                 // =========================================================================
                 if (inDockZone) {
-                  // 1. Ayunan turun masuk ke bilah (turun dari atas ke bilah bawah -> langsung menabuh)
-                  if (!wasInDock && nowMs - lastAiTriggerTimeRef.current > 160) {
+                  // 1. UTAMA: Tekukan Jempol (Thumb Bend Trigger)
+                  if (isThumbBent && !wasThumbBentRef.current && nowMs - lastAiTriggerTimeRef.current > 120) {
                     lastAiTriggerTimeRef.current = nowMs;
-                    playNoteByIndex(noteIdx, 0.95);
+                    playNoteByIndex(noteIdx, 0.96);
                   }
-                  // 2. Gesture Pinch / Air-Tap di atas bilah
-                  else if (isPinching && !wasPinchingRef.current && nowMs - lastAiTriggerTimeRef.current > 150) {
+                  // 2. Ayunan turun masuk ke bilah (turun dari atas ke bilah bawah -> langsung menabuh)
+                  else if (!wasInDock && nowMs - lastAiTriggerTimeRef.current > 160) {
                     lastAiTriggerTimeRef.current = nowMs;
-                    playNoteByIndex(noteIdx, 0.95);
+                    playNoteByIndex(noteIdx, 0.92);
                   }
                   // 3. Ketukan ayunan ke bawah di dalam bilah
-                  else if (vy > 0.35 && nowMs - lastAiTriggerTimeRef.current > 180) {
+                  else if (vy > 0.38 && nowMs - lastAiTriggerTimeRef.current > 180) {
                     lastAiTriggerTimeRef.current = nowMs;
                     playNoteByIndex(noteIdx, Math.min(1, 0.70 + vy * 0.3));
                   }
@@ -786,13 +797,13 @@ export function Instrument3DStage({
                   // 5. Gesek (Bow)
                   else if (instrument.interactionType === "bow") {
                     const speed = Math.abs(vx);
-                    if (speed > 0.16 && note) {
+                    if ((isThumbBent || speed > 0.16) && note) {
                       bowStateRef.current = { active: true, pos: normX };
                       setActiveNoteIdx(noteIdx);
                       soundEngine.startContinuousVoice(
                         "bow",
                         note.freq,
-                        Math.min(1, 0.4 + speed * 0.5)
+                        Math.min(1, 0.4 + (isThumbBent ? 0.4 : speed * 0.5))
                       );
                     } else {
                       bowStateRef.current.active = false;
@@ -825,18 +836,21 @@ export function Instrument3DStage({
               }
 
               wasPinchingRef.current = isPinching;
+              wasThumbBentRef.current = isThumbBent;
               prevHandPosRef.current = { x: normX, y: rawY, inDock: inDockZone, time: nowMs };
 
               if (ctx && canvas) {
-                drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, isPinching);
+                drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, isPinching || isThumbBent);
               }
             } else {
               setCameraHandDetected(false);
               setHandCursor(null);
               setCameraTargetNoteIdx(null);
               setIsCursorInDock(false);
+              setIsThumbBentState(false);
               prevHandPosRef.current = null;
               wasPinchingRef.current = false;
+              wasThumbBentRef.current = false;
               lastDwellNoteRef.current = null;
               if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1140,7 +1154,7 @@ export function Instrument3DStage({
           </div>
           <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] leading-snug sm:leading-relaxed text-stone-600 line-clamp-2 sm:line-clamp-none">
             {cameraAiEnabled
-              ? "Arahkan kursor telunjuk ke bilah bawah (zona nada), lalu ketuk ke bawah atau cubit (pinch) jari untuk menabuh."
+              ? "Arahkan jari telunjuk ke bilah nada bawah, lalu tekuk jempol untuk menabuh."
               : instrument.mouseGuide}
           </p>
         </div>
@@ -1208,13 +1222,13 @@ export function Instrument3DStage({
               bottom: "4.5rem",
             }}
           >
-            {/* Indikator Titik Jari & Efek Pinch */}
+            {/* Indikator Titik Jari & Efek Tekukan Jempol */}
             <div
               className={cn(
                 "rounded-full border-2 transition-all duration-100 flex items-center justify-center",
-                isPinchingState
-                  ? "h-9 w-9 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_24px_rgba(251,191,36,1)]"
-                  : "h-7 w-7 scale-110 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
+                isThumbBentState
+                  ? "h-9 w-9 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_26px_rgba(251,191,36,1)]"
+                  : "h-7 w-7 scale-105 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
               )}
             >
               <div className="h-2 w-2 rounded-full bg-white shadow-xs" />
@@ -1222,8 +1236,17 @@ export function Instrument3DStage({
 
             {/* Label Nada yang Sedang Dibidik Kursor */}
             {cameraTargetNoteIdx !== null && instrument.notes[cameraTargetNoteIdx] && (
-              <span className="whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-md border bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30">
-                {instrument.notes[cameraTargetNoteIdx].label} ({instrument.notes[cameraTargetNoteIdx].code})
+              <span
+                className={cn(
+                  "whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-md border transition-all",
+                  isThumbBentState
+                    ? "bg-amber-500 text-stone-950 border-white ring-2 ring-amber-300 scale-110 font-extrabold"
+                    : "bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30"
+                )}
+              >
+                {isThumbBentState
+                  ? `💥 ${instrument.notes[cameraTargetNoteIdx].label} (Tabuh!)`
+                  : `👉 ${instrument.notes[cameraTargetNoteIdx].label} • Tekuk Jempol`}
               </span>
             )}
           </div>
@@ -1235,7 +1258,9 @@ export function Instrument3DStage({
             className={cn(
               "pointer-events-none absolute inset-x-2 xs:inset-x-4 sm:inset-x-8 bottom-2.5 sm:bottom-3 z-15 flex items-center justify-between gap-1 sm:gap-1.5 rounded-2xl p-1 sm:p-1.5 backdrop-blur-md border transition-all duration-200 mr-32 xs:mr-36 sm:mr-48",
               isCursorInDock
-                ? "bg-stone-950/90 border-amber-400/80 ring-2 ring-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.3)]"
+                ? isThumbBentState
+                  ? "bg-stone-950/95 border-amber-300 ring-4 ring-amber-400/40 shadow-[0_0_24px_rgba(251,191,36,0.5)]"
+                  : "bg-stone-950/90 border-amber-400/80 ring-2 ring-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.3)]"
                 : "bg-stone-950/75 border-white/20 shadow-md"
             )}
           >
@@ -1251,13 +1276,22 @@ export function Instrument3DStage({
                     isPlaying
                       ? "bg-amber-400 text-stone-950 scale-105 shadow-[0_0_12px_rgba(251,191,36,0.9)] font-extrabold"
                       : isTargetInDock
-                      ? "bg-white text-stone-900 scale-105 ring-3 ring-amber-400 font-extrabold shadow-md"
+                      ? isThumbBentState
+                        ? "bg-amber-400 text-stone-950 scale-110 ring-4 ring-white font-extrabold shadow-lg"
+                        : "bg-white text-stone-900 scale-105 ring-3 ring-amber-400 font-extrabold shadow-md"
                       : "bg-white/10 text-stone-300"
                   )}
                 >
                   {isTargetInDock && (
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-amber-500 px-1.5 py-0.2 text-[8px] font-bold text-stone-950 shadow-xs uppercase tracking-tighter">
-                      Bidik
+                    <span
+                      className={cn(
+                        "absolute -top-2 left-1/2 -translate-x-1/2 rounded-full px-1.5 py-0.2 text-[8px] font-bold shadow-xs uppercase tracking-tighter transition-all",
+                        isThumbBentState
+                          ? "bg-white text-stone-950 ring-2 ring-amber-400 font-extrabold"
+                          : "bg-amber-500 text-stone-950"
+                      )}
+                    >
+                      {isThumbBentState ? "Pukul!" : "Bidik"}
                     </span>
                   )}
                   <span className="font-mono text-[8px] sm:text-[10px] uppercase font-bold truncate">
