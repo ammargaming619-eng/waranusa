@@ -14,6 +14,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { navigate } from "@/lib/router";
+import { useTranslation } from "@/lib/i18n-store";
 
 interface CulturalTag {
   id: string;
@@ -99,6 +100,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
 ];
 
 export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: boolean } = {}) {
+  const { t } = useTranslation();
   const [activeTag, setActiveTag] = useState<CulturalTag | null>(null);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 
@@ -139,10 +141,10 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               id="hero-title"
               className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold tracking-tight text-[#2D1E12] leading-tight drop-shadow-xs whitespace-nowrap"
             >
-              Jelajahi Ragam Budaya Nusantara
+              {t("hero.title", "Jelajahi Ragam Budaya Nusantara")}
             </h1>
             <p className="mt-1 sm:mt-2 md:mt-2.5 text-xs sm:text-sm md:text-base text-stone-700 max-w-xl mx-auto font-medium whitespace-nowrap sm:whitespace-normal">
-              Dari Sabang hingga Merauke, setiap tradisi punya cerita.
+              {t("hero.subtitle", "Dari Sabang hingga Merauke, setiap tradisi punya cerita.")}
             </p>
           </motion.div>
 
@@ -159,7 +161,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               className="btn-waranusa rounded-full px-5 sm:px-7 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg min-h-[44px]"
             >
               <Link href="#/jelajah" className="flex items-center gap-2">
-                Peta 38 Provinsi
+                {t("hero.map_btn", "Peta 38 Provinsi")}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
@@ -171,7 +173,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               className="rounded-full border border-stone-400/60 bg-white/85 hover:bg-white text-stone-800 px-5 sm:px-6 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-xs hover:shadow-sm transition-all min-h-[44px]"
             >
               <Link href="#/katalog" className="flex items-center gap-2">
-                Katalog Budaya
+                {t("hero.catalog_btn", "Katalog Budaya")}
               </Link>
             </Button>
           </motion.div>
@@ -296,7 +298,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
       <div className="block md:hidden px-4 mt-2">
         <p className="text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3 w-3 text-amber-700" />
-          <span>Sentuh Pin Peta atau Jelajahi Ikon Budaya:</span>
+          <span>{t("hero.touch_hint", "Sentuh Pin Peta atau Jelajahi Ikon Budaya:")}</span>
         </p>
         <div className="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar -mx-4 px-4 snap-x">
           {CULTURAL_TAGS.map((tag) => (

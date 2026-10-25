@@ -33,23 +33,32 @@ import {
   LayoutGrid,
   Box,
   Music4,
+  Globe,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useTranslation, type TranslationKey } from "@/lib/i18n-store";
 
-const NAV_ITEMS = [
-  { href: "#/", label: "Beranda", icon: Home },
-  { href: "#/jelajah", label: "Jelajahi Nusantara", icon: Compass },
-  { href: "#/katalog", label: "Katalog Budaya", icon: LayoutGrid },
-  { href: "#/eksplorasi-3d", label: "Eksplorasi 3D", icon: Box },
-  { href: "#/instrumen", label: "Instrumen Virtual", icon: Music4 },
+interface NavItemDef {
+  href: string;
+  labelKey: TranslationKey;
+  fallback: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const NAV_ITEMS: NavItemDef[] = [
+  { href: "#/", labelKey: "nav.home", fallback: "Beranda", icon: Home },
+  { href: "#/jelajah", labelKey: "nav.explore", fallback: "Jelajahi Nusantara", icon: Compass },
+  { href: "#/katalog", labelKey: "nav.catalog", fallback: "Katalog Budaya", icon: LayoutGrid },
+  { href: "#/eksplorasi-3d", labelKey: "nav.3d", fallback: "Eksplorasi 3D", icon: Box },
+  { href: "#/instrumen", labelKey: "nav.instruments", fallback: "Instrumen Virtual", icon: Music4 },
 ];
 
 export function SiteHeader({ route, introRevealed = true }: { route: Route; introRevealed?: boolean }) {
   const { user, logout } = useAuth();
+  const { language, setLanguage, t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [language, setLanguage] = useState<"ID" | "EN">("ID");
   const [hasRegistered, setHasRegistered] = useState(false);
 
   useEffect(() => {
@@ -116,6 +125,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
             aria-label="Navigasi utama"
           >
             {NAV_ITEMS.map((item) => {
+              const label = t(item.labelKey, item.fallback);
               if (item.href === "#/") {
                 return (
                   <Link
@@ -133,7 +143,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                         : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
                     )}
                   >
-                    {item.label}
+                    {label}
                   </Link>
                 );
               }
@@ -149,7 +159,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       : "text-stone-700 hover:text-[#2D1E12] hover:bg-white/55"
                   )}
                 >
-                  {item.label}
+                  {label}
                 </Link>
               );
             })}
@@ -221,45 +231,55 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   className="btn-waranusa rounded-full text-xs sm:text-sm font-semibold px-5 py-1.5 h-9 shadow-sm"
                 >
                   <Link href="#/masuk">
-                    {hasRegistered ? "Masuk" : "Daftar"}
+                    {hasRegistered ? t("nav.login", "Masuk") : t("nav.register", "Daftar")}
                   </Link>
                 </Button>
               )}
             </div>
 
-            {/* Pemilih Bahasa (Language Selector 文A ˅) */}
+            {/* Pemilih Bahasa (Language Selector Minimalis Globe + ID/EN) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 sm:h-9 px-1.5 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-white/60 flex items-center gap-0.5 sm:gap-1 text-xs font-medium shrink-0"
-                  aria-label="Pilih Bahasa"
+                  className="h-8 sm:h-9 px-2 sm:px-2.5 rounded-full text-stone-700 hover:text-stone-900 hover:bg-stone-100/70 border border-stone-200/80 shadow-2xs flex items-center gap-1 sm:gap-1.5 text-xs font-semibold shrink-0 transition-all cursor-pointer"
+                  aria-label="Pilih Bahasa / Select Language"
                 >
-                  <span className="font-serif font-bold text-xs sm:text-sm tracking-tighter">文A</span>
-                  <ChevronDown className="h-3 w-3 opacity-60" />
+                  <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#8C5E3C]" />
+                  <span className="text-[11px] sm:text-xs font-bold text-[#442816] tracking-tight">{language}</span>
+                  <ChevronDown className="h-3 w-3 opacity-60 text-stone-500" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 rounded-2xl border-stone-200 bg-white p-1 shadow-lg">
+              <DropdownMenuContent align="end" className="w-44 rounded-2xl border-stone-200 bg-white p-1.5 shadow-lg">
+                <DropdownMenuLabel className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                  {language === "ID" ? "Pilih Bahasa" : "Select Language"}
+                </DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => setLanguage("ID")}
                   className={cn(
-                    "flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer",
-                    language === "ID" ? "bg-stone-100 text-stone-900" : "text-stone-600"
+                    "flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold cursor-pointer transition-colors",
+                    language === "ID" ? "bg-amber-50 text-[#8C5E3C]" : "text-stone-700 hover:bg-stone-50"
                   )}
                 >
-                  <span>Bahasa Indonesia</span>
-                  {language === "ID" && <Check className="h-3.5 w-3.5 text-[#8A5B38]" />}
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm">🇮🇩</span>
+                    <span>Bahasa Indonesia</span>
+                  </span>
+                  {language === "ID" && <Check className="h-3.5 w-3.5 text-[#8C5E3C]" />}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setLanguage("EN")}
                   className={cn(
-                    "flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer",
-                    language === "EN" ? "bg-stone-100 text-stone-900" : "text-stone-600"
+                    "flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold cursor-pointer transition-colors",
+                    language === "EN" ? "bg-amber-50 text-[#8C5E3C]" : "text-stone-700 hover:bg-stone-50"
                   )}
                 >
-                  <span>English (EN)</span>
-                  {language === "EN" && <Check className="h-3.5 w-3.5 text-[#8A5B38]" />}
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm">🇬🇧</span>
+                    <span>English (EN)</span>
+                  </span>
+                  {language === "EN" && <Check className="h-3.5 w-3.5 text-[#8C5E3C]" />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -293,7 +313,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   aria-label="Cari objek budaya"
                 >
                   <Search className="h-4 w-4 text-stone-400 shrink-0" />
-                  <span className="truncate">Cari objek budaya, tradisi...</span>
+                  <span className="truncate">{t("nav.search_placeholder", "Cari objek budaya, tradisi...")}</span>
                 </button>
                 <nav className="mt-6 flex flex-col gap-1.5" aria-label="Navigasi seluler">
                   {NAV_ITEMS.map((item) => (
@@ -314,7 +334,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       )}
                     >
                       <item.icon className="h-4 w-4 text-[#8A5B38] shrink-0" />
-                      <span>{item.label}</span>
+                      <span>{t(item.labelKey, item.fallback)}</span>
                     </Link>
                   ))}
 
@@ -367,7 +387,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                       >
                         <Link href="#/masuk" onClick={() => setMobileOpen(false)}>
                           <LogIn className="mr-2 h-4 w-4" />
-                          {hasRegistered ? "Masuk" : "Daftar"}
+                          {hasRegistered ? t("nav.login", "Masuk") : t("nav.register", "Daftar")}
                         </Link>
                       </Button>
                     </div>

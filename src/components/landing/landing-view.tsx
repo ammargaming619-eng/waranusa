@@ -38,6 +38,7 @@ import dynamic from "next/dynamic";
 import type { CulturalItem } from "@/lib/types";
 import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 
 void MessageSquarePlus;
 void Sparkles;
@@ -180,6 +181,7 @@ const FEATURES = [
 ] as const;
 
 export default function LandingView({ introRevealed = true }: { introRevealed?: boolean } = {}) {
+  const { t } = useTranslation();
   const settings = useSiteSettings((s) => s.settings);
   const contributionNotice =
     settings.contributionNotice ||
@@ -248,19 +250,19 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                 <>
                   <Stat
                     value={stats.data.published}
-                    label="Objek budaya terpublikasi"
+                    label={t("stats.objects", "Objek budaya terpublikasi")}
                     delay={0.05}
                     className="md:pr-6"
                   />
                   <Stat
                     value={stats.data.regions}
-                    label="Provinsi terpetakan penuh"
+                    label={t("stats.provinces", "Provinsi terpetakan penuh")}
                     delay={0.15}
                     className="md:px-6"
                   />
                   <Stat
                     value={stats.data.categories}
-                    label="Rumpun kategori budaya"
+                    label={t("stats.categories", "Rumpun kategori budaya")}
                     delay={0.25}
                     className="md:px-6"
                   />
@@ -276,7 +278,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                     </p>
                     <p className="mt-1.5 flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 font-medium">
                       <ShieldCheck className="h-4 w-4 text-[#7A4B29]" aria-hidden="true" />
-                      Konten bersumber rujukan
+                      {t("stats.sources", "Konten bersumber rujukan")}
                     </p>
                   </motion.div>
                 </>
@@ -436,6 +438,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
 }
 
 function Interactive3DPavilion() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"HOUSES" | "INSTRUMENTS">("HOUSES");
   const [volume, setVolume] = useState<number>(0.8);
   const activeInstrument = SARON_DEMUNG_DATA;
@@ -457,7 +460,7 @@ function Interactive3DPavilion() {
             id="ruang-pamer-3d"
             className="font-sans text-2xl font-black tracking-tight text-[#482B18] sm:text-3xl md:text-4xl"
           >
-            Eksplorasi Budaya 3D
+            {t("3d.title", "Eksplorasi Budaya 3D")}
           </h2>
 
           {/* Segmented Capsule Tab Buttons */}
@@ -474,7 +477,7 @@ function Interactive3DPavilion() {
               aria-pressed={activeTab === "HOUSES"}
             >
               <Landmark className="h-4 w-4" aria-hidden="true" />
-              <span>Arsitektur Rumah Adat</span>
+              <span>{t("3d.houses_tab", "Arsitektur Rumah Adat")}</span>
             </button>
             <button
               type="button"
@@ -488,7 +491,7 @@ function Interactive3DPavilion() {
               aria-pressed={activeTab === "INSTRUMENTS"}
             >
               <Music4 className="h-4 w-4" aria-hidden="true" />
-              <span>Alat Musik Tradisional</span>
+              <span>{t("3d.instruments_tab", "Alat Musik Tradisional")}</span>
             </button>
           </div>
         </div>
@@ -520,7 +523,7 @@ function Interactive3DPavilion() {
                       </div>
                     </div>
                     <span className="rounded-full bg-[#FAF5EC] px-2.5 py-1 text-[10px] font-bold text-[#6E472D] border border-[#E0D2C0]">
-                      Model 3D Interaktif &bull; 360&deg;
+                      {t("3d.badge_interactive", "Model 3D Interaktif • 360°")}
                     </span>
                   </div>
 
@@ -533,7 +536,7 @@ function Interactive3DPavilion() {
                   </div>
 
                   <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">
-                    Tip: Putar, geser, dan perbesar model 3D untuk mengamati susunan saka guru dan atap tumpangsari.
+                    {t("3d.tip_house", "Tip: Putar, geser, dan perbesar model 3D untuk mengamati susunan saka guru dan atap tumpangsari.")}
                   </p>
                 </div>
               ) : (
@@ -553,7 +556,7 @@ function Interactive3DPavilion() {
                       </div>
                     </div>
                     <span className="rounded-full bg-[#FAF5EC] px-2.5 py-1 text-[10px] font-bold text-[#6E472D] border border-[#E0D2C0]">
-                      Interaktif 3D &bull; Web Audio
+                      {t("3d.badge_audio", "Interaktif 3D • Web Audio")}
                     </span>
                   </div>
 
@@ -566,7 +569,7 @@ function Interactive3DPavilion() {
                   </div>
 
                   <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">
-                    Tip: Ketuk bilah nada di bawah atau klik/usap pada model 3D untuk memicu suara instrumen.
+                    {t("3d.tip_instrument", "Tip: Ketuk bilah nada di bawah atau klik/usap pada model 3D untuk memicu suara instrumen.")}
                   </p>
                 </div>
               )}
@@ -583,8 +586,8 @@ function Interactive3DPavilion() {
             {activeTab === "HOUSES" ? (
               <div>
                 <SectionHeading
-                  title="Rancang Bangun Rumah Adat Nusantara"
-                  description="Model 3D interaktif untuk mempelajari struktur konstruksi tahan gempa tanpa paku besi."
+                  title={t("3d.houses_heading", "Rancang Bangun Rumah Adat Nusantara")}
+                  description={t("3d.houses_desc", "Model 3D interaktif untuk mempelajari struktur konstruksi tahan gempa tanpa paku besi.")}
                   variant="maroon-sans"
                 />
 
@@ -642,7 +645,7 @@ function Interactive3DPavilion() {
                     className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
                     <Link href="#/eksplorasi-3d">
-                      Buka 38 Rumah Adat
+                      {t("3d.houses_btn", "Buka 38 Rumah Adat")}
                       <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                     </Link>
                   </Button>
@@ -651,8 +654,8 @@ function Interactive3DPavilion() {
             ) : (
               <div>
                 <SectionHeading
-                  title="Resonansi Musik Tradisional Nusantara"
-                  description="Instrumen daerah interaktif yang dapat dimainkan langsung dengan simulasi tangga nada dan akustik alami."
+                  title={t("3d.instruments_heading", "Resonansi Musik Tradisional Nusantara")}
+                  description={t("3d.instruments_desc", "Instrumen daerah interaktif yang dapat dimainkan langsung dengan simulasi tangga nada dan akustik alami.")}
                   variant="maroon-sans"
                 />
 
@@ -710,7 +713,7 @@ function Interactive3DPavilion() {
                     className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
                     <Link href="#/instrumen">
-                      Buka 38 Alat Musik
+                      {t("3d.instruments_btn", "Buka 38 Alat Musik")}
                       <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                     </Link>
                   </Button>
@@ -801,11 +804,14 @@ function Stat({
   );
 }
 
-const TICKER_PHRASE =
-  "✦ WARISAN BUDAYA NUSANTARA • 3D ARTEFAK & RUMAH ADAT • PETA 38 PROVINSI • INSTRUMEN VIRTUAL • DOKUMENTASI TERVERIFIKASI ";
-const REPEATED_TICKER = Array(7).fill(TICKER_PHRASE).join("");
-
 function NusantaraCurvedTicker() {
+  const { t } = useTranslation();
+  const phrase = t(
+    "ticker.phrase",
+    "✦ WARISAN BUDAYA NUSANTARA • 3D ARTEFAK & RUMAH ADAT • PETA 38 PROVINSI • INSTRUMEN VIRTUAL • DOKUMENTASI TERVERIFIKASI "
+  );
+  const repeatedTicker = useMemo(() => Array(7).fill(phrase).join(""), [phrase]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const textPathMobileRef = useRef<SVGTextPathElement>(null);
   const textPathDesktopRef = useRef<SVGTextPathElement>(null);
@@ -823,7 +829,7 @@ function NusantaraCurvedTicker() {
       const len = measureDesktopRef.current.getComputedTextLength();
       if (len > 0) setPhraseWidthDesktop(len);
     }
-  }, []);
+  }, [phrase]);
 
   useEffect(() => {
     let animId: number;
@@ -906,7 +912,7 @@ function NusantaraCurvedTicker() {
           className="fill-transparent text-[15.5px] font-sans font-black tracking-[0.2em] uppercase"
           style={{ visibility: "hidden" }}
         >
-          {TICKER_PHRASE}
+          {phrase}
         </text>
 
         <path
@@ -934,7 +940,7 @@ function NusantaraCurvedTicker() {
           className="fill-[#FAF6F0] text-[15.5px] font-sans font-black tracking-[0.2em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathMobileRef} href="#nusantara-ribbon-path-mobile" startOffset="0px">
-            {REPEATED_TICKER}
+            {repeatedTicker}
           </textPath>
         </text>
       </svg>
@@ -966,7 +972,7 @@ function NusantaraCurvedTicker() {
           className="fill-transparent text-[20px] font-sans font-black tracking-[0.24em] uppercase"
           style={{ visibility: "hidden" }}
         >
-          {TICKER_PHRASE}
+          {phrase}
         </text>
 
         <path
@@ -994,7 +1000,7 @@ function NusantaraCurvedTicker() {
           className="fill-[#FAF6F0] text-[20px] font-sans font-black tracking-[0.24em] uppercase select-none drop-shadow-sm"
         >
           <textPath ref={textPathDesktopRef} href="#nusantara-ribbon-path-desktop" startOffset="0px">
-            {REPEATED_TICKER}
+            {repeatedTicker}
           </textPath>
         </text>
       </svg>

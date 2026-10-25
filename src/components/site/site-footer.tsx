@@ -4,6 +4,7 @@ import { HashLink as Link } from "@/components/shared/hash-link";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Separator } from "@/components/ui/separator";
 import { Compass, LayoutGrid, Music4, Archive, HandHeart, ShieldCheck } from "lucide-react";
+import { useTranslation } from "@/lib/i18n-store";
 
 /**
  * Footer publik — menempel di bawah viewport saat konten pendek (mt-auto
@@ -15,6 +16,7 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
   contactEmail?: string;
   footerNote?: string;
 }) {
+  const { t } = useTranslation();
   const name = siteName || "WaraNusa";
   return (
     <footer className="relative mt-auto border-t border-[#D4A843]/20 bg-gradient-to-b from-[#1C120B] via-[#160E08] to-[#0E0704] text-stone-300">
@@ -29,19 +31,18 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
           <div className="md:col-span-2 space-y-3">
             <BrandLogo dark />
             <p className="max-w-md text-sm leading-relaxed text-stone-400">
-              {tagline ||
-                "Platform eksplorasi & pelestarian budaya Indonesia — peta interaktif, katalog bersumber, model 3D, dan instrumen musik virtual."}
+              {tagline || t("footer.tagline", "Platform eksplorasi & pelestarian budaya Indonesia — peta interaktif, katalog bersumber, model 3D, dan instrumen musik virtual.")}
             </p>
             {footerNote && <p className="max-w-md text-xs text-stone-500">{footerNote}</p>}
           </div>
 
           <nav aria-label="Navigasi footer">
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">Jelajahi</h3>
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">{t("footer.explore_title", "Jelajahi")}</h3>
             <ul className="space-y-2 text-sm">
               {[
-                { href: "#/jelajah", label: "Peta Wilayah", icon: Compass },
-                { href: "#/katalog", label: "Katalog Budaya", icon: LayoutGrid },
-                { href: "#/instrumen", label: "Instrumen Virtual", icon: Music4 },
+                { href: "#/jelajah", label: t("nav.explore", "Peta Wilayah"), icon: Compass },
+                { href: "#/katalog", label: t("nav.catalog", "Katalog Budaya"), icon: LayoutGrid },
+                { href: "#/instrumen", label: t("nav.instruments", "Instrumen Virtual"), icon: Music4 },
                 { href: "#/arsip", label: "Arsip & Sumber", icon: Archive },
               ].map((l) => (
                 <li key={l.href}>
@@ -54,16 +55,16 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
           </nav>
 
           <div>
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">Ikut Serta</h3>
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">{t("footer.contribute_title", "Ikut Serta")}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#/kontribusi" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
-                  <HandHeart className="h-3.5 w-3.5 text-[#D4A843]/80" /> Kirim Dokumentasi
+                  <HandHeart className="h-3.5 w-3.5 text-[#D4A843]/80" /> {t("footer.contribute_action", "Kirim Dokumentasi")}
                 </Link>
               </li>
               <li>
                 <Link href="#/masuk" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#D4A843]/80" /> Akun Pengelola
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#D4A843]/80" /> {t("footer.login_action", "Akun Pengelola")}
                 </Link>
               </li>
             </ul>
@@ -79,7 +80,7 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
 
         <div className="flex flex-col items-center justify-center gap-2 text-xs text-stone-400 text-center">
           <p>
-            © {new Date().getFullYear()} {name}. {tagline || "Platform Eksplorasi & Pelestarian Budaya Indonesia"}.
+            © {new Date().getFullYear()} {name}. {t("footer.rights", "Hak cipta dilindungi undang-undang.")}
           </p>
         </div>
       </div>
