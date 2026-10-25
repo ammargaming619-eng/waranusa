@@ -738,10 +738,12 @@ export function Instrument3DStage({
               setIsCursorInDock(true);
               setHandCursor({ x: normX, y: rawY });
 
-              // Deteksi tekukan jempol (Thumb Bend / Thumb Trigger):
+              // Deteksi tekukan jempol (Thumb Bend Trigger) dengan sistem Histeresis (Schmitt Trigger):
               // hand[4] = Thumb Tip, hand[2] = Thumb MCP, hand[5] = Index Knuckle, hand[9] = Middle Knuckle, hand[0] = Wrist
-              let isThumbBent = false;
+              const wasBent = wasThumbBentRef.current;
+              let isThumbBent = wasBent;
               let isPinching = false;
+
               if (hand[4] && hand[5] && hand[2] && hand[0]) {
                 const palmSize = Math.hypot(hand[0].x - hand[9].x, hand[0].y - hand[9].y) || 0.25;
                 const distToIndexKnuckle = Math.hypot(hand[4].x - hand[5].x, hand[4].y - hand[5].y) / palmSize;
@@ -749,9 +751,30 @@ export function Instrument3DStage({
                 const thumbSpan = Math.hypot(hand[4].x - hand[2].x, hand[4].y - hand[2].y) / palmSize;
                 const pinchDist = hand[8] ? Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y) / palmSize : 1.0;
 
-                isPinching = pinchDist < 0.35;
-                // Jempol dianggap ditekuk jika merapat ke pangkal telunjuk, ke tengah telapak, atau mencubit
-                isThumbBent = isPinching || distToIndexKnuckle < 0.52 || distToMiddleKnuckle < 0.48 || thumbSpan < 0.38;
+                isPinching = pinchDist < 0.32;
+
+                if (!wasBent) {
+                  // Syarat tegas untuk memicu tabuhan (Trigger ON):
+                  // Jempol ditekuk ke dalam mendekati telapak tangan atau mencubit telunjuk
+                  const isFlexed =
+                    isPinching ||
+                    distToIndexKnuckle < 0.48 ||
+                    distToMiddleKnuckle < 0.44 ||
+                    thumbSpan < 0.34;
+                  if (isFlexed) {
+                    isThumbBent = true;
+                  }
+                } else {
+                  // Histeresis: tetap terkunci 'bent' sampai jempol benar-benar dibuka kembali (mencegah double hit dari jitter kamera)
+                  const isClearlyReleased =
+                    !isPinching &&
+                    distToIndexKnuckle > 0.55 &&
+                    distToMiddleKnuckle > 0.50 &&
+                    thumbSpan > 0.40;
+                  if (isClearlyReleased) {
+                    isThumbBent = false;
+                  }
+                }
               }
               setIsPinchingState(isPinching);
               setIsThumbBentState(isThumbBent);
@@ -760,22 +783,17 @@ export function Instrument3DStage({
               if (prev) {
                 const dt = Math.max(8, nowMs - prev.time);
                 const vx = (normX - prev.x) / (dt / 1000);
-                const vy = (rawY - prev.y) / (dt / 1000);
 
                 // =========================================================================
-                // ATURAN MUTLAK: TELUNJUK MEMBIDIK NADA, JEMPOL DITEKUK UNTUK MENABUH
+                // ATURAN EKSKLUSIF: HANYA TEKUKAN JEMPOL YANG MEMICU SUARA (SINGLE NOTE)
+                // Hapus ayunan gerak (vy) agar perpindahan telunjuk membidik nada tidak memicu nada ganda
                 // =========================================================================
-                // 1. UTAMA: Tekukan Jempol (Thumb Bend Trigger) — nada berbunyi saat jempol ditekuk
-                if (isThumbBent && !wasThumbBentRef.current && nowMs - lastAiTriggerTimeRef.current > 120) {
+                // 1. UTAMA: Tekukan Jempol (Thumb Bend Trigger) — hanya berbunyi 1 kali saat jempol ditekuk
+                if (isThumbBent && !wasThumbBentRef.current && nowMs - lastAiTriggerTimeRef.current > 240) {
                   lastAiTriggerTimeRef.current = nowMs;
                   playNoteByIndex(noteIdx, 0.96);
                 }
-                // 2. Ketukan ayunan cepat ke bawah
-                else if (vy > 0.42 && nowMs - lastAiTriggerTimeRef.current > 180) {
-                  lastAiTriggerTimeRef.current = nowMs;
-                  playNoteByIndex(noteIdx, Math.min(1, 0.70 + vy * 0.3));
-                }
-                // 3. Mode Gesek (Bow)
+                // 2. Mode Gesek (Bow) untuk instrumen berdawai
                 else if (instrument.interactionType === "bow") {
                   const speed = Math.abs(vx);
                   if ((isThumbBent || speed > 0.16) && note) {
