@@ -462,6 +462,7 @@ export function Instrument3DStage({
   const [handCursor, setHandCursor] = React.useState<{ x: number; y: number } | null>(null);
   const [cameraTargetNoteIdx, setCameraTargetNoteIdx] = React.useState<number | null>(null);
   const [isPinchingState, setIsPinchingState] = React.useState(false);
+  const [isCursorInDock, setIsCursorInDock] = React.useState(false);
   const wasPinchingRef = React.useRef(false);
   const lastDwellNoteRef = React.useRef<{ idx: number; startTime: number } | null>(null);
 
@@ -476,7 +477,7 @@ export function Instrument3DStage({
   // Refs Kamera AI
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const overlayCanvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const prevHandPosRef = React.useRef<{ x: number; y: number; time: number } | null>(null);
+  const prevHandPosRef = React.useRef<{ x: number; y: number; inDock: boolean; time: number } | null>(null);
   const lastAiTriggerTimeRef = React.useRef(0);
 
   // State Demo Autoplay (Tes Tangga Nada & Melodi Lagu Daerah)
@@ -720,17 +721,22 @@ export function Instrument3DStage({
               setCameraHandDetected(true);
               // Mirror X agar sesuai gerakan cermin pengguna
               const normX = 1 - hand[8].x;
-              const normY = hand[8].y;
-              setHandCursor({ x: normX, y: normY });
+              // Kalibrasi sumbu Y alami agar jangkauan tangan dari dada ke meja menjangkau bilah bawah (Foto 2)
+              const calibratedY = Math.max(0, Math.min(1, (hand[8].y - 0.16) / 0.62));
+              setHandCursor({ x: normX, y: calibratedY });
 
-              // Kalibrasi jangkauan tangan alami (0.18 s/d 0.82) agar seluruh nada mudah dijangkau dari kursi
-              const calibratedX = Math.max(0, Math.min(1, (normX - 0.18) / 0.64));
+              // Kalibrasi jangkauan tangan alami (0.16 s/d 0.84) agar seluruh nada mudah dijangkau dari kursi
+              const calibratedX = Math.max(0, Math.min(1, (normX - 0.16) / 0.68));
               const noteIdx = Math.min(
                 instrument.notes.length - 1,
                 Math.max(0, Math.floor(calibratedX * instrument.notes.length))
               );
               const note = instrument.notes[noteIdx] ?? instrument.notes[0];
               setCameraTargetNoteIdx(noteIdx);
+
+              // Zona bilah bawah (Foto 2) aktif ketika kursor berada di bilah bawah kanvas (calibratedY >= 0.64)
+              const inDockZone = calibratedY >= 0.64 && normX <= 0.88;
+              setIsCursorInDock(inDockZone);
 
               // Deteksi cubitan jari (Pinch antara ibu jari landmark 4 dan telunjuk landmark 8)
               let isPinching = false;
@@ -744,82 +750,83 @@ export function Instrument3DStage({
               if (prev) {
                 const dt = Math.max(8, nowMs - prev.time);
                 const vx = (normX - prev.x) / (dt / 1000);
-                const vy = (normY - prev.y) / (dt / 1000);
+                const vy = (calibratedY - prev.y) / (dt / 1000);
+                const wasInDock = prev.inDock;
 
-                // 1. Gesture Pinch / Air-Tap (Sangat presisi untuk SEMUA instrumen)
-                if (isPinching && !wasPinchingRef.current && nowMs - lastAiTriggerTimeRef.current > 160) {
-                  lastAiTriggerTimeRef.current = nowMs;
-                  playNoteByIndex(noteIdx, 0.95);
-                }
-
-                // 2. Deteksi gestur spesifik tipe interaksi instrumen
-                if (instrument.interactionType === "strike") {
-                  // Kecepatan ayunan ke bawah (diturunkan ke 0.42 agar peka & responsif)
-                  if (vy > 0.42 && nowMs - lastAiTriggerTimeRef.current > 180) {
+                // ========================================================
+                // ATURAN UTAMA: HANYA BISA DIMAINKAN KETIKA DI ZONA FOTO 2
+                // ========================================================
+                if (inDockZone) {
+                  // 1. Ayunan turun masuk ke bilah (turun dari atas ke bilah bawah -> langsung menabuh)
+                  if (!wasInDock && nowMs - lastAiTriggerTimeRef.current > 160) {
+                    lastAiTriggerTimeRef.current = nowMs;
+                    playNoteByIndex(noteIdx, 0.95);
+                  }
+                  // 2. Gesture Pinch / Air-Tap di atas bilah
+                  else if (isPinching && !wasPinchingRef.current && nowMs - lastAiTriggerTimeRef.current > 150) {
+                    lastAiTriggerTimeRef.current = nowMs;
+                    playNoteByIndex(noteIdx, 0.95);
+                  }
+                  // 3. Ketukan ayunan ke bawah di dalam bilah
+                  else if (vy > 0.35 && nowMs - lastAiTriggerTimeRef.current > 180) {
                     lastAiTriggerTimeRef.current = nowMs;
                     playNoteByIndex(noteIdx, Math.min(1, 0.70 + vy * 0.3));
                   }
-                } else if (instrument.interactionType === "pluck") {
-                  const prevCalibratedX = Math.max(0, Math.min(1, (prev.x - 0.18) / 0.64));
-                  const prevBucket = Math.floor(prevCalibratedX * instrument.notes.length);
-                  if (
-                    prevBucket !== noteIdx &&
-                    nowMs - lastAiTriggerTimeRef.current > 100
+                  // 4. Geser antar bilah (glissando / petik / ganti nada)
+                  else if (
+                    (instrument.interactionType === "pluck" || instrument.interactionType === "shake") &&
+                    Math.abs(vx) > 0.35
                   ) {
-                    lastAiTriggerTimeRef.current = nowMs;
-                    playNoteByIndex(noteIdx, 0.88);
+                    const prevCalibratedX = Math.max(0, Math.min(1, (prev.x - 0.16) / 0.68));
+                    const prevBucket = Math.floor(prevCalibratedX * instrument.notes.length);
+                    if (prevBucket !== noteIdx && nowMs - lastAiTriggerTimeRef.current > 110) {
+                      lastAiTriggerTimeRef.current = nowMs;
+                      playNoteByIndex(noteIdx, 0.90);
+                    }
                   }
-                } else if (instrument.interactionType === "shake") {
-                  // Goyangan ke kiri atau kanan (diturunkan ke 0.45 agar mudah dimainkan)
-                  if (Math.abs(vx) > 0.45 && nowMs - lastAiTriggerTimeRef.current > 140) {
-                    lastAiTriggerTimeRef.current = nowMs;
-                    playNoteByIndex(noteIdx, 0.9);
+                  // 5. Gesek (Bow)
+                  else if (instrument.interactionType === "bow") {
+                    const speed = Math.abs(vx);
+                    if (speed > 0.16 && note) {
+                      bowStateRef.current = { active: true, pos: normX };
+                      setActiveNoteIdx(noteIdx);
+                      soundEngine.startContinuousVoice(
+                        "bow",
+                        note.freq,
+                        Math.min(1, 0.4 + speed * 0.5)
+                      );
+                    } else {
+                      bowStateRef.current.active = false;
+                      soundEngine.stopContinuousVoice();
+                    }
                   }
-                } else if (instrument.interactionType === "bow") {
-                  const speed = Math.abs(vx);
-                  if (speed > 0.18 && note) {
-                    bowStateRef.current = { active: true, pos: normX };
-                    setActiveNoteIdx(noteIdx);
-                    soundEngine.startContinuousVoice(
-                      "bow",
-                      note.freq,
-                      Math.min(1, 0.4 + speed * 0.5)
-                    );
+                  // 6. Dwell Hover (Jika tangan diam membidik bilah di zona bawah selama 380ms)
+                  else if (Math.abs(vx) < 0.10 && Math.abs(vy) < 0.10) {
+                    if (!lastDwellNoteRef.current || lastDwellNoteRef.current.idx !== noteIdx) {
+                      lastDwellNoteRef.current = { idx: noteIdx, startTime: nowMs };
+                    } else if (
+                      nowMs - lastDwellNoteRef.current.startTime > 380 &&
+                      nowMs - lastAiTriggerTimeRef.current > 350
+                    ) {
+                      lastAiTriggerTimeRef.current = nowMs;
+                      lastDwellNoteRef.current.startTime = nowMs + 1000;
+                      playNoteByIndex(noteIdx, 0.85);
+                    }
                   } else {
+                    lastDwellNoteRef.current = null;
+                  }
+                } else {
+                  // Di luar zona bilah Foto 2: hentikan suara terus-menerus dan jangan bunyikan nada!
+                  if (instrument.interactionType === "bow") {
                     bowStateRef.current.active = false;
                     soundEngine.stopContinuousVoice();
                   }
-                } else if (instrument.interactionType === "blow") {
-                  if (normY < 0.78 && note) {
-                    const breathPower = Math.max(0.25, Math.min(1, 1 - normY));
-                    blowEnergyRef.current = breathPower;
-                    setActiveNoteIdx(noteIdx);
-                    soundEngine.startContinuousVoice("blow", note.freq, breathPower);
-                  } else {
-                    blowEnergyRef.current = 0;
-                    soundEngine.stopContinuousVoice();
-                  }
-                }
-
-                // 3. Dwell Hover (Jika tangan berhenti membidik nada selama 420ms)
-                if (Math.abs(vx) < 0.12 && Math.abs(vy) < 0.12) {
-                  if (!lastDwellNoteRef.current || lastDwellNoteRef.current.idx !== noteIdx) {
-                    lastDwellNoteRef.current = { idx: noteIdx, startTime: nowMs };
-                  } else if (
-                    nowMs - lastDwellNoteRef.current.startTime > 420 &&
-                    nowMs - lastAiTriggerTimeRef.current > 380
-                  ) {
-                    lastAiTriggerTimeRef.current = nowMs;
-                    lastDwellNoteRef.current.startTime = nowMs + 1000;
-                    playNoteByIndex(noteIdx, 0.8);
-                  }
-                } else {
                   lastDwellNoteRef.current = null;
                 }
               }
 
               wasPinchingRef.current = isPinching;
-              prevHandPosRef.current = { x: normX, y: normY, time: nowMs };
+              prevHandPosRef.current = { x: normX, y: calibratedY, inDock: inDockZone, time: nowMs };
 
               if (ctx && canvas) {
                 drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, isPinching);
@@ -828,6 +835,7 @@ export function Instrument3DStage({
               setCameraHandDetected(false);
               setHandCursor(null);
               setCameraTargetNoteIdx(null);
+              setIsCursorInDock(false);
               prevHandPosRef.current = null;
               wasPinchingRef.current = false;
               lastDwellNoteRef.current = null;
@@ -1132,7 +1140,9 @@ export function Instrument3DStage({
             <span className="truncate">Panduan ({meta.badge})</span>
           </div>
           <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-[11px] leading-snug sm:leading-relaxed text-stone-600 line-clamp-2 sm:line-clamp-none">
-            {cameraAiEnabled ? instrument.cameraGuide : instrument.mouseGuide}
+            {cameraAiEnabled
+              ? "Arahkan kursor telunjuk ke bilah bawah (zona nada), lalu ketuk ke bawah atau cubit (pinch) jari untuk menabuh."
+              : instrument.mouseGuide}
           </p>
         </div>
 
@@ -1202,39 +1212,65 @@ export function Instrument3DStage({
             {/* Indikator Titik Jari & Efek Pinch */}
             <div
               className={cn(
-                "h-7 w-7 rounded-full border-2 border-white shadow-[0_0_15px_rgba(245,196,81,0.9)] transition-all duration-100 flex items-center justify-center",
-                isPinchingState
-                  ? "scale-125 bg-amber-400 ring-4 ring-white"
-                  : "scale-100 bg-[#F5C451]/90 ring-2 ring-[#6E472D]/50"
+                "rounded-full border-2 transition-all duration-100 flex items-center justify-center",
+                isCursorInDock
+                  ? isPinchingState
+                    ? "h-8 w-8 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_20px_rgba(251,191,36,1)]"
+                    : "h-7 w-7 scale-110 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
+                  : "h-6 w-6 scale-90 bg-stone-900/60 border-stone-300 ring-2 ring-stone-900/40 opacity-75"
               )}
             >
-              <div className="h-2 w-2 rounded-full bg-white shadow-xs" />
+              <div
+                className={cn(
+                  "h-2 w-2 rounded-full shadow-xs",
+                  isCursorInDock ? "bg-white" : "bg-stone-300"
+                )}
+              />
             </div>
 
             {/* Label Nada yang Sedang Dibidik Kursor */}
             {cameraTargetNoteIdx !== null && instrument.notes[cameraTargetNoteIdx] && (
-              <span className="whitespace-nowrap rounded-full bg-stone-900/95 px-2 py-0.5 text-[10px] font-bold text-amber-200 shadow-md border border-amber-400/50">
-                {instrument.notes[cameraTargetNoteIdx].label} ({instrument.notes[cameraTargetNoteIdx].code})
+              <span
+                className={cn(
+                  "whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold shadow-md border transition-all",
+                  isCursorInDock
+                    ? "bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30 scale-105"
+                    : "bg-stone-900/85 text-stone-300 border-stone-600 scale-95"
+                )}
+              >
+                {isCursorInDock
+                  ? `${instrument.notes[cameraTargetNoteIdx].label} (${instrument.notes[cameraTargetNoteIdx].code})`
+                  : `↓ Geser ke Bawah: ${instrument.notes[cameraTargetNoteIdx].label}`}
               </span>
             )}
           </div>
         )}
 
-        {/* STRIP ZONA NADA KAMERA AI (MEMUDAHKAN MELIHAT SEBARAN NADA KIRI-TENGAH-KANAN) */}
+        {/* STRIP ZONA NADA KAMERA AI (FOTO 2 — AREA AKTIF PERMAINAN) */}
         {cameraAiEnabled && (
-          <div className="pointer-events-none absolute inset-x-2 xs:inset-x-4 sm:inset-x-8 bottom-2.5 sm:bottom-3 z-15 flex items-center justify-between gap-1 sm:gap-1.5 rounded-2xl bg-stone-950/75 p-1 sm:p-1.5 backdrop-blur-md border border-white/20 mr-32 xs:mr-36 sm:mr-48">
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-x-2 xs:inset-x-4 sm:inset-x-8 bottom-2.5 sm:bottom-3 z-15 flex items-center justify-between gap-1 sm:gap-1.5 rounded-2xl p-1 sm:p-1.5 backdrop-blur-md border transition-all duration-200 mr-32 xs:mr-36 sm:mr-48",
+              isCursorInDock
+                ? "bg-stone-950/90 border-amber-400/80 ring-2 ring-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.3)]"
+                : "bg-stone-950/75 border-white/20 shadow-md"
+            )}
+          >
             {instrument.notes.map((note, idx) => {
               const isTarget = cameraTargetNoteIdx === idx;
               const isPlaying = activeNoteIdx === idx;
+              const isTargetInDock = isTarget && isCursorInDock;
               return (
                 <div
                   key={note.code}
                   className={cn(
                     "flex-1 flex flex-col items-center justify-center py-1 sm:py-1.5 rounded-xl transition-all duration-100 min-w-0",
                     isPlaying
-                      ? "bg-amber-400 text-stone-950 scale-105 shadow-[0_0_12px_rgba(251,191,36,0.9)]"
+                      ? "bg-amber-400 text-stone-950 scale-105 shadow-[0_0_12px_rgba(251,191,36,0.9)] font-extrabold"
+                      : isTargetInDock
+                      ? "bg-white text-stone-900 scale-105 ring-3 ring-amber-400 font-extrabold shadow-md"
                       : isTarget
-                      ? "bg-white text-stone-900 scale-102 ring-2 ring-amber-400 font-bold shadow-sm"
+                      ? "bg-white/25 text-white ring-1 ring-white/50 font-semibold"
                       : "bg-white/10 text-stone-300"
                   )}
                 >
