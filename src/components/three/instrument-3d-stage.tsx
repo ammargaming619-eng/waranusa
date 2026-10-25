@@ -721,9 +721,7 @@ export function Instrument3DStage({
               setCameraHandDetected(true);
               // Mirror X agar sesuai gerakan cermin pengguna
               const normX = 1 - hand[8].x;
-              // Kalibrasi sumbu Y alami agar jangkauan tangan dari dada ke meja menjangkau bilah bawah (Foto 2)
-              const calibratedY = Math.max(0, Math.min(1, (hand[8].y - 0.16) / 0.62));
-              setHandCursor({ x: normX, y: calibratedY });
+              const rawY = hand[8].y;
 
               // Kalibrasi jangkauan tangan alami (0.16 s/d 0.84) agar seluruh nada mudah dijangkau dari kursi
               const calibratedX = Math.max(0, Math.min(1, (normX - 0.16) / 0.68));
@@ -732,11 +730,12 @@ export function Instrument3DStage({
                 Math.max(0, Math.floor(calibratedX * instrument.notes.length))
               );
               const note = instrument.notes[noteIdx] ?? instrument.notes[0];
-              setCameraTargetNoteIdx(noteIdx);
 
-              // Zona bilah bawah (Foto 2) aktif ketika kursor berada di bilah bawah kanvas (calibratedY >= 0.64)
-              const inDockZone = calibratedY >= 0.64 && normX <= 0.88;
+              // Kursor hanya aktif & muncul jika tangan didekatkan ke bar nada bawah (Foto 2)
+              const inDockZone = rawY >= 0.46 && normX <= 0.88;
               setIsCursorInDock(inDockZone);
+              setCameraTargetNoteIdx(inDockZone ? noteIdx : null);
+              setHandCursor({ x: normX, y: rawY });
 
               // Deteksi cubitan jari (Pinch antara ibu jari landmark 4 dan telunjuk landmark 8)
               let isPinching = false;
@@ -750,12 +749,12 @@ export function Instrument3DStage({
               if (prev) {
                 const dt = Math.max(8, nowMs - prev.time);
                 const vx = (normX - prev.x) / (dt / 1000);
-                const vy = (calibratedY - prev.y) / (dt / 1000);
+                const vy = (rawY - prev.y) / (dt / 1000);
                 const wasInDock = prev.inDock;
 
-                // ========================================================
-                // ATURAN UTAMA: HANYA BISA DIMAINKAN KETIKA DI ZONA FOTO 2
-                // ========================================================
+                // =========================================================================
+                // ATURAN MUTLAK: HANYA BISA MEMAINKAN NADA KETIKA BERADA DI ZONA BAR NADA
+                // =========================================================================
                 if (inDockZone) {
                   // 1. Ayunan turun masuk ke bilah (turun dari atas ke bilah bawah -> langsung menabuh)
                   if (!wasInDock && nowMs - lastAiTriggerTimeRef.current > 160) {
@@ -826,7 +825,7 @@ export function Instrument3DStage({
               }
 
               wasPinchingRef.current = isPinching;
-              prevHandPosRef.current = { x: normX, y: calibratedY, inDock: inDockZone, time: nowMs };
+              prevHandPosRef.current = { x: normX, y: rawY, inDock: inDockZone, time: nowMs };
 
               if (ctx && canvas) {
                 drawHandSkeleton(ctx, hand, canvas.width, canvas.height, true, isPinching);
@@ -1200,47 +1199,31 @@ export function Instrument3DStage({
           </div>
         )}
 
-        {/* KURSOR TANGAN VIRTUAL SAAT MODE KAMERA AI AKTIF */}
-        {cameraAiEnabled && handCursor && (
+        {/* KURSOR TANGAN VIRTUAL SAAT MODE KAMERA AI AKTIF — HANYA MUNCUL JIKA TANGAN DIDELATKAN KE BAR NADA */}
+        {cameraAiEnabled && handCursor && isCursorInDock && (
           <div
-            className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1 transition-transform duration-75"
+            className="pointer-events-none absolute z-30 -translate-x-1/2 flex flex-col items-center gap-1 transition-all duration-75"
             style={{
-              left: `${handCursor.x * 100}%`,
-              top: `${handCursor.y * 100}%`,
+              left: `${Math.max(6, Math.min(76, handCursor.x * 100))}%`,
+              bottom: "4.5rem",
             }}
           >
             {/* Indikator Titik Jari & Efek Pinch */}
             <div
               className={cn(
                 "rounded-full border-2 transition-all duration-100 flex items-center justify-center",
-                isCursorInDock
-                  ? isPinchingState
-                    ? "h-8 w-8 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_20px_rgba(251,191,36,1)]"
-                    : "h-7 w-7 scale-110 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
-                  : "h-6 w-6 scale-90 bg-stone-900/60 border-stone-300 ring-2 ring-stone-900/40 opacity-75"
+                isPinchingState
+                  ? "h-9 w-9 scale-125 bg-amber-400 border-white ring-4 ring-amber-300 shadow-[0_0_24px_rgba(251,191,36,1)]"
+                  : "h-7 w-7 scale-110 bg-[#F5C451] border-white ring-3 ring-[#6E472D]/60 shadow-[0_0_15px_rgba(245,196,81,0.95)]"
               )}
             >
-              <div
-                className={cn(
-                  "h-2 w-2 rounded-full shadow-xs",
-                  isCursorInDock ? "bg-white" : "bg-stone-300"
-                )}
-              />
+              <div className="h-2 w-2 rounded-full bg-white shadow-xs" />
             </div>
 
             {/* Label Nada yang Sedang Dibidik Kursor */}
             {cameraTargetNoteIdx !== null && instrument.notes[cameraTargetNoteIdx] && (
-              <span
-                className={cn(
-                  "whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold shadow-md border transition-all",
-                  isCursorInDock
-                    ? "bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30 scale-105"
-                    : "bg-stone-900/85 text-stone-300 border-stone-600 scale-95"
-                )}
-              >
-                {isCursorInDock
-                  ? `${instrument.notes[cameraTargetNoteIdx].label} (${instrument.notes[cameraTargetNoteIdx].code})`
-                  : `↓ Geser ke Bawah: ${instrument.notes[cameraTargetNoteIdx].label}`}
+              <span className="whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-md border bg-amber-950/95 text-amber-200 border-amber-400/80 ring-2 ring-amber-400/30">
+                {instrument.notes[cameraTargetNoteIdx].label} ({instrument.notes[cameraTargetNoteIdx].code})
               </span>
             )}
           </div>
@@ -1264,16 +1247,19 @@ export function Instrument3DStage({
                 <div
                   key={note.code}
                   className={cn(
-                    "flex-1 flex flex-col items-center justify-center py-1 sm:py-1.5 rounded-xl transition-all duration-100 min-w-0",
+                    "flex-1 flex flex-col items-center justify-center py-1 sm:py-1.5 rounded-xl transition-all duration-100 min-w-0 relative",
                     isPlaying
                       ? "bg-amber-400 text-stone-950 scale-105 shadow-[0_0_12px_rgba(251,191,36,0.9)] font-extrabold"
                       : isTargetInDock
                       ? "bg-white text-stone-900 scale-105 ring-3 ring-amber-400 font-extrabold shadow-md"
-                      : isTarget
-                      ? "bg-white/25 text-white ring-1 ring-white/50 font-semibold"
                       : "bg-white/10 text-stone-300"
                   )}
                 >
+                  {isTargetInDock && (
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-amber-500 px-1.5 py-0.2 text-[8px] font-bold text-stone-950 shadow-xs uppercase tracking-tighter">
+                      Bidik
+                    </span>
+                  )}
                   <span className="font-mono text-[8px] sm:text-[10px] uppercase font-bold truncate">
                     {note.code}
                   </span>
