@@ -6,6 +6,8 @@ import {
   Send,
   RotateCcw,
   ChevronLeft,
+  Camera,
+  Sparkles,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
@@ -14,9 +16,73 @@ import { cn } from "@/lib/utils";
 // TYPES & CONSTANTS
 // ============================================================================
 
+export interface MessageImage {
+  data: string; // Base64 data murni tanpa prefix URL scheme
+  mimeType: string;
+  previewUrl: string; // Data URL untuk pratinjau instan di browser
+}
+
 interface Message {
   role: "user" | "assistant";
   content: string;
+  image?: MessageImage;
+}
+
+/**
+ * Kompresi gambar sisi klien menggunakan HTML5 Canvas.
+ * Resize proporsional dengan batas maksimal 1024px dan kualitas JPEG 0.85.
+ * Mengurangi ukuran payload dari belasan MB menjadi ~80-180 KB demi transmisi super cepat dan hemat kuota API.
+ */
+function compressImageFile(file: File, maxDim = 1024, quality = 0.85): Promise<MessageImage> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Gagal membaca file gambar"));
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Gagal memuat gambar"));
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas context tidak tersedia"));
+          return;
+        }
+
+        // Latar putih halus untuk menghindari transparansi hitam pada PNG
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const mimeType = "image/jpeg";
+        const dataUrl = canvas.toDataURL(mimeType, quality);
+        const base64Data = dataUrl.split(",")[1] || "";
+
+        resolve({
+          data: base64Data,
+          mimeType,
+          previewUrl: dataUrl,
+        });
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 const INITIAL_MESSAGE: Message = {
@@ -394,9 +460,13 @@ export function UnifiedAssistantWidget() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<MessageImage | null>(null);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ---------------- Load Storage on Mount ----------------
   useEffect(() => {
@@ -420,7 +490,7 @@ export function UnifiedAssistantWidget() {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isLoading, isOpen]);
+  }, [messages, isLoading, isOpen, selectedImage]);
 
   useEffect(() => {
     if (isOpen) {
@@ -439,17 +509,43 @@ export function UnifiedAssistantWidget() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen]);
 
+  // Handler pemilihan file foto (Kamera HP / File Explorer)
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsCompressing(true);
+    try {
+      const compressed = await compressImageFile(file);
+      setSelectedImage(compressed);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    } catch (err) {
+      console.error("[Kompresi Foto Gagal]:", err);
+    } finally {
+      setIsCompressing(false);
+    }
+  };
+
   // ---------------- Chat Handlers ----------------
   const handleSendMessage = async (textToSend?: string) => {
-    const text = (textToSend || inputValue).trim();
-    if (!text || isLoading) return;
+    const text = (textToSend !== undefined ? textToSend : inputValue).trim();
+    const imageToSend = selectedImage;
 
-    const userMessage: Message = { role: "user", content: text };
+    // Boleh kirim jika ada teks ATAU ada gambar yang dipilih
+    if ((!text && !imageToSend) || isLoading) return;
+
+    const userMessage: Message = {
+      role: "user",
+      content: text || (imageToSend ? "Mohon identifikasi objek warisan budaya Nusantara pada foto ini." : ""),
+      image: imageToSend || undefined,
+    };
     const updatedMessages = [...messages, userMessage];
 
     setMessages(updatedMessages);
     setInputValue("");
+    setSelectedImage(null);
     setIsLoading(true);
+    setIsAnalyzingImage(Boolean(imageToSend));
 
     try {
       const res = await fetch("/api/chat", {
@@ -474,6 +570,8 @@ export function UnifiedAssistantWidget() {
       ]);
     } finally {
       setIsLoading(false);
+      setIsAnalyzingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -486,6 +584,8 @@ export function UnifiedAssistantWidget() {
 
   const resetChat = () => {
     setMessages([INITIAL_MESSAGE]);
+    setSelectedImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
     try {
       sessionStorage.removeItem(CHAT_STORAGE_KEY);
     } catch {}
@@ -655,43 +755,136 @@ export function UnifiedAssistantWidget() {
                             : "bg-white border border-stone-200/80 text-stone-800 rounded-bl-xs"
                         )}
                       >
-                        <ReactMarkdown className="prose prose-xs max-w-none text-current">
-                          {msg.content}
-                        </ReactMarkdown>
+                        {/* Tampilkan foto di bubble pesan jika dikirim pengguna */}
+                        {msg.image && (
+                          <div className="mb-2.5 overflow-hidden rounded-xl border border-white/25 shadow-xs max-w-[240px]">
+                            <img
+                              src={msg.image.previewUrl || `data:${msg.image.mimeType};base64,${msg.image.data}`}
+                              alt="Foto warisan budaya yang diunggah"
+                              className="max-h-[180px] w-full object-cover"
+                            />
+                          </div>
+                        )}
+
+                        {msg.content && (
+                          <ReactMarkdown className="prose prose-xs max-w-none text-current">
+                            {msg.content}
+                          </ReactMarkdown>
+                        )}
                       </div>
                     </div>
                   ))}
 
                   {isLoading && (
-                    <div className="mr-auto flex items-center gap-1.5 bg-white border border-stone-200/80 text-stone-500 rounded-2xl px-4 py-2.5 rounded-bl-xs text-xs shadow-xs">
-                      <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce" />
-                      <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.4s]" />
-                      <span className="ml-1 text-[11px]">WaraNusa AI sedang merangkai jawaban...</span>
+                    <div className="mr-auto flex items-center gap-2 bg-white border border-stone-200/80 text-stone-700 rounded-2xl px-4 py-2.5 rounded-bl-xs text-xs shadow-xs">
+                      {isAnalyzingImage ? (
+                        <>
+                          <Sparkles className="w-4 h-4 text-[#8C5E3C] animate-spin shrink-0" />
+                          <span className="text-[11px] font-semibold text-[#52331C]">
+                            Memindai detail objek budaya Nusantara...
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce" />
+                          <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.2s]" />
+                          <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.4s]" />
+                          <span className="ml-1 text-[11px]">WaraNusa AI sedang merangkai jawaban...</span>
+                        </>
+                      )}
                     </div>
                   )}
                   <div ref={messagesEndRef} />
                 </div>
               )}
 
-              {/* 2C. INPUT BAR & DISCLAIMER DI BAWAH */}
-              <div className="p-3 bg-[#FAF7F2] border-t border-stone-200/60 flex flex-col gap-1.5 shrink-0">
-                <div className="flex items-center gap-2 bg-[#F5EFEB] border border-stone-200/80 rounded-full px-3.5 py-1.5 focus-within:border-[#8C5E3C] focus-within:ring-2 focus-within:ring-[#8C5E3C]/20 transition-all">
+              {/* 2C. INPUT BAR & PREVIEW FOTO DI BAWAH */}
+              <div className="p-3 bg-[#FAF7F2] border-t border-stone-200/60 flex flex-col gap-2 shrink-0">
+                {/* Thumbnail Preview Foto yang Sudah Dipilih */}
+                {selectedImage && (
+                  <div className="flex items-center gap-2.5 p-2 px-3 bg-[#EFE7DE] rounded-2xl border border-stone-300/80">
+                    <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-stone-300 bg-stone-100 shrink-0 shadow-xs">
+                      <img
+                        src={selectedImage.previewUrl}
+                        alt="Pratinjau foto terpilih"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-[#52331C] truncate flex items-center gap-1">
+                        <Camera className="w-3.5 h-3.5 text-[#8C5E3C]" />
+                        <span>Foto siap dipindai</span>
+                      </p>
+                      <p className="text-[10px] text-stone-600 truncate">
+                        Ketik pertanyaan atau klik kirim untuk analisis
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedImage(null);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="w-6 h-6 rounded-full bg-stone-200/90 hover:bg-stone-300 text-stone-600 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
+                      aria-label="Hapus foto terpilih"
+                      title="Hapus foto"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-[#F5EFEB] border border-stone-200/80 rounded-full px-2.5 sm:px-3 py-1.5 focus-within:border-[#8C5E3C] focus-within:ring-2 focus-within:ring-[#8C5E3C]/20 transition-all">
+                  {/* Input File Tersembunyi untuk Kamera / Galeri */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={handleFileSelect}
+                    disabled={isLoading || isCompressing}
+                  />
+
+                  {/* Tombol Kamera / Unggah Gambar */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isLoading || isCompressing}
+                    className={cn(
+                      "w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all shrink-0 cursor-pointer",
+                      selectedImage
+                        ? "bg-[#6E472D] text-white ring-2 ring-[#6E472D]/30"
+                        : "text-stone-600 hover:text-[#52331C] hover:bg-stone-200/70"
+                    )}
+                    aria-label="Pindai atau Unggah Foto Budaya"
+                    title={selectedImage ? "Ganti foto budaya" : "Pindai / Unggah Foto Budaya (Kamera HP)"}
+                  >
+                    <Camera className="w-4 h-4" />
+                  </button>
+
                   <input
                     ref={inputRef}
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Tanya tradisi, rumah adat, musik..."
-                    className="flex-1 bg-transparent text-xs sm:text-sm text-stone-800 placeholder-stone-400 focus:outline-none"
-                    disabled={isLoading}
+                    placeholder={
+                      isCompressing
+                        ? "Menyiapkan foto..."
+                        : selectedImage
+                        ? "Tanya detail tentang foto ini..."
+                        : "Tanya tradisi, rumah adat, musik..."
+                    }
+                    className="flex-1 bg-transparent text-xs sm:text-sm text-stone-800 placeholder-stone-400 focus:outline-none min-w-0"
+                    disabled={isLoading || isCompressing}
                   />
+
                   <button
                     type="button"
                     onClick={() => handleSendMessage()}
-                    disabled={!inputValue.trim() || isLoading}
-                    className="w-7 h-7 rounded-full btn-waranusa disabled:opacity-40 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer"
+                    disabled={(!inputValue.trim() && !selectedImage) || isLoading || isCompressing}
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full btn-waranusa disabled:opacity-40 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-xs"
                     aria-label="Kirim Pesan"
                   >
                     <Send className="w-3.5 h-3.5" />

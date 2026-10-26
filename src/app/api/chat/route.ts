@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
+  image?: {
+    data: string;
+    mimeType: string;
+  };
 }
 
 // In-memory cache untuk context RAG-lite
@@ -86,13 +90,37 @@ Karakter & Gaya Komunikasi:
 
 ${culturalContext}
 
-Panduan Penjawab:
+Panduan Khusus Analisis Gambar & Deteksi Objek Budaya (Multimodal Vision):
+Bila pengguna melampirkan gambar/foto:
+1. Identifikasi secara seksama objek warisan budaya Indonesia yang tampak pada gambar (apakah itu motif batik/tenun, arsitektur rumah adat, alat musik tradisional, senjata pusaka tradisional, atau pakaian adat daerah).
+2. Berikan jawaban yang selalu terstruktur rapi, padat, dan ringkas dengan format persis berikut:
+   - 🏷️ **Nama Objek:** [Nama spesifik objek, misal: Motif Batik Mega Mendung / Rumah Joglo Sinom / Alat Musik Sasando]
+   - 📍 **Asal Daerah:** [Provinsi, Pulau, & Suku asal]
+   - 💡 **Filosofi & Makna:** [Penjelasan ringkas makna luhur, fungsi adat/ritual, atau filosofi tradisinya dalam 2-3 kalimat]
+   - 🔍 **Ciri Khas Visual:** [Pola motif, bentuk struktur atap/bilah/senar, atau material alami yang tampak pada gambar]
+3. Jika gambar yang dikirimkan jelas BUKAN objek budaya Indonesia (misalnya kendaraan modern, gadget, benda asing, atau foto umum non-budaya), sampaikan dengan sopan dan ramah bahwa objek tersebut bukan warisan tradisi Nusantara, lalu ajak pengguna untuk memotret kain batik, rumah adat, kuliner tradisi, atau alat musik daerah di sekitar mereka.
+
+Panduan Penjawab Teks Umum:
 - Jika pengguna bertanya tentang objek budaya yang ada di katalog Waranusa di atas (misalnya Rumah Joglo, Gamelan Saron, Batik, dsb), integrasikan informasi dari katalog tersebut dan sebutkan bahwa mereka dapat melihatnya secara interaktif di platform Waranusa.
 - Jawablah dengan ringkas, padat (2-4 paragraf atau daftar terstruktur), tidak bertele-tele namun kaya makna.`;
 }
 
 // Fallback cerdas saat GEMINI_API_KEY tidak ada atau gagal
-function generateCulturalFallbackResponse(userPrompt: string): string {
+function generateCulturalFallbackResponse(userPrompt: string, hasImage = false): string {
+  if (hasImage) {
+    return `### 📷 Analisis Objek Budaya Nusantara
+
+Terima kasih telah membagikan foto objek budaya!
+
+Fitur **Deteksi Foto (Multimodal Vision)** WaraNusa dirancang khusus untuk mengenali berbagai warisan tradisi Nusantara:
+- 🏷️ **Nama Objek:** Identifikasi spesifik ragam motif Batik/Tenun, arsitektur Rumah Adat, Alat Musik, atau Senjata Pusaka.
+- 📍 **Asal Daerah:** Menghubungkan visual objek dengan 38 provinsi di Nusantara.
+- 💡 **Filosofi & Makna:** Menguraikan nilai kearifan lokal, fungsi ritual, dan sejarah luhurnya.
+- 🔍 **Ciri Khas Visual:** Menelaah ornamen ukiran, siluet atap, atau susunan bilah nada.
+
+*(Catatan: Mode deteksi otomatis via Gemini Vision API akan aktif penuh saat kunci integrasi AI terpasang. Anda juga dapat menelusuri model visual serupa di menu **Katalog Budaya** dan **Eksplorasi 3D**!)*`;
+  }
+
   const p = userPrompt.toLowerCase();
 
   if (p.includes("joglo") || p.includes("rumah")) {
@@ -156,6 +184,7 @@ export async function POST(req: NextRequest) {
 
     const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
     const userQuery = lastUserMessage?.content || "";
+    const hasImageInRequest = messages.some((m) => Boolean(m.image?.data));
 
     // Ambil RAG-lite context dari Prisma
     const culturalContext = await getCulturalCatalogContext();
@@ -165,20 +194,46 @@ export async function POST(req: NextRequest) {
 
     // Jika API Key belum terpasang, gunakan respons cerdas fallback
     if (!apiKey) {
-      const fallbackReply = generateCulturalFallbackResponse(userQuery);
+      const fallbackReply = generateCulturalFallbackResponse(userQuery, hasImageInRequest);
       return NextResponse.json({
         role: "assistant",
         content: fallbackReply,
       });
     }
 
-    // Format pesan untuk Gemini API (v1beta generateContent)
+    // Format pesan untuk Gemini API (v1beta generateContent multimodal)
     const geminiContents = messages
       .filter((m) => m.role === "user" || m.role === "assistant")
-      .map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      }));
+      .map((m) => {
+        const role = m.role === "assistant" ? "model" : "user";
+        const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
+
+        // Tambahkan inline image data bila pengguna menyertakan foto
+        if (m.image?.data && m.image?.mimeType) {
+          const cleanBase64 = m.image.data.includes(",")
+            ? m.image.data.split(",")[1]
+            : m.image.data;
+
+          parts.push({
+            inlineData: {
+              mimeType: m.image.mimeType,
+              data: cleanBase64,
+            },
+          });
+        }
+
+        if (m.content && m.content.trim()) {
+          parts.push({ text: m.content.trim() });
+        } else if (parts.length > 0 && !parts.some((p) => p.text)) {
+          // Bila user hanya mengirim foto tanpa teks
+          parts.push({
+            text: "Mohon identifikasi objek warisan budaya Nusantara pada foto ini secara terstruktur sesuai format panduan kurator.",
+          });
+        }
+
+        return { role, parts };
+      })
+      .filter((c) => c.parts.length > 0);
 
     if (geminiContents.length === 0) {
       geminiContents.push({
@@ -193,8 +248,8 @@ export async function POST(req: NextRequest) {
       },
       contents: geminiContents,
       generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1200,
+        temperature: 0.65,
+        maxOutputTokens: 1400,
       },
     };
 
@@ -211,7 +266,7 @@ export async function POST(req: NextRequest) {
       const errorText = await response.text();
       console.warn(`[Karsa Gemini API Error ${response.status}]:`, errorText);
       // Fallback anggun jika kuota habis atau error dari API
-      const fallbackReply = generateCulturalFallbackResponse(userQuery);
+      const fallbackReply = generateCulturalFallbackResponse(userQuery, hasImageInRequest);
       return NextResponse.json({
         role: "assistant",
         content: fallbackReply,
@@ -221,7 +276,7 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const replyText =
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      generateCulturalFallbackResponse(userQuery);
+      generateCulturalFallbackResponse(userQuery, hasImageInRequest);
 
     return NextResponse.json({
       role: "assistant",
