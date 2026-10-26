@@ -287,14 +287,17 @@ function CarouselCardContent({
 
       {/* Badan Teks & Metadata */}
       <div className="flex flex-1 flex-col justify-between p-4 sm:p-5 select-text">
-        <div>
+        <motion.div
+          animate={isCenter ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.75, scale: 0.95, y: 4 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
           <h3 className="font-serif text-base sm:text-lg font-bold text-[#1E140C] line-clamp-1 leading-snug tracking-tight">
             {item.title}
           </h3>
           <p className="mt-1.5 text-xs sm:text-[13px] text-stone-700 font-normal line-clamp-2 leading-relaxed">
             {item.summary}
           </p>
-        </div>
+        </motion.div>
 
         {/* Footer Bar: Wilayah, Kunjungan, dan Tombol Buka */}
         <div className="mt-4 pt-3 border-t border-stone-200/80 flex items-center justify-between gap-2 text-xs text-stone-500">

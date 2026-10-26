@@ -267,10 +267,10 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                     className="md:px-6"
                   />
                   <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.88, y: 22 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.5, delay: 0.35 }}
+                    transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     className="md:pl-6"
                   >
                     <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
@@ -297,19 +297,26 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
           aria-labelledby="fitur-title"
         >
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
-            <SectionHeading
-              title="Empat Pintu Mengenal Tradisi"
-              description="Dirancang layaknya ruang baca dan galeri museum terbuka — memudahkan pelajar, peneliti, maupun masyarakat umum menelusuri akar budaya Nusantara."
-              variant="maroon-sans"
-            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.90, y: 24 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <SectionHeading
+                title="Empat Pintu Mengenal Tradisi"
+                description="Dirancang layaknya ruang baca dan galeri museum terbuka — memudahkan pelajar, peneliti, maupun masyarakat umum menelusuri akar budaya Nusantara."
+                variant="maroon-sans"
+              />
+            </motion.div>
             <ul className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
               {FEATURES.map((f, i) => (
                 <motion.li
                   key={f.title}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  initial={{ opacity: 0, scale: 0.88, y: 20 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                   className="group flex gap-5 border-t border-[#E2D6C5] pt-7"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F7EFE2] to-[#EBE0CE] text-[#6E472D] border border-[#DFD2BE] shadow-xs transition-colors group-hover:border-[#6E472D]/40">
@@ -339,7 +346,13 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
           aria-labelledby="sorotan"
         >
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.90, y: 24 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-wrap items-end justify-between gap-4"
+            >
               <SectionHeading
                 title="Sorotan Budaya Nusantara"
                 description="Koleksi objek pilihan dari katalog kami — mulai dari arsitektur vernakular hingga seni pertunjukan sakral."
@@ -355,7 +368,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                   aria-hidden="true"
                 />
               </Link>
-            </div>
+            </motion.div>
 
             {highlights.error ? (
               <p className="mt-8 rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center text-sm text-stone-500">
@@ -368,10 +381,17 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                 </Link>
               </p>
             ) : (
-              <CultureCardCarousel
-                items={highlightItems}
-                loading={highlights.loading}
-              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92, y: 24 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <CultureCardCarousel
+                  items={highlightItems}
+                  loading={highlights.loading}
+                />
+              </motion.div>
             )}
           </div>
         </section>
@@ -388,10 +408,10 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
           aria-labelledby="kontribusi-cta"
         >
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.90, y: 26 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             className="relative overflow-hidden rounded-3xl border border-[#4E3528] bg-[#3C2517] px-6 py-12 text-white shadow-xl sm:px-10 md:py-16"
           >
             {/* Bentuk Lingkaran Geometris Bersih (Sesuai Referensi Pengguna — Tanpa Blur) */}
@@ -400,7 +420,13 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
               className="pointer-events-none absolute -right-20 -top-20 sm:-right-24 sm:-top-24 h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-[#503B2E]"
             />
 
-            <div className="relative max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ delay: 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="relative max-w-2xl"
+            >
               <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4A843]">
                 <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#D4A843]" />
                 <span>Gerakan Dokumentasi Bersama</span>
@@ -429,7 +455,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                   Tinjauan kurator terpercaya &middot; Hak cipta &amp; atribusi atas nama Anda
                 </span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </section>
       </div>
@@ -455,7 +481,13 @@ function Interactive3DPavilion() {
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 md:py-24 lg:px-8">
         {/* Header Seksi & Tab Switcher (Sesuai Desain Referensi Singkat) */}
-        <div className="mx-auto max-w-3xl text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.90, y: 24 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto max-w-3xl text-center"
+        >
           <h2
             id="ruang-pamer-3d"
             className="font-sans text-2xl font-black tracking-tight text-[#482B18] sm:text-3xl md:text-4xl"
@@ -494,10 +526,16 @@ function Interactive3DPavilion() {
               <span>{t("3d.instruments_tab", "Alat Musik Tradisional")}</span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Dynamic 3D Stage & Editorial Columns (Di Mobile: 3D Stage Tampil Pertama / order-1) */}
-        <div className="mt-6 sm:mt-10 lg:mt-12 grid items-start gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-14 min-w-0">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 24 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-6 sm:mt-10 lg:mt-12 grid items-start gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-14 min-w-0"
+        >
           {/* Kolom 3D Interaktif (Mobile: order-1 agar langsung kelihatan tanpa scroll) */}
           <div
             className={cn(
@@ -721,7 +759,7 @@ function Interactive3DPavilion() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -790,10 +828,10 @@ function Stat({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.88, y: 22 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       <p className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-[#2D1E12]">
