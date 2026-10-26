@@ -42,7 +42,6 @@ import { useTranslation } from "@/lib/i18n-store";
 
 void MessageSquarePlus;
 void Sparkles;
-void HeroImage;
 
 const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ssr: false,
@@ -129,33 +128,6 @@ const FALLBACK_LANDING_JOGLO: CulturalItem = JOGLO_HOUSE_DATA?.fallbackItem ?? {
   createdAt: "2026-01-01",
   updatedAt: "2026-01-01",
 };
-
-/** Gambar dengan fallback gradient hangat bila aset belum tersedia */
-function HeroImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) {
-    return (
-      <div
-        role="img"
-        aria-label={alt}
-        className={cn(
-          "flex items-center justify-center rounded-3xl bg-gradient-to-br from-[#6E472D]/20 via-[#CBB59D]/40 to-[#482B18]/30",
-          className
-        )}
-      >
-        <ImageOff className="h-10 w-10 text-stone-400" aria-hidden="true" />
-      </div>
-    );
-  }
-  return (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setFailed(true)}
-      className={cn("object-cover", className)}
-    />
-  );
-}
 
 export default function LandingView({ introRevealed = true }: { introRevealed?: boolean } = {}) {
   const { language, t } = useTranslation();

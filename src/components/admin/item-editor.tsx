@@ -28,8 +28,17 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ErrorState, Loader } from "@/components/shared/states";
 import { MediaPickerButton } from "./media-picker";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-import ModelViewer from "@/components/three/model-viewer";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-64 w-full items-center justify-center rounded-xl bg-stone-100 text-xs text-stone-400">
+      <span>Memuat 3D Viewer...</span>
+    </div>
+  ),
+});
 import {
   Anchor,
   Archive,

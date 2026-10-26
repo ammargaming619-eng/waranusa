@@ -20,8 +20,17 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import dynamic from "next/dynamic";
 import { EmptyState, ErrorState } from "@/components/shared/states";
-import ModelViewer from "@/components/three/model-viewer";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-48 w-full items-center justify-center rounded-xl bg-stone-100 text-xs text-stone-400">
+      <span>Memuat 3D Viewer...</span>
+    </div>
+  ),
+});
 import {
   AudioLines,
   Box,

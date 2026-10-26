@@ -1,13 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { HashLink as Link } from "@/components/shared/hash-link";
 import { cn } from "@/lib/utils";
 
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <img
-      src="/images/brand/waranusa-logo.png?v=3"
+    <Image
+      src="/images/brand/waranusa-logo.png"
       alt="Logo WaraNusa"
+      width={44}
+      height={44}
+      priority
       className={cn("h-10 w-auto sm:h-11 object-contain select-none drop-shadow-sm", className)}
       aria-hidden="true"
     />
@@ -30,9 +34,12 @@ export function BrandLogo({
         className="flex items-center gap-2 sm:gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 rounded-full select-none shrink-0"
         aria-label="WaraNusa — Beranda"
       >
-        <img
-          src="/images/brand/waranusa-logo.png?v=3"
+        <Image
+          src="/images/brand/waranusa-logo.png"
           alt="Logo WaraNusa"
+          width={44}
+          height={44}
+          priority
           className="h-8 w-auto sm:h-11 max-h-12 object-contain transition-all duration-300 group-hover:scale-108 group-hover:drop-shadow-[0_4px_14px_rgba(212,175,55,0.45)] drop-shadow-sm shrink-0"
         />
         <span

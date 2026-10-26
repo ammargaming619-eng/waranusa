@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import dynamic from "next/dynamic";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { UnifiedAssistantWidget } from "@/components/shared/unified-assistant-widget";
-import { AccessibilityWidget } from "@/components/shared/accessibility-widget";
+
+// Dynamic Code-Splitting untuk Floating Widgets (Mengurangi Total Blocking Time & First Load JS)
+const DynamicAccessibilityWidget = dynamic(
+  () =>
+    import("@/components/shared/accessibility-widget").then(
+      (m) => m.AccessibilityWidget
+    ),
+  { ssr: false }
+);
+
+const DynamicUnifiedAssistantWidget = dynamic(
+  () =>
+    import("@/components/shared/unified-assistant-widget").then(
+      (m) => m.UnifiedAssistantWidget
+    ),
+  { ssr: false }
+);
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -15,6 +31,7 @@ const jakarta = Plus_Jakarta_Sans({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -49,8 +66,8 @@ export default function RootLayout({
         {children}
         <Toaster />
         <SonnerToaster position="top-center" richColors closeButton />
-        <AccessibilityWidget />
-        <UnifiedAssistantWidget />
+        <DynamicAccessibilityWidget />
+        <DynamicUnifiedAssistantWidget />
       </body>
     </html>
   );

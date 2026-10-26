@@ -14,7 +14,13 @@ export async function GET(
       return new NextResponse("Invalid filename", { status: 400 });
     }
 
-    const filePath = path.join(process.cwd(), "public", "models", "houses", file);
+    // Alias duplikasi Kalimantan Utara ke satu master file baloy-mayo.glb
+    const targetFile =
+      file === "kalimantan-utara.glb" || file === "kalimantan-utara-baloy-mayo.glb"
+        ? "baloy-mayo.glb"
+        : file;
+
+    const filePath = path.join(process.cwd(), "public", "models", "houses", targetFile);
 
     if (!fs.existsSync(filePath)) {
       // Fallback ke static URL di Vercel CDN bila serverless function tidak menyertakan folder public

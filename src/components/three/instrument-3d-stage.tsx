@@ -450,6 +450,23 @@ export function Instrument3DStage({
   const [autoRotate, setAutoRotate] = React.useState<boolean>(true);
   const [cameraKey, setCameraKey] = React.useState<number>(0);
 
+  // Defer WebGL loop when stage is offscreen (IntersectionObserver for PageSpeed 90+)
+  const stageContainerRef = React.useRef<HTMLDivElement>(null);
+  const [isStageVisible, setIsStageVisible] = React.useState(true);
+
+  React.useEffect(() => {
+    const el = stageContainerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStageVisible(entry.isIntersecting);
+      },
+      { rootMargin: "250px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // State untuk Mode Gesek (Bow), Goyang (Shake), dan Tiup (Blow)
   const [isBowingUI, setIsBowingUI] = React.useState(false);
   const [isBlowingHold, setIsBlowingHold] = React.useState(false);
@@ -1038,6 +1055,7 @@ export function Instrument3DStage({
 
       {/* PANGGUNG KANVAS 3D + OVERLAY INTERAKSI MULTI-INPUT */}
       <div
+        ref={stageContainerRef}
         className="relative h-[340px] xs:h-[380px] sm:h-[430px] md:h-[470px] w-full overflow-hidden rounded-2xl border border-[#C8B69F] bg-gradient-to-b from-[#DCCAB3] via-[#CBB69C] to-[#B79F81] select-none touch-none"
         onTouchStart={(e) => {
           if (e.touches.length > 0) {
@@ -1360,11 +1378,12 @@ export function Instrument3DStage({
           </div>
         )}
 
-        {/* KANVAS THREE.JS */}
+        {/* KANVAS THREE.JS (Throttled via IntersectionObserver for Battery & 90+ PageSpeed) */}
         <Canvas
           key={`${instrument.id}-${cameraKey}`}
           shadows
           camera={{ position: [0, 1.85, 3.65], fov: 42 }}
+          frameloop={isStageVisible && (autoRotate || cameraAiEnabled) ? "always" : "demand"}
           gl={{
             toneMapping: THREE.NeutralToneMapping,
             toneMappingExposure: 0.98,

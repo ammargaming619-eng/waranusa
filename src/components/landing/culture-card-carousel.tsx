@@ -7,6 +7,7 @@
  * kartu samping berdimensi perspektif, tombol panah melayang, dan navigasi usap/klik.
  */
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { ArrowLeft, ArrowRight, Eye, ImageOff, MapPin } from "lucide-react";
 import { HashLink as Link } from "@/components/shared/hash-link";
@@ -256,11 +257,14 @@ function CarouselCardContent({
       {/* Cover Gambar */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#FAF6EE]">
         {showImage ? (
-          <img
+          <Image
             src={cover}
             alt={item.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
+            loading="lazy"
             onError={() => setImgFailed(true)}
-            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105 pointer-events-none"
+            className="object-cover transition-transform duration-700 hover:scale-105 pointer-events-none"
           />
         ) : (
           <div

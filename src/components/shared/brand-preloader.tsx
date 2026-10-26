@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
@@ -292,9 +293,12 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                 className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 sm:h-52 sm:w-52 rounded-full bg-[#C5A880]/25 blur-2xl"
               />
 
-              <img
-                src="/images/brand/waranusa-logo.png?v=3"
+              <Image
+                src="/images/brand/waranusa-logo.png"
                 alt="Logo WaraNusa"
+                width={208}
+                height={208}
+                priority
                 className="h-32 w-auto sm:h-44 md:h-52 object-contain drop-shadow-[0_15px_45px_rgba(197,168,128,0.5)]"
               />
             </motion.div>

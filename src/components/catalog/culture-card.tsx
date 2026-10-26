@@ -6,6 +6,7 @@
  * dan Konten Terkait pada halaman detail. Seluruh kartu adalah <a> ke #/budaya/[slug].
  */
 import { useState } from "react";
+import Image from "next/image";
 import { Eye, ImageOff, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CulturalItem } from "@/lib/types";
@@ -27,12 +28,14 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
       {/* Cover */}
       <div className={cn("relative aspect-[4/3] overflow-hidden bg-brand-soft", compact && "aspect-[16/10]")}>
         {showImage ? (
-          <img
+          <Image
             src={cover}
             alt={`Gambar ${item.title}`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
             loading="lazy"
             onError={() => setImgFailed(true)}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
           <div

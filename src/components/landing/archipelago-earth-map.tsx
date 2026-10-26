@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { HashLink as Link } from "@/components/shared/hash-link";
 import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
@@ -123,12 +124,13 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
         />
 
         {/* GAMBAR PETA SEBAGAI FULL BACKGROUND (object-contain agar pulau presisi 100%) */}
-        <img
-          src="/images/indonesia-map-batik.png?v=7"
+        <Image
+          src="/images/indonesia-map-batik.png"
           alt="Peta Budaya Kepulauan Nusantara WaraNusa"
-          className="absolute inset-0 h-full w-full object-contain object-center pointer-events-none select-none drop-shadow-sm"
-          loading="eager"
-          decoding="async"
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 1400px"
+          className="object-contain object-center pointer-events-none select-none drop-shadow-sm"
         />
 
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
@@ -277,10 +279,13 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 >
                   {/* Thumbnail Foto Budaya */}
                   <div className="relative h-9 w-9 lg:h-11 lg:w-11 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
-                    <img
+                    <Image
                       src={tag.image}
                       alt={tag.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      sizes="48px"
+                      loading="lazy"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
 
@@ -323,11 +328,13 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               aria-label={`Buka detail ${tag.title} (${tag.region})`}
             >
               <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
-                <img
+                <Image
                   src={tag.image}
                   alt={tag.title}
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="40px"
                   loading="lazy"
+                  className="object-cover"
                 />
               </div>
               <div className="leading-tight">
@@ -354,11 +361,13 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 </DialogTitle>
               </DialogHeader>
 
-              <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200 shadow-md">
-                <img
+              <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-2xl border border-stone-200 shadow-md">
+                <Image
                   src={activeTag.image}
                   alt={activeTag.title}
-                  className="aspect-video w-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 512px"
+                  className="object-cover"
                 />
               </div>
 

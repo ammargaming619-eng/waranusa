@@ -34,9 +34,18 @@ import {
   fmtDateID,
   humanSize,
 } from "./media-picker";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { normalizeSketchfabEmbed } from "@/lib/media-embed";
-import ModelViewer from "@/components/three/model-viewer";
+
+const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-64 w-full items-center justify-center rounded-xl bg-stone-100 text-xs text-stone-400">
+      <span>Memuat 3D Viewer...</span>
+    </div>
+  ),
+});
 import {
   ArchiveRestore,
   CloudUpload,
