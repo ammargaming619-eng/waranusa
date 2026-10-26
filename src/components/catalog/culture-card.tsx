@@ -2,12 +2,13 @@
 
 /**
  * WaraNusa — CultureCard
- * Kartu objek budaya dipakai di Katalog, Landing (Sorotan Budaya),
+ * Kartu objek budaya dipakai di Katalog, Landing,
  * dan Konten Terkait pada halaman detail. Seluruh kartu adalah <a> ke #/budaya/[slug].
+ * Desain diselaraskan dengan palet hangat kayu jati WaraNusa di beranda.
  */
 import { useState } from "react";
 import Image from "next/image";
-import { Eye, ImageOff, MapPin } from "lucide-react";
+import { ArrowRight, Eye, ImageOff, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CulturalItem } from "@/lib/types";
 
@@ -21,62 +22,84 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
       href={`#/budaya/${item.slug}`}
       aria-label={`Lihat detail ${item.title}`}
       className={cn(
-        "group card-hover block overflow-hidden rounded-2xl border border-brand-line bg-card text-left",
-        compact && "rounded-xl"
+        "group block overflow-hidden rounded-2xl border border-stone-200/90 bg-white text-left transition-all duration-300 hover:border-[#8C5E3C]/40 hover:shadow-xl",
+        compact ? "rounded-xl" : "sm:rounded-3xl shadow-sm"
       )}
     >
       {/* Cover */}
-      <div className={cn("relative aspect-[4/3] overflow-hidden bg-brand-soft", compact && "aspect-[16/10]")}>
+      <div className={cn("relative aspect-[16/10] overflow-hidden bg-[#FAF6EE]", compact && "aspect-[16/10]")}>
         {showImage ? (
           <Image
             src={cover}
             alt={`Gambar ${item.title}`}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
             loading="lazy"
             onError={() => setImgFailed(true)}
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div
-            className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-soft via-[#eaf4f2] to-[#d9e9e6]"
+            className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#EFE5D4] via-[#F4ECE0] to-[#E9DEC9]"
             role="img"
             aria-label={`Sampul belum tersedia untuk ${item.title}`}
           >
-            <ImageOff className="h-8 w-8 text-brand-teal/50" aria-hidden="true" />
+            <ImageOff className="h-8 w-8 text-stone-400" aria-hidden="true" />
           </div>
         )}
-        <span className="absolute left-3 top-3 rounded-full bg-brand-teal px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+
+        {/* Badge Kategori */}
+        <span className="absolute left-3 top-3 rounded-full bg-[#1F1710]/80 px-3 py-1 text-[10px] font-bold tracking-wide text-white backdrop-blur-md shadow-xs">
           {item.category.name}
         </span>
+
+        {/* Badge Unggulan jika ada */}
+        {item.featured && (
+          <span className="absolute right-3 top-3 rounded-full bg-[#52331C] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
+            Unggulan
+          </span>
+        )}
       </div>
 
-      {/* Isi */}
-      <div className={cn("space-y-1.5 p-4", compact && "p-3.5")}>
-        <h3
-          className={cn(
-            "font-bold leading-snug text-brand-ink transition-colors group-hover:text-brand-teal",
-            compact ? "text-sm" : "text-base",
-            "line-clamp-1"
-          )}
-        >
-          {item.title}
-        </h3>
-        <p className={cn("text-sm text-muted-foreground line-clamp-2", compact && "text-xs line-clamp-1")}>
-          {item.summary}
-        </p>
-        <div className={cn("flex items-center justify-between gap-2 pt-1 text-xs text-muted-foreground", compact && "pt-0.5")}>
-          <span className="flex min-w-0 items-center gap-1">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-orange" aria-hidden="true" />
+      {/* Isi & Metadata */}
+      <div className={cn("flex flex-col justify-between p-4 sm:p-5", compact && "p-3.5")}>
+        <div>
+          <h3
+            className={cn(
+              "font-serif font-bold text-[#1E140C] transition-colors group-hover:text-[#6E472D] line-clamp-1 leading-snug tracking-tight",
+              compact ? "text-sm" : "text-base sm:text-lg"
+            )}
+          >
+            {item.title}
+          </h3>
+          <p className={cn("mt-1.5 text-stone-600 font-normal leading-relaxed line-clamp-2", compact ? "text-xs line-clamp-1 mt-1" : "text-xs sm:text-[13px]")}>
+            {item.summary}
+          </p>
+        </div>
+
+        {/* Footer Bar */}
+        <div className={cn("mt-4 pt-3 border-t border-stone-200/80 flex items-center justify-between gap-2 text-xs text-stone-500", compact && "mt-2.5 pt-2")}>
+          <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-stone-700">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#7A4B29]" aria-hidden="true" />
             <span className="truncate">{item.region.name}</span>
           </span>
-          <span
-            className="flex shrink-0 items-center gap-1"
-            aria-label={`Dilihat ${item.viewCount} kali`}
-          >
-            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-            {new Intl.NumberFormat("id-ID").format(item.viewCount)}
-          </span>
+
+          <div className="flex items-center gap-2">
+            <span
+              className="flex shrink-0 items-center gap-1 text-[11px] text-stone-500"
+              aria-label={`Dilihat ${item.viewCount} kali`}
+            >
+              <Eye className="h-3.5 w-3.5 text-stone-400" aria-hidden="true" />
+              <span>{new Intl.NumberFormat("id-ID").format(item.viewCount)}</span>
+            </span>
+
+            {!compact && (
+              <span className="ml-1 inline-flex items-center gap-1 rounded-full btn-waranusa px-3 py-1 text-[11px] font-bold text-white shadow-xs transition-all group-hover:brightness-110 active:scale-95">
+                Lihat
+                <ArrowRight className="h-3 w-3" aria-hidden="true" />
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </a>

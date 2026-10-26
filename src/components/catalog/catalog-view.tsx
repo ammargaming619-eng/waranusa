@@ -179,7 +179,7 @@ export default function CatalogView({ route }: { route: Route }) {
       </motion.div>
 
       {/* ============ TOOLBAR ============ */}
-      <div className="sticky top-16 z-30 mt-6 rounded-2xl border border-brand-line bg-card/95 p-4 shadow-sm backdrop-blur">
+      <div className="sticky top-16 z-30 mt-6 rounded-2xl border border-stone-200/90 bg-white/95 p-4 shadow-sm backdrop-blur">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {/* Search */}
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1 lg:col-start-1">
@@ -279,7 +279,7 @@ export default function CatalogView({ route }: { route: Route }) {
               variant="ghost"
               size="sm"
               onClick={resetFilter}
-              className="min-h-[44px] rounded-full text-brand-sea hover:bg-brand-sea/10 hover:text-brand-sea"
+              className="min-h-[44px] rounded-full text-[#7A4B29] hover:bg-[#7A4B29]/10 hover:text-[#52331C]"
             >
               <FilterX className="mr-1.5 h-4 w-4" aria-hidden="true" />
               Reset filter
@@ -293,12 +293,12 @@ export default function CatalogView({ route }: { route: Route }) {
         {itemsQ.loading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="overflow-hidden rounded-2xl border border-brand-line bg-card">
-                <Skeleton className="aspect-[4/3] rounded-none" />
-                <div className="space-y-2.5 p-4">
-                  <Skeleton className="h-5 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-1/2" />
+              <div key={i} className="overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200/90 bg-white shadow-sm">
+                <Skeleton className="aspect-[16/10] rounded-none bg-stone-100" />
+                <div className="space-y-2.5 p-4 sm:p-5">
+                  <Skeleton className="h-5 w-3/4 bg-stone-200" />
+                  <Skeleton className="h-4 w-full bg-stone-100" />
+                  <Skeleton className="h-4 w-1/2 bg-stone-100" />
                 </div>
               </div>
             ))}
@@ -312,7 +312,7 @@ export default function CatalogView({ route }: { route: Route }) {
             message="Coba ubah kata kunci atau longgarkan filter kategori/wilayah."
             action={
               hasActiveFilter && (
-                <Button onClick={resetFilter} className="min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90">
+                <Button onClick={resetFilter} className="min-h-[44px] rounded-full btn-waranusa font-bold text-white">
                   <FilterX className="mr-1.5 h-4 w-4" aria-hidden="true" />
                   Reset semua filter
                 </Button>
@@ -355,6 +355,11 @@ export default function CatalogView({ route }: { route: Route }) {
                       href="#"
                       isActive={p === currentPage}
                       aria-label={`Ke halaman ${p}`}
+                      className={
+                        p === currentPage
+                          ? "min-h-[40px] min-w-[40px] rounded-full border-[#482B18] bg-[#482B18] font-bold text-white hover:bg-[#382112] hover:text-white shadow-xs"
+                          : "min-h-[40px] min-w-[40px] rounded-full text-stone-700 hover:bg-stone-100"
+                      }
                       onClick={(e) => {
                         e.preventDefault();
                         if (p !== currentPage) goToPage(p);
