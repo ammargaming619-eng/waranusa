@@ -78,10 +78,10 @@ export const CULTURAL_TAGS: CulturalTag[] = [
   {
     id: "sulsel",
     region: "Sulawesi Selatan",
-    title: "Kapal Pinisi & Keso-Keso",
-    image: "/uploads/seed/kapal-pinisi.png",
+    title: "Rumah Tongkonan & Keso-Keso",
+    image: "/uploads/seed/rumah-tongkonan.png",
     description:
-      "Mahakarya maritim pelaut ulung Bugis-Makassar warisan dunia UNESCO yang dirakit dari kayu bitti tanpa paku besi, bersanding dengan alunan gesekan dawai instrumen Keso-Keso khas Sulawesi Selatan.",
+      "Arsitektur panggung perahu kosmis beratap parabolik suku Toraja dihiasi ukiran pa’ssura dan deretan tanduk kabongo, bersanding dengan alunan gesekan dawai Keso-Keso khas Sulawesi Selatan.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 53.2, y: 65.5 },
     card: { x: 59.5, y: 59.5 },
