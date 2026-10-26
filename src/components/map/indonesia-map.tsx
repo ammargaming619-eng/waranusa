@@ -5,8 +5,8 @@
  *
  * - Multi-provider tile layer: Esri World Topographic (default, relief alam kepulauan tanpa API key),
  *   Esri NatGeo (arsip budaya klasik), dan OSM Standard.
- * - Penanda: CircleMarker Teal (#159D9A) dengan border putih solid tebal (#FFFFFF, weight 3.5),
- *   berubah menjadi Emas (#F2B544) saat terpilih.
+ * - Penanda: CircleMarker Kuning Emas (#E5A93C) dengan border putih solid tebal (#FFFFFF, weight 3.5),
+ *   berubah menjadi Emas Bersinar (#D97706) saat terpilih.
  * - Client-only dynamic import untuk mencegah SSR window error.
  */
 
@@ -129,8 +129,8 @@ export const MAP_PROVIDERS: Record<
   },
 };
 
-const COLOR_TEAL = "#159D9A";
-const COLOR_GOLD = "#F2B544";
+const COLOR_YELLOW = "#E5A93C"; // Kuning Emas Nusantara (Default)
+const COLOR_ACTIVE_GOLD = "#D97706"; // Kuning Emas Bersinar (Aktif / Terpilih)
 
 export interface IndonesiaMapProps {
   regions: Region[];
@@ -304,12 +304,12 @@ export default function IndonesiaMap({
 
         {!ready ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-[#FAF7F2]">
-            <span className="h-10 w-10 animate-pulse rounded-full bg-[#159D9A]/25" aria-hidden />
+            <span className="h-10 w-10 animate-pulse rounded-full bg-[#E5A93C]/25" aria-hidden />
             <p className="text-xs font-medium text-stone-600">Menyiapkan peta 38 provinsi Nusantara…</p>
           </div>
         ) : regions.length === 0 ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-6 text-center">
-            <MapPin className="h-8 w-8 text-[#159D9A]/60" aria-hidden />
+            <MapPin className="h-8 w-8 text-[#E5A93C]" aria-hidden />
             <p className="text-sm font-semibold text-stone-800">Belum ada wilayah</p>
             <p className="max-w-xs text-xs text-muted-foreground">
               Data wilayah budaya belum tersedia untuk ditampilkan di peta.
@@ -347,11 +347,13 @@ export default function IndonesiaMap({
                       pathOptions={{
                         color: "#FFFFFF",
                         weight: isSelected ? 4 : 3,
-                        fillColor: isSelected ? COLOR_GOLD : COLOR_TEAL,
+                        fillColor: isSelected ? COLOR_ACTIVE_GOLD : COLOR_YELLOW,
                         fillOpacity: 1.0,
                         className: cn(
                           "transition-all duration-200 cursor-pointer",
-                          isSelected && "drop-shadow-[0_0_12px_rgba(242,181,68,0.9)]"
+                          isSelected
+                            ? "drop-shadow-[0_0_14px_rgba(217,119,6,0.95)]"
+                            : "drop-shadow-[0_2px_5px_rgba(45,30,18,0.3)]"
                         ),
                       }}
                       eventHandlers={{
@@ -365,8 +367,8 @@ export default function IndonesiaMap({
                         className={cn(
                           "region-tooltip text-xs font-semibold rounded-lg px-2.5 py-1 border shadow-md",
                           isSelected
-                            ? "bg-amber-500 text-white border-amber-600 font-bold"
-                            : "bg-white/95 text-stone-800 border-stone-200"
+                            ? "bg-amber-600 text-white border-amber-700 font-bold"
+                            : "bg-white/95 text-stone-800 border-amber-200"
                         )}
                       >
                         {region.name}

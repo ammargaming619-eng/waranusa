@@ -173,13 +173,13 @@ export default function ExploreView({ route }: { route: Route }) {
               Jelajahi 38 Provinsi Indonesia
             </h1>
             <p className="mt-2 max-w-2xl text-xs sm:text-sm text-stone-600 leading-relaxed">
-              Pilih penanda hijau toska pada peta untuk menelaah koordinat wilayah, ibu kota provinsi, arsitektur rumah adat, serta pusaka tradisi dari Sabang sampai Merauke.
+              Pilih penanda kuning emas pada peta untuk menelaah koordinat wilayah, ibu kota provinsi, arsitektur rumah adat, serta pusaka tradisi dari Sabang sampai Merauke.
             </p>
           </div>
 
           {/* Indikator Cakupan */}
           <div className="flex items-center gap-2.5 text-xs font-semibold text-[#2D1E12] bg-white/90 border border-[#DFD3C2] px-4 py-2 rounded-full shadow-2xs shrink-0 self-start md:self-auto">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-[#159D9A] ring-4 ring-[#159D9A]/15" />
+            <span className="flex h-2.5 w-2.5 rounded-full bg-[#E5A93C] ring-4 ring-[#E5A93C]/20" />
             <span>38 Provinsi Terpetakan</span>
           </div>
         </motion.div>
@@ -386,8 +386,8 @@ export default function ExploreView({ route }: { route: Route }) {
               </Card>
             ) : (
               <Card className="rounded-2xl border-[#DFD3C2] bg-white/95 p-6 shadow-sm text-center flex flex-col items-center justify-center min-h-[380px]">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#147A76]/15 to-[#D4A843]/15 border border-[#147A76]/25 mb-4">
-                  <MapPin className="h-6 w-6 text-[#147A76]" />
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E5A93C]/20 to-[#D4A843]/15 border border-[#E5A93C]/35 mb-4 shadow-xs">
+                  <MapPin className="h-6 w-6 text-[#C2881C]" />
                 </div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29]">
                   Panduan Peta
@@ -396,7 +396,7 @@ export default function ExploreView({ route }: { route: Route }) {
                   Pilih Provinsi pada Peta
                 </h3>
                 <p className="mt-2 max-w-xs text-xs sm:text-sm text-stone-600 leading-relaxed">
-                  Klik salah satu dari 38 titik penanda hijau toska pada peta atau pilih nama provinsi dari indeks di bawah peta untuk membuka rincian budaya daerah.
+                  Klik salah satu dari 38 titik penanda kuning emas pada peta atau pilih nama provinsi dari indeks di bawah peta untuk membuka rincian budaya daerah.
                 </p>
               </Card>
             )}
