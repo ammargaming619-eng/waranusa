@@ -157,35 +157,53 @@ function HeroImage({ src, alt, className }: { src: string; alt: string; classNam
   );
 }
 
-const FEATURES = [
-  {
-    icon: Compass,
-    title: "Peta 38 Wilayah Budaya",
-    desc: "Temukan asal-usul setiap objek pada peta interaktif 38 provinsi — dari Sumatera hingga Papua — lengkap dengan ibu kota dan pusaka tiap daerah.",
-  },
-  {
-    icon: BookOpen,
-    title: "Dokumentasi Bersumber",
-    desc: "Setiap artikel dilengkapi rujukan buku, jurnal ilmiah, situs museum, atau arsip yang dapat diverifikasi langsung dari halaman objek.",
-  },
-  {
-    icon: Box,
-    title: "Ruang Pamer 3D Interaktif",
-    desc: "Putar dan perbesar model tiga dimensi rumah adat serta artefak, lengkap dengan titik penjelasan anatomi pada struktur utamanya.",
-  },
-  {
-    icon: Music4,
-    title: "Atelier Musik Virtual",
-    desc: "Mainkan replika digital instrumen nusantara langsung dari peramban untuk mengenal tangga nada, laras, dan organologi akustiknya.",
-  },
-] as const;
-
 export default function LandingView({ introRevealed = true }: { introRevealed?: boolean } = {}) {
-  const { t } = useTranslation();
+  const { language, t } = useTranslation();
   const settings = useSiteSettings((s) => s.settings);
   const contributionNotice =
     settings.contributionNotice ||
-    "Dokumentasi budaya adalah kerja bersama. Kirim tulisan, foto, atau rujukan Anda — tim kurator akan meninjau dan menerbitkannya dengan atribusi atas nama Anda.";
+    t(
+      "contribute.desc",
+      "Dokumentasi budaya adalah kerja bersama. Kirim tulisan, foto, atau rujukan Anda — tim kurator akan meninjau dan menerbitkannya dengan atribusi atas nama Anda."
+    );
+
+  const features = useMemo(
+    () => [
+      {
+        icon: Compass,
+        title: t("features.f1_title", "Peta 38 Wilayah Budaya"),
+        desc: t(
+          "features.f1_desc",
+          "Temukan asal-usul setiap objek pada peta interaktif 38 provinsi — dari Sumatera hingga Papua — lengkap dengan ibu kota dan pusaka tiap daerah."
+        ),
+      },
+      {
+        icon: BookOpen,
+        title: t("features.f2_title", "Dokumentasi Bersumber"),
+        desc: t(
+          "features.f2_desc",
+          "Setiap artikel dilengkapi rujukan buku, jurnal ilmiah, situs museum, atau arsip yang dapat diverifikasi langsung dari halaman objek."
+        ),
+      },
+      {
+        icon: Box,
+        title: t("features.f3_title", "Ruang Pamer 3D Interaktif"),
+        desc: t(
+          "features.f3_desc",
+          "Putar dan perbesar model tiga dimensi rumah adat serta artefak, lengkap dengan titik penjelasan anatomi pada struktur utamanya."
+        ),
+      },
+      {
+        icon: Music4,
+        title: t("features.f4_title", "Atelier Musik Virtual"),
+        desc: t(
+          "features.f4_desc",
+          "Mainkan replika digital instrumen nusantara langsung dari peramban untuk mengenal tangga nada, laras, dan organologi akustiknya."
+        ),
+      },
+    ],
+    [language, t]
+  );
 
   // ---- Statistik nyata ----
   const stats = useAsyncData(async () => {
@@ -304,13 +322,16 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
               transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             >
               <SectionHeading
-                title="Empat Pintu Mengenal Tradisi"
-                description="Dirancang layaknya ruang baca dan galeri museum terbuka — memudahkan pelajar, peneliti, maupun masyarakat umum menelusuri akar budaya Nusantara."
+                title={t("features.heading", "Empat Pintu Mengenal Tradisi")}
+                description={t(
+                  "features.desc",
+                  "Dirancang layaknya ruang baca dan galeri museum terbuka — memudahkan pelajar, peneliti, maupun masyarakat umum menelusuri akar budaya Nusantara."
+                )}
                 variant="maroon-sans"
               />
             </motion.div>
             <ul className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
-              {FEATURES.map((f, i) => (
+              {features.map((f, i) => (
                 <motion.li
                   key={f.title}
                   initial={{ opacity: 0, scale: 0.88, y: 20 }}
@@ -354,15 +375,18 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
               className="flex flex-wrap items-end justify-between gap-4"
             >
               <SectionHeading
-                title="Sorotan Budaya Nusantara"
-                description="Koleksi objek pilihan dari katalog kami — mulai dari arsitektur vernakular hingga seni pertunjukan sakral."
+                title={t("highlights.title", "Sorotan Budaya Nusantara")}
+                description={t(
+                  "highlights.desc",
+                  "Koleksi objek pilihan dari katalog kami — mulai dari arsitektur vernakular hingga seni pertunjukan sakral."
+                )}
                 variant="maroon-sans"
               />
               <Link
                 href="#/katalog"
                 className="btn-waranusa rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md inline-flex items-center gap-2 text-white hover:brightness-105 active:scale-95 transition-all"
               >
-                Lihat semua katalog
+                {t("highlights.all_btn", "Lihat semua katalog")}
                 <ArrowRight
                   className="h-4 w-4 transition-transform group-hover:translate-x-1"
                   aria-hidden="true"
@@ -429,13 +453,13 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
             >
               <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4A843]">
                 <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#D4A843]" />
-                <span>Gerakan Dokumentasi Bersama</span>
+                <span>{t("contribute.badge", "Gerakan Dokumentasi Bersama")}</span>
               </div>
               <h2
                 id="kontribusi-cta"
                 className="mt-3 font-serif text-2xl font-bold leading-snug sm:text-3xl md:text-4xl text-[#FAF6F0]"
               >
-                Punya pengetahuan budaya daerah? Rawat bersama kami.
+                {t("contribute.title", "Punya pengetahuan budaya daerah? Rawat bersama kami.")}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-stone-300 md:text-base">
                 {contributionNotice}
@@ -447,12 +471,12 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                   className="rounded-full bg-[#FAF6F0] text-[#3C2517] hover:bg-white px-7 text-sm font-bold shadow-md"
                 >
                   <Link href="#/kontribusi">
-                    Kirim Dokumentasi{" "}
+                    {t("contribute.btn", "Kirim Dokumentasi")}{" "}
                     <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
                   </Link>
                 </Button>
                 <span className="text-xs text-stone-400">
-                  Tinjauan kurator terpercaya &middot; Hak cipta &amp; atribusi atas nama Anda
+                  {t("contribute.note", "Tinjauan kurator terpercaya · Hak cipta & atribusi atas nama Anda")}
                 </span>
               </div>
             </motion.div>

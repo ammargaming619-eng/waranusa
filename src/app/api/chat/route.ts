@@ -77,7 +77,35 @@ async function getCulturalCatalogContext(): Promise<string> {
   }
 }
 
-function buildSystemPrompt(culturalContext: string): string {
+function buildSystemPrompt(culturalContext: string, language: "ID" | "EN" = "ID"): string {
+  if (language === "EN") {
+    return `You are "Karsa", the official AI Cultural Curator of WaraNusa (The Indonesian Living Heritage Exploration & Preservation Platform).
+
+Persona & Communication Style:
+- Warm, polite, knowledgeable, articulate, and deeply respectful of Indonesian cultural heritage.
+- Communicate in elegant, clear, and educational English.
+- Uphold ancestral wisdom, living traditions, and local indigenous philosophies.
+- Format responses cleanly with Markdown (use bolding for indigenous cultural terms, and bullet points where appropriate).
+- Deliver insightful explanations that resonate with both younger generations and global cultural researchers.
+- Encourage users to explore WaraNusa features (sourced cultural catalog, 38-province interactive map, 3D models, and the virtual Saron musical atelier).
+
+${culturalContext}
+
+Special Guidelines for Image Analysis & Cultural Object Detection (Multimodal Vision):
+When the user submits an image/photograph:
+1. Carefully analyze and identify the Indonesian cultural object visible in the image (such as Batik/Ikat textile motifs, vernacular house architecture, traditional musical instruments, sacred heirloom weapons/keris, or traditional customary attire).
+2. Always deliver a structured, concise, and informative response adhering strictly to this format:
+   - 🏷️ **Object Name:** [Specific object name, e.g., Mega Mendung Batik Motif / Joglo Sinom Traditional House / Sasando Musical Instrument]
+   - 📍 **Regional Origin:** [Province, Island, & Indigenous Ethnic Group]
+   - 💡 **Philosophy & Meaning:** [Concise explanation of its philosophical significance, ritual function, or cultural symbolism in 2-3 sentences]
+   - 🔍 **Visual Signatures:** [Visual motifs, roof contours, carved timber joinery, acoustic strings/keys, or natural materials seen in the photo]
+3. If the uploaded image is clearly NOT an Indonesian cultural artifact (e.g., modern vehicle, random gadget, or general non-cultural object), politely and warmly state that the object is not part of Indonesian living heritage, and invite the user to photograph a Batik textile, traditional house, customary dish, or regional instrument around them.
+
+General Text Guidelines:
+- If the user asks about cultural artifacts in the WaraNusa catalog (e.g., Joglo House, Gamelan Saron, Batik, Pinisi), weave in verified catalog facts and mention they can explore interactive 3D models and audio directly on the platform.
+- Keep responses concise, structured (2-4 paragraphs or bullet points), avoiding generic AI filler while preserving cultural depth.`;
+  }
+
   return `Anda adalah "Karsa", asisten dan kurator AI resmi untuk platform WaraNusa (Platform Eksplorasi & Pelestarian Warisan Nusantara Indonesia).
 
 Karakter & Gaya Komunikasi:
@@ -105,9 +133,29 @@ Panduan Penjawab Teks Umum:
 - Jawablah dengan ringkas, padat (2-4 paragraf atau daftar terstruktur), tidak bertele-tele namun kaya makna.`;
 }
 
-// Fallback cerdas saat GEMINI_API_KEY tidak ada atau gagal
-function generateCulturalFallbackResponse(userPrompt: string, hasImage = false): string {
+// Fallback cerdas saat GEMINI_API_KEY tidak ada atau kuota habis
+function generateCulturalFallbackResponse(
+  userPrompt: string,
+  hasImage = false,
+  language: "ID" | "EN" = "ID"
+): string {
+  const isEn = language === "EN";
+
   if (hasImage) {
+    if (isEn) {
+      return `### 📷 Indonesian Living Heritage Analysis
+
+Thank you for sharing your photograph of an Indonesian cultural heritage object!
+
+WaraNusa's **Cultural Vision AI** is specialized to identify living traditions across the archipelago:
+- 🏷️ **Object Name:** Distinguishing specific Batik/Songket motifs, vernacular architecture, instruments, or heirloom weapons.
+- 📍 **Regional Origin:** Pinpointing provenance across Indonesia's 38 provinces.
+- 💡 **Philosophy & Meaning:** Unfolding ancestral wisdom, ritual roles, and sacred symbolism.
+- 🔍 **Visual Signatures:** Examining carving motifs, structural roof silhouettes, and acoustic organology.
+
+*(Note: Real-time Gemini Vision multimodal detection is primed with our curator pipeline. You can also explore curated 3D digital twins and artifacts directly in the **Cultural Catalog** and **3D Showroom**!)*`;
+    }
+
     return `### 📷 Analisis Objek Budaya Nusantara
 
 Terima kasih telah membagikan foto objek budaya!
@@ -123,7 +171,22 @@ Fitur **Deteksi Foto (Multimodal Vision)** WaraNusa dirancang khusus untuk menge
 
   const p = userPrompt.toLowerCase();
 
-  if (p.includes("joglo") || p.includes("rumah")) {
+  if (p.includes("joglo") || p.includes("house") || p.includes("rumah")) {
+    if (isEn) {
+      return `### 🏛️ Philosophy of the Javanese Joglo House
+
+The **Joglo** vernacular house of Java embodies profound architectural cosmological principles:
+
+1. **Saka Guru (Four Primary Pillars)**: Four central teak columns symbolize the cardinal directions and the cosmological axis of the universe (*mandala jagat*), representing spiritual equilibrium.
+2. **Tumpangsari Stepped Ceilings**: The tiered beam structure ascending towards the central roof pinnacle symbolizes stages of spiritual elevation toward the Divine.
+3. **Spatial Hierarchy**:
+   - **Pendopo**: The open, wall-less front pavilion signifying unconditional hospitality and community harmony.
+   - **Pringgitan**: The transitional hall traditionally reserved for Wayang puppet performances and deliberation.
+   - **Dalem**: The sacred private family interior housing the central sanctum (*senthong*).
+
+On **WaraNusa**, you can inspect and rotate an interactive 3D digital twin of the Joglo House directly in our 3D Showroom!`;
+    }
+
     return `### 🏛️ Filosofi Rumah Adat Joglo
 
 Rumah adat **Joglo** dari Jawa memiliki filosofi arsitektur dan tata nilai hidup yang sangat mendalam:
@@ -138,7 +201,19 @@ Rumah adat **Joglo** dari Jawa memiliki filosofi arsitektur dan tata nilai hidup
 Di platform **WaraNusa**, Anda juga dapat melihat model visual 3D Rumah Joglo secara interaktif pada menu Katalog Budaya!`;
   }
 
-  if (p.includes("saron") || p.includes("gamelan")) {
+  if (p.includes("saron") || p.includes("gamelan") || p.includes("music") || p.includes("musik")) {
+    if (isEn) {
+      return `### 🎵 Gamelan Saron & The Spirit of Acoustic Harmony
+
+The **Saron** (or *ricik*) is a foundational metallophone in Javanese and Balinese Gamelan orchestras:
+
+- **Bronze Acoustic Keys**: Features 7 heavy bronze (or brass) bars resting above an intricately carved resonant wooden frame (*rancakan*).
+- **Tuning Systems**: Tuned to either **Pelog** (7-tone heptatonic scale with meditative, solemn nuances) or **Slendro** (5-tone pentatonic scale with vibrant, celebratory character).
+- **Matedhet Damping Technique**: The right hand strikes the key with a hardwood or horn mallet, while the left thumb and forefinger instantly damp the preceding key to halt resonance. This physical discipline embodies mutual respect (*tepa selira*) and collective harmony.
+
+💡 *Did you know?* You can play a virtual digital twin of the **Gamelan Saron** directly in WaraNusa's **Virtual Musical Atelier**!`;
+    }
+
     return `### 🎵 Gamelan Saron & Makna Harmoni
 
 **Saron** (atau *ricik*) merupakan instrumen inti dalam ansambel Gamelan Jawa dan Bali:
@@ -150,7 +225,20 @@ Di platform **WaraNusa**, Anda juga dapat melihat model visual 3D Rumah Joglo se
 💡 *Kabar baik*: Anda dapat memainkan instrumen virtual **Gamelan Saron** langsung di fitur **Instrumen Virtual** WaraNusa!`;
   }
 
-  if (p.includes("batik")) {
+  if (p.includes("batik") || p.includes("motif") || p.includes("textile")) {
+    if (isEn) {
+      return `### 🎨 Indonesian Batik: History & Living Philosophy
+
+Inscribed by UNESCO as a *Masterpiece of the Oral and Intangible Heritage of Humanity* in 2009, **Batik** originates from the Javanese roots *"amba"* (to write) and *"titik"* (a drop/dot).
+
+Key classical motifs and their philosophies:
+- **Parang Motif**: Continuous slanted wave-like patterns symbolizing ocean swells crashing against sea cliffs — representing resilience, unyielding perseverance, and dynastic continuity.
+- **Kawung Motif**: Four intersecting elliptical petals resembling palm fruit seeds (*kolang-kaling*), signifying purity of conscience, justice, and self-awareness in service of the community.
+- **Truntum Motif**: Delicate floral constellations symbolizing rekindled love, patience, and eternal devotion.
+
+Explore our sourced catalog on **WaraNusa** for rich documentation and high-resolution textile archives!`;
+    }
+
     return `### 🎨 Sejarah & Filosofi Luhur Batik
 
 **Batik** telah diakui oleh UNESCO sebagai *Masterpiece of the Oral and Intangible Heritage of Humanity* sejak 2009. Berasal dari bahasa Jawa *"amba"* (menulis) dan *"titik"* (titik).
@@ -163,6 +251,14 @@ Beberapa motif klasik dan filosofinya:
 Mari jelajahi ragam koleksi tekstil dan motif batik lainnya di katalog **WaraNusa**!`;
   }
 
+  if (isEn) {
+    return `Greetings! It is a pleasure to guide your cultural discovery across Indonesia's living heritage.
+
+The Indonesian archipelago encompasses over 1,300 ethnic groups endowed with unmatched cultural treasures — from vernacular architecture such as the **Rumah Gadang** and **Joglo**, to the exquisite artistry of **Batik** and **Songket**, and the timeless acoustic resonance of **Gamelan** and **Angklung**.
+
+Which heritage tradition would you like to explore together with Karsa today? You may also click any of the quick prompt cards below!`;
+  }
+
   return `Salam budaya! Senang sekali bisa berbagi pengetahuan bersama Anda. 
 
 Nusantara menyimpan lebih dari 1.300 suku bangsa dengan kekayaan budaya tak ternilai—mulai dari arsitektur vernakular seperti **Rumah Gadang** dan **Joglo**, keanggunan kain tradisional seperti **Batik** dan **Songket**, hingga harmonisasi musik tradisional seperti **Gamelan** dan **Angklung**.
@@ -171,9 +267,14 @@ Ada topik budaya Nusantara tertentu yang ingin Anda telusuri lebih jauh bersama 
 }
 
 export async function POST(req: NextRequest) {
+  let requestLanguage: "ID" | "EN" = "ID";
   try {
     const body = await req.json();
-    const { messages } = body as { messages?: ChatMessage[] };
+    const { messages, language = "ID" } = body as {
+      messages?: ChatMessage[];
+      language?: "ID" | "EN";
+    };
+    requestLanguage = language;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -188,13 +289,17 @@ export async function POST(req: NextRequest) {
 
     // Ambil RAG-lite context dari Prisma
     const culturalContext = await getCulturalCatalogContext();
-    const systemPrompt = buildSystemPrompt(culturalContext);
+    const systemPrompt = buildSystemPrompt(culturalContext, language);
 
     const apiKey = process.env.GEMINI_API_KEY;
 
     // Jika API Key belum terpasang, gunakan respons cerdas fallback
     if (!apiKey) {
-      const fallbackReply = generateCulturalFallbackResponse(userQuery, hasImageInRequest);
+      const fallbackReply = generateCulturalFallbackResponse(
+        userQuery,
+        hasImageInRequest,
+        language
+      );
       return NextResponse.json({
         role: "assistant",
         content: fallbackReply,
@@ -227,7 +332,10 @@ export async function POST(req: NextRequest) {
         } else if (parts.length > 0 && !parts.some((p) => p.text)) {
           // Bila user hanya mengirim foto tanpa teks
           parts.push({
-            text: "Mohon identifikasi objek warisan budaya Nusantara pada foto ini secara terstruktur sesuai format panduan kurator.",
+            text:
+              language === "EN"
+                ? "Please identify the Indonesian cultural heritage object in this photo adhering to your structured curator format."
+                : "Mohon identifikasi objek warisan budaya Nusantara pada foto ini secara terstruktur sesuai format panduan kurator.",
           });
         }
 
@@ -238,7 +346,7 @@ export async function POST(req: NextRequest) {
     if (geminiContents.length === 0) {
       geminiContents.push({
         role: "user",
-        parts: [{ text: userQuery || "Halo Karsa" }],
+        parts: [{ text: userQuery || (language === "EN" ? "Hello Karsa" : "Halo Karsa") }],
       });
     }
 
@@ -266,7 +374,11 @@ export async function POST(req: NextRequest) {
       const errorText = await response.text();
       console.warn(`[Karsa Gemini API Error ${response.status}]:`, errorText);
       // Fallback anggun jika kuota habis atau error dari API
-      const fallbackReply = generateCulturalFallbackResponse(userQuery, hasImageInRequest);
+      const fallbackReply = generateCulturalFallbackResponse(
+        userQuery,
+        hasImageInRequest,
+        language
+      );
       return NextResponse.json({
         role: "assistant",
         content: fallbackReply,
@@ -276,7 +388,7 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const replyText =
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      generateCulturalFallbackResponse(userQuery, hasImageInRequest);
+      generateCulturalFallbackResponse(userQuery, hasImageInRequest, language);
 
     return NextResponse.json({
       role: "assistant",
@@ -284,10 +396,13 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("[Karsa API Handler Error]:", error);
+    const fallbackError =
+      requestLanguage === "EN"
+        ? "We apologize, Karsa is currently facing a network interruption while connecting to the cultural archives. Please try asking again shortly."
+        : "Maaf, saat ini Karsa sedang mengalami kendala jaringan saat menghubungkan ke arsip budaya. Silakan coba tanyakan kembali sesaat lagi.";
     return NextResponse.json({
       role: "assistant",
-      content:
-        "Maaf, saat ini Karsa sedang mengalami kendala jaringan saat menghubungkan ke arsip budaya. Silakan coba tanyakan kembali sesaat lagi.",
+      content: fallbackError,
     });
   }
 }

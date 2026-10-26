@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   X,
   Send,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 
 // ============================================================================
 // TYPES & CONSTANTS
@@ -454,10 +455,21 @@ function AngklungMascotIllustration({ className }: { className?: string }) {
 // ============================================================================
 
 export function UnifiedAssistantWidget() {
+  const { language, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
+  const welcomeText = t(
+    "chat.welcome_initial",
+    "Sampurasun! Saya asisten budaya AI WaraNusa. Tanyakan apa saja tentang warisan tradisi, filosofi arsitektur, atau instrumen musik Nusantara."
+  );
+
   // State Chat
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content: welcomeText,
+    },
+  ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<MessageImage | null>(null);
@@ -467,6 +479,16 @@ export function UnifiedAssistantWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Perbarui pesan awal jika belum ada percakapan dan bahasa berubah
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].role === "assistant" && !prev[0].image) {
+        return [{ role: "assistant", content: welcomeText }];
+      }
+      return prev;
+    });
+  }, [welcomeText]);
 
   // ---------------- Load Storage on Mount ----------------
   useEffect(() => {
@@ -526,6 +548,40 @@ export function UnifiedAssistantWidget() {
     }
   };
 
+  const quickChips = useMemo(
+    () => [
+      {
+        title: t("chat.quick_house", "Filosofi Rumah Gadang"),
+        prompt: t(
+          "chat.quick_house_prompt",
+          "Jelaskan filosofi arsitektur Rumah Gadang Minangkabau dan makna atap gonjongnya."
+        ),
+      },
+      {
+        title: t("chat.quick_gamelan", "Gamelan Saron & Slendro"),
+        prompt: t(
+          "chat.quick_gamelan_prompt",
+          "Bagaimana cara memainkan Gamelan Saron dan apa perbedaan laras Pelog dan Slendro?"
+        ),
+      },
+      {
+        title: t("chat.quick_batik", "Makna Ragam Motif Batik"),
+        prompt: t(
+          "chat.quick_batik_prompt",
+          "Apa filosofi dan makna di balik motif Batik Parang dan Megamendung?"
+        ),
+      },
+      {
+        title: t("chat.quick_pinisi", "Sejarah Kapal Pinisi"),
+        prompt: t(
+          "chat.quick_pinisi_prompt",
+          "Ceritakan sejarah dan keistimewaan pembuatan perahu Pinisi Bugis-Makassar."
+        ),
+      },
+    ],
+    [t]
+  );
+
   // ---------------- Chat Handlers ----------------
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend !== undefined ? textToSend : inputValue).trim();
@@ -534,9 +590,14 @@ export function UnifiedAssistantWidget() {
     // Boleh kirim jika ada teks ATAU ada gambar yang dipilih
     if ((!text && !imageToSend) || isLoading) return;
 
+    const defaultPhotoPrompt =
+      language === "EN"
+        ? "Please identify the Indonesian cultural heritage object in this photo."
+        : "Mohon identifikasi objek warisan budaya Nusantara pada foto ini.";
+
     const userMessage: Message = {
       role: "user",
-      content: text || (imageToSend ? "Mohon identifikasi objek warisan budaya Nusantara pada foto ini." : ""),
+      content: text || (imageToSend ? defaultPhotoPrompt : ""),
       image: imageToSend || undefined,
     };
     const updatedMessages = [...messages, userMessage];
@@ -551,21 +612,29 @@ export function UnifiedAssistantWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updatedMessages }),
+        body: JSON.stringify({ messages: updatedMessages, language }),
       });
 
       if (!res.ok) throw new Error("Gagal menerima balasan");
 
       const data = await res.json();
-      const botReply = data.content || "Terima kasih atas pertanyaannya seputar budaya Nusantara.";
+      const defaultReply =
+        language === "EN"
+          ? "Thank you for your question regarding Indonesian heritage."
+          : "Terima kasih atas pertanyaannya seputar budaya Nusantara.";
+      const botReply = data.content || defaultReply;
       setMessages((prev) => [...prev, { role: "assistant", content: botReply }]);
     } catch (err) {
       console.error("[Chat Error]:", err);
+      const errorMsg =
+        language === "EN"
+          ? "We encountered an issue processing your request. Please try asking again."
+          : "Mohon maaf, terjadi kendala saat memproses jawaban. Silakan ajukan pertanyaan kembali.";
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "Mohon maaf, terjadi kendala saat memproses jawaban. Silakan ajukan pertanyaan kembali.",
+          content: errorMsg,
         },
       ]);
     } finally {
@@ -583,7 +652,7 @@ export function UnifiedAssistantWidget() {
   };
 
   const resetChat = () => {
-    setMessages([INITIAL_MESSAGE]);
+    setMessages([{ role: "assistant", content: welcomeText }]);
     setSelectedImage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
     try {
@@ -601,7 +670,7 @@ export function UnifiedAssistantWidget() {
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            // 1. DI MOBILE (< md): Tombol Lingkaran di pojok kanan bawah (Ukuran persis kembar dengan aksesibilitas: h-12 w-12 sm:h-14 sm:w-14)
+            // 1. DI MOBILE (< md): Tombol Lingkaran di pojok kanan bawah
             "!fixed bottom-4 right-4 z-[9990]",
             "group flex items-center justify-center",
             "h-12 w-12 sm:h-14 sm:w-14 rounded-full",
@@ -613,8 +682,8 @@ export function UnifiedAssistantWidget() {
             "md:rounded-full md:border md:border-[#8C5E3C]/40 md:hover:scale-105",
             "cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
           )}
-          aria-label="Buka WaraNusa AI Assistant"
-          title="Buka WaraNusa AI Assistant"
+          aria-label={t("chat.title", "WaraNusa AI Assistant")}
+          title={t("chat.title", "WaraNusa AI Assistant")}
         >
           {/* Panah Indikator Atas (Hanya Tampil di Desktop md+) */}
           <ChevronLeft className="hidden md:block w-4 h-4 text-[#CBB59D] group-hover:text-white group-hover:scale-125 transition-all" />
@@ -637,7 +706,7 @@ export function UnifiedAssistantWidget() {
               writingMode: "vertical-rl",
             }}
           >
-            Waranusa AI Assistant
+            {t("chat.title", "WaraNusa AI Assistant")}
           </span>
 
           {/* Panah Indikator Bawah (Hanya Tampil di Desktop md+) */}
@@ -676,10 +745,10 @@ export function UnifiedAssistantWidget() {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm tracking-wide text-[#FAF6F0] flex items-center gap-1.5 leading-none">
-                    WaraNusa AI Assistant
+                    {t("chat.title", "WaraNusa AI Assistant")}
                   </h3>
                   <p className="text-[11px] text-[#E6DDD4]/90 mt-1 leading-none font-normal">
-                    siap memandu jelajah budaya
+                    {t("chat.subtitle", "siap memandu jelajah budaya")}
                   </p>
                 </div>
               </div>
@@ -689,18 +758,18 @@ export function UnifiedAssistantWidget() {
                 <button
                   type="button"
                   onClick={resetChat}
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-stone-300 hover:text-white hover:bg-white/10 transition-colors"
-                  aria-label="Mulai percakapan baru"
-                  title="Mulai percakapan baru"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-stone-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  aria-label={t("chat.new_chat", "Mulai percakapan baru")}
+                  title={t("chat.new_chat", "Mulai percakapan baru")}
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-stone-300 hover:text-white hover:bg-white/10 transition-colors"
-                  aria-label="Tutup jendela asisten"
-                  title="Tutup (Esc)"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-stone-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  aria-label={t("a11y.close", "Tutup")}
+                  title={`${t("a11y.close", "Tutup")} (Esc)`}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -715,14 +784,14 @@ export function UnifiedAssistantWidget() {
                   {/* Maskot Karakter Angklung Animasi Goyang */}
                   <AngklungMascotIllustration className="my-2" />
 
-                  {/* Heading Ramah & Ringkas (Anti-Clutter) */}
+                  {/* Heading Ramah & Ringkas */}
                   <h4 className="font-bold text-lg sm:text-xl text-[#2D1E12] mt-2 font-serif">
-                    Ada yang bisa saya bantu hari ini?
+                    {t("chat.welcome_heading", "Ada yang bisa saya bantu hari ini?")}
                   </h4>
 
-                  {/* Grid 2x2 Rekomendasi Pertanyaan Cepat (Minimalis & Elegan) */}
+                  {/* Grid 2x2 Rekomendasi Pertanyaan Cepat */}
                   <div className="grid grid-cols-2 gap-2.5 mt-5 w-full">
-                    {QUICK_CHIPS.map((chip, idx) => (
+                    {quickChips.map((chip, idx) => (
                       <button
                         key={idx}
                         type="button"
@@ -781,7 +850,7 @@ export function UnifiedAssistantWidget() {
                         <>
                           <Sparkles className="w-4 h-4 text-[#8C5E3C] animate-spin shrink-0" />
                           <span className="text-[11px] font-semibold text-[#52331C]">
-                            Memindai detail objek budaya Nusantara...
+                            {t("chat.scanning", "Memindai detail objek budaya Nusantara...")}
                           </span>
                         </>
                       ) : (
@@ -789,7 +858,9 @@ export function UnifiedAssistantWidget() {
                           <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce" />
                           <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.2s]" />
                           <span className="w-2 h-2 rounded-full bg-[#8C5E3C] animate-bounce [animation-delay:0.4s]" />
-                          <span className="ml-1 text-[11px]">WaraNusa AI sedang merangkai jawaban...</span>
+                          <span className="ml-1 text-[11px]">
+                            {t("chat.thinking", "WaraNusa AI sedang merangkai jawaban...")}
+                          </span>
                         </>
                       )}
                     </div>
@@ -813,10 +884,10 @@ export function UnifiedAssistantWidget() {
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-bold text-[#52331C] truncate flex items-center gap-1">
                         <Camera className="w-3.5 h-3.5 text-[#8C5E3C]" />
-                        <span>Foto siap dipindai</span>
+                        <span>{t("chat.photo_ready", "Foto siap dipindai")}</span>
                       </p>
                       <p className="text-[10px] text-stone-600 truncate">
-                        Ketik pertanyaan atau klik kirim untuk analisis
+                        {t("chat.photo_hint", "Ketik pertanyaan atau klik kirim untuk analisis")}
                       </p>
                     </div>
                     <button
@@ -826,8 +897,8 @@ export function UnifiedAssistantWidget() {
                         if (fileInputRef.current) fileInputRef.current.value = "";
                       }}
                       className="w-6 h-6 rounded-full bg-stone-200/90 hover:bg-stone-300 text-stone-600 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
-                      aria-label="Hapus foto terpilih"
-                      title="Hapus foto"
+                      aria-label={language === "EN" ? "Remove photo" : "Hapus foto terpilih"}
+                      title={language === "EN" ? "Remove photo" : "Hapus foto"}
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -857,8 +928,16 @@ export function UnifiedAssistantWidget() {
                         ? "bg-[#6E472D] text-white ring-2 ring-[#6E472D]/30"
                         : "text-stone-600 hover:text-[#52331C] hover:bg-stone-200/70"
                     )}
-                    aria-label="Pindai atau Unggah Foto Budaya"
-                    title={selectedImage ? "Ganti foto budaya" : "Pindai / Unggah Foto Budaya (Kamera HP)"}
+                    aria-label={language === "EN" ? "Scan or Upload Cultural Photo" : "Pindai atau Unggah Foto Budaya"}
+                    title={
+                      selectedImage
+                        ? language === "EN"
+                          ? "Change photo"
+                          : "Ganti foto budaya"
+                        : language === "EN"
+                        ? "Scan / Upload Cultural Photo (Mobile Camera)"
+                        : "Pindai / Unggah Foto Budaya (Kamera HP)"
+                    }
                   >
                     <Camera className="w-4 h-4" />
                   </button>
@@ -871,10 +950,12 @@ export function UnifiedAssistantWidget() {
                     onKeyDown={handleKeyDown}
                     placeholder={
                       isCompressing
-                        ? "Menyiapkan foto..."
+                        ? language === "EN"
+                          ? "Preparing photo..."
+                          : "Menyiapkan foto..."
                         : selectedImage
-                        ? "Tanya detail tentang foto ini..."
-                        : "Tanya tradisi, rumah adat, musik..."
+                        ? t("chat.placeholder_photo", "Tanya detail tentang foto ini...")
+                        : t("chat.placeholder", "Tanya tradisi, rumah adat, musik...")
                     }
                     className="flex-1 bg-transparent text-xs sm:text-sm text-stone-800 placeholder-stone-400 focus:outline-none min-w-0"
                     disabled={isLoading || isCompressing}
@@ -885,14 +966,17 @@ export function UnifiedAssistantWidget() {
                     onClick={() => handleSendMessage()}
                     disabled={(!inputValue.trim() && !selectedImage) || isLoading || isCompressing}
                     className="w-7 h-7 sm:w-8 sm:h-8 rounded-full btn-waranusa disabled:opacity-40 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-xs"
-                    aria-label="Kirim Pesan"
+                    aria-label={language === "EN" ? "Send Message" : "Kirim Pesan"}
                   >
                     <Send className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
                 <p className="text-[10px] text-stone-400 text-center leading-tight">
-                  AI dapat membuat kesalahan. Harap konfirmasi kembali informasi penting ke katalog atau kurator resmi.
+                  {t(
+                    "chat.disclaimer",
+                    "AI dapat membuat kesalahan. Harap konfirmasi kembali informasi penting ke katalog atau kurator resmi."
+                  )}
                 </p>
               </div>
             </div>

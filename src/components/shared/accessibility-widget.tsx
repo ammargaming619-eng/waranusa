@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 
 interface A11yState {
   fontStep: number; // 0 (100%), 1 (110%), 2 (120%), 3 (130%), 4 (140%)
@@ -198,6 +199,7 @@ function StepIndicator({
 }
 
 export function AccessibilityWidget() {
+  const { language, t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -318,11 +320,19 @@ export function AccessibilityWidget() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // Hentikan suara saat unmount
+  // Hentikan suara saat unmount & siapkan daftar suara Web Speech API
   useEffect(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+      const handleVoices = () => {
+        window.speechSynthesis.getVoices();
+      };
+      window.speechSynthesis.onvoiceschanged = handleVoices;
+    }
     return () => {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
+        window.speechSynthesis.onvoiceschanged = null;
       }
     };
   }, []);
@@ -351,8 +361,8 @@ export function AccessibilityWidget() {
     const paragraphs = clone.querySelectorAll("h1, h2, h3, h4, p, li");
     const textPieces: string[] = [];
     paragraphs.forEach((el) => {
-      const t = el.textContent?.trim();
-      if (t && t.length > 2) textPieces.push(t);
+      const text = el.textContent?.trim();
+      if (text && text.length > 2) textPieces.push(text);
     });
 
     const readableText =
@@ -360,17 +370,37 @@ export function AccessibilityWidget() {
     if (!readableText) return;
 
     const utterance = new SpeechSynthesisUtterance(readableText);
-    utterance.lang = "id-ID";
+    const isEn = language === "EN";
+    utterance.lang = isEn ? "en-US" : "id-ID";
     utterance.rate = 0.95;
+    utterance.pitch = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
-    const idVoice = voices.find(
-      (v) =>
-        v.lang.toLowerCase().includes("id") ||
-        v.name.toLowerCase().includes("indonesia") ||
-        v.lang === "id-ID"
-    );
-    if (idVoice) utterance.voice = idVoice;
+    let selectedVoice: SpeechSynthesisVoice | undefined;
+
+    if (isEn) {
+      selectedVoice =
+        voices.find(
+          (v) =>
+            v.lang.toLowerCase().startsWith("en") &&
+            (v.name.toLowerCase().includes("natural") ||
+              v.name.toLowerCase().includes("google") ||
+              v.name.toLowerCase().includes("samantha") ||
+              v.name.toLowerCase().includes("jenny") ||
+              v.name.toLowerCase().includes("guy"))
+        ) || voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+    } else {
+      selectedVoice = voices.find(
+        (v) =>
+          v.lang.toLowerCase().includes("id") ||
+          v.name.toLowerCase().includes("indonesia") ||
+          v.name.toLowerCase().includes("damayanti") ||
+          v.name.toLowerCase().includes("andika") ||
+          v.name.toLowerCase().includes("gadis")
+      );
+    }
+
+    if (selectedVoice) utterance.voice = selectedVoice;
 
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
@@ -466,10 +496,31 @@ export function AccessibilityWidget() {
   if (!mounted) return null;
 
   // Nilai teks dinamis untuk sublabel
-  const fontPercentLabels = ["Normal", "110%", "120%", "130%", "140%"];
-  const lineHeightLabels = ["Normal", "1.5X", "1.75X", "2.0X"];
-  const letterSpacingLabels = ["Normal", "Ringan", "Sedang", "Luas"];
-  const contrastLabels = ["Normal", "Kontras", "Monokrom", "Invert"];
+  const fontPercentLabels = [
+    t("a11y.status_normal", "Normal"),
+    "110%",
+    "120%",
+    "130%",
+    "140%",
+  ];
+  const lineHeightLabels = [
+    t("a11y.lh_normal", "Normal (1.0X)"),
+    t("a11y.lh_medium", "Sedang (1.5X)"),
+    t("a11y.lh_high", "Tinggi (1.75X)"),
+    t("a11y.lh_extra", "Ekstra (2.0X)"),
+  ];
+  const letterSpacingLabels = [
+    t("a11y.spacing_normal", "Normal"),
+    t("a11y.spacing_light", "Ringan"),
+    t("a11y.spacing_medium", "Sedang"),
+    t("a11y.spacing_wide", "Luas"),
+  ];
+  const contrastLabels = [
+    t("a11y.contrast_normal", "Normal"),
+    t("a11y.contrast_high", "Kontras"),
+    t("a11y.contrast_low", "Monokrom"),
+    t("a11y.contrast_invert", "Invert"),
+  ];
 
   return (
     <div data-a11y-ignore className="select-none">
@@ -489,8 +540,8 @@ export function AccessibilityWidget() {
           "backdrop-blur-md transition-all duration-300 transform hover:scale-105 active:scale-95",
           "cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/50"
         )}
-        aria-label="Buka Menu Aksesibilitas Ramah Difabel"
-        title="Menu Aksesibilitas (Ramah Difabel)"
+        aria-label={t("a11y.btn_label", "Buka Menu Aksesibilitas Ramah Difabel")}
+        title={t("a11y.btn_title", "Menu Aksesibilitas (Ramah Difabel)")}
       >
         <AccessibilityIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-xs" />
 
@@ -508,7 +559,7 @@ export function AccessibilityWidget() {
         <div
           ref={popoverRef}
           role="dialog"
-          aria-label="Panel Kontrol Aksesibilitas"
+          aria-label={t("a11y.title", "Aksesibilitas")}
           className={cn(
             "fixed bottom-24 sm:bottom-28 left-4 right-4 sm:left-12 md:left-14 sm:right-auto z-[9999]",
             "w-auto sm:w-[410px] max-w-[calc(100vw-2rem)] rounded-[24px] sm:rounded-[28px] overflow-hidden",
@@ -527,10 +578,10 @@ export function AccessibilityWidget() {
               </div>
               <div>
                 <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#FAF6F0] leading-none">
-                  Aksesibilitas
+                  {t("a11y.title", "Aksesibilitas")}
                 </h2>
                 <p className="text-[11px] text-[#E6DDD4]/90 mt-1 leading-none font-normal">
-                  Kenyamanan membaca & interaksi
+                  {t("a11y.subtitle", "Kenyamanan membaca & interaksi")}
                 </p>
               </div>
             </div>
@@ -541,18 +592,18 @@ export function AccessibilityWidget() {
                 type="button"
                 onClick={handleReset}
                 className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-stone-200 hover:text-white text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                title="Kembalikan semua setelan ke bawaan"
+                title={t("a11y.reset_title", "Kembalikan semua setelan ke bawaan")}
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Reset</span>
+                <span>{t("a11y.reset", "Reset")}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-stone-200 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Tutup panel aksesibilitas"
-                title="Tutup"
+                aria-label={t("a11y.close_title", "Tutup panel aksesibilitas")}
+                title={t("a11y.close", "Tutup")}
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -565,7 +616,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={toggleVoiceMode}
-              aria-label="Baca teks halaman dengan sintesis suara"
+              aria-label={t("a11y.voice_mode", "Mode Suara")}
               aria-pressed={isSpeaking}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -584,10 +635,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", isSpeaking ? "text-[#6E472D]" : "text-stone-800")}>
-                  Mode Suara
+                  {t("a11y.voice_mode", "Mode Suara")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {isSpeaking ? "Membaca..." : "Nonaktif"}
+                  {isSpeaking ? t("a11y.voice_reading", "Membaca...") : t("a11y.voice_inactive", "Nonaktif")}
                 </span>
               </div>
               <StepIndicator total={2} current={isSpeaking ? 2 : 0} />
@@ -597,7 +648,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleCycleFont}
-              aria-label={`Perbesar ukuran teks (aktif: ${fontPercentLabels[state.fontStep]})`}
+              aria-label={`${t("a11y.text_size", "Perbesar Teks")} (${fontPercentLabels[state.fontStep]})`}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.fontStep > 0
@@ -615,7 +666,7 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.fontStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
-                  Perbesar Teks
+                  {t("a11y.text_size", "Perbesar Teks")}
                 </span>
                 <span className={cn("text-[10px] font-semibold mt-0.5", state.fontStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
                   {fontPercentLabels[state.fontStep]}
@@ -628,7 +679,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleCycleLineHeight}
-              aria-label={`Sesuaikan jarak antar baris teks (aktif: ${lineHeightLabels[state.lineHeightStep]})`}
+              aria-label={`${t("a11y.line_height", "Tinggi Garis")} (${lineHeightLabels[state.lineHeightStep]})`}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.lineHeightStep > 0
@@ -646,7 +697,7 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.lineHeightStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
-                  Tinggi Garis
+                  {t("a11y.line_height", "Tinggi Garis")}
                 </span>
                 <span className={cn("text-[10px] font-semibold mt-0.5", state.lineHeightStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
                   {lineHeightLabels[state.lineHeightStep]}
@@ -659,7 +710,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleCycleLetterSpacing}
-              aria-label={`Sesuaikan spasi antar huruf (aktif: ${letterSpacingLabels[state.letterSpacingStep]})`}
+              aria-label={`${t("a11y.letter_spacing", "Spasi Huruf")} (${letterSpacingLabels[state.letterSpacingStep]})`}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.letterSpacingStep > 0
@@ -677,7 +728,7 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.letterSpacingStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
-                  Spasi Huruf
+                  {t("a11y.letter_spacing", "Spasi Huruf")}
                 </span>
                 <span className={cn("text-[10px] font-semibold mt-0.5", state.letterSpacingStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
                   {letterSpacingLabels[state.letterSpacingStep]}
@@ -690,7 +741,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleCycleContrast}
-              aria-label={`Ganti mode kontras dan warna (aktif: ${contrastLabels[state.contrastStep]})`}
+              aria-label={`${t("a11y.contrast", "Kontras & Warna")} (${contrastLabels[state.contrastStep]})`}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
                 state.contrastStep > 0
@@ -708,7 +759,7 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.contrastStep > 0 ? "text-[#6E472D]" : "text-stone-800")}>
-                  Kontras &amp; Warna
+                  {t("a11y.contrast", "Kontras & Warna")}
                 </span>
                 <span className={cn("text-[10px] font-semibold mt-0.5", state.contrastStep > 0 ? "text-[#6E472D]" : "text-stone-500")}>
                   {contrastLabels[state.contrastStep]}
@@ -721,7 +772,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleDyslexic}
-              aria-label="Ganti ke font khusus disleksia"
+              aria-label={t("a11y.dyslexic", "Ramah Disleksia")}
               aria-pressed={state.dyslexicFont}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -740,10 +791,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.dyslexicFont ? "text-[#6E472D]" : "text-stone-800")}>
-                  Ramah Disleksia
+                  {t("a11y.dyslexic", "Ramah Disleksia")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {state.dyslexicFont ? "Aktif" : "Bawaan"}
+                  {state.dyslexicFont ? t("a11y.status_active", "Aktif") : t("a11y.status_default", "Bawaan")}
                 </span>
               </div>
               <StepIndicator total={2} current={state.dyslexicFont ? 2 : 0} />
@@ -753,7 +804,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleAnimations}
-              aria-label="Jeda animasi visual di halaman"
+              aria-label={t("a11y.pause_anim", "Jeda Animasi")}
               aria-pressed={state.pauseAnimations}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -772,10 +823,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.pauseAnimations ? "text-[#6E472D]" : "text-stone-800")}>
-                  Jeda Animasi
+                  {t("a11y.pause_anim", "Jeda Animasi")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {state.pauseAnimations ? "Dijeda" : "Normal"}
+                  {state.pauseAnimations ? t("a11y.status_paused", "Dijeda") : t("a11y.status_normal", "Normal")}
                 </span>
               </div>
               <StepIndicator total={2} current={state.pauseAnimations ? 2 : 0} />
@@ -785,7 +836,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleCursor}
-              aria-label="Perbesar ukuran penunjuk kursor mouse"
+              aria-label={t("a11y.large_cursor", "Kursor Besar")}
               aria-pressed={state.largeCursor}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -804,10 +855,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.largeCursor ? "text-[#6E472D]" : "text-stone-800")}>
-                  Kursor Besar
+                  {t("a11y.large_cursor", "Kursor Besar")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {state.largeCursor ? "Aktif" : "Standar"}
+                  {state.largeCursor ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
               <StepIndicator total={2} current={state.largeCursor ? 2 : 0} />
@@ -817,7 +868,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleUnderline}
-              aria-label="Beri garis bawah pada semua tautan link"
+              aria-label={t("a11y.underline_links", "Garis Tautan")}
               aria-pressed={state.underlineLinks}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -836,10 +887,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.underlineLinks ? "text-[#6E472D]" : "text-stone-800")}>
-                  Garis Tautan
+                  {t("a11y.underline_links", "Garis Tautan")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {state.underlineLinks ? "Aktif" : "Standar"}
+                  {state.underlineLinks ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
               <StepIndicator total={2} current={state.underlineLinks ? 2 : 0} />
@@ -849,7 +900,7 @@ export function AccessibilityWidget() {
             <button
               type="button"
               onClick={handleToggleTextAlign}
-              aria-label="Ratakan semua teks bacaan ke sisi kiri"
+              aria-label={t("a11y.text_align", "Rata Kiri")}
               aria-pressed={state.textAlignLeft}
               className={cn(
                 "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px]",
@@ -868,10 +919,10 @@ export function AccessibilityWidget() {
               </div>
               <div className="mt-1 flex flex-col items-center">
                 <span className={cn("font-bold text-xs sm:text-[13px] leading-tight", state.textAlignLeft ? "text-[#6E472D]" : "text-stone-800")}>
-                  Rata Kiri
+                  {t("a11y.text_align", "Rata Kiri")}
                 </span>
                 <span className="text-[10px] text-stone-500 mt-0.5">
-                  {state.textAlignLeft ? "Aktif" : "Standar"}
+                  {state.textAlignLeft ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
               <StepIndicator total={2} current={state.textAlignLeft ? 2 : 0} />
@@ -882,7 +933,7 @@ export function AccessibilityWidget() {
           <div className="px-3.5 py-2.5 bg-[#FAF6EE] border-t border-stone-200/80 flex items-center justify-between text-[11px] text-stone-600">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse" />
-              <span>Pengaturan tersimpan otomatis di perangkat</span>
+              <span>{t("a11y.saved_notice", "Pengaturan tersimpan otomatis di perangkat")}</span>
             </span>
           </div>
         </div>
