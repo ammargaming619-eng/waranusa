@@ -185,16 +185,16 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
               dismiss();
             }
           }}
-          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-6 sm:py-8 text-white select-none cursor-pointer rounded-b-[36px] sm:rounded-b-[56px] border-b-4 border-[#D4AF37] shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_35px_rgba(212,175,55,0.5)]"
+          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-6 sm:py-8 text-white select-none cursor-pointer rounded-b-[36px] sm:rounded-b-[56px] border-b-4 border-[#C5A880] shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_35px_rgba(197,168,128,0.45)]"
           onClick={dismiss}
           role="dialog"
           aria-modal="true"
           aria-label="Animasi Pembuka Tirai Layar WaraNusa"
         >
-          {/* Sinar Emas Menyala di Bibir Bawah Tirai (Glow Rim Light) */}
+          {/* Sinar Coklat Muda Menyala di Bibir Bawah Tirai (Glow Rim Light) */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-[#FDE047] to-transparent shadow-[0_0_24px_#FDE047]"
+            className="pointer-events-none absolute bottom-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-[#D8C4B0] to-transparent shadow-[0_0_24px_rgba(203,184,161,0.7)]"
           />
 
           {/* Header Atas: Tombol Lewati / Skip Cepat */}
@@ -207,7 +207,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                 e.stopPropagation();
                 dismiss();
               }}
-              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3.5 py-1.5 text-xs font-semibold text-stone-200 backdrop-blur-md transition-all hover:border-[#D4AF37] hover:bg-white/20 hover:text-white cursor-pointer active:scale-95 shadow-md"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3.5 py-1.5 text-xs font-semibold text-stone-200 backdrop-blur-md transition-all hover:border-[#C5A880] hover:bg-white/20 hover:text-white cursor-pointer active:scale-95 shadow-md"
               aria-label="Lewati intro langsung ke beranda"
             >
               <span>Lewati</span>
@@ -215,7 +215,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
             </motion.button>
           </div>
 
-          {/* Latar Belakang: Pendaran Aura Emas Berputar & Geometris Nusantara */}
+          {/* Latar Belakang: Pendaran Aura Coklat Muda Berputar & Geometris Nusantara */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -232,10 +232,10 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute h-80 w-80 sm:h-96 sm:w-96 rounded-full bg-gradient-to-tr from-[#8C5E3C]/30 via-[#D4AF37]/25 to-transparent blur-3xl"
+              className="absolute h-80 w-80 sm:h-96 sm:w-96 rounded-full bg-gradient-to-tr from-[#8C5E3C]/30 via-[#C5A880]/25 to-transparent blur-3xl"
             />
 
-            {/* Pendar Inti Emas Hangat */}
+            {/* Pendar Inti Coklat Muda Hangat */}
             <motion.div
               animate={{
                 scale: [0.95, 1.2, 1],
@@ -246,7 +246,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute h-72 w-72 sm:h-88 sm:w-88 rounded-full bg-[#D4AF37]/25 blur-3xl"
+              className="absolute h-72 w-72 sm:h-88 sm:w-88 rounded-full bg-[#C5A880]/20 blur-3xl"
             />
 
             {/* Lingkaran Garis Geometris Nusantara */}
@@ -254,13 +254,13 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.25 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute h-[320px] w-[320px] sm:h-[440px] sm:w-[440px] md:h-[500px] md:w-[500px] rounded-full border border-[#D4AF37]/35"
+              className="absolute h-[320px] w-[320px] sm:h-[440px] sm:w-[440px] md:h-[500px] md:w-[500px] rounded-full border border-[#C5A880]/35"
             />
             <motion.div
               initial={{ scale: 0.35, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.18 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
-              className="absolute h-[380px] w-[380px] sm:h-[520px] sm:w-[520px] md:h-[600px] md:w-[600px] rounded-full border border-dashed border-[#D4AF37]/25"
+              className="absolute h-[380px] w-[380px] sm:h-[520px] sm:w-[520px] md:h-[600px] md:w-[600px] rounded-full border border-dashed border-[#C5A880]/25"
             />
           </div>
 
@@ -289,13 +289,13 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
             >
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 sm:h-52 sm:w-52 rounded-full bg-[#D4AF37]/30 blur-2xl"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 sm:h-52 sm:w-52 rounded-full bg-[#C5A880]/25 blur-2xl"
               />
 
               <img
                 src="/images/brand/waranusa-logo.png?v=3"
                 alt="Logo WaraNusa"
-                className="h-32 w-auto sm:h-44 md:h-52 object-contain drop-shadow-[0_15px_45px_rgba(212,175,55,0.55)]"
+                className="h-32 w-auto sm:h-44 md:h-52 object-contain drop-shadow-[0_15px_45px_rgba(197,168,128,0.5)]"
               />
             </motion.div>
 
@@ -329,12 +329,12 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
               </motion.p>
             </motion.div>
 
-            {/* Garis Pembatas Emas Halus */}
+            {/* Garis Pembatas Coklat Muda Halus */}
             <motion.div
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: "140px", opacity: 0.7 }}
               transition={{ delay: 0.55, duration: 0.6 }}
-              className="mt-5 sm:mt-6 h-0.5 rounded-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
+              className="mt-5 sm:mt-6 h-0.5 rounded-full bg-gradient-to-r from-transparent via-[#C5A880] to-transparent"
             />
           </motion.div>
 
@@ -345,7 +345,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
               <div className="flex flex-col items-center gap-2">
                 <div className="relative h-1 w-40 sm:w-52 overflow-hidden rounded-full bg-white/10 backdrop-blur-sm">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-[#8C5E3C] via-[#D4AF37] to-[#FDE047]"
+                    className="h-full rounded-full bg-gradient-to-r from-[#6E472D] via-[#A07855] to-[#C5A880]"
                     style={{ width: `${progress}%` }}
                     transition={{ ease: "easeOut" }}
                   />
@@ -354,7 +354,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                   <span className="font-mono text-[9px] sm:text-[10px] tracking-wider text-stone-400">
                     MENYIAPKAN PENGALAMAN {progress}%
                   </span>
-                  <ChevronDown className="h-3 w-3 text-amber-400 animate-bounce" />
+                  <ChevronDown className="h-3 w-3 text-[#C5A880] animate-bounce" />
                 </div>
               </div>
             ) : (
@@ -364,7 +364,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center gap-1.5"
               >
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/50 bg-gradient-to-r from-[#2D1B10]/90 to-[#432A18]/90 px-4 py-1.5 shadow-[0_4px_20px_rgba(212,175,55,0.3)] backdrop-blur-md">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#C5A880]/50 bg-gradient-to-r from-[#2D1B10]/90 to-[#432A18]/90 px-4 py-1.5 shadow-[0_4px_20px_rgba(197,168,128,0.25)] backdrop-blur-md">
                   <span className="font-serif text-[11px] sm:text-xs font-semibold tracking-wider text-[#FCF8EC]">
                     Membuka Layar Nusantara
                   </span>
@@ -376,10 +376,10 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
                       ease: "easeInOut",
                     }}
                   >
-                    <ChevronUp className="h-3.5 w-3.5 text-[#FDE047]" />
+                    <ChevronUp className="h-3.5 w-3.5 text-[#C5A880]" />
                   </motion.div>
                 </div>
-                <span className="text-[9px] tracking-widest text-[#D4AF37]/80 uppercase font-mono">
+                <span className="text-[9px] tracking-widest text-[#C5A880]/80 uppercase font-mono">
                   Gulir atau sentuh untuk langsung masuk
                 </span>
               </motion.div>
