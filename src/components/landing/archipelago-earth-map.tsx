@@ -134,9 +134,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
         <div className="relative z-20 pt-3 sm:pt-5 md:pt-6 lg:pt-8 px-4 text-center max-w-2xl sm:max-w-4xl lg:max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.88, y: 26 }}
+            animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.88, y: 26 }}
+            transition={{ delay: 0.18, duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
           >
             <h1
               id="hero-title"
@@ -151,9 +151,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
           {/* Tombol CTA: Peta 38 Provinsi & Katalog Budaya */}
           <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.1, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.85, y: 20 }}
+            animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.85, y: 20 }}
+            transition={{ delay: 0.36, duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
             className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
           >
             <Button
@@ -210,7 +210,14 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           return (
             <div key={tag.id} className="contents">
               {/* Pin Penanda Lokasi Peta (Touch-friendly target) */}
-              <div
+              <motion.div
+                initial={{ opacity: 0, scale: 0.4, y: 8 }}
+                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.4, y: 8 }}
+                transition={{
+                  delay: 0.4 + idx * 0.08,
+                  duration: 0.55,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 className="absolute z-20 -translate-x-1/2 -translate-y-full transition-transform duration-300"
                 style={{
                   left: `${tag.pin.x}%`,
@@ -240,15 +247,15 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   </div>
                   <div className="w-1.5 h-1.5 bg-[#53341E] rotate-45 -mt-1 shadow-xs" />
                 </button>
-              </div>
+              </motion.div>
 
               {/* Kartu Pratinjau Budaya Melayang (Desktop / Layar Lebar md+) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.88, y: 12 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.78, y: 18 }}
+                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.78, y: 18 }}
                 transition={{
-                  delay: 0.15 + idx * 0.08,
-                  duration: 0.45,
+                  delay: 0.48 + idx * 0.09,
+                  duration: 0.65,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className={cn(
@@ -296,7 +303,12 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
       {/* ========================================================================= */}
       {/* KHUSUS MOBILE: STRIP KARTU BUDAYA HORIZONTAL (TOUCH-FRIENDLY & NO OVERFLOW) */}
       {/* ========================================================================= */}
-      <div className="block md:hidden px-4 mt-2">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.92, y: 20 }}
+        transition={{ delay: 0.38, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="block md:hidden px-4 mt-2"
+      >
         <p className="text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3 w-3 text-amber-700" />
           <span>{t("hero.touch_hint", "Sentuh Pin Peta atau Jelajahi Ikon Budaya:")}</span>
@@ -325,7 +337,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* ================= MODAL DETAIL BUDAYA PIN INTERAKTIF ================= */}
       <Dialog open={!!activeTag} onOpenChange={(open) => !open && setActiveTag(null)}>

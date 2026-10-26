@@ -96,9 +96,9 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
       </a>
 
       <motion.header
-        initial={isLanding ? { y: -30, opacity: 0 } : false}
-        animate={isLanding ? { y: 0, opacity: 1 } : undefined}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        initial={isLanding ? { y: -40, opacity: 0, scale: 0.96 } : false}
+        animate={isLanding ? (introRevealed ? { y: 0, opacity: 1, scale: 1 } : { y: -40, opacity: 0, scale: 0.96 }) : undefined}
+        transition={{ delay: 0.22, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
           "transition-colors duration-300",
           isLanding
