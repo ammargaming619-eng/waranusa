@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 
 interface BrandPreloaderProps {
   onStartDismiss?: () => void;
@@ -12,6 +12,8 @@ interface BrandPreloaderProps {
 export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderProps) {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [isOpeningUp, setIsOpeningUp] = useState(false);
+  const [readyToOpen, setReadyToOpen] = useState(false);
   const [progress, setProgress] = useState(25);
   const touchStartY = useRef<number | null>(null);
   const dismissedRef = useRef(false);
@@ -23,17 +25,26 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
   const dismiss = useCallback(() => {
     if (dismissedRef.current) return;
     dismissedRef.current = true;
+    setIsOpeningUp(true);
     setVisible(false);
+
     try {
       sessionStorage.setItem("waranusa_intro_seen", "true");
     } catch {}
-    if (onStartDismiss) onStartDismiss();
-  }, [onStartDismiss]);
 
-  // Efek progress bar cepat dan auto-reveal express (~1.1 detik total)
+    if (onStartDismiss) onStartDismiss();
+
+    // Pastikan halaman belakang siap penuh setelah animasi tirai naik selesai
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (onComplete) onComplete();
+    }, 950);
+  }, [onStartDismiss, onComplete]);
+
+  // Efek progress bar dan auto-reveal saat waktu habis
   useEffect(() => {
     // 0. Deteksi Bot Audit (Lighthouse, PageSpeed, HeadlessChromium, Googlebot)
-    // Langsung buka dalam 0ms agar skor LCP & First Contentful Paint tidak tertunda
+    // Langsung buka dalam 0ms agar skor performa LCP/FCP tidak tertunda
     const isBotOrAudit =
       typeof navigator !== "undefined" &&
       (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
@@ -43,7 +54,6 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
 
     if (isBotOrAudit) {
       dismiss();
-      if (onComplete) onComplete();
       return;
     }
 
@@ -51,13 +61,12 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
     try {
       if (sessionStorage.getItem("waranusa_intro_seen") === "true") {
         dismiss();
-        if (onComplete) onComplete();
         return;
       }
     } catch {}
 
     const startTime = Date.now();
-    const duration = 650; // Progress bar selesai dalam 650ms
+    const duration = 750; // Progress bar mengisi dalam 750ms
 
     const pInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -66,42 +75,46 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
 
       if (pct >= 100) {
         clearInterval(pInterval);
-        // Otomatis tirai terangkat setelah sedikit jeda estetik (450ms)
+        setReadyToOpen(true);
+
+        // Jika waktu habis (setelah progress 100% + jeda estetik 400ms), otomatis buka tirai ke atas!
         setTimeout(() => {
           dismiss();
-        }, 450);
+        }, 400);
       }
     }, 25);
 
-    // Failsafe timer cadangan
+    // Failsafe timer maksimal jika pengguna membiarkan tanpa interaksi
     const safetyTimer = setTimeout(() => {
       setProgress(100);
       dismiss();
-    }, 2200);
+    }, 2400);
 
     return () => {
       clearInterval(pInterval);
       clearTimeout(safetyTimer);
     };
-  }, [dismiss, onComplete]);
+  }, [dismiss]);
 
-  // Event listener interaktif: Pengguna bisa langsung swipe, scroll, atau tekan tombol untuk skip instan
+  // Event listener interaktif: Pengguna bisa langsung scroll, swipe, atau tekan tombol untuk membuka layar ke atas
   useEffect(() => {
     if (!visible) return;
 
-    // Kunci scroll halaman belakang selama preloader aktif
+    // Kunci scroll background halaman selama tirai masih menutup
     const prevHtmlOverflow = document.documentElement.style.overflow;
     const prevBodyOverflow = document.body.style.overflow;
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
+    // Usapan roda mouse (scroll down / up)
     const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > 5) {
+      if (Math.abs(e.deltaY) > 3 || Math.abs(e.deltaX) > 3) {
         dismiss();
       }
     };
 
+    // Usapan layar sentuh HP
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         touchStartY.current = e.touches[0].clientY;
@@ -111,12 +124,13 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
     const handleTouchMove = (e: TouchEvent) => {
       if (touchStartY.current !== null && e.touches.length > 0) {
         const delta = touchStartY.current - e.touches[0].clientY;
-        if (Math.abs(delta) > 8) {
+        if (Math.abs(delta) > 6) {
           dismiss();
         }
       }
     };
 
+    // Tombol keyboard (Space, Enter, ArrowDown, Esc, PageDown)
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
         e.key === "ArrowDown" ||
@@ -125,6 +139,7 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
         e.key === "Enter" ||
         e.key === "Escape"
       ) {
+        e.preventDefault();
         dismiss();
       }
     };
@@ -152,24 +167,36 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
     <AnimatePresence>
       {visible && (
         <motion.div
-          key="waranusa-brand-preloader"
+          key="waranusa-curtain-screen"
           initial={{ y: "0%" }}
           exit={{
             y: "-100%",
-            transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
+            transition: {
+              duration: 0.9,
+              ease: [0.76, 0, 0.24, 1], // Kurva buka tirai teater mewah (Theatrical Curtain Easing)
+            },
           }}
-          onAnimationComplete={() => {
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-            if (!visible && onComplete) {
-              onComplete();
+          drag="y"
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0.75, bottom: 0 }}
+          onDragEnd={(_, info) => {
+            // Jika ditarik ke atas dengan jari/mouse, langsung luncurkan buka ke atas
+            if (info.offset.y < -20 || info.velocity.y < -80) {
+              dismiss();
             }
           }}
-          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-6 sm:py-8 text-white select-none shadow-[0_35px_90px_rgba(0,0,0,0.95)] border-b-2 border-[#D4AF37]/40 cursor-pointer"
+          className="fixed inset-0 z-[99999] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#140B06] via-[#24130A] to-[#120804] px-4 py-6 sm:py-8 text-white select-none cursor-pointer rounded-b-[36px] sm:rounded-b-[56px] border-b-4 border-[#D4AF37] shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_35px_rgba(212,175,55,0.5)]"
           onClick={dismiss}
           role="dialog"
           aria-modal="true"
-          aria-label="Animasi Pembuka WaraNusa"
+          aria-label="Animasi Pembuka Tirai Layar WaraNusa"
         >
+          {/* Sinar Emas Menyala di Bibir Bawah Tirai (Glow Rim Light) */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-[#FDE047] to-transparent shadow-[0_0_24px_#FDE047]"
+          />
+
           {/* Header Atas: Tombol Lewati / Skip Cepat */}
           <div className="relative z-20 flex w-full items-center justify-end px-2 sm:px-6">
             <motion.button
@@ -237,9 +264,13 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
             />
           </div>
 
-          {/* Konten Utama Tengah (Logo & Tipografi) */}
+          {/* Konten Utama Tengah (Logo & Tipografi) dengan Efek Parallax ke Atas saat Layar Terbuka */}
           <motion.div
-            exit={{ y: -60, opacity: 0.8, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }}
+            exit={{
+              y: -120,
+              opacity: 0.3,
+              transition: { duration: 0.65, ease: [0.76, 0, 0.24, 1] },
+            }}
             className="relative z-10 flex flex-col items-center text-center my-auto"
           >
             {/* Logo Utama */}
@@ -307,23 +338,52 @@ export function BrandPreloader({ onStartDismiss, onComplete }: BrandPreloaderPro
             />
           </motion.div>
 
-          {/* Bagian Bawah: Progress Bar & Petunjuk */}
+          {/* Bagian Bawah: Indikator Layar Terbuka ke Atas (Scroll / Auto-Reveal) */}
           <div className="relative z-10 flex flex-col items-center pb-2 sm:pb-4">
-            <div className="flex flex-col items-center gap-2">
-              <div className="relative h-1 w-40 sm:w-52 overflow-hidden rounded-full bg-white/10 backdrop-blur-sm">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-[#8C5E3C] via-[#D4AF37] to-[#FDE047]"
-                  style={{ width: `${progress}%` }}
-                  transition={{ ease: "easeOut" }}
-                />
+            {!readyToOpen ? (
+              // Saat Progress Bar Mengisi
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative h-1 w-40 sm:w-52 overflow-hidden rounded-full bg-white/10 backdrop-blur-sm">
+                  <motion.div
+                    className="h-full rounded-full bg-gradient-to-r from-[#8C5E3C] via-[#D4AF37] to-[#FDE047]"
+                    style={{ width: `${progress}%` }}
+                    transition={{ ease: "easeOut" }}
+                  />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[9px] sm:text-[10px] tracking-wider text-stone-400">
+                    MENYIAPKAN PENGALAMAN {progress}%
+                  </span>
+                  <ChevronDown className="h-3 w-3 text-amber-400 animate-bounce" />
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-[9px] sm:text-[10px] tracking-wider text-stone-400">
-                  MENYIAPKAN PENGALAMAN {progress}%
+            ) : (
+              // Saat Siap Terbuka ke Atas: Tampilkan Animasi Tirai Terbuka
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center gap-1.5"
+              >
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/50 bg-gradient-to-r from-[#2D1B10]/90 to-[#432A18]/90 px-4 py-1.5 shadow-[0_4px_20px_rgba(212,175,55,0.3)] backdrop-blur-md">
+                  <span className="font-serif text-[11px] sm:text-xs font-semibold tracking-wider text-[#FCF8EC]">
+                    Membuka Layar Nusantara
+                  </span>
+                  <motion.div
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{
+                      duration: 1.0,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <ChevronUp className="h-3.5 w-3.5 text-[#FDE047]" />
+                  </motion.div>
+                </div>
+                <span className="text-[9px] tracking-widest text-[#D4AF37]/80 uppercase font-mono">
+                  Gulir atau sentuh untuk langsung masuk
                 </span>
-                <ChevronDown className="h-3 w-3 text-amber-400 animate-bounce" />
-              </div>
-            </div>
+              </motion.div>
+            )}
           </div>
         </motion.div>
       )}
