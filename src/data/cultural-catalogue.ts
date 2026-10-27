@@ -4606,3 +4606,69 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "actionUrl": "#/budaya/wayang-kulit-purwa"
   }
 ];
+
+
+export interface CatalogueQueryParams {
+  search?: string;
+  categorySlug?: string;
+  regionCode?: string;
+  sort?: "newest" | "oldest" | "popular" | "title";
+  page?: number;
+  pageSize?: number;
+}
+
+export function queryCatalogue(params: CatalogueQueryParams = {}) {
+  const {
+    search = "",
+    categorySlug = "",
+    regionCode = "",
+    sort = "newest",
+    page = 1,
+    pageSize = 12,
+  } = params;
+
+  let filtered = [...MASTER_CULTURAL_CATALOGUE];
+
+  if (categorySlug && categorySlug !== "all") {
+    filtered = filtered.filter((it) => it.category?.slug === categorySlug);
+  }
+
+  if (regionCode && regionCode !== "all") {
+    filtered = filtered.filter((it) => it.region?.code === regionCode);
+  }
+
+  if (search.trim()) {
+    const q = search.trim().toLowerCase();
+    filtered = filtered.filter(
+      (it) =>
+        it.title.toLowerCase().includes(q) ||
+        it.summary.toLowerCase().includes(q) ||
+        it.region?.name.toLowerCase().includes(q)
+    );
+  }
+
+  // Sort
+  if (sort === "popular") {
+    filtered.sort((a, b) => (b.viewCount ?? 0) - (a.viewCount ?? 0));
+  } else if (sort === "title") {
+    filtered.sort((a, b) => a.title.localeCompare(b.title, "id"));
+  } else if (sort === "oldest") {
+    filtered.reverse();
+  }
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.max(1, Math.min(page, totalPages));
+  const skip = (currentPage - 1) * pageSize;
+  const items = filtered.slice(skip, skip + pageSize);
+
+  return {
+    items,
+    meta: {
+      page: currentPage,
+      pageSize,
+      total,
+      totalPages,
+    },
+  };
+}
