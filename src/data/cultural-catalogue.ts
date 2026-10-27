@@ -348,7 +348,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-angklung",
       "name": "Foto Alat Musik Angklung",
-      "url": "/images/catalog/angklung.jpg",
+      "url": "/images/catalog/angklung.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -387,7 +387,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-bonang-barung",
       "name": "Foto Alat Musik Bonang Barung",
-      "url": "/images/catalog/bonang-barung.jpg",
+      "url": "/images/catalog/bonang-barung.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -426,7 +426,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-burdah-palembang",
       "name": "Foto Alat Musik Burdah",
-      "url": "/images/catalog/burdah-palembang.jpg",
+      "url": "/images/catalog/burdah-palembang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -465,7 +465,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-dambus-babel",
       "name": "Foto Alat Musik Dambus",
-      "url": "/images/catalog/dambus-babel.jpg",
+      "url": "/images/catalog/dambus-babel.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -504,7 +504,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-dogdog-lojor",
       "name": "Foto Alat Musik Dogdog Lojor",
-      "url": "/images/catalog/dogdog-lojor.jpg",
+      "url": "/images/catalog/dogdog-lojor.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -543,7 +543,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-dol-bengkulu",
       "name": "Foto Alat Musik Dol",
-      "url": "/images/catalog/dol-bengkulu.jpg",
+      "url": "/images/catalog/dol-bengkulu.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -582,7 +582,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-fu-kerang",
       "name": "Foto Alat Musik Fu",
-      "url": "/images/catalog/fu-kerang.jpg",
+      "url": "/images/catalog/fu-kerang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -621,7 +621,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gambus-selodang",
       "name": "Foto Alat Musik Gambus Selodang",
-      "url": "/images/catalog/gambus-selodang.jpg",
+      "url": "/images/catalog/gambus-selodang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -660,7 +660,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gamolan-pekhing",
       "name": "Foto Alat Musik Gamolan Pekhing",
-      "url": "/images/catalog/gamolan-pekhing.jpg",
+      "url": "/images/catalog/gamolan-pekhing.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -699,7 +699,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gendang-beleq",
       "name": "Foto Alat Musik Gendang Beleq",
-      "url": "/images/catalog/gendang-beleq.jpg",
+      "url": "/images/catalog/gendang-beleq.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -738,7 +738,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gendang-panjang",
       "name": "Foto Alat Musik Gendang Panjang",
-      "url": "/images/catalog/gendang-panjang.jpg",
+      "url": "/images/catalog/gendang-panjang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -777,7 +777,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gimba-kaili",
       "name": "Foto Alat Musik Gimba",
-      "url": "/images/catalog/gimba-kaili.jpg",
+      "url": "/images/catalog/gimba-kaili.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -816,7 +816,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-guoto-arfak",
       "name": "Foto Alat Musik Guoto",
-      "url": "/images/catalog/guoto-arfak.jpg",
+      "url": "/images/catalog/guoto-arfak.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -855,7 +855,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-hasapi-batak",
       "name": "Foto Alat Musik Hasapi",
-      "url": "/images/catalog/hasapi-batak.jpg",
+      "url": "/images/catalog/hasapi-batak.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -894,7 +894,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-japen-kalteng",
       "name": "Foto Alat Musik Japen",
-      "url": "/images/catalog/japen-kalteng.jpg",
+      "url": "/images/catalog/japen-kalteng.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -933,7 +933,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-jatung-utang",
       "name": "Foto Alat Musik Jatung Utang",
-      "url": "/images/catalog/jatung-utang.jpg",
+      "url": "/images/catalog/jatung-utang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -972,7 +972,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kecapi-mandar",
       "name": "Foto Alat Musik Kecapi Mandar",
-      "url": "/images/catalog/kecapi-mandar.jpg",
+      "url": "/images/catalog/kecapi-mandar.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1011,7 +1011,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kelintang-kayu",
       "name": "Foto Alat Musik Kelintang Kayu",
-      "url": "/images/catalog/kelintang-kayu.jpg",
+      "url": "/images/catalog/kelintang-kayu.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1050,7 +1050,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kendang-reog",
       "name": "Foto Alat Musik Kendang Reog",
-      "url": "/images/catalog/kendang-reog.jpg",
+      "url": "/images/catalog/kendang-reog.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1089,7 +1089,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-keso-keso",
       "name": "Foto Alat Musik Keso-Keso",
-      "url": "/images/catalog/keso-keso.jpg",
+      "url": "/images/catalog/keso-keso.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1128,7 +1128,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kolintang-minahasa",
       "name": "Foto Alat Musik Kolintang",
-      "url": "/images/catalog/kolintang-minahasa.jpg",
+      "url": "/images/catalog/kolintang-minahasa.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1167,7 +1167,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-lado-lado",
       "name": "Foto Alat Musik Ladolado",
-      "url": "/images/catalog/lado-lado.jpg",
+      "url": "/images/catalog/lado-lado.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1206,7 +1206,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-musik-panting",
       "name": "Foto Alat Musik Panting",
-      "url": "/images/catalog/musik-panting.jpg",
+      "url": "/images/catalog/musik-panting.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1245,7 +1245,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-pikon-dani",
       "name": "Foto Alat Musik Pikon",
-      "url": "/images/catalog/pikon-dani.jpg",
+      "url": "/images/catalog/pikon-dani.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1284,7 +1284,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-polopalo-gorontalo",
       "name": "Foto Alat Musik Polopalo",
-      "url": "/images/catalog/polopalo-gorontalo.jpg",
+      "url": "/images/catalog/polopalo-gorontalo.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1323,7 +1323,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-rapai-aceh",
       "name": "Foto Alat Musik Rapai",
-      "url": "/images/catalog/rapai-aceh.jpg",
+      "url": "/images/catalog/rapai-aceh.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1362,7 +1362,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-rindik-bali",
       "name": "Foto Alat Musik Rindik",
-      "url": "/images/catalog/rindik-bali.jpg",
+      "url": "/images/catalog/rindik-bali.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1401,7 +1401,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-sampe-dayak-kaltim",
       "name": "Foto Alat Musik Sape",
-      "url": "/images/catalog/sampe-dayak-kaltim.jpg",
+      "url": "/images/catalog/sampe-dayak-kaltim.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1440,7 +1440,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gamelan-jawa",
       "name": "Foto Alat Musik Saron Demung",
-      "url": "/images/catalog/gamelan-jawa.jpg",
+      "url": "/images/catalog/gamelan-jawa.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1479,7 +1479,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-sasando-rote",
       "name": "Foto Alat Musik Sasando",
-      "url": "/images/catalog/sasando-rote.jpg",
+      "url": "/images/catalog/sasando-rote.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1518,7 +1518,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-talempong-minang",
       "name": "Foto Alat Musik Talempong",
-      "url": "/images/catalog/talempong-minang.jpg",
+      "url": "/images/catalog/talempong-minang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1557,7 +1557,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tehyan-jakarta",
       "name": "Foto Alat Musik Tehyan",
-      "url": "/images/catalog/tehyan-jakarta.jpg",
+      "url": "/images/catalog/tehyan-jakarta.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1596,7 +1596,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tifa-asmat",
       "name": "Foto Alat Musik Tifa Asmat",
-      "url": "/images/catalog/tifa-asmat.jpg",
+      "url": "/images/catalog/tifa-asmat.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1635,7 +1635,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tifa-kamoro",
       "name": "Foto Alat Musik Tifa Kamoro",
-      "url": "/images/catalog/tifa-kamoro.jpg",
+      "url": "/images/catalog/tifa-kamoro.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1674,7 +1674,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tifa-sentani",
       "name": "Foto Alat Musik Tifa Sentani",
-      "url": "/images/catalog/tifa-sentani.jpg",
+      "url": "/images/catalog/tifa-sentani.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1713,7 +1713,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tifa-totobuang",
       "name": "Foto Alat Musik Totobuang",
-      "url": "/images/catalog/tifa-totobuang.jpg",
+      "url": "/images/catalog/tifa-totobuang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1752,7 +1752,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-triton-raja-ampat",
       "name": "Foto Alat Musik Triton",
-      "url": "/images/catalog/triton-raja-ampat.jpg",
+      "url": "/images/catalog/triton-raja-ampat.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -1791,7 +1791,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-tuma-dayak",
       "name": "Foto Alat Musik Tuma",
-      "url": "/images/catalog/tuma-dayak.jpg",
+      "url": "/images/catalog/tuma-dayak.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2490,7 +2490,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-anjir",
       "name": "Foto Rumah Adat Anjir",
-      "url": "/images/catalog/anjir.jpg",
+      "url": "/images/catalog/anjir.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2529,7 +2529,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-baileo",
       "name": "Foto Rumah Adat Baileo",
-      "url": "/images/catalog/baileo.jpg",
+      "url": "/images/catalog/baileo.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2568,7 +2568,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-baloy-mayo",
       "name": "Foto Rumah Adat Baloy Mayo",
-      "url": "/images/catalog/baloy-mayo.jpg",
+      "url": "/images/catalog/baloy-mayo.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2607,7 +2607,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-bangsal-kencono",
       "name": "Foto Rumah Adat Bangsal Kencono",
-      "url": "/images/catalog/bangsal-kencono.jpg",
+      "url": "/images/catalog/bangsal-kencono.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2646,7 +2646,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-banua-tada",
       "name": "Foto Rumah Adat Banua Tada",
-      "url": "/images/catalog/banua-tada.jpg",
+      "url": "/images/catalog/banua-tada.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2685,7 +2685,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-belah-bubung",
       "name": "Foto Rumah Adat Belah Bubung",
-      "url": "/images/catalog/belah-bubung.jpg",
+      "url": "/images/catalog/belah-bubung.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2724,7 +2724,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-betang",
       "name": "Foto Rumah Adat Betang",
-      "url": "/images/catalog/betang.jpg",
+      "url": "/images/catalog/betang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2763,7 +2763,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-bolon",
       "name": "Foto Rumah Adat Bolon",
-      "url": "/images/catalog/bolon.jpg",
+      "url": "/images/catalog/bolon.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2802,7 +2802,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-boyang",
       "name": "Foto Rumah Adat Boyang",
-      "url": "/images/catalog/boyang.jpg",
+      "url": "/images/catalog/boyang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2841,7 +2841,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-bubungan-lima",
       "name": "Foto Rumah Adat Bubungan Lima",
-      "url": "/images/catalog/bubungan-lima.jpg",
+      "url": "/images/catalog/bubungan-lima.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2880,7 +2880,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-bubungan-tinggi",
       "name": "Foto Rumah Adat Bubungan Tinggi",
-      "url": "/images/catalog/bubungan-tinggi.jpg",
+      "url": "/images/catalog/bubungan-tinggi.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2919,7 +2919,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-dalam-loka",
       "name": "Foto Rumah Adat Dalam Loka",
-      "url": "/images/catalog/dalam-loka.jpg",
+      "url": "/images/catalog/dalam-loka.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2958,7 +2958,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-dulohupa",
       "name": "Foto Rumah Adat Dulohupa",
-      "url": "/images/catalog/dulohupa.jpg",
+      "url": "/images/catalog/dulohupa.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -2997,7 +2997,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-gapura-candi-bentar",
       "name": "Foto Rumah Adat Gapura Candi Bentar",
-      "url": "/images/catalog/gapura-candi-bentar.jpg",
+      "url": "/images/catalog/gapura-candi-bentar.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3036,7 +3036,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-honai",
       "name": "Foto Rumah Adat Honai",
-      "url": "/images/catalog/honai.jpg",
+      "url": "/images/catalog/honai.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3075,7 +3075,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-jew",
       "name": "Foto Rumah Adat Jew",
-      "url": "/images/catalog/jew.jpg",
+      "url": "/images/catalog/jew.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3114,7 +3114,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-joglo",
       "name": "Foto Rumah Adat Joglo",
-      "url": "/images/catalog/joglo.jpg",
+      "url": "/images/catalog/joglo.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3153,7 +3153,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-joglo-situbondo",
       "name": "Foto Rumah Adat Joglo Situbondo",
-      "url": "/images/catalog/joglo-situbondo.jpg",
+      "url": "/images/catalog/joglo-situbondo.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3192,7 +3192,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-julang-ngapak",
       "name": "Foto Rumah Adat Julang Ngapak",
-      "url": "/images/catalog/julang-ngapak.jpg",
+      "url": "/images/catalog/julang-ngapak.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3231,7 +3231,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kambik",
       "name": "Foto Rumah Adat Kambik",
-      "url": "/images/catalog/kambik.jpg",
+      "url": "/images/catalog/kambik.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3270,7 +3270,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-karapao",
       "name": "Foto Rumah Adat Karapao",
-      "url": "/images/catalog/karapao.jpg",
+      "url": "/images/catalog/karapao.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3309,7 +3309,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-kebaya-bapang",
       "name": "Foto Rumah Adat Kebaya (Bapang)",
-      "url": "/images/catalog/kebaya-bapang.jpg",
+      "url": "/images/catalog/kebaya-bapang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3348,7 +3348,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-lamin",
       "name": "Foto Rumah Adat Lamin",
-      "url": "/images/catalog/lamin.jpg",
+      "url": "/images/catalog/lamin.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3387,7 +3387,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-limas",
       "name": "Foto Rumah Adat Limas",
-      "url": "/images/catalog/limas.jpg",
+      "url": "/images/catalog/limas.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3426,7 +3426,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-mod-aki-aksa",
       "name": "Foto Rumah Adat Mod Aki Aksa",
-      "url": "/images/catalog/mod-aki-aksa.jpg",
+      "url": "/images/catalog/mod-aki-aksa.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3465,7 +3465,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-musalaki",
       "name": "Foto Rumah Adat Musalaki",
-      "url": "/images/catalog/musalaki.jpg",
+      "url": "/images/catalog/musalaki.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3504,7 +3504,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-nuwo-sesat",
       "name": "Foto Rumah Adat Nuwo Sesat",
-      "url": "/images/catalog/nuwo-sesat.jpg",
+      "url": "/images/catalog/nuwo-sesat.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3543,7 +3543,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-panggung-kajang-lako",
       "name": "Foto Rumah Adat Panggung Kajang Lako",
-      "url": "/images/catalog/panggung-kajang-lako.jpg",
+      "url": "/images/catalog/panggung-kajang-lako.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3582,7 +3582,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-radakng",
       "name": "Foto Rumah Adat Radakng",
-      "url": "/images/catalog/radakng.jpg",
+      "url": "/images/catalog/radakng.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3621,7 +3621,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-rakit",
       "name": "Foto Rumah Adat Rakit",
-      "url": "/images/catalog/rakit.jpg",
+      "url": "/images/catalog/rakit.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3660,7 +3660,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-rumah-gadang",
       "name": "Foto Rumah Adat Rumah Gadang",
-      "url": "/images/catalog/rumah-gadang.jpg",
+      "url": "/images/catalog/rumah-gadang.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3699,7 +3699,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-rumoh-aceh",
       "name": "Foto Rumah Adat Rumoh Aceh (Krong Bade)",
-      "url": "/images/catalog/rumoh-aceh.jpg",
+      "url": "/images/catalog/rumoh-aceh.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3738,7 +3738,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-sasadu",
       "name": "Foto Rumah Adat Sasadu",
-      "url": "/images/catalog/sasadu.jpg",
+      "url": "/images/catalog/sasadu.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3777,7 +3777,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-selaso-jatuh-kembar",
       "name": "Foto Rumah Adat Selaso Jatuh Kembar",
-      "url": "/images/catalog/selaso-jatuh-kembar.jpg",
+      "url": "/images/catalog/selaso-jatuh-kembar.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3816,7 +3816,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-souraja",
       "name": "Foto Rumah Adat Souraja",
-      "url": "/images/catalog/souraja.jpg",
+      "url": "/images/catalog/souraja.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -3933,7 +3933,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "coverMedia": {
       "id": "media-walewangko",
       "name": "Foto Rumah Adat Walewangko",
-      "url": "/images/catalog/walewangko.jpg",
+      "url": "/images/catalog/walewangko.png",
       "type": "IMAGE"
     },
     "modelMedia": {
@@ -4605,69 +4605,4 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "actionBadge": "Lihat",
     "actionUrl": "#/budaya/wayang-kulit-purwa"
   }
-] as unknown as CulturalItem[];
-
-export interface CatalogueQueryParams {
-  search?: string;
-  categorySlug?: string;
-  regionCode?: string;
-  sort?: "newest" | "oldest" | "popular" | "title";
-  page?: number;
-  pageSize?: number;
-}
-
-export function queryCatalogue(params: CatalogueQueryParams = {}) {
-  const {
-    search = "",
-    categorySlug = "",
-    regionCode = "",
-    sort = "newest",
-    page = 1,
-    pageSize = 12,
-  } = params;
-
-  let filtered = [...MASTER_CULTURAL_CATALOGUE];
-
-  if (categorySlug && categorySlug !== "all") {
-    filtered = filtered.filter((it) => it.category?.slug === categorySlug);
-  }
-
-  if (regionCode && regionCode !== "all") {
-    filtered = filtered.filter((it) => it.region?.code === regionCode);
-  }
-
-  if (search.trim()) {
-    const q = search.trim().toLowerCase();
-    filtered = filtered.filter(
-      (it) =>
-        it.title.toLowerCase().includes(q) ||
-        it.summary.toLowerCase().includes(q) ||
-        it.region?.name.toLowerCase().includes(q)
-    );
-  }
-
-  // Sort
-  if (sort === "popular") {
-    filtered.sort((a, b) => (b.viewCount ?? 0) - (a.viewCount ?? 0));
-  } else if (sort === "title") {
-    filtered.sort((a, b) => a.title.localeCompare(b.title, "id"));
-  } else if (sort === "oldest") {
-    filtered.reverse();
-  }
-
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const currentPage = Math.max(1, Math.min(page, totalPages));
-  const skip = (currentPage - 1) * pageSize;
-  const items = filtered.slice(skip, skip + pageSize);
-
-  return {
-    items,
-    meta: {
-      page: currentPage,
-      pageSize,
-      total,
-      totalPages,
-    },
-  };
-}
+];
