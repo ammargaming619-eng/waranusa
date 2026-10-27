@@ -507,6 +507,7 @@ export function Instrument3DStage({
   const blowEnergyRef = React.useRef(0);
   const lastShakeTriggerRef = React.useRef(0);
   const lastMouseXRef = React.useRef<number | null>(null);
+  const lastPluckedIdxRef = React.useRef<number | null>(null);
 
   // Refs Kamera AI
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
@@ -653,6 +654,23 @@ export function Instrument3DStage({
 
     runStep();
   }, [instrument, playNoteByIndex, stopDemo]);
+
+  // Handler Genjreng Seluruh Senar (Arpeggio Strumming Cascade)
+  const strumAllStrings = React.useCallback(
+    (direction: "down" | "up" = "down") => {
+      stopDemo();
+      const count = instrument.notes.length;
+      const indices = Array.from({ length: count }, (_, i) =>
+        direction === "down" ? i : count - 1 - i
+      );
+      indices.forEach((idx, step) => {
+        window.setTimeout(() => {
+          playNoteByIndex(idx, 0.95);
+        }, step * 48); // Jeda 48ms menghasilkan genjrengan akustik alami
+      });
+    },
+    [instrument.notes.length, playNoteByIndex, stopDemo]
+  );
 
   // Pintasan Keyboard 1-7
   React.useEffect(() => {
@@ -998,6 +1016,21 @@ export function Instrument3DStage({
             </>
           )}
 
+          {/* Tombol Genjreng Akord khusus instrumen PETIK / PLUCK */}
+          {instrument.interactionType === "pluck" && (
+            <Button
+              type="button"
+              size="sm"
+              variant="default"
+              onClick={() => strumAllStrings("down")}
+              className="h-8 rounded-full text-xs font-bold btn-waranusa text-white shadow-xs cursor-pointer flex items-center gap-1.5 hover:scale-105 transition-all"
+              title="Petik cepat seluruh senar (Genjreng Akord)"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Genjreng Akord</span>
+            </Button>
+          )}
+
           {/* Tombol Sensor Tiup Mikrofon khusus instrumen BLOW */}
           {instrument.interactionType === "blow" && (
             <Button
@@ -1062,7 +1095,15 @@ export function Instrument3DStage({
             const touch = e.touches[0];
             const rect = e.currentTarget.getBoundingClientRect();
             const relX = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
-            if (instrument.interactionType === "bow") {
+
+            if (instrument.interactionType === "pluck") {
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.max(0, Math.floor(relX * instrument.notes.length))
+              );
+              lastPluckedIdxRef.current = idx;
+              playNoteByIndex(idx, 0.95);
+            } else if (instrument.interactionType === "bow") {
               const idx = Math.min(
                 instrument.notes.length - 1,
                 Math.floor(relX * instrument.notes.length)
@@ -1089,6 +1130,18 @@ export function Instrument3DStage({
             const touch = e.touches[0];
             const rect = e.currentTarget.getBoundingClientRect();
             const relX = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+
+            // Mode PLUCK / STRUM: Geser jari melintasi senar untuk menggenjreng
+            if (instrument.interactionType === "pluck") {
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.max(0, Math.floor(relX * instrument.notes.length))
+              );
+              if (lastPluckedIdxRef.current !== idx) {
+                lastPluckedIdxRef.current = idx;
+                playNoteByIndex(idx, 0.95);
+              }
+            }
 
             if (instrument.interactionType === "shake") {
               if (lastMouseXRef.current !== null) {
@@ -1122,6 +1175,7 @@ export function Instrument3DStage({
         }}
         onTouchEnd={() => {
           lastMouseXRef.current = null;
+          lastPluckedIdxRef.current = null;
           if (instrument.interactionType === "bow" && isBowingUI) {
             setIsBowingUI(false);
             bowStateRef.current.active = false;
@@ -1131,6 +1185,7 @@ export function Instrument3DStage({
         }}
         onTouchCancel={() => {
           lastMouseXRef.current = null;
+          lastPluckedIdxRef.current = null;
           if (instrument.interactionType === "bow" && isBowingUI) {
             setIsBowingUI(false);
             bowStateRef.current.active = false;
@@ -1141,6 +1196,20 @@ export function Instrument3DStage({
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+
+          // Mode PLUCK / STRUM: Geser kursor mouse sambil ditekan untuk genjreng
+          if (instrument.interactionType === "pluck") {
+            if (e.buttons > 0) {
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.max(0, Math.floor(relX * instrument.notes.length))
+              );
+              if (lastPluckedIdxRef.current !== idx) {
+                lastPluckedIdxRef.current = idx;
+                playNoteByIndex(idx, 0.95);
+              }
+            }
+          }
 
           // Mode SHAKE: Goyangkan kursor cepat kiri-kanan di atas panggung
           if (instrument.interactionType === "shake") {
@@ -1174,9 +1243,17 @@ export function Instrument3DStage({
           }
         }}
         onMouseDown={(e) => {
-          if (instrument.interactionType === "bow") {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          const rect = e.currentTarget.getBoundingClientRect();
+          const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+
+          if (instrument.interactionType === "pluck") {
+            const idx = Math.min(
+              instrument.notes.length - 1,
+              Math.max(0, Math.floor(relX * instrument.notes.length))
+            );
+            lastPluckedIdxRef.current = idx;
+            playNoteByIndex(idx, 0.95);
+          } else if (instrument.interactionType === "bow") {
             const idx = Math.min(
               instrument.notes.length - 1,
               Math.floor(relX * instrument.notes.length)
@@ -1191,6 +1268,7 @@ export function Instrument3DStage({
           }
         }}
         onMouseUp={() => {
+          lastPluckedIdxRef.current = null;
           if (instrument.interactionType === "bow" && isBowingUI) {
             setIsBowingUI(false);
             bowStateRef.current.active = false;
@@ -1200,6 +1278,7 @@ export function Instrument3DStage({
         }}
         onMouseLeave={() => {
           lastMouseXRef.current = null;
+          lastPluckedIdxRef.current = null;
           if (instrument.interactionType === "bow" && isBowingUI) {
             setIsBowingUI(false);
             bowStateRef.current.active = false;
@@ -1215,7 +1294,9 @@ export function Instrument3DStage({
             <span className="truncate">Panduan ({meta.badge})</span>
           </div>
           <p className="mt-0.5 sm:mt-1 text-[10.5px] sm:text-[11.5px] leading-snug sm:leading-relaxed text-stone-800 font-medium line-clamp-2 sm:line-clamp-none">
-            {cameraAiEnabled
+            {instrument.interactionType === "pluck"
+              ? "Usap/geser mouse atau jari melintasi senar untuk menggenjreng, atau klik tombol Genjreng Akord."
+              : cameraAiEnabled
               ? "Arahkan jari telunjuk ke bilah nada, lalu sentakkan jari ke bawah untuk menabuh."
               : instrument.mouseGuide}
           </p>
@@ -1244,9 +1325,42 @@ export function Instrument3DStage({
           </button>
         </div>
 
-        {/* OVERLAY SENAR VIRTUAL INTERAKTIF KHUSUS INSTRUMEN PETIK (PLUCK) */}
+        {/* OVERLAY SENAR VIRTUAL INTERAKTIF KHUSUS INSTRUMEN PETIK (PLUCK) — DAPAT DIGENJRENG DENGAN DRAG / SWIPE */}
         {instrument.interactionType === "pluck" && (
-          <div className="pointer-events-none absolute inset-x-8 sm:inset-x-16 bottom-14 top-20 z-10 flex items-stretch justify-between">
+          <div
+            className="absolute inset-x-6 sm:inset-x-14 bottom-12 top-16 z-20 flex items-stretch justify-between pointer-events-auto touch-none select-none"
+            onPointerDown={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+              const idx = Math.min(
+                instrument.notes.length - 1,
+                Math.max(0, Math.floor(relX * instrument.notes.length))
+              );
+              lastPluckedIdxRef.current = idx;
+              playNoteByIndex(idx, 0.95);
+            }}
+            onPointerMove={(e) => {
+              // Genjreng: sapuan kursor saat mouse ditekan ATAU swipe sentuhan di HP
+              if (e.buttons > 0 || e.pointerType === "touch") {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                const idx = Math.min(
+                  instrument.notes.length - 1,
+                  Math.max(0, Math.floor(relX * instrument.notes.length))
+                );
+                if (lastPluckedIdxRef.current !== idx) {
+                  lastPluckedIdxRef.current = idx;
+                  playNoteByIndex(idx, 0.95);
+                }
+              }
+            }}
+            onPointerUp={() => {
+              lastPluckedIdxRef.current = null;
+            }}
+            onPointerCancel={() => {
+              lastPluckedIdxRef.current = null;
+            }}
+          >
             {instrument.notes.map((note, idx) => {
               const isStruck = activeNoteIdx === idx;
               return (
@@ -1265,20 +1379,40 @@ export function Instrument3DStage({
                     e.preventDefault();
                     e.stopPropagation();
                     stopDemo();
+                    lastPluckedIdxRef.current = idx;
                     playNoteByIndex(idx, 0.95);
                   }}
-                  className="pointer-events-auto group relative flex w-7 cursor-pointer flex-col items-center justify-end pb-2 outline-hidden"
-                  title={`Petik Senar ${note.label} (${note.freq} Hz)`}
+                  onPointerEnter={(e) => {
+                    // Sapuan kursor saat tombol ditekan (strumming)
+                    if (e.buttons > 0 && lastPluckedIdxRef.current !== idx) {
+                      lastPluckedIdxRef.current = idx;
+                      playNoteByIndex(idx, 0.92);
+                    }
+                  }}
+                  className="group relative flex-1 flex flex-col items-center justify-end pb-2 cursor-pointer outline-hidden touch-none"
+                  title={`Petik Senar ${note.label} (${note.freq} Hz) — Geser/usap kiri-kanan untuk genjreng`}
                 >
+                  {/* Efek Garis Senar dengan Animasi Getar/Vibrasi saat Digenjreng */}
                   <div
                     className={cn(
-                      "h-full w-[2px] transition-all duration-150",
+                      "h-full w-[2px] sm:w-[2.5px] transition-all duration-75 relative",
                       isStruck
-                        ? "w-[3.5px] bg-[#D49B27] shadow-[0_0_12px_#D49B27]"
-                        : "bg-[#8B5A2B]/45 group-hover:bg-[#6E472D]"
+                        ? "w-[4px] sm:w-[5px] bg-gradient-to-b from-[#FFF5D6] via-[#F59E0B] to-[#D97706] shadow-[0_0_16px_#F59E0B] scale-x-125 animate-pulse"
+                        : "bg-[#8B5A2B]/55 group-hover:bg-[#6E472D]"
                     )}
-                  />
-                  <span className="mt-1 rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[#2D1E12] shadow-xs border border-[#DFD3C2]">
+                  >
+                    {isStruck && (
+                      <span className="absolute inset-y-0 -left-1 -right-1 bg-amber-400/40 blur-xs" />
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "mt-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold shadow-xs border transition-all",
+                      isStruck
+                        ? "bg-amber-400 text-stone-950 border-amber-300 font-extrabold scale-110 shadow-md"
+                        : "bg-white/95 text-[#2D1E12] border-[#DFD3C2]"
+                    )}
+                  >
                     {note.code}
                   </span>
                 </div>
