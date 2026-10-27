@@ -44,9 +44,6 @@ import {
 } from "@/data/traditional-houses";
 import {
   INSTRUMENTS_38_CATALOGUE,
-  INTERACTION_META,
-  INTERACTION_TABS,
-  type InteractionFilter,
   type OrganologyType,
   type OrganologySpecs,
   type TraditionalInstrument38,
@@ -61,33 +58,12 @@ const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   loading: () => <Skeleton className="h-[520px] w-full rounded-2xl" />,
 });
 
-const SaronInstrument = dynamic(
-  () => import("@/components/three/saron-instrument").then((m) => m.SaronInstrument),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[380px] w-full rounded-2xl" />,
-  }
-);
-void SaronInstrument;
-
-const Instrument3DStage = dynamic(
-  () =>
-    import("@/components/three/instrument-3d-stage").then((m) => m.Instrument3DStage),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[460px] w-full rounded-2xl" />,
-  }
-);
-
 export type { OrganologyType, OrganologySpecs };
 export type TraditionalInstrument = TraditionalInstrument38;
 export const INSTRUMENTS_CATALOGUE: TraditionalInstrument38[] = INSTRUMENTS_38_CATALOGUE;
 
-type MainTabFilter = "all" | "architecture" | "instruments";
-
 export default function Exploration3DView() {
   const route = useRoute();
-  const [activeMainTab, setActiveMainTab] = useState<MainTabFilter>("all");
   
   // State untuk Wahana Rumah Adat 38 Provinsi
   const [selectedHouseIsland, setSelectedHouseIsland] = useState<IslandRegion>("ALL");
@@ -98,69 +74,25 @@ export default function Exploration3DView() {
   const [modelViewerKey, setModelViewerKey] = useState<number>(0);
   const [isFullscreenModal, setIsFullscreenModal] = useState<boolean>(false);
 
-  // Helper sinkronisasi dua arah: Saat memilih rumah adat, otomatis sesuaikan alat musik dari provinsi yang sama
   const handleSelectHouse = (houseId: string) => {
     setActiveHouseId(houseId);
-    const houseObj = HOUSES_38_CATALOGUE.find((h) => h.id === houseId);
-    if (houseObj) {
-      const matchInst = INSTRUMENTS_38_CATALOGUE.find(
-        (inst) =>
-          inst.province.toLowerCase() === houseObj.province.toLowerCase() ||
-          inst.provinceSlug === houseObj.provinceSlug ||
-          inst.provinceNumber === houseObj.provinceNumber ||
-          (houseObj.province.includes("Yogyakarta") && inst.province.includes("Yogyakarta")) ||
-          (houseObj.province.includes("Bangka") && inst.province.includes("Bangka"))
-      );
-      if (matchInst) {
-        setActiveInstrumentId(matchInst.id);
-      }
-    }
   };
 
-  // Helper sinkronisasi dua arah: Saat memilih alat musik, otomatis sesuaikan rumah adat dari provinsi yang sama
-  const handleSelectInstrument = (instId: string) => {
-    setActiveInstrumentId(instId);
-    const instObj = INSTRUMENTS_38_CATALOGUE.find((i) => i.id === instId);
-    if (instObj) {
-      const matchHouse = HOUSES_38_CATALOGUE.find(
-        (h) =>
-          h.province.toLowerCase() === instObj.province.toLowerCase() ||
-          h.provinceSlug === instObj.provinceSlug ||
-          h.provinceNumber === instObj.provinceNumber ||
-          (instObj.province.includes("Yogyakarta") && h.province.includes("Yogyakarta")) ||
-          (instObj.province.includes("Bangka") && h.province.includes("Bangka"))
-      );
-      if (matchHouse) {
-        setActiveHouseId(matchHouse.id);
-      }
-    }
-  };
-
-  // Sinkronkan pilihan rumah adat & alat musik jika dibuka dari peta (?house=slug / ?province=name / ?instrument=slug)
+  // Sinkronkan pilihan rumah adat jika dibuka dari URL (?house=slug / ?province=name)
   useEffect(() => {
     let houseParam: string | null = null;
     let provParam: string | null = null;
-    let instParam: string | null = null;
-    let tabParam: string | null = null;
 
     if (typeof window !== "undefined") {
       try {
         const sp = new URLSearchParams(window.location.search);
         houseParam = sp.get("house");
         provParam = sp.get("province") ?? sp.get("provinsi");
-        instParam = sp.get("instrument") ?? sp.get("instrumen");
-        tabParam = sp.get("tab");
       } catch {}
     }
 
     const requestedHouse = houseParam ?? route.query.house;
     const requestedProvince = provParam ?? route.query.province ?? route.query.provinsi;
-    const requestedInst = instParam ?? route.query.instrument ?? route.query.instrumen;
-    const requestedTab = tabParam ?? route.query.tab;
-
-    if (requestedTab === "architecture" || requestedTab === "instruments" || requestedTab === "all") {
-      setActiveMainTab(requestedTab);
-    }
 
     if (requestedHouse) {
       const found = HOUSES_38_CATALOGUE.find(
@@ -169,46 +101,9 @@ export default function Exploration3DView() {
       if (found) {
         setActiveHouseId(found.id);
         setSelectedHouseIsland("ALL");
-
-        // Sinkronkan otomatis alat musik dari provinsi yang sama!
-        const matchingInst = INSTRUMENTS_38_CATALOGUE.find(
-          (inst) =>
-            inst.province.toLowerCase() === found.province.toLowerCase() ||
-            inst.provinceSlug === found.provinceSlug ||
-            inst.provinceNumber === found.provinceNumber ||
-            (found.province.includes("Yogyakarta") && inst.province.includes("Yogyakarta")) ||
-            (found.province.includes("Bangka") && inst.province.includes("Bangka"))
-        );
-        if (matchingInst) {
-          setActiveInstrumentId(matchingInst.id);
-          setSelectedInstIsland("ALL");
-        }
       } else {
         // Fallback aman ke rumah adat pertama jika query string rusak
         setActiveHouseId(HOUSES_38_CATALOGUE[0].id);
-      }
-    } else if (requestedInst) {
-      const foundInst = INSTRUMENTS_38_CATALOGUE.find(
-        (i) =>
-          i.id === requestedInst ||
-          i.slug === requestedInst ||
-          i.provinceSlug === requestedInst ||
-          i.title.toLowerCase().includes(requestedInst.toLowerCase())
-      );
-      if (foundInst) {
-        setActiveInstrumentId(foundInst.id);
-        setSelectedInstIsland("ALL");
-
-        const matchingHouse = HOUSES_38_CATALOGUE.find(
-          (h) =>
-            h.province.toLowerCase() === foundInst.province.toLowerCase() ||
-            h.provinceSlug === foundInst.provinceSlug ||
-            h.provinceNumber === foundInst.provinceNumber
-        );
-        if (matchingHouse) {
-          setActiveHouseId(matchingHouse.id);
-          setSelectedHouseIsland("ALL");
-        }
       }
     } else if (requestedProvince) {
       const pLower = requestedProvince.toLowerCase().trim();
@@ -222,32 +117,12 @@ export default function Exploration3DView() {
         setActiveHouseId(houseByProv.id);
         setSelectedHouseIsland("ALL");
       }
-      const instByProv = INSTRUMENTS_38_CATALOGUE.find(
-        (inst) =>
-          inst.province.toLowerCase() === pLower ||
-          inst.provinceSlug.toLowerCase() === pLower ||
-          inst.province.toLowerCase().includes(pLower)
-      );
-      if (instByProv) {
-        setActiveInstrumentId(instByProv.id);
-        setSelectedInstIsland("ALL");
-      }
     }
   }, [
     route.query.house,
     route.query.province,
     route.query.provinsi,
-    route.query.instrument,
-    route.query.instrumen,
-    route.query.tab,
   ]);
-
-  // State untuk Wahana Musik Tradisional 38 Provinsi
-  const [selectedInstIsland, setSelectedInstIsland] = useState<IslandRegion>("ALL");
-  const [selectedInteraction, setSelectedInteraction] = useState<InteractionFilter>("ALL");
-  const [activeInstrumentId, setActiveInstrumentId] = useState<string>("saron-demung-jateng");
-  const [instrumentSearchQuery, setInstrumentSearchQuery] = useState<string>("" );
-  const [instrumentViewMode, setInstrumentViewMode] = useState<"strip" | "grid">("grid");
 
   // Filter daftar rumah adat (berdasarkan Wilayah Kepulauan & Pencarian)
   const filteredHouses = useMemo(() => {
@@ -274,44 +149,27 @@ export default function Exploration3DView() {
     );
   }, [activeHouseId, filteredHouses]);
 
+  // Alat musik khas dari provinsi yang sama untuk tautan cepat antar-budaya
+  const matchingInstrument = useMemo(() => {
+    return INSTRUMENTS_38_CATALOGUE.find(
+      (inst) =>
+        inst.province.toLowerCase() === activeHouse.province.toLowerCase() ||
+        inst.provinceSlug === activeHouse.provinceSlug ||
+        inst.provinceNumber === activeHouse.provinceNumber ||
+        (activeHouse.province.includes("Yogyakarta") && inst.province.includes("Yogyakarta")) ||
+        (activeHouse.province.includes("Bangka") && inst.province.includes("Bangka"))
+    );
+  }, [activeHouse]);
+
   // CulturalItem untuk ModelViewer (langsung memuat GLB model dari public/models/houses/)
   const viewerItem = useMemo<CulturalItem>(() => {
     return activeHouse.fallbackItem;
   }, [activeHouse]);
 
-  // Filter daftar 38 instrumen musik
-  const filteredInstruments = useMemo(() => {
-    return INSTRUMENTS_38_CATALOGUE.filter((item) => {
-      const matchIsland = selectedInstIsland === "ALL" || item.islandRegion === selectedInstIsland;
-      const matchInteraction =
-        selectedInteraction === "ALL" || item.interactionType === selectedInteraction;
-      if (!matchIsland || !matchInteraction) return false;
-      if (!instrumentSearchQuery.trim()) return true;
-      const q = instrumentSearchQuery.toLowerCase().trim();
-      return (
-        item.title.toLowerCase().includes(q) ||
-        item.province.toLowerCase().includes(q) ||
-        item.ethnicGroup.toLowerCase().includes(q) ||
-        item.vernacularName.toLowerCase().includes(q) ||
-        item.interactionType.toLowerCase().includes(q)
-      );
-    });
-  }, [selectedInstIsland, selectedInteraction, instrumentSearchQuery]);
-
-  // Data instrumen aktif
-  const activeInstrument = useMemo(() => {
-    return (
-      filteredInstruments.find((inst) => inst.id === activeInstrumentId) ??
-      INSTRUMENTS_38_CATALOGUE.find((inst) => inst.id === activeInstrumentId) ??
-      filteredInstruments[0] ??
-      INSTRUMENTS_38_CATALOGUE[0]
-    );
-  }, [activeInstrumentId, filteredInstruments]);
-
   return (
     <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-12 pt-3 sm:pt-5">
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
-        {/* ================= HERO HEADER (COMPACT & ELEVATED) ================= */}
+        {/* ================= HERO HEADER (FOKUS RUMAH ADAT 38 PROVINSI) ================= */}
         <motion.div
           initial={{ opacity: 0, y: 16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -324,78 +182,55 @@ export default function Exploration3DView() {
             <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
           </div>
           <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
-            Eksplorasi 3D &amp; Musik Virtual
+            Eksplorasi 3D Rumah Adat Nusantara
           </h1>
           <p className="mt-1.5 text-stone-600 text-xs sm:text-sm leading-relaxed">
-            Jelajahi model 3D rumah adat dan instrumen tradisional 38 provinsi secara interaktif.
+            Jelajahi keagungan arsitektur vernakular, bedah konstruksi saka guru, dan falsafah ruang rumah adat 38 provinsi di Indonesia.
           </p>
 
-          {/* TAB FILTER UTAMA */}
-          <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveMainTab("all")}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer",
-                activeMainTab === "all"
-                  ? "btn-waranusa text-white shadow-sm"
-                  : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
-              )}
+          {/* BADGE KOLEKSI & PINTASAN KE INSTRUMEN */}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 border border-[#DFD3C2] px-3.5 py-1.5 text-xs font-bold text-[#2D1E12] shadow-2xs">
+              <Building2 className="h-3.5 w-3.5 text-[#7A4B29]" />
+              <span>38 Rumah Adat Vernakular 3D</span>
+            </span>
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="rounded-full border-[#DFD3C2] bg-white/90 hover:bg-stone-50 text-[#6E472D] hover:text-[#52331E] font-bold text-xs h-8 px-3.5 shadow-2xs gap-1.5"
             >
-              Semua Koleksi
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveMainTab("architecture")}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
-                activeMainTab === "architecture"
-                  ? "btn-waranusa text-white shadow-sm"
-                  : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
-              )}
-            >
-              <Building2 className="h-3.5 w-3.5" />
-              Arsitektur Adat 38 Provinsi
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveMainTab("instruments")}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
-                activeMainTab === "instruments"
-                  ? "btn-waranusa text-white shadow-sm"
-                  : "bg-white/85 text-stone-700 hover:bg-white border border-[#DFD3C2]"
-              )}
-            >
-              <Music4 className="h-3.5 w-3.5" />
-              Atelier Musik Tradisional
-            </button>
+              <Link href="/virtual-instruments">
+                <Music4 className="h-3.5 w-3.5 text-[#7A4B29]" />
+                <span>Buka Studio Instrumen Virtual</span>
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+            </Button>
           </div>
         </motion.div>
 
-        {/* ================= BAGIAN 1: RUMAH ADAT 3D NUSANTARA ================= */}
-        {(activeMainTab === "all" || activeMainTab === "architecture") && (
-          <section className="mt-2 mb-10 rounded-3xl border border-[#DFD3C2] bg-white/95 p-3.5 sm:p-5 lg:p-6 shadow-md">
-            {/* Header Bagian Arsitektur */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E6DCD0] pb-2.5 mb-2.5">
-              <div>
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A4B29]">
-                  <span aria-hidden="true" className="inline-block h-[1.5px] w-4 bg-[#7A4B29]" />
-                  <span>Katalog Arsitektur Vernakular Nusantara</span>
-                </div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12] mt-0.5">
-                  Bedah Struktur Rumah Adat
-                </h2>
+        {/* ================= PANGGUNG RUMAH ADAT 3D NUSANTARA ================= */}
+        <section className="mt-2 mb-10 rounded-3xl border border-[#DFD3C2] bg-white/95 p-3.5 sm:p-5 lg:p-6 shadow-md">
+          {/* Header Bagian Arsitektur */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E6DCD0] pb-2.5 mb-2.5">
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A4B29]">
+                <span aria-hidden="true" className="inline-block h-[1.5px] w-4 bg-[#7A4B29]" />
+                <span>Katalog Arsitektur Vernakular Nusantara</span>
               </div>
-
-              {/* Status hitungan katalog */}
-              <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-3 py-1 text-xs font-semibold text-[#2D1E12]">
-                  <span className="h-2 w-2 rounded-full bg-[#147A76]" />
-                  <span>38 Model 3D Interaktif</span>
-                </span>
-              </div>
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12] mt-0.5">
+                Bedah Struktur Rumah Adat
+              </h2>
             </div>
+
+            {/* Status hitungan katalog */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-3 py-1 text-xs font-semibold text-[#2D1E12]">
+                <span className="h-2 w-2 rounded-full bg-[#147A76]" />
+                <span>38 Model 3D Interaktif</span>
+              </span>
+            </div>
+          </div>
 
             {/* TAB WILAYAH / PULAU */}
             <div className="mb-2">
@@ -742,8 +577,8 @@ export default function Exploration3DView() {
                   </div>
                 </div>
 
-                {/* Tautan ke Ensiklopedia Budaya */}
-                <div className="pt-2">
+                {/* Tautan ke Ensiklopedia Budaya & Pintasan ke Studio Musik */}
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                   <Button
                     asChild
                     className="w-full sm:w-auto btn-waranusa rounded-full text-white px-6 text-xs sm:text-sm font-semibold shadow-sm"
@@ -753,6 +588,20 @@ export default function Exploration3DView() {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
+
+                  {matchingInstrument && (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full sm:w-auto rounded-full border-[#DFD3C2] bg-white hover:bg-stone-50 text-[#6E472D] hover:text-[#52331E] text-xs sm:text-sm font-bold shadow-2xs gap-1.5"
+                    >
+                      <Link href={`/virtual-instruments?instrument=${matchingInstrument.id}`}>
+                        <Music4 className="h-3.5 w-3.5 text-[#7A4B29]" />
+                        <span>Mainkan {matchingInstrument.title} ({activeHouse.province})</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -813,379 +662,7 @@ export default function Exploration3DView() {
               </div>
             )}
           </section>
-        )}
-
-        {/* ================= BAGIAN 2: ATELIER MUSIK TRADISIONAL 38 PROVINSI ================= */}
-        {(activeMainTab === "all" || activeMainTab === "instruments") && (
-          <section className="mb-16 rounded-3xl border border-[#DFD3C2] bg-white/95 p-5 sm:p-8 lg:p-10 shadow-lg">
-            {/* Header Bagian Musik & Etnomusikologi */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E6DCD0] pb-6 mb-6">
-              <div>
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29]">
-                  <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
-                  <span>Etnomusikologi &amp; Karawitan Nusantara</span>
-                </div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D1E12] mt-1.5">
-                  Atelier Instrumen Tradisional
-                </h2>
-                <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl">
-                  Pelajari organologi akustik Sachs-Hornbostel, sistem skala laras pentatonik, dan tabuh instrumen gamelan interaktif langsung dari peramban.
-                </p>
-              </div>
-
-              {/* Status Badge */}
-              <div className="flex items-center gap-2 self-start md:self-auto">
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-4 py-1.5 text-xs font-semibold text-[#2D1E12]">
-                  <Volume2 className="h-3.5 w-3.5 text-[#7A4B29]" />
-                  <span>38 Studio 3D GLB &bull; Arsip Organologi</span>
-                </span>
-              </div>
-            </div>
-
-            {/* FILTER WILAYAH KEPULAUAN */}
-            <div className="mb-3">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
-                {ISLAND_TABS.filter(
-                  (island) =>
-                    island.id === "ALL" ||
-                    INSTRUMENTS_38_CATALOGUE.some((inst) => inst.islandRegion === island.id)
-                ).map((island) => {
-                  const isCurrent = selectedInstIsland === island.id;
-                  return (
-                    <button
-                      key={`inst-island-${island.id}`}
-                      type="button"
-                      onClick={() => setSelectedInstIsland(island.id)}
-                      className={cn(
-                        "whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer",
-                        isCurrent
-                          ? "bg-[#6E472D] text-white shadow-sm"
-                          : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/70 hover:text-stone-900"
-                      )}
-                    >
-                      {island.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* FILTER 5 TIPE CARA BERMAIN (STRIKE, PLUCK, BOW, SHAKE, BLOW) */}
-            <div className="mb-6">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
-                {INTERACTION_TABS.map((tab) => {
-                  const isCurrent = selectedInteraction === tab.id;
-                  return (
-                    <button
-                      key={`inst-int-${tab.id}`}
-                      type="button"
-                      onClick={() => setSelectedInteraction(tab.id)}
-                      className={cn(
-                        "whitespace-nowrap rounded-full px-3.5 py-1 text-xs font-medium transition-all border cursor-pointer",
-                        isCurrent
-                          ? "bg-[#6E472D]/10 text-[#6E472D] border-[#6E472D]/40 font-bold"
-                          : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
-                      )}
-                    >
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* PENCARIAN & SWITCHER TAMPILAN INSTRUMEN (STRIP VS GRID) */}
-            <div className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FBF8F2] p-3 rounded-2xl border border-stone-200/70">
-              {/* Kotak Pencarian */}
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
-                <Input
-                  type="text"
-                  placeholder="Cari alat musik, provinsi, suku, cara main..."
-                  value={instrumentSearchQuery}
-                  onChange={(e) => setInstrumentSearchQuery(e.target.value)}
-                  className="pl-9 pr-8 h-9 text-xs rounded-full bg-white border-stone-200 focus-visible:ring-[#8A5B38]"
-                />
-                {instrumentSearchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setInstrumentSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
-                    aria-label="Hapus pencarian alat musik"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Mode Tampilan Switcher */}
-              <div className="flex items-center justify-center gap-1 bg-white p-1 rounded-full border border-stone-200 w-full sm:w-auto shadow-xs">
-                <button
-                  type="button"
-                  onClick={() => setInstrumentViewMode("strip")}
-                  className={cn(
-                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer",
-                    instrumentViewMode === "strip"
-                      ? "bg-[#6E472D] text-white shadow-xs"
-                      : "text-stone-600 hover:text-stone-900"
-                  )}
-                  title="Tampilan Strip Mendatar"
-                >
-                  <SlidersHorizontal className="h-3.5 w-3.5" />
-                  <span>Strip</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInstrumentViewMode("grid")}
-                  className={cn(
-                    "flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer",
-                    instrumentViewMode === "grid"
-                      ? "bg-[#6E472D] text-white shadow-xs"
-                      : "text-stone-600 hover:text-stone-900"
-                  )}
-                  title="Tampilan Kisi-Kisi Alat Musik"
-                >
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                  <span>Grid ({filteredInstruments.length})</span>
-                </button>
-              </div>
-            </div>
-
-            {/* DAFTAR PEMILIH INSTRUMEN TRADISIONAL */}
-            {filteredInstruments.length === 0 ? (
-              <div className="mb-8 rounded-2xl border border-dashed border-stone-300 p-8 text-center bg-[#FAF7F2]">
-                <p className="text-sm font-semibold text-stone-700">Tidak ada alat musik yang sesuai pencarian "{instrumentSearchQuery}"</p>
-                <p className="text-xs text-stone-500 mt-1">Coba gunakan kata kunci lain atau pilih tab Semua Wilayah / Cara Main.</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setInstrumentSearchQuery("");
-                    setSelectedInstIsland("ALL");
-                    setSelectedInteraction("ALL");
-                  }}
-                  className="mt-3 rounded-full text-xs cursor-pointer"
-                >
-                  Reset Pencarian
-                </Button>
-              </div>
-            ) : instrumentViewMode === "strip" ? (
-              /* DOCK / STRIP HORIZONTAL SCROLLABLE */
-              <div className="mb-8">
-                <div className="flex items-stretch gap-2.5 overflow-x-auto pb-3 pt-1 scrollbar-thin">
-                  {filteredInstruments.map((inst) => {
-                    const isActive = inst.id === activeInstrument.id;
-                    const meta = INTERACTION_META[inst.interactionType];
-                    return (
-                      <button
-                        key={inst.id}
-                        type="button"
-                        onClick={() => handleSelectInstrument(inst.id)}
-                        className={cn(
-                          "group flex-shrink-0 text-left rounded-2xl p-3 sm:p-3.5 border transition-all duration-200 min-w-[215px] sm:min-w-[235px] cursor-pointer",
-                          isActive
-                            ? "bg-[#6E472D] text-white border-[#583720] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.01]"
-                            : "bg-[#FAF7F2] text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-white"
-                        )}
-                      >
-                        <div className="flex items-center justify-between gap-1 mb-1.5">
-                          <span
-                            className={cn(
-                              "text-[10px] font-bold uppercase tracking-wider line-clamp-1",
-                              isActive ? "text-amber-200/90" : "text-[#8A5B38]"
-                            )}
-                          >
-                            {inst.province}
-                          </span>
-                          <span
-                            className={cn(
-                              "inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-md",
-                              isActive
-                                ? "bg-white/20 text-white"
-                                : inst.hasGlbAsset
-                                ? "bg-emerald-900/10 text-emerald-800 border border-emerald-800/20"
-                                : "bg-stone-200/75 text-stone-600"
-                            )}
-                          >
-                            <Volume2 className="h-2.5 w-2.5" />
-                            {inst.hasGlbAsset ? "3D GLB" : meta.badge}
-                          </span>
-                        </div>
-
-                        <div className="font-serif font-bold text-sm sm:text-base leading-tight">
-                          {inst.title}
-                        </div>
-
-                        <div
-                          className={cn(
-                            "text-[11px] mt-1 line-clamp-1",
-                            isActive ? "text-stone-200" : "text-stone-500"
-                          )}
-                        >
-                          Cara Main: {meta.badge} &bull; Suku {inst.ethnicGroup}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              /* GRID KOLEKSI ALAT MUSIK (SAMA PERSIS SEPERTI RUMAH ADAT) */
-              <div className="mb-8 max-h-[360px] overflow-y-auto p-1 scrollbar-thin">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
-                  {filteredInstruments.map((inst) => {
-                    const isActive = inst.id === activeInstrument.id;
-                    const meta = INTERACTION_META[inst.interactionType];
-                    return (
-                      <button
-                        key={inst.id}
-                        type="button"
-                        onClick={() => handleSelectInstrument(inst.id)}
-                        className={cn(
-                          "group text-left rounded-xl p-2.5 border transition-all duration-150 flex flex-col justify-between cursor-pointer",
-                          isActive
-                            ? "bg-[#6E472D] text-white border-[#583720] shadow-md ring-2 ring-[#6E472D]/20 scale-[1.02]"
-                            : "bg-[#FAF7F2] text-stone-700 border-stone-200 hover:border-stone-300 hover:bg-white"
-                        )}
-                      >
-                        <div className="flex items-center justify-between gap-1 mb-1">
-                          <span
-                            className={cn(
-                              "text-[9px] font-bold uppercase tracking-wider truncate block",
-                              isActive ? "text-amber-200/90" : "text-[#8A5B38]"
-                            )}
-                          >
-                            {inst.province}
-                          </span>
-                          <span
-                            className={cn(
-                              "text-[8px] font-semibold px-1 py-0.2 rounded shrink-0",
-                              isActive
-                                ? "bg-white/20 text-white"
-                                : "bg-[#6E472D]/10 text-[#6E472D]"
-                            )}
-                          >
-                            {meta.label}
-                          </span>
-                        </div>
-                        <span className="font-serif font-bold text-xs leading-snug mt-0.5 block truncate">
-                          {inst.title}
-                        </span>
-                        <span
-                          className={cn(
-                            "text-[10px] mt-1 block truncate",
-                            isActive ? "text-stone-200" : "text-stone-500"
-                          )}
-                        >
-                          Suku {inst.ethnicGroup}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* PANGGUNG 3D INTERAKTIF & KAJIAN ETNOMUSIKOLOGI (SEMUA 38 PROVINSI) */}
-            <div className="space-y-6">
-              <div className="overflow-hidden rounded-2xl border border-[#DFD3C2] bg-[#FAF7F2] p-2.5 xs:p-3.5 sm:p-6 shadow-inner">
-                <Instrument3DStage instrument={activeInstrument} />
-              </div>
-
-              <div className="grid gap-8 lg:grid-cols-12 lg:items-start pt-2">
-                <div className="lg:col-span-5 space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline" className="border-[#6E472D]/30 bg-[#6E472D]/5 text-[#6E472D] font-semibold text-xs">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {activeInstrument.province}
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#F5EFE4] text-stone-700 border border-[#E2D6C5] text-xs font-medium">
-                      Suku {activeInstrument.ethnicGroup}
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#FAF6EE] text-[#6E472D] border border-[#E2D6C5] text-xs font-medium">
-                      {activeInstrument.organologyLabel}
-                    </Badge>
-                  </div>
-
-                  <h3 className="font-serif text-2xl font-bold text-[#2D1E12]">
-                    {activeInstrument.title}
-                  </h3>
-                  <p className="text-xs text-stone-600 -mt-1 font-medium">
-                    {activeInstrument.vernacularName}
-                  </p>
-
-                  <div className="rounded-xl border-l-4 border-[#6E472D] bg-gradient-to-r from-[#FAF4E8] to-[#F5ECE0] p-4 text-xs sm:text-sm text-stone-800">
-                    <p className="font-bold text-[11px] uppercase tracking-[0.16em] text-[#7A4B29] mb-1">
-                      Filosofi Rasa &amp; Karawitan
-                    </p>
-                    <blockquote className="font-serif italic text-stone-700 leading-relaxed">
-                      {activeInstrument.philosophy}
-                    </blockquote>
-                  </div>
-
-                  <div className="pt-1">
-                    <Button
-                      asChild
-                      className="btn-waranusa rounded-full text-white text-xs sm:text-sm font-semibold px-6"
-                    >
-                      <Link href={`#/budaya/${activeInstrument.slug}`}>
-                        Buka Lembar Ensiklopedia {activeInstrument.title}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-7">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 block mb-3">
-                    Spesifikasi Akustik &amp; Tradisi Musikal
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-xs">
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
-                        <Music4 className="h-3.5 w-3.5" />
-                        <span>Sistem Skala Laras</span>
-                      </div>
-                      <p className="text-stone-600 leading-relaxed">
-                        {activeInstrument.specs.tuningSystem}
-                      </p>
-                    </div>
-
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
-                        <TreePine className="h-3.5 w-3.5" />
-                        <span>Material Akustik</span>
-                      </div>
-                      <p className="text-stone-600 leading-relaxed">
-                        {activeInstrument.specs.materialAcoustic}
-                      </p>
-                    </div>
-
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
-                        <Hammer className="h-3.5 w-3.5" />
-                        <span>Teknik Permainan</span>
-                      </div>
-                      <p className="text-stone-600 leading-relaxed">
-                        {activeInstrument.specs.playingTechnique}
-                      </p>
-                    </div>
-
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
-                        <ShieldCheck className="h-3.5 w-3.5" />
-                        <span>Peran Ansambel &amp; Ritus</span>
-                      </div>
-                      <p className="text-stone-600 leading-relaxed">
-                        {activeInstrument.specs.ensembleFunction}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        </section>
       </div>
     </div>
   );

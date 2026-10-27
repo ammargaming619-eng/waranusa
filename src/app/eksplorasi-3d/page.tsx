@@ -5,8 +5,8 @@ import { PublicShell } from "@/components/site/public-shell";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Eksplorasi 3D — WaraNusa",
-  description: "Wahana visualisasi 3D arsitektur rumah adat dan instrumen musik tradisional dari 38 provinsi di Indonesia.",
+  title: "Eksplorasi 3D Rumah Adat — WaraNusa",
+  description: "Wahana visualisasi 3D arsitektur rumah adat vernakular dari 38 provinsi di Indonesia dengan fitur bedah struktur interaktif.",
 };
 
 export default function Eksplorasi3DPage() {
