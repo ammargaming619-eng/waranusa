@@ -8,12 +8,14 @@
  */
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, ImageOff, Layers, MapPin, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { navigate } from "@/lib/router";
 import type { CulturalItem } from "@/lib/types";
 
 export function CultureCard({ item, compact = false }: { item: CulturalItem; compact?: boolean }) {
+  const router = useRouter();
   const [imgFailed, setImgFailed] = useState(false);
   const cover = item.coverMedia?.url ?? null;
   const showImage = cover !== null && !imgFailed;
@@ -22,16 +24,16 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
   const isInstrument = item.category?.slug === "alat-musik";
 
   const actionUrl = isHouse
-    ? `#/eksplorasi-3d?house=${item.slug}`
+    ? `/eksplorasi-3d?house=${item.slug}`
     : isInstrument
-    ? `#/instrumen?alat=${item.slug}`
-    : `#/budaya/${item.slug}`;
+    ? `/virtual-instruments?instrument=${item.slug}`
+    : `/budaya/${item.slug}`;
 
   const actionLabel = isHouse ? "Buka Model 3D" : isInstrument ? "Mainkan Nada" : "Lihat";
 
   return (
-    <a
-      href={`#/budaya/${item.slug}`}
+    <Link
+      href={`/budaya/${item.slug}`}
       aria-label={`Lihat detail ${item.title}`}
       className={cn(
         "group block overflow-hidden rounded-2xl border border-stone-200/90 bg-white text-left transition-all duration-300 hover:border-[#8C5E3C]/40 hover:shadow-xl",
@@ -111,7 +113,7 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  navigate(actionUrl);
+                  router.push(actionUrl);
                 }}
                 className="ml-1 inline-flex items-center gap-1 rounded-full btn-waranusa px-3 py-1 text-[11px] font-bold text-white shadow-xs transition-all hover:brightness-110 active:scale-95 cursor-pointer"
                 aria-label={`${actionLabel} ${item.title}`}
@@ -129,6 +131,6 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

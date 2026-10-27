@@ -321,7 +321,7 @@ function CarouselCardContent({
 
             {isCenter && (
               <Link
-                href={`#/budaya/${item.slug}`}
+                href={`/budaya/${item.slug}`}
                 className="ml-1 inline-flex items-center gap-1 rounded-full btn-waranusa px-3.5 py-1 text-[11px] font-bold text-white shadow-xs hover:brightness-110 active:scale-95 transition-all"
               >
                 Lihat

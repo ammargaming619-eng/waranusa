@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/shared/brand-logo";
 import { useAuth } from "@/lib/auth-store";
@@ -79,31 +81,34 @@ export function breadcrumbsFor(path: string): { label: string; href?: string }[]
   return crumbs;
 }
 
-export function AdminShell({ route, children }: { route: Route; children: React.ReactNode }) {
+export function AdminShell({ route, children }: { route?: Route; children: React.ReactNode }) {
+  const router = useRouter();
+  const currentPathname = usePathname();
   const { user, logout } = useAuth();
   const initialized = useAuth((s) => s.initialized);
   const [open, setOpen] = useState(false);
 
+  const activePath = (currentPathname ? currentPathname.replace(/^\//, "") : "") || route?.path || "admin/dashboard";
+
   useEffect(() => {
     // Guard sisi klien hanyalah UX; otorisasi sebenarnya di server (API).
-    // Bergantung juga pada `initialized` agar sesi yang ternyata mati tetap
-    // dialihkan ke halaman masuk setelah init() selesai (bukan dashboard rusak).
     if (initialized && !useAuth.getState().canAccessCMS()) {
-      navigate("/masuk", { replace: true });
+      router.push("/login");
     }
-  }, [route.path, initialized]);
+  }, [activePath, initialized, router]);
 
-  const crumbs = breadcrumbsFor(route.path);
+  const crumbs = breadcrumbsFor(activePath);
   const items = SIDEBAR.filter((s) => !s.superAdminOnly || user?.role === "SUPER_ADMIN");
 
   const navList = (
     <nav className="flex flex-col gap-1 px-3" aria-label="Navigasi CMS">
       {items.map((s) => {
-        const active = route.path === s.href.slice(1) || (s.href !== "/admin/dashboard" && route.path.startsWith(s.href.slice(1)));
+        const itemPath = s.href.slice(1);
+        const active = activePath === itemPath || (s.href !== "/admin/dashboard" && activePath.startsWith(itemPath));
         return (
-          <a
+          <Link
             key={s.href}
-            href={`#${s.href}`}
+            href={s.href}
             onClick={() => setOpen(false)}
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
@@ -115,7 +120,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
             <s.icon className="h-4 w-4 shrink-0" />
             {s.label}
             {s.href === "/admin/contributions" && <span className="ml-auto rounded-full bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#8C5E3C]">review</span>}
-          </a>
+          </Link>
         );
       })}
     </nav>
@@ -126,7 +131,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border bg-card">
         <div className="flex h-16 items-center px-4 border-b border-border">
-          <a href="#/" className="flex items-center gap-2.5 group" aria-label="Kembali ke situs publik">
+          <Link href="/" className="flex items-center gap-2.5 group" aria-label="Kembali ke situs publik">
             <img
               src="/images/brand/waranusa-logo.png?v=3"
               alt="Logo WaraNusa"
@@ -138,7 +143,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
               </div>
               <div className="text-[9px] font-bold uppercase tracking-wider text-[#8C5E3C] mt-0.5">CMS Pengelolaan</div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="flex-1 overflow-y-auto nice-scroll py-4">
           {navList}
@@ -161,14 +166,14 @@ export function AdminShell({ route, children }: { route: Route; children: React.
                 </div>
               </div>
             </div>
-            <a
-              href="#/"
+            <Link
+              href="/"
               className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/70 hover:bg-secondary text-muted-foreground hover:text-[#6E472D] transition-colors"
               title="Buka Beranda Situs Publik"
               aria-label="Buka Beranda Situs Publik"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-            </a>
+            </Link>
           </div>
         </div>
       </aside>
@@ -184,12 +189,12 @@ export function AdminShell({ route, children }: { route: Route; children: React.
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <a
-              href="#/"
+            <Link
+              href="/"
               className="inline-flex items-center gap-1.5 rounded-full bg-white/15 hover:bg-white/25 px-3 py-1 text-[11px] font-semibold text-white transition-colors"
             >
               <ArrowLeft className="h-3 w-3" /> Kembali ke Beranda Publik
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -226,7 +231,7 @@ export function AdminShell({ route, children }: { route: Route; children: React.
                   <BreadcrumbItem>
                     {c.href ? (
                       <BreadcrumbLink asChild>
-                        <a href={`#${c.href}`} className="font-medium">{c.label}</a>
+                        <Link href={c.href} className="font-medium">{c.label}</Link>
                       </BreadcrumbLink>
                     ) : (
                       <BreadcrumbPage className="font-semibold">{c.label}</BreadcrumbPage>
@@ -238,9 +243,9 @@ export function AdminShell({ route, children }: { route: Route; children: React.
           </Breadcrumb>
 
           <div className="ml-auto flex items-center gap-2">
-            <a href="#/" target="_self" className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-[#6E472D] items-center gap-1">
+            <Link href="/" className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-[#6E472D] items-center gap-1">
               Situs Publik <ExternalLink className="h-3 w-3" />
-            </a>
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 rounded-full border border-border bg-background py-1 pl-1 pr-3 hover:bg-secondary transition-colors" aria-label="Menu akun">

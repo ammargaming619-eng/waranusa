@@ -6,6 +6,7 @@
  * Search debounce + filter tipe sumber + tautan ke objek budaya terkait.
  */
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   Archive,
   BookMarked,
@@ -213,15 +214,15 @@ export default function ArchiveView() {
 
                       {/* Objek budaya terkait */}
                       {s.itemSlug && (
-                        <a
-                          href={`#/budaya/${s.itemSlug}`}
-                          className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1.5 text-xs font-bold text-brand-teal transition-colors hover:bg-brand-teal hover:text-white"
+                        <Link
+                          href={`/budaya/${s.itemSlug}`}
+                          className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1.5 text-xs font-bold text-[#6E472D] transition-colors hover:bg-[#6E472D] hover:text-white"
                         >
                           <BookOpen className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                           <span className="truncate">
                             Objek terkait: {s.itemTitle ?? s.itemSlug}
                           </span>
-                        </a>
+                        </Link>
                       )}
 
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">

@@ -7,6 +7,8 @@
  * Dilengkapi fallback otomatis untuk seluruh 38 Rumah Adat & Instrumen Nusantara.
  */
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Archive,
   ArrowLeft,
@@ -156,8 +158,9 @@ function useItemDetail(slug: string) {
   return { ...state, reload: () => setTick((t) => t + 1) };
 }
 
-export default function CultureDetailView({ route }: { route: { segments: string[] } }) {
-  const slug = route.segments[1] ?? "";
+export default function CultureDetailView({ route, slug: propSlug }: { route?: { segments: string[] }; slug?: string } = {}) {
+  const params = useParams();
+  const slug = propSlug ?? (params?.slug as string) ?? route?.segments?.[1] ?? "";
   const detail = useItemDetail(slug);
   const { item } = detail;
 
@@ -238,11 +241,11 @@ export default function CultureDetailView({ route }: { route: { segments: string
             title="Objek budaya tidak ditemukan"
             message={`Objek dengan alamat "${slug}" tidak tersedia atau belum diterbitkan.`}
             action={
-              <Button asChild className="min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90">
-                <a href="#/katalog">
+              <Button asChild className="min-h-[44px] rounded-full btn-waranusa font-bold text-white">
+                <Link href="/catalog">
                   <ArrowLeft className="mr-1.5 h-4 w-4" aria-hidden="true" />
                   Kembali ke Katalog
-                </a>
+                </Link>
               </Button>
             }
           />
@@ -266,19 +269,19 @@ export default function CultureDetailView({ route }: { route: { segments: string
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a href="#/">Beranda</a>
+              <Link href="/">Beranda</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a href="#/katalog">Katalog</a>
+              <Link href="/catalog">Katalog</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a href={`#/katalog?kategori=${item.category.slug}`}>{item.category.name}</a>
+              <Link href={`/catalog?kategori=${item.category.slug}`}>{item.category.name}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

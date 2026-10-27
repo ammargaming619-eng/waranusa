@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { HashLink as Link } from "@/components/shared/hash-link";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { navigate } from "@/lib/router";
 import { useTranslation } from "@/lib/i18n-store";
 
 interface CulturalTag {
@@ -35,7 +35,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/rumah-gadang.png",
     description:
       "Arsitektur vernakular Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang tinggi, bersanding dengan alunan syahdu tiupan bambu instrumen Saluang.",
-    routeHref: "#/eksplorasi-3d",
+    routeHref: "/eksplorasi-3d?house=rumah-gadang",
     pin: { x: 17.2, y: 56.5 },
   },
   {
@@ -45,7 +45,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/rumah-betang.png",
     description:
       "Arsitektur panggung kayu ulin suku Dayak sebagai pusat kebersamaan komunitas adat, bersanding dengan petikan dawai merdu instrumen Sape'.",
-    routeHref: "#/eksplorasi-3d",
+    routeHref: "/eksplorasi-3d?house=betang",
     pin: { x: 44.5, y: 44.5 },
   },
   {
@@ -55,7 +55,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/gamelan.png",
     description:
       "Arsitektur adiluhung Kraton Ngayogyakarta beratap lambang gantung bertingkat, bersanding dengan deretan gong perunggu penata gending Gamelan Bonang berlaras Pelog dan Slendro.",
-    routeHref: "#/instrumen",
+    routeHref: "/virtual-instruments?instrument=bonang-barung",
     pin: { x: 35.8, y: 73.5 },
   },
   {
@@ -65,7 +65,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/tari-bali.png",
     description:
       "Gerak ekspresif mata (seledet), liukan jemari anggun berbusana prada emas, dan persembahan sakral seni tari Pulau Dewata yang menyatu dalam ritme dinamis gamelan.",
-    routeHref: "#/eksplorasi-3d",
+    routeHref: "/eksplorasi-3d?house=gapura-candi-bentar",
     pin: { x: 46.2, y: 76.5 },
   },
   {
@@ -75,7 +75,7 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/rumah-tongkonan.png",
     description:
       "Arsitektur panggung perahu kosmis beratap parabolik suku Toraja dihiasi ukiran pa’ssura dan deretan tanduk kabongo, bersanding dengan alunan gesekan dawai Keso-Keso khas Sulawesi Selatan.",
-    routeHref: "#/eksplorasi-3d",
+    routeHref: "/eksplorasi-3d?house=tongkonan",
     pin: { x: 53.2, y: 65.5 },
   },
   {
@@ -85,12 +85,13 @@ export const CULTURAL_TAGS: CulturalTag[] = [
     image: "/uploads/seed/honai-noken.png",
     description:
       "Arsitektur bundar beratap jerami penahan dingin pegunungan Baliem dan dentuman ritme sakral alat musik Tifa khas Papua.",
-    routeHref: "#/eksplorasi-3d",
+    routeHref: "/eksplorasi-3d?house=honai",
     pin: { x: 86.8, y: 61.5 },
   },
 ];
 
 export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: boolean } = {}) {
+  const router = useRouter();
   const { t } = useTranslation();
   const [activeTag, setActiveTag] = useState<CulturalTag | null>(null);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
@@ -383,8 +384,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 </Button>
                 <Button
                   onClick={() => {
+                    const dest = activeTag.routeHref;
                     setActiveTag(null);
-                    navigate(activeTag.routeHref.replace("#", ""));
+                    router.push(dest);
                   }}
                   className="btn-waranusa rounded-full px-6 py-2.5 font-bold shadow-md text-white hover:brightness-110 active:scale-95 transition-all"
                 >

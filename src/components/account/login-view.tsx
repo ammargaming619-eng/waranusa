@@ -6,7 +6,8 @@
  * formulir masuk kanan + kartu akun demo (hanya pengisian otomatis, bukan login langsung).
  */
 import { useEffect, useState } from "react";
-import { HashLink as Link } from "@/components/shared/hash-link";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Box, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { navigate, type Route } from "@/lib/router";
@@ -27,19 +28,9 @@ const DEMO_ACCOUNTS = [
   { email: "kontributor@waranusa.id", password: "Kontrib#2025", role: "Kontributor" },
 ] as const;
 
-function checkEvaluatorMode(route?: Route): boolean {
-  if (route?.query?.demo === "evaluator") return true;
-  if (typeof window !== "undefined") {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("demo") === "evaluator") return true;
-      if (window.location.hash.includes("demo=evaluator")) return true;
-    } catch {}
-  }
-  return false;
-}
-
 export default function LoginView({ route }: { route?: Route } = {}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const user = useAuth((s) => s.user);
   const login = useAuth((s) => s.login);
   const canAccessCMS = useAuth((s) => s.canAccessCMS);
@@ -48,8 +39,11 @@ export default function LoginView({ route }: { route?: Route } = {}) {
   const [isEvaluatorMode, setIsEvaluatorMode] = useState(false);
 
   useEffect(() => {
-    setIsEvaluatorMode(checkEvaluatorMode(route));
-  }, [route]);
+    const fromSearch = searchParams?.get("demo") === "evaluator";
+    const fromHash = typeof window !== "undefined" && window.location.hash.includes("demo=evaluator");
+    const fromRoute = route?.query?.demo === "evaluator";
+    setIsEvaluatorMode(Boolean(fromSearch || fromHash || fromRoute));
+  }, [route, searchParams]);
 
   const showDemoAccounts = isEvaluatorMode || showDemoManual;
 
@@ -60,12 +54,14 @@ export default function LoginView({ route }: { route?: Route } = {}) {
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const target = () => (canAccessCMS() ? "/admin/dashboard" : "/kontribusi-saya");
+  const target = () => (canAccessCMS() ? "/admin" : "/kontribusi-saya");
 
   // Sudah login → langsung alihkan sesuai peran
   useEffect(() => {
-    if (user) navigate(target(), { replace: true });
-  }, [user]);
+    if (user) {
+      router.push(target());
+    }
+  }, [user, router]);
 
   const fillDemo = (a: (typeof DEMO_ACCOUNTS)[number]) => {
     setEmail(a.email);
@@ -91,7 +87,8 @@ export default function LoginView({ route }: { route?: Route } = {}) {
         localStorage.setItem("waranusa_has_registered", "true");
       } catch {}
       toast.success(`Selamat datang, ${u.name}!`);
-      navigate(canAccessCMS() ? "/admin/dashboard" : "/kontribusi-saya");
+      const targetPath = (["SUPER_ADMIN", "EDITOR", "REVIEWER"].includes(u.role)) ? "/admin" : "/kontribusi-saya";
+      router.push(targetPath);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Gagal masuk. Coba lagi.";
       setFormError(message);
@@ -115,7 +112,7 @@ export default function LoginView({ route }: { route?: Route } = {}) {
 
         <div className="relative">
           {/* Logo baru resmi WaraNusa */}
-          <a href="#/" className="inline-flex items-center gap-3 group" aria-label="WaraNusa — Beranda">
+          <Link href="/" className="inline-flex items-center gap-3 group" aria-label="WaraNusa — Beranda">
             <img
               src="/images/brand/waranusa-logo.png?v=3"
               alt="Logo WaraNusa"
@@ -166,7 +163,7 @@ export default function LoginView({ route }: { route?: Route } = {}) {
               <BrandLogo variant="earthy" />
             </div>
             <Link
-              href="#/"
+              href="/"
               className="ml-auto inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 text-sm font-bold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { HashLink as Link } from "@/components/shared/hash-link";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -46,14 +47,16 @@ interface NavItemDef {
 }
 
 const NAV_ITEMS: NavItemDef[] = [
-  { href: "#/", labelKey: "nav.home", fallback: "Beranda", icon: Home },
-  { href: "#/jelajah", labelKey: "nav.explore", fallback: "Jelajahi Nusantara", icon: Compass },
-  { href: "#/katalog", labelKey: "nav.catalog", fallback: "Katalog Budaya", icon: LayoutGrid },
-  { href: "#/eksplorasi-3d", labelKey: "nav.3d", fallback: "Eksplorasi 3D", icon: Box },
-  { href: "#/instrumen", labelKey: "nav.instruments", fallback: "Instrumen Virtual", icon: Music4 },
+  { href: "/", labelKey: "nav.home", fallback: "Beranda", icon: Home },
+  { href: "/jelajah", labelKey: "nav.explore", fallback: "Jelajahi Nusantara", icon: Compass },
+  { href: "/catalog", labelKey: "nav.catalog", fallback: "Katalog Budaya", icon: LayoutGrid },
+  { href: "/eksplorasi-3d", labelKey: "nav.3d", fallback: "Eksplorasi 3D", icon: Box },
+  { href: "/virtual-instruments", labelKey: "nav.instruments", fallback: "Instrumen Virtual", icon: Music4 },
 ];
 
-export function SiteHeader({ route, introRevealed = true }: { route: Route; introRevealed?: boolean }) {
+export function SiteHeader({ route, introRevealed = true }: { route?: Route; introRevealed?: boolean } = {}) {
+  const router = useRouter();
+  const currentPathname = usePathname();
   const { user, logout } = useAuth();
   const { language, setLanguage, t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -67,13 +70,11 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
     } catch {}
   }, [user]);
 
-  const isLanding = !route.segments[0] || route.segments[0] === "";
+  const pathname = currentPathname || (route ? `/${route.path}` : "/");
+  const isLanding = pathname === "/" || (!route?.segments[0] || route.segments[0] === "");
   const isActive = (href: string) => {
-    const targetPath = href.replace(/^#\/?/, "");
-    if (!targetPath) {
-      return isLanding;
-    }
-    return route.path === targetPath || route.raw.startsWith(targetPath);
+    if (href === "/") return isLanding;
+    return pathname.startsWith(href) || (route?.path ? `/${route.path}`.startsWith(href) : false);
   };
 
   const cmsUser = user && ["SUPER_ADMIN", "EDITOR", "REVIEWER"].includes(user.role);
@@ -82,7 +83,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setSearchOpen(false);
-    navigate(`/katalog?q=${encodeURIComponent(searchQuery.trim())}`);
+    router.push(`/catalog?q=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   return (
@@ -217,18 +218,18 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {cmsUser && (
-                      <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>
+                      <DropdownMenuItem onClick={() => router.push("/admin")}>
                         <LayoutDashboard className="mr-2 h-4 w-4 text-[#8A5B38]" /> Panel Pengelolaan
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem onClick={() => navigate("/kontribusi-saya")}>
+                    <DropdownMenuItem onClick={() => router.push("/kontribusi-saya")}>
                       <UserCircle2 className="mr-2 h-4 w-4 text-[#8A5B38]" /> Kontribusi Saya
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={async () => {
                         await logout();
-                        navigate("/");
+                        router.push("/");
                       }}
                       className="text-destructive focus:text-destructive"
                     >
@@ -243,7 +244,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                   size="sm"
                   className="btn-waranusa rounded-full text-xs sm:text-sm font-semibold px-5 py-1.5 h-9 shadow-sm"
                 >
-                  <Link href="#/masuk">
+                  <Link href="/login">
                     {hasRegistered ? t("nav.login", "Masuk") : t("nav.register", "Daftar")}
                   </Link>
                 </Button>
@@ -370,7 +371,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                     <>
                       {cmsUser && (
                         <Link
-                          href="#/admin/dashboard"
+                          href="/admin"
                           onClick={() => setMobileOpen(false)}
                           className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-200/50"
                         >
@@ -378,7 +379,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                         </Link>
                       )}
                       <Link
-                        href="#/kontribusi-saya"
+                        href="/kontribusi-saya"
                         onClick={() => setMobileOpen(false)}
                         className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-200/50"
                       >
@@ -388,7 +389,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                         onClick={async () => {
                           setMobileOpen(false);
                           await logout();
-                          navigate("/");
+                          router.push("/");
                         }}
                         className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-semibold text-destructive hover:bg-destructive/10 text-left mt-2"
                       >
@@ -401,7 +402,7 @@ export function SiteHeader({ route, introRevealed = true }: { route: Route; intr
                         asChild
                         className="btn-waranusa rounded-full text-white"
                       >
-                        <Link href="#/masuk" onClick={() => setMobileOpen(false)}>
+                        <Link href="/login" onClick={() => setMobileOpen(false)}>
                           <LogIn className="mr-2 h-4 w-4" />
                           {hasRegistered ? t("nav.login", "Masuk") : t("nav.register", "Daftar")}
                         </Link>

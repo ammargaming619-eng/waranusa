@@ -8,6 +8,7 @@
  * - Hybrid Audio Engine (MP3 + 6-Mode Procedural Web Audio Synthesizer) + Sensor Tiup Mikrofon + Gestur Kamera AI.
  */
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -63,7 +64,8 @@ const Instrument3DStage = dynamic(
   }
 );
 
-export default function InstrumentView({ route }: { route: Route }) {
+export default function InstrumentView({ route }: { route?: Route } = {}) {
+  const searchParams = useSearchParams();
   const [activeId, setActiveId] = useState<string>("saron-demung-jateng");
   const [selectedIsland, setSelectedIsland] = useState<IslandRegion>("ALL");
   const [selectedInteraction, setSelectedInteraction] =
@@ -76,13 +78,20 @@ export default function InstrumentView({ route }: { route: Route }) {
   const gamelanItem = useAsyncData(() => api.items.detail("gamelan-jawa"), []);
   void gamelanItem;
 
-  // Deep-link ?instrumen=slug, ?instrument=slug, ?provinsi=slug, atau ?province=slug
+  // Deep-link ?instrument=slug, ?instrumen=slug, ?alat=slug, ?province=slug
   useEffect(() => {
     const requested =
-      route.query.instrumen ??
-      route.query.instrument ??
-      route.query.provinsi ??
-      route.query.province;
+      searchParams?.get("instrument") ??
+      searchParams?.get("instrumen") ??
+      searchParams?.get("alat") ??
+      searchParams?.get("province") ??
+      searchParams?.get("provinsi") ??
+      route?.query?.instrumen ??
+      route?.query?.instrument ??
+      route?.query?.alat ??
+      route?.query?.provinsi ??
+      route?.query?.province;
+
     if (!requested) return;
     const reqLower = requested.toLowerCase().trim();
     const found = INSTRUMENTS_38_CATALOGUE.find(
@@ -99,15 +108,19 @@ export default function InstrumentView({ route }: { route: Route }) {
       setSelectedIsland("ALL");
       setSelectedInteraction("ALL");
     } else {
+      // Graceful self-fallback: jika query string tidak ditemukan, fallback ke instrumen pertama
+      setActiveId(INSTRUMENTS_38_CATALOGUE[0].id);
       toast.info("Menampilkan 38 koleksi instrumen", {
         description: "Pilih provinsi atau cara memainkan instrumen di bawah ini.",
       });
     }
   }, [
-    route.query.instrumen,
-    route.query.instrument,
-    route.query.provinsi,
-    route.query.province,
+    searchParams,
+    route?.query?.instrumen,
+    route?.query?.instrument,
+    route?.query?.alat,
+    route?.query?.provinsi,
+    route?.query?.province,
   ]);
 
   const filteredInstruments = useMemo(() => {

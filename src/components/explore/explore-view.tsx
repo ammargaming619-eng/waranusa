@@ -6,6 +6,7 @@
  * Mengusung tata letak editorial bersih, gradasi marun-jati, dan navigasi kepulauan tanpa emoji.
  */
 import { useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -41,7 +42,7 @@ void Compass;
 void Pin;
 void Sparkles;
 
-export default function ExploreView({ route }: { route: Route }) {
+export default function ExploreView({ route }: { route?: Route } = {}) {
   const [selectedIsland, setSelectedIsland] = useState<Province38["islandGroup"] | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -334,11 +335,11 @@ export default function ExploreView({ route }: { route: Route }) {
                       size="sm"
                       className="mt-3 w-full rounded-xl btn-waranusa text-white text-xs font-bold shadow-xs"
                     >
-                      <a href={`#/eksplorasi-3d?house=${selectedMeta.traditionalHouseSlug}&province=${encodeURIComponent(selectedRegion.name)}`}>
+                      <Link href={`/eksplorasi-3d?house=${selectedMeta.traditionalHouseSlug}&province=${encodeURIComponent(selectedRegion.name)}`}>
                         <Box className="mr-1.5 h-3.5 w-3.5" />
                         Bedah Struktur 3D di Ruang Pamer
                         <ExternalLink className="ml-1.5 h-3 w-3" />
-                      </a>
+                      </Link>
                     </Button>
                   </div>
 
@@ -360,11 +361,11 @@ export default function ExploreView({ route }: { route: Route }) {
                         size="sm"
                         className="mt-3 w-full rounded-xl btn-waranusa text-white text-xs font-bold shadow-xs"
                       >
-                        <a href={`#/eksplorasi-3d?instrument=${matchingInstrument.id}&tab=instruments`}>
+                        <Link href={`/virtual-instruments?instrument=${matchingInstrument.id}`}>
                           <Music4 className="mr-1.5 h-3.5 w-3.5" />
-                          Mainkan {matchingInstrument.title} di Studio 3D
+                          Mainkan {matchingInstrument.title} di Studio
                           <ExternalLink className="ml-1.5 h-3 w-3" />
-                        </a>
+                        </Link>
                       </Button>
                     </div>
                   )}
@@ -376,10 +377,10 @@ export default function ExploreView({ route }: { route: Route }) {
                       variant="outline"
                       className="w-full rounded-xl border-[#D5C6B2] text-[#2D1E12] hover:bg-[#FAF7F2] text-xs font-semibold"
                     >
-                      <a href={`#/budaya/${selectedMeta.traditionalHouseSlug}`}>
+                      <Link href={`/budaya/${selectedMeta.traditionalHouseSlug}`}>
                         Baca Ensiklopedia {selectedMeta.traditionalHouseTitle}
                         <MoveRight className="ml-1.5 h-3.5 w-3.5" />
-                      </a>
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>

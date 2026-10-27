@@ -8,6 +8,7 @@
  */
 import { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BrandPreloader = dynamic(
@@ -36,6 +37,7 @@ import { Loader } from "@/components/shared/states";
 import { useSiteSettings } from "@/lib/settings-store";
 
 export default function WaraNusaApp() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const route = useRoute();
   const { init, initialized } = useAuth();
@@ -48,7 +50,22 @@ export default function WaraNusaApp() {
     setMounted(true);
     init();
     loadSettings();
-  }, [init, loadSettings]);
+
+    // Auto-migrasi URL: bila pengguna membuka tautan lama berformat #/..., arahkan ke rute bersih App Router
+    if (typeof window !== "undefined" && window.location.hash.startsWith("#/")) {
+      const hashPath = window.location.hash.slice(2);
+      if (hashPath) {
+        const cleanPath = hashPath.startsWith("masuk")
+          ? hashPath.replace(/^masuk/, "login")
+          : hashPath.startsWith("instrumen")
+          ? hashPath.replace(/^instrumen/, "virtual-instruments")
+          : hashPath.startsWith("katalog")
+          ? hashPath.replace(/^katalog/, "catalog")
+          : hashPath;
+        router.replace(`/${cleanPath}`);
+      }
+    }
+  }, [init, loadSettings, router]);
 
   // Jika membuka langsung sub-halaman (bukan beranda), lewati animasi pembuka agar instan
   const isDirectNonLanding = Boolean(route.segments[0] && route.segments[0] !== "");

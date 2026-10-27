@@ -93,7 +93,7 @@ function validate(f: FormState): FormErrors {
   return errors;
 }
 
-export default function ContributeView({ route }: { route: Route }) {
+export default function ContributeView({ route }: { route?: Route } = {}) {
   const user = useAuth((s) => s.user);
   const settings = useSiteSettings((s) => s.settings);
 
@@ -105,7 +105,7 @@ export default function ContributeView({ route }: { route: Route }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<Contribution | null>(null);
 
-  const [trackCode, setTrackCode] = useState(route.query.ref ?? "");
+  const [trackCode, setTrackCode] = useState(route?.query?.ref ?? "");
   const [trackEmail, setTrackEmail] = useState("");
   const [trackErrors, setTrackErrors] = useState<{ refCode?: string; email?: string }>({});
   const [tracking, setTracking] = useState(false);

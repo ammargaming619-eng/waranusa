@@ -398,7 +398,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                 variant="maroon-sans"
               />
               <Link
-                href="#/katalog"
+                href="/catalog"
                 className="btn-waranusa rounded-full px-5 py-2.5 text-xs sm:text-sm font-bold shadow-md inline-flex items-center gap-2 text-white hover:brightness-105 active:scale-95 transition-all"
               >
                 {t("highlights.all_btn", "Lihat semua katalog")}
@@ -413,7 +413,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
               <p className="mt-8 rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center text-sm text-stone-500">
                 Sorotan budaya sementara tidak dapat dimuat.{" "}
                 <Link
-                  href="#/katalog"
+                  href="/catalog"
                   className="font-bold text-[#6E472D] underline-offset-2 hover:underline"
                 >
                   Buka katalog langsung
@@ -485,7 +485,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
                   size="lg"
                   className="rounded-full bg-[#FAF6F0] text-[#3C2517] hover:bg-white px-7 text-sm font-bold shadow-md"
                 >
-                  <Link href="#/kontribusi">
+                  <Link href="/kontribusi">
                     {t("contribute.btn", "Kirim Dokumentasi")}{" "}
                     <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
                   </Link>
@@ -721,7 +721,7 @@ function Interactive3DPavilion() {
                     size="lg"
                     className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
-                    <Link href="#/eksplorasi-3d">
+                    <Link href="/eksplorasi-3d">
                       {t("3d.houses_btn", "Buka 38 Rumah Adat")}
                       <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                     </Link>
@@ -789,7 +789,7 @@ function Interactive3DPavilion() {
                     size="lg"
                     className="btn-waranusa rounded-full px-7 font-bold shadow-md w-full sm:w-auto"
                   >
-                    <Link href="#/instrumen">
+                    <Link href="/virtual-instruments">
                       {t("3d.instruments_btn", "Buka 38 Alat Musik")}
                       <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                     </Link>

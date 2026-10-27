@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { HashLink as Link } from "@/components/shared/hash-link";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useRoute } from "@/lib/router";
 import { motion } from "framer-motion";
 import {
@@ -86,6 +87,7 @@ export const INSTRUMENTS_CATALOGUE: TraditionalInstrument38[] = INSTRUMENTS_38_C
 type MainTabFilter = "all" | "architecture" | "instruments";
 
 export default function Exploration3DView() {
+  const searchParams = useSearchParams();
   const route = useRoute();
   const [activeMainTab, setActiveMainTab] = useState<MainTabFilter>("all");
   
@@ -138,10 +140,10 @@ export default function Exploration3DView() {
 
   // Sinkronkan pilihan rumah adat & alat musik jika dibuka dari peta (?house=slug / ?province=name / ?instrument=slug)
   useEffect(() => {
-    const requestedHouse = route.query.house;
-    const requestedProvince = route.query.province ?? route.query.provinsi;
-    const requestedInst = route.query.instrument ?? route.query.instrumen;
-    const requestedTab = route.query.tab;
+    const requestedHouse = searchParams?.get("house") ?? route.query.house;
+    const requestedProvince = searchParams?.get("province") ?? searchParams?.get("provinsi") ?? route.query.province ?? route.query.provinsi;
+    const requestedInst = searchParams?.get("instrument") ?? searchParams?.get("instrumen") ?? route.query.instrument ?? route.query.instrumen;
+    const requestedTab = searchParams?.get("tab") ?? route.query.tab;
 
     if (requestedTab === "architecture" || requestedTab === "instruments" || requestedTab === "all") {
       setActiveMainTab(requestedTab);
@@ -168,6 +170,9 @@ export default function Exploration3DView() {
           setActiveInstrumentId(matchingInst.id);
           setSelectedInstIsland("ALL");
         }
+      } else {
+        // Fallback aman ke rumah adat pertama jika query string rusak
+        setActiveHouseId(HOUSES_38_CATALOGUE[0].id);
       }
     } else if (requestedInst) {
       const foundInst = INSTRUMENTS_38_CATALOGUE.find(

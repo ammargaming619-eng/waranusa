@@ -6,6 +6,7 @@
  * dan membungkus semuanya dengan AdminShell (guard, sidebar, breadcrumb, akun).
  */
 import type { Route } from "@/lib/router";
+import { usePathname } from "next/navigation";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { EmptyState } from "@/components/shared/states";
 import { Compass } from "lucide-react";
@@ -31,8 +32,15 @@ function CmsNotFound() {
   );
 }
 
-export default function AdminApp({ route }: { route: Route }) {
-  const seg = route.segments;
+export default function AdminApp({ route }: { route?: Route } = {}) {
+  const pathname = usePathname();
+  const effectiveRoute: Route = route || {
+    path: pathname ? pathname.replace(/^\//, "") : "admin/dashboard",
+    segments: pathname ? pathname.replace(/^\//, "").split("/").filter(Boolean) : ["admin", "dashboard"],
+    query: {},
+    raw: pathname || "/admin/dashboard",
+  };
+  const seg = effectiveRoute.segments;
   const section = seg[1];
 
   let view: React.ReactNode;
@@ -41,7 +49,7 @@ export default function AdminApp({ route }: { route: Route }) {
     view = <DashboardView />;
   } else if (section === "cultural-items") {
     if (seg.length === 2) {
-      view = <ItemsView route={route} />;
+      view = <ItemsView route={effectiveRoute} />;
     } else if (seg[2] === "create" && seg.length === 3) {
       view = <ItemEditor mode="create" />;
     } else if (seg.length === 4 && seg[3] === "edit" && seg[2]) {
@@ -54,11 +62,11 @@ export default function AdminApp({ route }: { route: Route }) {
   } else if (section === "categories") {
     view = <CategoriesView />;
   } else if (section === "media") {
-    view = <MediaView route={route} />;
+    view = <MediaView route={effectiveRoute} />;
   } else if (section === "sources") {
     view = <SourcesView />;
   } else if (section === "contributions") {
-    view = <ContributionsView route={route} />;
+    view = <ContributionsView route={effectiveRoute} />;
   } else if (section === "users") {
     view = <UsersView />;
   } else if (section === "settings") {
@@ -67,5 +75,5 @@ export default function AdminApp({ route }: { route: Route }) {
     view = <CmsNotFound />;
   }
 
-  return <AdminShell route={route}>{view}</AdminShell>;
+  return <AdminShell route={effectiveRoute}>{view}</AdminShell>;
 }

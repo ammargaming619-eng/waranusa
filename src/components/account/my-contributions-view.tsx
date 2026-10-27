@@ -5,6 +5,7 @@
  * Daftar kontribusi milik pengguna yang sedang masuk. 401 → dialihkan ke #/masuk.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { HandHeart, History, LogIn, Send, UserCircle2 } from "lucide-react";
 import type { Route } from "@/lib/router";
 import { navigate } from "@/lib/router";
@@ -22,7 +23,7 @@ import { cn } from "@/lib/utils";
 const fmtDate = (iso: string) =>
   new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(iso));
 
-export default function MyContributionsView(_props: { route: Route }) {
+export default function MyContributionsView(_props?: { route?: Route }) {
   const user = useAuth((s) => s.user);
 
   const [items, setItems] = useState<Contribution[]>([]);
@@ -82,11 +83,11 @@ export default function MyContributionsView(_props: { route: Route }) {
           title="Masuk untuk melihat kontribusi Anda"
           message="Riwayat kontribusi terhubung dengan akun Anda agar status peninjauan selalu bisa dipantau."
           action={
-            <Button asChild className="min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90">
-              <a href="#/masuk">
+            <Button asChild className="min-h-[44px] rounded-full btn-waranusa font-bold text-white">
+              <Link href="/login">
                 <LogIn className="mr-1.5 h-4 w-4" aria-hidden="true" />
                 Masuk sekarang
-              </a>
+              </Link>
             </Button>
           }
         />
@@ -104,12 +105,12 @@ export default function MyContributionsView(_props: { route: Route }) {
         />
         <Button
           asChild
-          className="min-h-[44px] rounded-full bg-brand-teal font-bold text-white hover:bg-brand-teal/90"
+          className="min-h-[44px] rounded-full btn-waranusa font-bold text-white"
         >
-          <a href="#/kontribusi">
+          <Link href="/kontribusi">
             <Send className="mr-1.5 h-4 w-4" aria-hidden="true" />
             Kirim Kontribusi Baru
-          </a>
+          </Link>
         </Button>
       </div>
 
@@ -128,11 +129,11 @@ export default function MyContributionsView(_props: { route: Route }) {
             title="Belum ada kontribusi"
             message="Ceritakan objek budaya yang Anda kenal — kontribusi pertama Anda bisa secepat 5 menit."
             action={
-              <Button asChild className="min-h-[44px] rounded-full bg-brand-gold font-bold text-brand-ink hover:bg-brand-gold/90">
-                <a href="#/kontribusi">
+              <Button asChild className="min-h-[44px] rounded-full btn-waranusa font-bold text-white">
+                <Link href="/kontribusi">
                   <Send className="mr-1.5 h-4 w-4" aria-hidden="true" />
                   Mulai Kontribusi
-                </a>
+                </Link>
               </Button>
             }
           />

@@ -1,6 +1,6 @@
 "use client";
 
-import { HashLink as Link } from "@/components/shared/hash-link";
+import Link from "next/link";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Separator } from "@/components/ui/separator";
 import { Compass, LayoutGrid, Music4, Archive, HandHeart, ShieldCheck } from "lucide-react";
@@ -40,10 +40,10 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
             <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">{t("footer.explore_title", "Jelajahi")}</h3>
             <ul className="space-y-2 text-sm">
               {[
-                { href: "#/jelajah", label: t("nav.explore", "Peta Wilayah"), icon: Compass },
-                { href: "#/katalog", label: t("nav.catalog", "Katalog Budaya"), icon: LayoutGrid },
-                { href: "#/instrumen", label: t("nav.instruments", "Instrumen Virtual"), icon: Music4 },
-                { href: "#/arsip", label: "Arsip & Sumber", icon: Archive },
+                { href: "/jelajah", label: t("nav.explore", "Peta Wilayah"), icon: Compass },
+                { href: "/catalog", label: t("nav.catalog", "Katalog Budaya"), icon: LayoutGrid },
+                { href: "/virtual-instruments", label: t("nav.instruments", "Instrumen Virtual"), icon: Music4 },
+                { href: "/arsip", label: "Arsip & Sumber", icon: Archive },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
@@ -58,12 +58,12 @@ export function SiteFooter({ siteName, tagline, contactEmail, footerNote }: {
             <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#E5B869]">{t("footer.contribute_title", "Ikut Serta")}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#/kontribusi" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
+                <Link href="/kontribusi" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
                   <HandHeart className="h-3.5 w-3.5 text-[#D4A843]/80" /> {t("footer.contribute_action", "Kirim Dokumentasi")}
                 </Link>
               </li>
               <li>
-                <Link href="#/masuk" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
+                <Link href="/login" className="inline-flex items-center gap-2 text-stone-300 transition-colors hover:text-white">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#D4A843]/80" /> {t("footer.login_action", "Akun Pengelola")}
                 </Link>
               </li>

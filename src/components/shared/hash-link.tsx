@@ -1,42 +1,36 @@
 "use client";
 
 import * as React from "react";
+import NextLink, { type LinkProps as NextLinkProps } from "next/link";
 
-type HashLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  href: string;
-};
+export type HashLinkProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof NextLinkProps> &
+  NextLinkProps & {
+    href: string;
+  };
 
 /**
- * WaraNusa — HashLink
- *
- * Link khusus untuk rute hash SPA (#/…).
- *
- * Mengapa BUKAN next/link?
- * Router App Router mencegat klik <Link href="#/…"> lalu berpindah via
- * history.pushState — API itu TIDAK memicu event "hashchange", sehingga
- * useRoute() tidak pernah tahu rute berubah dan tampilan SPA tidak berganti
- * (gejala: "navbar tidak berfungsi").
- *
- * <a> asli mengubah window.location.hash → event hashchange terpicu →
- * router hash memperbarui view. Kompatibel dengan Radix Slot (Button asChild).
+ * WaraNusa — HashLink / Smart Route Link Adapter
+ * Secara cerdas menormalkan tautan:
+ * - Mengubah URL legacy `#/path` menjadi rute bersih App Router `/path`.
+ * - Menggunakan client-side navigation Next.js (`next/link`) dengan prefetching instan.
+ * - Mendukung anchor halaman (`#section`) atau link eksternal (`http...`) secara mulus.
  */
 export const HashLink = React.forwardRef<HTMLAnchorElement, HashLinkProps>(
   function HashLink({ href, onClick, ...props }, ref) {
-    const handleClick = React.useCallback(
-      (e: React.MouseEvent<HTMLAnchorElement>) => {
-        onClick?.(e);
-        if (e.defaultPrevented) return;
-        // Klik ulang ke hash yang sama tidak memicu hashchange —
-        // picu pembaruan manual agar klik tetap merespons (scroll ke atas).
-        const target = href.startsWith("#") ? href.slice(1) : href;
-        if (window.location.hash.replace(/^#/, "") === target) {
-          e.preventDefault();
-          window.dispatchEvent(new HashChangeEvent("hashchange"));
-          window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-        }
-      },
-      [href, onClick]
-    );
-    return <a ref={ref} href={href} onClick={handleClick} {...props} />;
+    let cleanHref = href;
+    if (cleanHref.startsWith("#/")) {
+      cleanHref = cleanHref.slice(1); // "#/katalog" -> "/katalog"
+    } else if (cleanHref === "#") {
+      cleanHref = "/";
+    }
+
+    const isExternal = cleanHref.startsWith("http://") || cleanHref.startsWith("https://") || cleanHref.startsWith("mailto:");
+    const isAnchorOnly = cleanHref.startsWith("#") && !cleanHref.startsWith("#/");
+
+    if (isExternal || isAnchorOnly) {
+      return <a ref={ref} href={cleanHref} onClick={onClick} {...props} />;
+    }
+
+    return <NextLink ref={ref} href={cleanHref} onClick={onClick} {...props} />;
   }
 );
