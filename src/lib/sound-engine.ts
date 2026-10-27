@@ -34,6 +34,10 @@ class HybridSoundEngine {
   private micRafId: number | null = null;
   private micActive = false;
 
+  // Throttling pengaman agar satu input fisik tidak dapat memicu 2 kali suara beruntun
+  private lastTriggerTime = 0;
+  private lastTriggerNoteKey = "";
+
   public ensureContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
 
@@ -154,6 +158,15 @@ class HybridSoundEngine {
     if (!ctx || !this.masterGain || !this.reverbSend) return;
 
     const { instrumentId, synthPreset, freq, baseFreq = 261.63, velocity = 0.88 } = options;
+
+    // Pengaman debouncing: abaikan jika nada yang sama terpicu ulang dalam jendela 80ms
+    const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const noteKey = `${instrumentId}-${Math.round(freq)}`;
+    if (noteKey === this.lastTriggerNoteKey && now - this.lastTriggerTime < 80) {
+      return;
+    }
+    this.lastTriggerTime = now;
+    this.lastTriggerNoteKey = noteKey;
 
     // Coba muat sampel di latar belakang bila belum pernah dicek
     if (!this.sampleStatus.has(instrumentId)) {
