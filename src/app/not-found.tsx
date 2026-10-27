@@ -2,10 +2,6 @@ import Link from "next/link";
 import { Compass, ArrowLeft, LayoutGrid, Music4 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const metadata = {
-  title: "404 — Halaman Tidak Ditemukan · WaraNusa",
-};
-
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#FCF8EC] px-4 py-16 text-stone-900 selection:bg-[#6E472D] selection:text-white">

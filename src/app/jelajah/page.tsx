@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ExploreView from "@/components/explore/explore-view";
+import dynamic from "next/dynamic";
 import { PublicShell } from "@/components/site/public-shell";
 
 export const dynamic = "force-dynamic";
@@ -9,10 +9,28 @@ export const metadata = {
   description: "Peta interaktif sebaran warisan budaya, rumah adat, dan instrumen musik tradisional di 38 provinsi Indonesia.",
 };
 
+const ExploreView = dynamic(
+  () => import("@/components/explore/explore-view"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen bg-[#FAF5EC] flex items-center justify-center font-mono text-sm text-[#7A4B29]">
+        Memuat Peta Jelajah Nusantara...
+      </div>
+    ),
+  }
+);
+
 export default function JelajahPage() {
   return (
     <PublicShell>
-      <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-[#FAF5EC] flex items-center justify-center font-mono text-sm text-[#7A4B29]">
+            Memuat Peta Jelajah Nusantara...
+          </div>
+        }
+      >
         <ExploreView />
       </Suspense>
     </PublicShell>

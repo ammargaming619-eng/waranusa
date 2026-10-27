@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CatalogView from "@/components/catalog/catalog-view";
+import dynamic from "next/dynamic";
 import { PublicShell } from "@/components/site/public-shell";
 
 export const dynamic = "force-dynamic";
@@ -9,10 +9,28 @@ export const metadata = {
   description: "Jelajahi dokumentasi lengkap warisan budaya Indonesia.",
 };
 
+const CatalogView = dynamic(
+  () => import("@/components/catalog/catalog-view"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen bg-[#FCF8EC] flex items-center justify-center font-mono text-sm text-[#7A4B29]">
+        Memuat Katalog Budaya Nusantara...
+      </div>
+    ),
+  }
+);
+
 export default function KatalogAliasPage() {
   return (
     <PublicShell>
-      <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-[#FCF8EC] flex items-center justify-center font-mono text-sm text-[#7A4B29]">
+            Memuat Katalog Budaya...
+          </div>
+        }
+      >
         <CatalogView />
       </Suspense>
     </PublicShell>

@@ -22,16 +22,32 @@ import { useAuth } from "@/lib/auth-store";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import LandingView from "@/components/landing/landing-view";
-import ExploreView from "@/components/explore/explore-view";
 import CatalogView from "@/components/catalog/catalog-view";
-import CultureDetailView from "@/components/culture/culture-detail-view";
-import InstrumentView from "@/components/instrument/instrument-view";
-import Exploration3DView from "@/components/explore/exploration-3d-view";
 import ArchiveView from "@/components/archive/archive-view";
 import ContributeView from "@/components/contribute/contribute-view";
 import LoginView from "@/components/account/login-view";
 import MyContributionsView from "@/components/account/my-contributions-view";
-import AdminApp from "@/components/admin/admin-app";
+
+const ExploreView = dynamic(() => import("@/components/explore/explore-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FAF5EC]" />,
+});
+const InstrumentView = dynamic(() => import("@/components/instrument/instrument-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#1A110B]" />,
+});
+const Exploration3DView = dynamic(() => import("@/components/explore/exploration-3d-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const CultureDetailView = dynamic(() => import("@/components/culture/culture-detail-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const AdminApp = dynamic(() => import("@/components/admin/admin-app"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-stone-900" />,
+});
 
 import { Loader } from "@/components/shared/states";
 import { useSiteSettings } from "@/lib/settings-store";
