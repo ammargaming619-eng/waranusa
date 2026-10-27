@@ -358,7 +358,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=angklung"
+    "actionUrl": "/virtual-instruments?instrument=angklung"
   },
   {
     "id": "item-inst-bonang-barung",
@@ -397,7 +397,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=bonang-barung"
+    "actionUrl": "/virtual-instruments?instrument=bonang-barung"
   },
   {
     "id": "item-inst-burdah-palembang",
@@ -436,7 +436,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=burdah-palembang"
+    "actionUrl": "/virtual-instruments?instrument=burdah-palembang"
   },
   {
     "id": "item-inst-dambus-babel",
@@ -475,7 +475,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=dambus-babel"
+    "actionUrl": "/virtual-instruments?instrument=dambus-babel"
   },
   {
     "id": "item-inst-dogdog-lojor",
@@ -514,7 +514,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=dogdog-lojor"
+    "actionUrl": "/virtual-instruments?instrument=dogdog-lojor"
   },
   {
     "id": "item-inst-dol-bengkulu",
@@ -553,7 +553,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=dol-bengkulu"
+    "actionUrl": "/virtual-instruments?instrument=dol-bengkulu"
   },
   {
     "id": "item-inst-fu-kerang",
@@ -592,7 +592,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=fu-kerang"
+    "actionUrl": "/virtual-instruments?instrument=fu-kerang"
   },
   {
     "id": "item-inst-gambus-selodang",
@@ -631,7 +631,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gambus-selodang"
+    "actionUrl": "/virtual-instruments?instrument=gambus-selodang"
   },
   {
     "id": "item-inst-gamolan-pekhing",
@@ -670,7 +670,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gamolan-pekhing"
+    "actionUrl": "/virtual-instruments?instrument=gamolan-pekhing"
   },
   {
     "id": "item-inst-gendang-beleq",
@@ -709,7 +709,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gendang-beleq"
+    "actionUrl": "/virtual-instruments?instrument=gendang-beleq"
   },
   {
     "id": "item-inst-gendang-panjang",
@@ -748,7 +748,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gendang-panjang"
+    "actionUrl": "/virtual-instruments?instrument=gendang-panjang"
   },
   {
     "id": "item-inst-gimba-kaili",
@@ -787,7 +787,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gimba-kaili"
+    "actionUrl": "/virtual-instruments?instrument=gimba-kaili"
   },
   {
     "id": "item-inst-guoto-arfak",
@@ -826,7 +826,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=guoto-arfak"
+    "actionUrl": "/virtual-instruments?instrument=guoto-arfak"
   },
   {
     "id": "item-inst-hasapi-batak",
@@ -865,7 +865,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=hasapi-batak"
+    "actionUrl": "/virtual-instruments?instrument=hasapi-batak"
   },
   {
     "id": "item-inst-japen-kalteng",
@@ -904,7 +904,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=japen-kalteng"
+    "actionUrl": "/virtual-instruments?instrument=japen-kalteng"
   },
   {
     "id": "item-inst-jatung-utang",
@@ -943,7 +943,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=jatung-utang"
+    "actionUrl": "/virtual-instruments?instrument=jatung-utang"
   },
   {
     "id": "item-inst-kecapi-mandar",
@@ -982,7 +982,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=kecapi-mandar"
+    "actionUrl": "/virtual-instruments?instrument=kecapi-mandar"
   },
   {
     "id": "item-inst-kelintang-kayu",
@@ -1021,7 +1021,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=kelintang-kayu"
+    "actionUrl": "/virtual-instruments?instrument=kelintang-kayu"
   },
   {
     "id": "item-inst-kendang-reog",
@@ -1060,7 +1060,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=kendang-reog"
+    "actionUrl": "/virtual-instruments?instrument=kendang-reog"
   },
   {
     "id": "item-inst-keso-keso",
@@ -1099,7 +1099,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=keso-keso"
+    "actionUrl": "/virtual-instruments?instrument=keso-keso"
   },
   {
     "id": "item-inst-kolintang-minahasa",
@@ -1138,7 +1138,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=kolintang-minahasa"
+    "actionUrl": "/virtual-instruments?instrument=kolintang-minahasa"
   },
   {
     "id": "item-inst-lado-lado",
@@ -1177,7 +1177,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=lado-lado"
+    "actionUrl": "/virtual-instruments?instrument=lado-lado"
   },
   {
     "id": "item-inst-musik-panting",
@@ -1216,7 +1216,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=musik-panting"
+    "actionUrl": "/virtual-instruments?instrument=musik-panting"
   },
   {
     "id": "item-inst-pikon-dani",
@@ -1255,7 +1255,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=pikon-dani"
+    "actionUrl": "/virtual-instruments?instrument=pikon-dani"
   },
   {
     "id": "item-inst-polopalo-gorontalo",
@@ -1294,7 +1294,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=polopalo-gorontalo"
+    "actionUrl": "/virtual-instruments?instrument=polopalo-gorontalo"
   },
   {
     "id": "item-inst-rapai-aceh",
@@ -1333,7 +1333,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=rapai-aceh"
+    "actionUrl": "/virtual-instruments?instrument=rapai-aceh"
   },
   {
     "id": "item-inst-rindik-bali",
@@ -1372,7 +1372,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=rindik-bali"
+    "actionUrl": "/virtual-instruments?instrument=rindik-bali"
   },
   {
     "id": "item-inst-sampe-dayak-kaltim",
@@ -1411,7 +1411,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=sampe-dayak-kaltim"
+    "actionUrl": "/virtual-instruments?instrument=sampe-dayak-kaltim"
   },
   {
     "id": "item-inst-gamelan-jawa",
@@ -1450,7 +1450,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=gamelan-jawa"
+    "actionUrl": "/virtual-instruments?instrument=gamelan-jawa"
   },
   {
     "id": "item-inst-sasando-rote",
@@ -1489,7 +1489,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=sasando-rote"
+    "actionUrl": "/virtual-instruments?instrument=sasando-rote"
   },
   {
     "id": "item-inst-talempong-minang",
@@ -1528,7 +1528,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=talempong-minang"
+    "actionUrl": "/virtual-instruments?instrument=talempong-minang"
   },
   {
     "id": "item-inst-tehyan-jakarta",
@@ -1567,7 +1567,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tehyan-jakarta"
+    "actionUrl": "/virtual-instruments?instrument=tehyan-jakarta"
   },
   {
     "id": "item-inst-tifa-asmat",
@@ -1606,7 +1606,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tifa-asmat"
+    "actionUrl": "/virtual-instruments?instrument=tifa-asmat"
   },
   {
     "id": "item-inst-tifa-kamoro",
@@ -1645,7 +1645,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tifa-kamoro"
+    "actionUrl": "/virtual-instruments?instrument=tifa-kamoro"
   },
   {
     "id": "item-inst-tifa-sentani",
@@ -1684,7 +1684,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tifa-sentani"
+    "actionUrl": "/virtual-instruments?instrument=tifa-sentani"
   },
   {
     "id": "item-inst-tifa-totobuang",
@@ -1723,7 +1723,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tifa-totobuang"
+    "actionUrl": "/virtual-instruments?instrument=tifa-totobuang"
   },
   {
     "id": "item-inst-triton-raja-ampat",
@@ -1762,7 +1762,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=triton-raja-ampat"
+    "actionUrl": "/virtual-instruments?instrument=triton-raja-ampat"
   },
   {
     "id": "item-inst-tuma-dayak",
@@ -1801,7 +1801,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
-    "actionUrl": "#/instrumen?alat=tuma-dayak"
+    "actionUrl": "/virtual-instruments?instrument=tuma-dayak"
   },
   {
     "id": "item-ayam-betutu-bali",
@@ -1834,7 +1834,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/ayam-betutu-bali"
+    "actionUrl": "/budaya/ayam-betutu-bali"
   },
   {
     "id": "item-baju-bodo",
@@ -1867,7 +1867,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/baju-bodo"
+    "actionUrl": "/budaya/baju-bodo"
   },
   {
     "id": "item-baju-cele-maluku",
@@ -1900,7 +1900,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/baju-cele-maluku"
+    "actionUrl": "/budaya/baju-cele-maluku"
   },
   {
     "id": "item-batik-mega-mendung",
@@ -1933,7 +1933,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/batik-mega-mendung"
+    "actionUrl": "/budaya/batik-mega-mendung"
   },
   {
     "id": "item-batik-parang-yogyakarta",
@@ -1966,7 +1966,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/batik-parang-yogyakarta"
+    "actionUrl": "/budaya/batik-parang-yogyakarta"
   },
   {
     "id": "item-bika-ambon-medan",
@@ -1999,7 +1999,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/bika-ambon-medan"
+    "actionUrl": "/budaya/bika-ambon-medan"
   },
   {
     "id": "item-baju-aesan-gede",
@@ -2032,7 +2032,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/baju-aesan-gede"
+    "actionUrl": "/budaya/baju-aesan-gede"
   },
   {
     "id": "item-coto-makassar",
@@ -2065,7 +2065,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/coto-makassar"
+    "actionUrl": "/budaya/coto-makassar"
   },
   {
     "id": "item-lompat-batu-nias",
@@ -2098,7 +2098,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/lompat-batu-nias"
+    "actionUrl": "/budaya/lompat-batu-nias"
   },
   {
     "id": "item-gudeg-jogja",
@@ -2131,7 +2131,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/gudeg-jogja"
+    "actionUrl": "/budaya/gudeg-jogja"
   },
   {
     "id": "item-kain-tapis-lampung",
@@ -2164,7 +2164,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/kain-tapis-lampung"
+    "actionUrl": "/budaya/kain-tapis-lampung"
   },
   {
     "id": "item-ulos-batak",
@@ -2197,7 +2197,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/ulos-batak"
+    "actionUrl": "/budaya/ulos-batak"
   },
   {
     "id": "item-kerak-telor-betawi",
@@ -2230,7 +2230,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/kerak-telor-betawi"
+    "actionUrl": "/budaya/kerak-telor-betawi"
   },
   {
     "id": "item-mie-aceh",
@@ -2263,7 +2263,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/mie-aceh"
+    "actionUrl": "/budaya/mie-aceh"
   },
   {
     "id": "item-papeda-kuah-kuning",
@@ -2296,7 +2296,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/papeda-kuah-kuning"
+    "actionUrl": "/budaya/papeda-kuah-kuning"
   },
   {
     "id": "item-tradisi-pasola-sumba",
@@ -2329,7 +2329,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tradisi-pasola-sumba"
+    "actionUrl": "/budaya/tradisi-pasola-sumba"
   },
   {
     "id": "item-pempek-palembang",
@@ -2362,7 +2362,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/pempek-palembang"
+    "actionUrl": "/budaya/pempek-palembang"
   },
   {
     "id": "item-perahu-sandeq-mandar",
@@ -2395,7 +2395,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/perahu-sandeq-mandar"
+    "actionUrl": "/budaya/perahu-sandeq-mandar"
   },
   {
     "id": "item-rendang-minang",
@@ -2428,7 +2428,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/rendang-minang"
+    "actionUrl": "/budaya/rendang-minang"
   },
   {
     "id": "item-reog-ponorogo",
@@ -2461,7 +2461,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/reog-ponorogo"
+    "actionUrl": "/budaya/reog-ponorogo"
   },
   {
     "id": "item-house-anjir",
@@ -2500,7 +2500,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=anjir"
+    "actionUrl": "/eksplorasi-3d?house=anjir"
   },
   {
     "id": "item-house-baileo",
@@ -2539,7 +2539,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=baileo"
+    "actionUrl": "/eksplorasi-3d?house=baileo"
   },
   {
     "id": "item-house-baloy-mayo",
@@ -2578,7 +2578,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=baloy-mayo"
+    "actionUrl": "/eksplorasi-3d?house=baloy-mayo"
   },
   {
     "id": "item-house-bangsal-kencono",
@@ -2617,7 +2617,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=bangsal-kencono"
+    "actionUrl": "/eksplorasi-3d?house=bangsal-kencono"
   },
   {
     "id": "item-house-banua-tada",
@@ -2656,7 +2656,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=banua-tada"
+    "actionUrl": "/eksplorasi-3d?house=banua-tada"
   },
   {
     "id": "item-house-belah-bubung",
@@ -2695,7 +2695,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=belah-bubung"
+    "actionUrl": "/eksplorasi-3d?house=belah-bubung"
   },
   {
     "id": "item-house-betang",
@@ -2734,7 +2734,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=betang"
+    "actionUrl": "/eksplorasi-3d?house=betang"
   },
   {
     "id": "item-house-bolon",
@@ -2773,7 +2773,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=bolon"
+    "actionUrl": "/eksplorasi-3d?house=bolon"
   },
   {
     "id": "item-house-boyang",
@@ -2812,7 +2812,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=boyang"
+    "actionUrl": "/eksplorasi-3d?house=boyang"
   },
   {
     "id": "item-house-bubungan-lima",
@@ -2851,7 +2851,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=bubungan-lima"
+    "actionUrl": "/eksplorasi-3d?house=bubungan-lima"
   },
   {
     "id": "item-house-bubungan-tinggi",
@@ -2890,7 +2890,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=bubungan-tinggi"
+    "actionUrl": "/eksplorasi-3d?house=bubungan-tinggi"
   },
   {
     "id": "item-house-dalam-loka",
@@ -2929,7 +2929,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=dalam-loka"
+    "actionUrl": "/eksplorasi-3d?house=dalam-loka"
   },
   {
     "id": "item-house-dulohupa",
@@ -2968,7 +2968,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=dulohupa"
+    "actionUrl": "/eksplorasi-3d?house=dulohupa"
   },
   {
     "id": "item-house-gapura-candi-bentar",
@@ -3007,7 +3007,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=gapura-candi-bentar"
+    "actionUrl": "/eksplorasi-3d?house=gapura-candi-bentar"
   },
   {
     "id": "item-house-honai",
@@ -3046,7 +3046,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=honai"
+    "actionUrl": "/eksplorasi-3d?house=honai"
   },
   {
     "id": "item-house-jew",
@@ -3085,7 +3085,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=jew"
+    "actionUrl": "/eksplorasi-3d?house=jew"
   },
   {
     "id": "item-house-joglo",
@@ -3124,7 +3124,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=joglo"
+    "actionUrl": "/eksplorasi-3d?house=joglo"
   },
   {
     "id": "item-house-joglo-situbondo",
@@ -3163,7 +3163,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=joglo-situbondo"
+    "actionUrl": "/eksplorasi-3d?house=joglo-situbondo"
   },
   {
     "id": "item-house-julang-ngapak",
@@ -3202,7 +3202,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=julang-ngapak"
+    "actionUrl": "/eksplorasi-3d?house=julang-ngapak"
   },
   {
     "id": "item-house-kambik",
@@ -3241,7 +3241,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=kambik"
+    "actionUrl": "/eksplorasi-3d?house=kambik"
   },
   {
     "id": "item-house-karapao",
@@ -3280,7 +3280,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=karapao"
+    "actionUrl": "/eksplorasi-3d?house=karapao"
   },
   {
     "id": "item-house-kebaya-bapang",
@@ -3319,7 +3319,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=kebaya-bapang"
+    "actionUrl": "/eksplorasi-3d?house=kebaya-bapang"
   },
   {
     "id": "item-house-lamin",
@@ -3358,7 +3358,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=lamin"
+    "actionUrl": "/eksplorasi-3d?house=lamin"
   },
   {
     "id": "item-house-limas",
@@ -3397,7 +3397,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=limas"
+    "actionUrl": "/eksplorasi-3d?house=limas"
   },
   {
     "id": "item-house-mod-aki-aksa",
@@ -3436,7 +3436,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=mod-aki-aksa"
+    "actionUrl": "/eksplorasi-3d?house=mod-aki-aksa"
   },
   {
     "id": "item-house-musalaki",
@@ -3475,7 +3475,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=musalaki"
+    "actionUrl": "/eksplorasi-3d?house=musalaki"
   },
   {
     "id": "item-house-nuwo-sesat",
@@ -3514,7 +3514,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=nuwo-sesat"
+    "actionUrl": "/eksplorasi-3d?house=nuwo-sesat"
   },
   {
     "id": "item-house-panggung-kajang-lako",
@@ -3553,7 +3553,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=panggung-kajang-lako"
+    "actionUrl": "/eksplorasi-3d?house=panggung-kajang-lako"
   },
   {
     "id": "item-house-radakng",
@@ -3592,7 +3592,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=radakng"
+    "actionUrl": "/eksplorasi-3d?house=radakng"
   },
   {
     "id": "item-house-rakit",
@@ -3631,7 +3631,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=rakit"
+    "actionUrl": "/eksplorasi-3d?house=rakit"
   },
   {
     "id": "item-house-rumah-gadang",
@@ -3670,7 +3670,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=rumah-gadang"
+    "actionUrl": "/eksplorasi-3d?house=rumah-gadang"
   },
   {
     "id": "item-house-rumoh-aceh",
@@ -3709,7 +3709,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=rumoh-aceh"
+    "actionUrl": "/eksplorasi-3d?house=rumoh-aceh"
   },
   {
     "id": "item-house-sasadu",
@@ -3748,7 +3748,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=sasadu"
+    "actionUrl": "/eksplorasi-3d?house=sasadu"
   },
   {
     "id": "item-house-selaso-jatuh-kembar",
@@ -3787,7 +3787,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=selaso-jatuh-kembar"
+    "actionUrl": "/eksplorasi-3d?house=selaso-jatuh-kembar"
   },
   {
     "id": "item-house-souraja",
@@ -3826,7 +3826,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=souraja"
+    "actionUrl": "/eksplorasi-3d?house=souraja"
   },
   {
     "id": "item-house-sulah-nyanda",
@@ -3865,7 +3865,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=sulah-nyanda"
+    "actionUrl": "/eksplorasi-3d?house=sulah-nyanda"
   },
   {
     "id": "item-house-tongkonan",
@@ -3904,7 +3904,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=tongkonan"
+    "actionUrl": "/eksplorasi-3d?house=tongkonan"
   },
   {
     "id": "item-house-walewangko",
@@ -3943,7 +3943,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "MODEL_3D"
     },
     "actionBadge": "Buka Model 3D",
-    "actionUrl": "#/eksplorasi-3d?house=walewangko"
+    "actionUrl": "/eksplorasi-3d?house=walewangko"
   },
   {
     "id": "item-subak-bali",
@@ -3976,7 +3976,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/subak-bali"
+    "actionUrl": "/budaya/subak-bali"
   },
   {
     "id": "item-songket-palembang",
@@ -4009,7 +4009,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/songket-palembang"
+    "actionUrl": "/budaya/songket-palembang"
   },
   {
     "id": "item-songket-pandai-sikek",
@@ -4042,7 +4042,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/songket-pandai-sikek"
+    "actionUrl": "/budaya/songket-pandai-sikek"
   },
   {
     "id": "item-soto-banjar",
@@ -4075,7 +4075,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/soto-banjar"
+    "actionUrl": "/budaya/soto-banjar"
   },
   {
     "id": "item-tari-caci-manggarai",
@@ -4108,7 +4108,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-caci-manggarai"
+    "actionUrl": "/budaya/tari-caci-manggarai"
   },
   {
     "id": "item-tari-jaipong",
@@ -4141,7 +4141,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-jaipong"
+    "actionUrl": "/budaya/tari-jaipong"
   },
   {
     "id": "item-tari-kecak",
@@ -4174,7 +4174,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-kecak"
+    "actionUrl": "/budaya/tari-kecak"
   },
   {
     "id": "item-tari-pendet",
@@ -4207,7 +4207,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-pendet"
+    "actionUrl": "/budaya/tari-pendet"
   },
   {
     "id": "item-tari-piring",
@@ -4240,7 +4240,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-piring"
+    "actionUrl": "/budaya/tari-piring"
   },
   {
     "id": "item-tari-poco-poco",
@@ -4273,7 +4273,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-poco-poco"
+    "actionUrl": "/budaya/tari-poco-poco"
   },
   {
     "id": "item-tari-saman",
@@ -4306,7 +4306,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-saman"
+    "actionUrl": "/budaya/tari-saman"
   },
   {
     "id": "item-tari-tor-tor",
@@ -4339,7 +4339,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tari-tor-tor"
+    "actionUrl": "/budaya/tari-tor-tor"
   },
   {
     "id": "item-tenun-ikat-sumba",
@@ -4372,7 +4372,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/tenun-ikat-sumba"
+    "actionUrl": "/budaya/tenun-ikat-sumba"
   },
   {
     "id": "item-bakar-batu-papua",
@@ -4405,7 +4405,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/bakar-batu-papua"
+    "actionUrl": "/budaya/bakar-batu-papua"
   },
   {
     "id": "item-sekaten-keraton",
@@ -4438,7 +4438,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/sekaten-keraton"
+    "actionUrl": "/budaya/sekaten-keraton"
   },
   {
     "id": "item-rambu-solo-toraja",
@@ -4471,7 +4471,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/rambu-solo-toraja"
+    "actionUrl": "/budaya/rambu-solo-toraja"
   },
   {
     "id": "item-seren-taun-sunda",
@@ -4504,7 +4504,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/seren-taun-sunda"
+    "actionUrl": "/budaya/seren-taun-sunda"
   },
   {
     "id": "item-upacara-tabuik-pariaman",
@@ -4537,7 +4537,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/upacara-tabuik-pariaman"
+    "actionUrl": "/budaya/upacara-tabuik-pariaman"
   },
   {
     "id": "item-yadnya-kasada-bromo",
@@ -4570,7 +4570,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/yadnya-kasada-bromo"
+    "actionUrl": "/budaya/yadnya-kasada-bromo"
   },
   {
     "id": "item-wayang-kulit-purwa",
@@ -4603,7 +4603,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
       "type": "IMAGE"
     },
     "actionBadge": "Lihat",
-    "actionUrl": "#/budaya/wayang-kulit-purwa"
+    "actionUrl": "/budaya/wayang-kulit-purwa"
   }
 ] as unknown) as CulturalItem[];
 

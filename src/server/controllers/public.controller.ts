@@ -164,7 +164,12 @@ export async function itemDetail(_req: Request, ctx: { params: Promise<{ id: str
 
   const fallback = MASTER_CULTURAL_CATALOGUE.find((it) => it.slug === id || it.id === id);
   if (fallback) {
-    return ok(fallback);
+    return ok({
+      ...fallback,
+      createdAt: (fallback as any).createdAt || "2025-01-01T00:00:00.000Z",
+      updatedAt: (fallback as any).updatedAt || "2026-01-20T00:00:00.000Z",
+      sources: (fallback as any).sources || [],
+    });
   }
 
   return notFound("Objek budaya tidak ditemukan.");
