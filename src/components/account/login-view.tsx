@@ -6,10 +6,11 @@
  * formulir masuk kanan + kartu akun demo (hanya pengisian otomatis, bukan login langsung).
  */
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { HashLink as Link } from "@/components/shared/hash-link";
 import { ArrowLeft, Box, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
-import { navigate } from "@/lib/router";
+import { navigate, type Route } from "@/lib/router";
 import { BrandLogo, BrandMark } from "@/components/shared/brand-logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,29 @@ const DEMO_ACCOUNTS = [
   { email: "kontributor@waranusa.id", password: "Kontrib#2025", role: "Kontributor" },
 ] as const;
 
-export default function LoginView() {
+export default function LoginView({ route }: { route?: Route } = {}) {
   const user = useAuth((s) => s.user);
   const login = useAuth((s) => s.login);
   const canAccessCMS = useAuth((s) => s.canAccessCMS);
+
+  // Evaluator mode: hanya aktif jika parameter ?demo=evaluator disertakan
+  let searchParams: ReturnType<typeof useSearchParams> = null;
+  try {
+    searchParams = useSearchParams();
+  } catch {
+    searchParams = null;
+  }
+
+  const [showDemoManual, setShowDemoManual] = useState(false);
+
+  const isEvaluatorMode =
+    searchParams?.get("demo") === "evaluator" ||
+    route?.query?.demo === "evaluator" ||
+    (typeof window !== "undefined" &&
+      (new URLSearchParams(window.location.search).get("demo") === "evaluator" ||
+        window.location.hash.includes("demo=evaluator")));
+
+  const showDemoAccounts = isEvaluatorMode || showDemoManual;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -239,43 +259,70 @@ export default function LoginView() {
             </Button>
           </form>
 
-          {/* ============ AKUN DEMO ============ */}
-          <Card className="mt-8 rounded-3xl border-stone-200 bg-[#FCFAF6] shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base font-bold text-[#2D1E12]">
-                <KeyRound className="h-4.5 w-4.5 text-[#8C5E3C]" aria-hidden="true" />
-                Akun Demo (data seeder)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2.5">
-              {DEMO_ACCOUNTS.map((a) => (
-                <div
-                  key={a.email}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 shadow-xs"
-                >
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-[#2D1E12]">{a.role}</p>
-                    <p className="truncate font-mono text-[11px] text-stone-500">
-                      {a.email} / {a.password}
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => fillDemo(a)}
-                    className="min-h-[36px] shrink-0 rounded-full text-xs font-bold text-[#6E472D] hover:bg-[#8C5E3C]/10 hover:text-[#5C3B24]"
-                  >
-                    Isi otomatis
-                  </Button>
+          {/* ============ AKUN DEMO (HANYA MUNCUL JIKA ?demo=evaluator ATAU DIKLIK MANUAL OLEH JURI) ============ */}
+          {showDemoAccounts ? (
+            <Card className="mt-8 rounded-3xl border-stone-200 bg-[#FCFAF6] shadow-sm animate-in fade-in duration-300">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="flex items-center gap-2 text-base font-bold text-[#2D1E12]">
+                    <KeyRound className="h-4.5 w-4.5 text-[#8C5E3C]" aria-hidden="true" />
+                    Akun Demo (data seeder)
+                  </CardTitle>
+                  {isEvaluatorMode ? (
+                    <span className="rounded-full bg-amber-100 border border-amber-300 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                      Sesi Penjurian Aktif
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowDemoManual(false)}
+                      className="text-xs text-stone-400 hover:text-stone-600 font-medium transition-colors"
+                    >
+                      Sembunyikan
+                    </button>
+                  )}
                 </div>
-              ))}
-              <p className="flex items-start gap-1.5 pt-1 text-[11px] text-stone-500">
-                <Lock className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
-                Akun demo hanya untuk lingkungan pengembangan.
-              </p>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent className="space-y-2.5">
+                {DEMO_ACCOUNTS.map((a) => (
+                  <div
+                    key={a.email}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 shadow-xs"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#2D1E12]">{a.role}</p>
+                      <p className="truncate font-mono text-[11px] text-stone-500">
+                        {a.email} / {a.password}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => fillDemo(a)}
+                      className="min-h-[36px] shrink-0 rounded-full text-xs font-bold text-[#6E472D] hover:bg-[#8C5E3C]/10 hover:text-[#5C3B24]"
+                    >
+                      Isi otomatis
+                    </Button>
+                  </div>
+                ))}
+                <p className="flex items-start gap-1.5 pt-1 text-[11px] text-stone-500">
+                  <Lock className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
+                  Kredensial demo disediakan khusus untuk evaluasi dan pengujian sistem.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="mt-8 text-center">
+              <button
+                type="button"
+                onClick={() => setShowDemoManual(true)}
+                className="text-xs text-stone-400 hover:text-[#6E472D] transition-colors underline underline-offset-4 decoration-stone-300 hover:decoration-[#6E472D]"
+              >
+                Akses Penjurian Lomba? Klik di sini
+              </button>
+            </div>
+          )}
         </div>
       </main>
     </div>

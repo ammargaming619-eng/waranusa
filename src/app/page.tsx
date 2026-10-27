@@ -76,7 +76,7 @@ export default function WaraNusaApp() {
 
   // Pengaturan situs (untuk footer) diambil ringan dari settings API publik
   const isAdmin = route.segments[0] === "admin";
-  const isLogin = route.segments[0] === "masuk";
+  const isLogin = route.segments[0] === "masuk" || route.segments[0] === "login";
 
   // CMS: layout sendiri (sidebar) tanpa header/footer publik
   if (isAdmin) {
@@ -92,7 +92,7 @@ export default function WaraNusaApp() {
 
   // Login: tampilan mandiri
   if (isLogin) {
-    return <LoginView />;
+    return <LoginView route={route} />;
   }
 
   // Situs publik: header + view + footer (footer menempel di bawah, mt-auto)
