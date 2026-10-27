@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import InstrumentView from "@/components/instrument/instrument-view";
 import { PublicShell } from "@/components/site/public-shell";
 
 export const dynamic = "force-dynamic";
@@ -8,18 +8,6 @@ export const metadata = {
   title: "Instrumen Virtual — WaraNusa",
   description: "Studio interaktif 38 alat musik tradisional Nusantara dengan simulasi tangga nada dan akustik alami.",
 };
-
-const InstrumentView = dynamic(
-  () => import("@/components/instrument/instrument-view"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="min-h-screen bg-[#1A110B] flex items-center justify-center font-mono text-sm text-[#E5A93C]">
-        Memuat Studio Instrumen Virtual...
-      </div>
-    ),
-  }
-);
 
 export default function InstrumenAliasPage() {
   return (

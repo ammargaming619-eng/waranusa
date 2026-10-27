@@ -662,7 +662,6 @@ export default function Exploration3DView() {
               </div>
             )}
           </section>
-        </section>
       </div>
     </div>
   );

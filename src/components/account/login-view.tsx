@@ -131,7 +131,7 @@ export default function LoginView({ route }: { route?: Route } = {}) {
                 Pelestarian Warisan Nusantara
               </span>
             </span>
-          </a>
+          </Link>
           <p className="mt-6 max-w-sm text-sm leading-relaxed text-stone-200">
             Platform eksplorasi &amp; pelestarian budaya Indonesia — peta wilayah, katalog objek,
             model 3D, dan instrumen virtual dalam satu tempat.
