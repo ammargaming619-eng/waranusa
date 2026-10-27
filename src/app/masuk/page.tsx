@@ -1,4 +1,5 @@
-import LoginPage from "../login/page";
+import { Suspense } from "react";
+import LoginView from "@/components/account/login-view";
 
 export const dynamic = "force-dynamic";
 
@@ -7,4 +8,10 @@ export const metadata = {
   description: "Masuk ke platform WaraNusa untuk mengakses dashboard pengelolaan budaya atau kontribusi.",
 };
 
-export default LoginPage;
+export default function MasukAliasPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+      <LoginView />
+    </Suspense>
+  );
+}

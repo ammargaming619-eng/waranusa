@@ -1,4 +1,6 @@
-import Eksplorasi3DPage from "../eksplorasi-3d/page";
+import { Suspense } from "react";
+import Exploration3DView from "@/components/explore/exploration-3d-view";
+import { PublicShell } from "@/components/site/public-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -7,4 +9,12 @@ export const metadata = {
   description: "Wahana visualisasi 3D arsitektur rumah adat vernakular dari 38 provinsi di Indonesia.",
 };
 
-export default Eksplorasi3DPage;
+export default function ThreeDAliasPage() {
+  return (
+    <PublicShell>
+      <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+        <Exploration3DView />
+      </Suspense>
+    </PublicShell>
+  );
+}

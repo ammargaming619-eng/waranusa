@@ -1,4 +1,6 @@
-import CatalogPage from "../catalog/page";
+import { Suspense } from "react";
+import CatalogView from "@/components/catalog/catalog-view";
+import { PublicShell } from "@/components/site/public-shell";
 
 export const dynamic = "force-dynamic";
 
@@ -7,4 +9,12 @@ export const metadata = {
   description: "Jelajahi dokumentasi lengkap warisan budaya Indonesia.",
 };
 
-export default CatalogPage;
+export default function KatalogAliasPage() {
+  return (
+    <PublicShell>
+      <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+        <CatalogView />
+      </Suspense>
+    </PublicShell>
+  );
+}

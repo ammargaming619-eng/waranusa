@@ -27,10 +27,22 @@ import { api } from "@/lib/api-client";
 import type { Region } from "@/lib/types";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import IndonesiaMap from "@/components/map/indonesia-map";
 import { cn } from "@/lib/utils";
+
+const IndonesiaMap = dynamic(() => import("@/components/map/indonesia-map"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[480px] w-full rounded-3xl bg-[#FAF5EC] border border-[#DFD2BF] flex items-center justify-center animate-pulse">
+      <div className="flex flex-col items-center gap-2 text-stone-500 font-mono text-xs">
+        <div className="h-6 w-6 rounded-full border-2 border-[#7A4B29] border-t-transparent animate-spin" />
+        <span>Memuat Peta Wilayah Budaya Nusantara...</span>
+      </div>
+    </div>
+  ),
+});
 import {
   PROVINCES_38_DATASET,
   ISLAND_FILTER_TABS,

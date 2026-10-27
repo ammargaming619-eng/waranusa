@@ -8,7 +8,12 @@ export const metadata = {
   description: "Panel pengelolaan konten dan kurasi data budaya Nusantara WaraNusa.",
 };
 
-export default function AdminOptionalSlugPage() {
+export default async function AdminOptionalSlugPage({
+  params,
+}: {
+  params: Promise<{ slug?: string[] }>;
+}) {
+  await params;
   return (
     <Suspense fallback={<div className="min-h-screen bg-stone-900" />}>
       <AdminApp />
