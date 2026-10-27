@@ -1,6 +1,6 @@
 {
-  "name": "waranusa",
-  "version": "1.0.0",
+  "name": "nextjs_tailwind_shadcn_ts",
+  "version": "0.2.1",
   "description": "WaraNusa — Platform Eksplorasi & Pelestarian Budaya Indonesia Berbasis 3D, Web Audio & AI Multimodal Vision",
   "private": true,
   "scripts": {
