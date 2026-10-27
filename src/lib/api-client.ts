@@ -109,6 +109,7 @@ export const api = {
         `/cultural-items${qs({
           page: q.page, pageSize: q.pageSize, search: q.search,
           category: q.categorySlug, region: q.regionCode, sort: q.sort,
+          featured: q.featured !== undefined ? String(q.featured) : undefined,
         })}`
       ),
     detail: (slugOrId: string) => request<CulturalItem>(`/cultural-items/${slugOrId}`),

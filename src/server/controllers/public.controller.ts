@@ -104,12 +104,14 @@ export async function listItems(req: Request): Promise<Response> {
   const search = url.searchParams.get("search") || "";
   const category = url.searchParams.get("category") || "";
   const region = url.searchParams.get("region") || "";
+  const featured = url.searchParams.get("featured");
 
   try {
     const where = buildItemWhere({
       search: search || undefined,
       category: category || undefined,
       region: region || undefined,
+      featured: featured || undefined,
       forcePublished: true,
     });
     const total = await db.culturalItem.count({ where });
@@ -132,6 +134,7 @@ export async function listItems(req: Request): Promise<Response> {
     search,
     categorySlug: category,
     regionCode: region,
+    featured: featured !== null && featured !== undefined ? featured === "true" : undefined,
     sort,
     page,
     pageSize,

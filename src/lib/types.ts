@@ -188,6 +188,7 @@ export interface ItemQuery {
   search?: string;
   categorySlug?: string;
   regionCode?: string;
+  featured?: boolean | "true" | "false";
   sort?: "newest" | "oldest" | "popular" | "title";
 }
 

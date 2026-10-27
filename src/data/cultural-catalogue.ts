@@ -4612,6 +4612,7 @@ export interface CatalogueQueryParams {
   search?: string;
   categorySlug?: string;
   regionCode?: string;
+  featured?: boolean;
   sort?: "newest" | "oldest" | "popular" | "title";
   page?: number;
   pageSize?: number;
@@ -4622,12 +4623,17 @@ export function queryCatalogue(params: CatalogueQueryParams = {}) {
     search = "",
     categorySlug = "",
     regionCode = "",
+    featured,
     sort = "newest",
     page = 1,
     pageSize = 12,
   } = params;
 
   let filtered = [...MASTER_CULTURAL_CATALOGUE];
+
+  if (featured !== undefined) {
+    filtered = filtered.filter((it) => Boolean(it.featured) === featured);
+  }
 
   if (categorySlug && categorySlug !== "all") {
     filtered = filtered.filter((it) => it.category?.slug === categorySlug);

@@ -34,6 +34,7 @@ import { CultureCard } from "@/components/catalog/culture-card";
 import { CultureCardCarousel } from "@/components/landing/culture-card-carousel";
 import { HOUSES_38_CATALOGUE } from "@/data/traditional-houses";
 import { INSTRUMENTS_38_CATALOGUE } from "@/data/instruments-data";
+import { MASTER_CULTURAL_CATALOGUE } from "@/data/cultural-catalogue";
 import dynamic from "next/dynamic";
 import type { CulturalItem } from "@/lib/types";
 import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
@@ -193,15 +194,57 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
     };
   }, []);
 
-  // ---- Sorotan budaya (featured dulu, muat 7 item untuk panggung 3D carousel) ----
-  const highlights = useAsyncData(() => api.items.list({ pageSize: 7, sort: "newest" }), []);
-  const highlightItems = useMemo(
-    () =>
-      highlights.data
-        ? [...highlights.data].sort((a, b) => Number(b.featured) - Number(a.featured))
-        : [],
-    [highlights.data]
+  // ---- Sorotan budaya: representasi beragam dari rumpun kategori (Rumah Adat, Makanan, Tekstil, Tarian, Alat Musik, Tradisi) ----
+  const highlights = useAsyncData(
+    () => api.items.list({ pageSize: 24, featured: true, sort: "popular" }),
+    []
   );
+
+  const highlightItems = useMemo<CulturalItem[]>(() => {
+    const featuredOrder = [
+      "rumah-gadang",        // Rumah Adat & Arsitektur (Sumatera Barat)
+      "rendang-minang",      // Makanan Khas (Sumatera Barat)
+      "batik-mega-mendung",  // Pakaian Adat & Tekstil (Jawa Barat)
+      "tari-saman",          // Tarian & Seni Pertunjukan (Aceh)
+      "angklung",            // Alat Musik Tradisional (Jawa Barat)
+      "subak-bali",          // Tradisi & Pengetahuan Lokal (Bali)
+      "tongkonan",           // Rumah Adat & Arsitektur (Sulawesi Selatan)
+      "papeda-kuah-kuning",  // Makanan Khas (Papua)
+    ];
+
+    const pool = highlights.data && highlights.data.length > 0
+      ? highlights.data
+      : (MASTER_CULTURAL_CATALOGUE as CulturalItem[]);
+
+    const poolMap = new Map<string, CulturalItem>();
+    for (const it of pool) {
+      if (it.slug) poolMap.set(it.slug, it);
+    }
+
+    const selected: CulturalItem[] = [];
+    const usedSlugs = new Set<string>();
+
+    for (const slug of featuredOrder) {
+      const match = poolMap.get(slug) || (MASTER_CULTURAL_CATALOGUE as CulturalItem[]).find((it) => it.slug === slug);
+      if (match && !usedSlugs.has(match.slug)) {
+        selected.push(match);
+        usedSlugs.add(match.slug);
+      }
+    }
+
+    // Bila belum genap 8 item, tambahkan item lain lintas kategori
+    if (selected.length < 8) {
+      for (const it of pool) {
+        if (!usedSlugs.has(it.slug)) {
+          selected.push(it);
+          usedSlugs.add(it.slug);
+          if (selected.length >= 8) break;
+        }
+      }
+    }
+
+    return selected;
+  }, [highlights.data]);
 
   return (
     <MotionConfig reducedMotion="user">
