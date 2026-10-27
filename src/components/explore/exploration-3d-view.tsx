@@ -167,7 +167,7 @@ export default function Exploration3DView() {
   }, [activeHouse]);
 
   return (
-    <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-12 pt-3 sm:pt-5">
+    <div className="min-h-screen bg-lontar-gradient text-stone-900 pb-12 pt-6 sm:pt-8">
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
         {/* ================= HERO HEADER (FOKUS RUMAH ADAT 38 PROVINSI) ================= */}
         <motion.div

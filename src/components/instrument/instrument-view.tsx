@@ -8,6 +8,7 @@
  * - Hybrid Audio Engine (MP3 + 6-Mode Procedural Web Audio Synthesizer) + Sensor Tiup Mikrofon + Gestur Kamera AI.
  */
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -64,6 +65,7 @@ const Instrument3DStage = dynamic(
 );
 
 export default function InstrumentView({ route }: { route?: Route } = {}) {
+  const searchParams = useSearchParams();
   const [activeId, setActiveId] = useState<string>("saron-demung-jateng");
   const [selectedIsland, setSelectedIsland] = useState<IslandRegion>("ALL");
   const [selectedInteraction, setSelectedInteraction] =
@@ -79,7 +81,17 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
   // Deep-link ?instrument=slug, ?instrumen=slug, ?alat=slug, ?province=slug
   useEffect(() => {
     let paramVal: string | null = null;
-    if (typeof window !== "undefined") {
+    if (searchParams) {
+      try {
+        paramVal =
+          searchParams.get("instrument") ??
+          searchParams.get("instrumen") ??
+          searchParams.get("alat") ??
+          searchParams.get("province") ??
+          searchParams.get("provinsi");
+      } catch {}
+    }
+    if (!paramVal && typeof window !== "undefined") {
       try {
         const sp = new URLSearchParams(window.location.search);
         paramVal =

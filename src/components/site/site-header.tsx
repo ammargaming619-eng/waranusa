@@ -71,7 +71,10 @@ export function SiteHeader({ route, introRevealed = true }: { route?: Route; int
   }, [user]);
 
   const pathname = currentPathname || (route ? `/${route.path}` : "/");
-  const isLanding = pathname === "/" || (!route?.segments[0] || route.segments[0] === "");
+  const isLanding =
+    route
+      ? !route.segments[0] || route.segments[0] === ""
+      : pathname === "/" || pathname === "";
   const isActive = (href: string) => {
     if (href === "/") return isLanding;
     return pathname.startsWith(href) || (route?.path ? `/${route.path}`.startsWith(href) : false);
