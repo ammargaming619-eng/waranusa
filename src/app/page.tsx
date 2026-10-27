@@ -112,10 +112,12 @@ export default function WaraNusaApp() {
       view = <CultureDetailView route={route} />;
       break;
     case "instrumen":
+    case "virtual-instruments":
       view = <InstrumentView route={route} />;
       break;
     case "eksplorasi-3d":
     case "3d":
+    case "3d-heritage":
       view = <Exploration3DView />;
       break;
     case "arsip":

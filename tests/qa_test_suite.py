@@ -144,6 +144,7 @@ else:
 print("\n[TEST 7] Testing SPA Hash Routes & Links...")
 routes_defined = [
     "", "jelajah", "katalog", "budaya", "instrumen", "3d", "eksplorasi-3d", 
+    "3d-heritage", "virtual-instruments",
     "kontribusi", "tentang", "pencarian", "admin", "masuk", "keluar", 
     "kontribusi-saya", "kontribusi-terkirim"
 ]

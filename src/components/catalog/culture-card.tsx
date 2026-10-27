@@ -3,19 +3,31 @@
 /**
  * WaraNusa — CultureCard
  * Kartu objek budaya dipakai di Katalog, Landing,
- * dan Konten Terkait pada halaman detail. Seluruh kartu adalah <a> ke #/budaya/[slug].
- * Desain diselaraskan dengan palet hangat kayu jati WaraNusa di beranda.
+ * dan Konten Terkait pada halaman detail.
+ * Dilengkapi tombol aksi langsung ("Buka Model 3D", "Mainkan Nada", atau "Lihat").
  */
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Eye, ImageOff, MapPin } from "lucide-react";
+import { ArrowRight, Eye, ImageOff, Layers, MapPin, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { navigate } from "@/lib/router";
 import type { CulturalItem } from "@/lib/types";
 
 export function CultureCard({ item, compact = false }: { item: CulturalItem; compact?: boolean }) {
   const [imgFailed, setImgFailed] = useState(false);
   const cover = item.coverMedia?.url ?? null;
   const showImage = cover !== null && !imgFailed;
+
+  const isHouse = item.category?.slug === "rumah-adat" || item.category?.slug === "arsitektur";
+  const isInstrument = item.category?.slug === "alat-musik";
+
+  const actionUrl = isHouse
+    ? `#/eksplorasi-3d?house=${item.slug}`
+    : isInstrument
+    ? `#/instrumen?alat=${item.slug}`
+    : `#/budaya/${item.slug}`;
+
+  const actionLabel = isHouse ? "Buka Model 3D" : isInstrument ? "Mainkan Nada" : "Lihat";
 
   return (
     <a
@@ -50,7 +62,7 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
 
         {/* Badge Kategori */}
         <span className="absolute left-3 top-3 rounded-full bg-[#1F1710]/80 px-3 py-1 text-[10px] font-bold tracking-wide text-white backdrop-blur-md shadow-xs">
-          {item.category.name}
+          {item.category?.name ?? "Budaya"}
         </span>
 
         {/* Badge Unggulan jika ada */}
@@ -81,7 +93,7 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
         <div className={cn("mt-4 pt-3 border-t border-stone-200/80 flex items-center justify-between gap-2 text-xs text-stone-500", compact && "mt-2.5 pt-2")}>
           <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-stone-700">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-[#7A4B29]" aria-hidden="true" />
-            <span className="truncate">{item.region.name}</span>
+            <span className="truncate">{item.region?.name ?? "Indonesia"}</span>
           </span>
 
           <div className="flex items-center gap-2">
@@ -94,10 +106,25 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
             </span>
 
             {!compact && (
-              <span className="ml-1 inline-flex items-center gap-1 rounded-full btn-waranusa px-3 py-1 text-[11px] font-bold text-white shadow-xs transition-all group-hover:brightness-110 active:scale-95">
-                Lihat
-                <ArrowRight className="h-3 w-3" aria-hidden="true" />
-              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate(actionUrl);
+                }}
+                className="ml-1 inline-flex items-center gap-1 rounded-full btn-waranusa px-3 py-1 text-[11px] font-bold text-white shadow-xs transition-all hover:brightness-110 active:scale-95 cursor-pointer"
+                aria-label={`${actionLabel} ${item.title}`}
+              >
+                {actionLabel}
+                {isHouse ? (
+                  <Layers className="h-3 w-3" aria-hidden="true" />
+                ) : isInstrument ? (
+                  <Music className="h-3 w-3" aria-hidden="true" />
+                ) : (
+                  <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                )}
+              </button>
             )}
           </div>
         </div>

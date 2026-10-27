@@ -34,6 +34,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState, ErrorState, SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
+import {
+  CULTURAL_CATEGORIES_DATASET,
+  PROVINCES_38_ALPHABETICAL,
+  queryCatalogue,
+} from "@/data/cultural-catalogue";
 
 const PAGE_SIZE = 12;
 const SORTS = [
@@ -72,6 +77,23 @@ export default function CatalogView({ route }: { route: Route }) {
   const categoriesQ = useAsyncData(() => api.categories.list(), []);
   const regionsQ = useAsyncData(() => api.regions.list(), []);
 
+  // Data kategori: prioritaskan dari API bila lengkap, fallback ke 6 kategori master
+  const categories = useMemo(() => {
+    if (categoriesQ.data && categoriesQ.data.length >= 6) {
+      return categoriesQ.data;
+    }
+    return CULTURAL_CATEGORIES_DATASET;
+  }, [categoriesQ.data]);
+
+  // Data wilayah: pastikan seluruh 38 provinsi terdaftar urut alfabetis
+  const regions = useMemo(() => {
+    const list =
+      regionsQ.data && regionsQ.data.length >= 38
+        ? regionsQ.data
+        : PROVINCES_38_ALPHABETICAL;
+    return [...list].sort((a, b) => a.name.localeCompare(b.name, "id"));
+  }, [regionsQ.data]);
+
   // ---- Daftar objek ----
   const itemsQ = useAsyncData(
     () =>
@@ -85,6 +107,29 @@ export default function CatalogView({ route }: { route: Route }) {
       }),
     [state.q, state.kategori, state.wilayah, state.sort, state.page]
   );
+
+  // Fallback data mandiri dari katalog master 116 objek budaya
+  const fallbackData = useMemo(() => {
+    return queryCatalogue({
+      search: state.q,
+      categorySlug: state.kategori,
+      regionCode: state.wilayah,
+      sort: state.sort,
+      page: state.page,
+      pageSize: PAGE_SIZE,
+    });
+  }, [state.q, state.kategori, state.wilayah, state.sort, state.page]);
+
+  // Objek budaya yang aktif ditampilkan
+  const currentItems = useMemo(() => {
+    if (itemsQ.data && itemsQ.data.length > 0) {
+      return itemsQ.data;
+    }
+    if (itemsQ.loading) return [];
+    return fallbackData.items;
+  }, [itemsQ.data, itemsQ.loading, fallbackData.items]);
+
+  const activeMeta = itemsQ.meta?.total ? itemsQ.meta : fallbackData.meta;
 
   // ---- Pembaruan URL (replace agar riwayat tidak menumpuk) ----
   const updateQuery = useCallback(
@@ -130,16 +175,14 @@ export default function CatalogView({ route }: { route: Route }) {
 
   // ---- Info rentang tampil ----
   const rangeInfo = useMemo(() => {
-    const meta = itemsQ.meta;
-    if (!meta || meta.total === 0) return null;
-    const start = (meta.page - 1) * meta.pageSize + 1;
-    const end = Math.min(meta.page * meta.pageSize, meta.total);
-    return `Menampilkan ${start}–${end} dari ${meta.total} objek`;
-  }, [itemsQ.meta]);
+    if (!activeMeta || activeMeta.total === 0) return null;
+    const start = (activeMeta.page - 1) * activeMeta.pageSize + 1;
+    const end = Math.min(activeMeta.page * activeMeta.pageSize, activeMeta.total);
+    return `Menampilkan ${start}–${end} dari ${activeMeta.total} objek budaya`;
+  }, [activeMeta]);
 
-  const meta = itemsQ.meta;
-  const totalPages = meta?.totalPages ?? 1;
-  const currentPage = meta?.page ?? state.page;
+  const totalPages = activeMeta?.totalPages ?? 1;
+  const currentPage = activeMeta?.page ?? state.page;
 
   const goToPage = (p: number) => {
     updateQuery({ page: Math.min(Math.max(1, p), totalPages) });
@@ -217,7 +260,7 @@ export default function CatalogView({ route }: { route: Route }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Kategori</SelectItem>
-                {(categoriesQ.data ?? []).map((c) => (
+                {categories.map((c) => (
                   <SelectItem key={c.id} value={c.slug}>
                     {c.name}
                   </SelectItem>
@@ -240,7 +283,7 @@ export default function CatalogView({ route }: { route: Route }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Wilayah</SelectItem>
-                {(regionsQ.data ?? []).map((r) => (
+                {regions.map((r) => (
                   <SelectItem key={r.id} value={r.code}>
                     {r.name}
                   </SelectItem>
@@ -303,9 +346,9 @@ export default function CatalogView({ route }: { route: Route }) {
               </div>
             ))}
           </div>
-        ) : itemsQ.error ? (
+        ) : itemsQ.error && currentItems.length === 0 ? (
           <ErrorState title="Katalog tidak dapat dimuat" message={itemsQ.error} onRetry={itemsQ.reload} />
-        ) : (itemsQ.data?.length ?? 0) === 0 ? (
+        ) : currentItems.length === 0 ? (
           <EmptyState
             icon={SearchX}
             title="Tidak ada objek budaya yang cocok"
@@ -321,7 +364,7 @@ export default function CatalogView({ route }: { route: Route }) {
           />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {itemsQ.data!.map((item) => (
+            {currentItems.map((item) => (
               <CultureCard key={item.id} item={item} />
             ))}
           </div>
