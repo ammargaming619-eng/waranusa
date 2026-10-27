@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { HashLink as Link } from "@/components/shared/hash-link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -234,66 +234,70 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 </button>
               </motion.div>
 
-              {/* Floating Cultural Popover Card (Desktop MD+) Melayang Presisi di Atas Pin */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.82, y: 8 }}
-                animate={
-                  introRevealed
-                    ? {
-                        opacity: isHovered ? 1 : 0.94,
-                        scale: isHovered ? 1.04 : 1,
-                        y: isHovered ? -4 : 0,
-                      }
-                    : { opacity: 0, scale: 0.82, y: 8 }
-                }
-                transition={{
-                  delay: 0.45 + idx * 0.08,
-                  duration: 0.35,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className={cn(
-                  "hidden md:block absolute bottom-full mb-2.5 pointer-events-auto transition-all duration-300",
-                  popoverAlignClass,
-                  isHovered ? "z-50" : "z-30"
+              {/* Floating Cultural Popover Card (Desktop MD+) Melayang di Atas Pin — HANYA MUNCUL SAAT DI-HOVER */}
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    key={`popover-${tag.id}`}
+                    initial={{ opacity: 0, scale: 0.88, y: 8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 4 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className={cn(
+                      "hidden md:block absolute bottom-full mb-3 pointer-events-auto z-50",
+                      popoverAlignClass
+                    )}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setActiveTag(tag)}
+                      className={cn(
+                        "group relative flex items-center gap-2.5 lg:gap-3 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-2 text-left transition-all duration-200 cursor-pointer shadow-xl",
+                        "border border-stone-200/90 hover:shadow-2xl hover:border-[#6E472D] hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#6E472D]/40"
+                      )}
+                    >
+                      {/* Thumbnail Foto Budaya */}
+                      <div className="relative h-10 w-10 lg:h-11 lg:w-11 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
+                        <Image
+                          src={tag.image}
+                          alt={tag.title}
+                          fill
+                          sizes="48px"
+                          loading="lazy"
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+
+                      {/* Teks Wilayah & Nama Budaya */}
+                      <div className="pr-1.5 max-w-[180px] lg:max-w-[220px]">
+                        <p className="text-[10px] lg:text-[11px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block" />
+                          {tag.region}
+                        </p>
+                        <p className="text-xs lg:text-[13px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
+                          {tag.title}
+                        </p>
+                      </div>
+
+                      <span className="h-6 w-6 inline-flex items-center justify-center rounded-full bg-stone-100 group-hover:bg-[#6E472D] group-hover:text-white text-stone-500 transition-colors shrink-0">
+                        <ArrowRight className="h-3 w-3" />
+                      </span>
+
+                      {/* Segitiga Penunjuk ke Bawah (Pointing Arrow directly to Pin) */}
+                      <div
+                        className={cn(
+                          "absolute top-full -mt-1 w-2.5 h-2.5 bg-white border-r border-b border-stone-200/90 rotate-45",
+                          tag.pin.x < 25
+                            ? "left-5"
+                            : tag.pin.x > 75
+                            ? "right-5"
+                            : "left-1/2 -translate-x-1/2"
+                        )}
+                      />
+                    </button>
+                  </motion.div>
                 )}
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveTag(tag)}
-                  className={cn(
-                    "group flex items-center gap-2.5 lg:gap-3 rounded-2xl bg-white/95 backdrop-blur-md px-2.5 py-1.5 lg:px-3 lg:py-2 text-left transition-all duration-300 cursor-pointer",
-                    "border border-stone-200/90 shadow-md hover:shadow-xl hover:border-[#6E472D]/50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#6E472D]/40",
-                    isHovered && "ring-2 ring-[#6E472D]/30 border-[#6E472D] shadow-xl"
-                  )}
-                >
-                  {/* Thumbnail Foto Budaya */}
-                  <div className="relative h-9 w-9 lg:h-11 lg:w-11 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
-                    <Image
-                      src={tag.image}
-                      alt={tag.title}
-                      fill
-                      sizes="48px"
-                      loading="lazy"
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
-
-                  {/* Teks Wilayah & Nama Budaya */}
-                  <div className="pr-1.5 max-w-[170px] lg:max-w-[210px]">
-                    <p className="text-[10px] lg:text-[11px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block" />
-                      {tag.region}
-                    </p>
-                    <p className="text-xs lg:text-[13px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
-                      {tag.title}
-                    </p>
-                  </div>
-
-                  <span className="hidden lg:inline-flex h-6 w-6 items-center justify-center rounded-full bg-stone-100 group-hover:bg-[#6E472D] group-hover:text-white text-stone-500 transition-colors shrink-0">
-                    <ArrowRight className="h-3 w-3" />
-                  </span>
-                </button>
-              </motion.div>
+              </AnimatePresence>
             </div>
           );
         })}
