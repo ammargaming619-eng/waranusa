@@ -100,8 +100,8 @@ const FALLBACK_LANDING_JOGLO: CulturalItem = JOGLO_HOUSE_DATA?.fallbackItem ?? {
     format: "glb",
     mimeType: "model/gltf-binary",
     size: 2500000,
-    storagePath: "/api/models/houses/jawa-tengah.glb",
-    url: "/api/models/houses/jawa-tengah.glb",
+    storagePath: "/models/houses/jawa-tengah.glb",
+    url: "/models/houses/jawa-tengah.glb",
     attribution: "Digitalisasi Warisan 3D WaraNusa",
   },
   hotspots: [

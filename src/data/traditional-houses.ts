@@ -53,7 +53,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Aceh",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/aceh.glb",
+    modelUrl: "/models/houses/aceh.glb",
     philosophy: "“Peue nyang na bak rumoh nyoe, nakeuh tanda haba bak Tuhan” — Menghadap ke barat ke arah kiblat, pintu masuk sengaja dibuat rendah (120-150 cm) agar setiap tamu menundukkan kepala tanda tawadhu dan hormat kepada empunya rumah.",
     specs: {
       structure: "Konstruksi panggung 16-24 tiang kayu utama diikat tali pasak dan baji tanpa paku besi tahan goncangan gempa.",
@@ -79,8 +79,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/aceh.glb",
-        url: "/api/models/houses/aceh.glb",
+        storagePath: "/models/houses/aceh.glb",
+        url: "/models/houses/aceh.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -101,7 +101,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Batak Toba",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sumatera-utara.glb",
+    modelUrl: "/models/houses/sumatera-utara.glb",
     philosophy: "“Dalihan Na Tolu” — Tiga tiang tungku kekerabatan penyeimbang semesta: Somba Marhula-hula, Manat Mardongan Tubu, Elek Marboru.",
     specs: {
       structure: "Tiang gelondongan bersendi batu umpak alami berkuncian pasak tali ijuk tanpa baut besi.",
@@ -127,8 +127,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sumatera-utara.glb",
-        url: "/api/models/houses/sumatera-utara.glb",
+        storagePath: "/models/houses/sumatera-utara.glb",
+        url: "/models/houses/sumatera-utara.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -149,7 +149,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Minangkabau",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sumatera-barat.glb",
+    modelUrl: "/models/houses/sumatera-barat.glb",
     philosophy: "“Gadang jan maampok, tinggi jan malanjuang” — Menjulang megah tanpa menindas sesama, berakar pada musyawarah mufakat, syarak, dan ketahanan kaum matrilineal.",
     specs: {
       structure: "Konstruksi pasak kayu elastis bersendi batu pipih tanpa paku dengan tiang miring tahan gaya geser gempa.",
@@ -175,8 +175,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sumatera-barat.glb",
-        url: "/api/models/houses/sumatera-barat.glb",
+        storagePath: "/models/houses/sumatera-barat.glb",
+        url: "/models/houses/sumatera-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -197,7 +197,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Melayu Riau",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/riau.glb",
+    modelUrl: "/models/houses/riau.glb",
     philosophy: "“Adat bersendi syarak, syarak bersendi Kitabullah” — Selasar bertingkat turun menyimbolkan kerendahan hati dan kepatuhan pada adab bermusyawarah.",
     specs: {
       structure: "Kerangka tiang panggung kayu rasak penopang rasuk dan gelagar dengan sambungan tanggam.",
@@ -223,8 +223,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/riau.glb",
-        url: "/api/models/houses/riau.glb",
+        storagePath: "/models/houses/riau.glb",
+        url: "/models/houses/riau.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -245,7 +245,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Melayu Kepulauan",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kepulauan-riau.glb",
+    modelUrl: "/models/houses/kepulauan-riau.glb",
     philosophy: "“Laksamana di laut, raja di darat” — Adaptasi kemaritiman kepulauan yang dirancang ramah tiupan angin kencang samudra pesisir Selat Malaka.",
     specs: {
       structure: "Tiang pancang kayu bakau dan resak tahan air laut dengan lantai papan berjarak celah angin.",
@@ -271,8 +271,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kepulauan-riau.glb",
-        url: "/api/models/houses/kepulauan-riau.glb",
+        storagePath: "/models/houses/kepulauan-riau.glb",
+        url: "/models/houses/kepulauan-riau.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -293,7 +293,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Melayu Jambi",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/jambi.glb",
+    modelUrl: "/models/houses/jambi.glb",
     philosophy: "“Sepucuk Jambi Sembilan Lurah” — Bumbungan mirip perahu terbalik sebagai pengingat asal-usul pelaut dan penjelajah Sungai Batanghari.",
     specs: {
       structure: "Konstruksi panggung bertiang 30 (24 tiang utama dan 6 tiang panjang) bertumpu pada umpak batu.",
@@ -319,8 +319,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/jambi.glb",
-        url: "/api/models/houses/jambi.glb",
+        storagePath: "/models/houses/jambi.glb",
+        url: "/models/houses/jambi.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -341,7 +341,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Palembang",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sumatera-selatan.glb",
+    modelUrl: "/models/houses/sumatera-selatan.glb",
     philosophy: "“Kekijing Kekerabatan” — Lantai bertingkat lima (kekijing) yang merefleksikan jenjang usia, garis keturunan, dan kedudukan sosial dalam tatakrama adat.",
     specs: {
       structure: "Konstruksi panggung berlantai bertingkat lima (Kekijing) ditopang balok kayu tembesu solid.",
@@ -367,8 +367,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sumatera-selatan.glb",
-        url: "/api/models/houses/sumatera-selatan.glb",
+        storagePath: "/models/houses/sumatera-selatan.glb",
+        url: "/models/houses/sumatera-selatan.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -389,7 +389,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Melayu Bangka",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kepulauan-bangka-belitung.glb",
+    modelUrl: "/models/houses/kepulauan-bangka-belitung.glb",
     philosophy: "“Mengalir bersama riak air” — Harmoni hidup terapung di sungai dan muara laut, melatih kelenturan menghadapi pasang surut zaman.",
     specs: {
       structure: "Rangka terapung di atas bundel ratusan bambu duri tua yang diikat rotan berkait pasak gelam.",
@@ -415,8 +415,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kepulauan-bangka-belitung.glb",
-        url: "/api/models/houses/kepulauan-bangka-belitung.glb",
+        storagePath: "/models/houses/kepulauan-bangka-belitung.glb",
+        url: "/models/houses/kepulauan-bangka-belitung.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -437,7 +437,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Melayu Bengkulu / Rejang",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/bengkulu.glb",
+    modelUrl: "/models/houses/bengkulu.glb",
     philosophy: "“Bulat air oleh pembuluh, bulat kata oleh mufakat” — Lima tingkat bubungan melambangkan lima rukun Islam dan lima asas kesepakatan adat.",
     specs: {
       structure: "Panggung 15 tiang bundar bersendi batu umpak dengan kolong setinggi 2 meter untuk sirkulasi sejuk.",
@@ -463,8 +463,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/bengkulu.glb",
-        url: "/api/models/houses/bengkulu.glb",
+        storagePath: "/models/houses/bengkulu.glb",
+        url: "/models/houses/bengkulu.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -485,7 +485,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Lampung",
     islandRegion: "SUMATERA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/lampung.glb",
+    modelUrl: "/models/houses/lampung.glb",
     philosophy: "“Piil Pesenggiri” — Menjaga kehormatan, harga diri, dan keteguhan martabat keluarga besar melalui musyawarah adat di balai agung.",
     specs: {
       structure: "Balai panggung raksasa bertiang kayu balak bulat dengan anjungan bertangga ijan gelat.",
@@ -511,8 +511,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/lampung.glb",
-        url: "/api/models/houses/lampung.glb",
+        storagePath: "/models/houses/lampung.glb",
+        url: "/models/houses/lampung.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -533,7 +533,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Baduy (Kanekes)",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/banten.glb",
+    modelUrl: "/models/houses/banten.glb",
     philosophy: "“Lojor teu meunang dipotong, pondok teu meunang disambung” — Membangun tanpa mengubah kontur bumi, tiang kayu mengikuti lekuk tanah pertiwi.",
     specs: {
       structure: "Pondasi batu kali umpak alami tanpa galian semen tanah, pasak bambu dan tali ijuk murni.",
@@ -559,8 +559,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/banten.glb",
-        url: "/api/models/houses/banten.glb",
+        storagePath: "/models/houses/banten.glb",
+        url: "/models/houses/banten.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -581,7 +581,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Betawi",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/dki-jakarta.glb",
+    modelUrl: "/models/houses/dki-jakarta.glb",
     philosophy: "“Kagak ade pager, lapang dada nerime sape aje” — Teras serambi depan yang sangat luas tanpa sekat menggambarkan sifat egaliter dan ramah warga Betawi.",
     specs: {
       structure: "Struktur rangka kayu berlantai tanah tinggi tegel terakota tanpa kolong panggung.",
@@ -607,8 +607,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/dki-jakarta.glb",
-        url: "/api/models/houses/dki-jakarta.glb",
+        storagePath: "/models/houses/dki-jakarta.glb",
+        url: "/models/houses/dki-jakarta.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -629,7 +629,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Sunda",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/jawa-barat.glb",
+    modelUrl: "/models/houses/jawa-barat.glb",
     philosophy: "“Silih asih, silih asah, silih asuh” — Bentuk atap mirip burung yang sedang mengepakkan sayap menaungi keturunan dalam kedamaian dan keteduhan.",
     specs: {
       structure: "Rumah panggung rendah beralas batu umpak (tatapakan) agar kayu tidak bersentuhan langsung dengan tanah lembap.",
@@ -655,8 +655,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/jawa-barat.glb",
-        url: "/api/models/houses/jawa-barat.glb",
+        storagePath: "/models/houses/jawa-barat.glb",
+        url: "/models/houses/jawa-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -677,7 +677,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Jawa",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/jawa-tengah.glb",
+    modelUrl: "/models/houses/jawa-tengah.glb",
     philosophy: "“Manunggaling kawula gusti” — Keseimbangan batin manusia dengan alam makrokosmos yang dinaungi oleh empat pilar saka guru kokoh.",
     specs: {
       structure: "4 tiang saka guru utama bertumpu pada umpak batu andesit dengan sambungan purus lidah-kancing kayu.",
@@ -703,8 +703,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/jawa-tengah.glb",
-        url: "/api/models/houses/jawa-tengah.glb",
+        storagePath: "/models/houses/jawa-tengah.glb",
+        url: "/models/houses/jawa-tengah.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -725,7 +725,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Jawa",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/daerah-istimewa-yogyakarta.glb",
+    modelUrl: "/models/houses/daerah-istimewa-yogyakarta.glb",
     philosophy: "“Hamemayu Hayuning Bawana” — Memperindah keindahan dunia, memadukan poros filosofis Tugu Pal Putih, Kraton, hingga Panggung Krapyak.",
     specs: {
       structure: "Struktur joglo traping bertingkat agung dengan tiang saka guru berhias ukiran kaligrafi mirong keemasan.",
@@ -751,8 +751,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/daerah-istimewa-yogyakarta.glb",
-        url: "/api/models/houses/daerah-istimewa-yogyakarta.glb",
+        storagePath: "/models/houses/daerah-istimewa-yogyakarta.glb",
+        url: "/models/houses/daerah-istimewa-yogyakarta.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -773,7 +773,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Jawa / Madura",
     islandRegion: "JAWA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/jawa-timur.glb",
+    modelUrl: "/models/houses/jawa-timur.glb",
     philosophy: "“Rampak Naong, Baringin Korong” — Keteduhan batin yang mengayomi seluruh keluarga dalam ketulusan kerja keras dan persaudaraan.",
     specs: {
       structure: "Rangka saka guru ramping bervolume kuat dengan balok tumpang bertingkat kancing kayu kelapa tua.",
@@ -799,8 +799,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/jawa-timur.glb",
-        url: "/api/models/houses/jawa-timur.glb",
+        storagePath: "/models/houses/jawa-timur.glb",
+        url: "/models/houses/jawa-timur.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -821,7 +821,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Bali",
     islandRegion: "BALI_NUSA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/bali.glb",
+    modelUrl: "/models/houses/bali.glb",
     philosophy: "“Tri Hita Karana & Candi Bentar” — Gerbang belah dua lambang terbukanya gunung suci Kailasa penyeimbang daya positif dan negatif kosmis.",
     specs: {
       structure: "Struktur gapura terbelah simetris berbata merah paras ukir bertumpu pada batur pedestal kokoh.",
@@ -847,8 +847,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/bali.glb",
-        url: "/api/models/houses/bali.glb",
+        storagePath: "/models/houses/bali.glb",
+        url: "/models/houses/bali.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -869,7 +869,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Sumbawa / Sasak",
     islandRegion: "BALI_NUSA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/nusa-tenggara-barat.glb",
+    modelUrl: "/models/houses/nusa-tenggara-barat.glb",
     philosophy: "“Adat Barenti Ko Syara, Syara Barenti Ko Kitabullah” — Istana kayu panggung kembar raksasa penegak syariat dan musyawarah kesultanan Sumbawa.",
     specs: {
       structure: "Panggung kayu jati kembar raksasa ditopang 99 pilar tiang kayu bulat kokoh bersendi umpak batu.",
@@ -895,8 +895,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/nusa-tenggara-barat.glb",
-        url: "/api/models/houses/nusa-tenggara-barat.glb",
+        storagePath: "/models/houses/nusa-tenggara-barat.glb",
+        url: "/models/houses/nusa-tenggara-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -917,7 +917,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Ende Lio / Manggarai",
     islandRegion: "BALI_NUSA",
     has3DModel: true,
-    modelUrl: "/api/models/houses/nusa-tenggara-timur.glb",
+    modelUrl: "/models/houses/nusa-tenggara-timur.glb",
     philosophy: "“Du’a Ngga’e” — Rumah kediaman mosalaki (ketua adat) sebagai jembatan perantara warga dengan sang pencipta alam semesta.",
     specs: {
       structure: "Pondasi panggung tiang kayu keras bertumpu pada susunan batu ceper magalitik megalit.",
@@ -943,8 +943,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/nusa-tenggara-timur.glb",
-        url: "/api/models/houses/nusa-tenggara-timur.glb",
+        storagePath: "/models/houses/nusa-tenggara-timur.glb",
+        url: "/models/houses/nusa-tenggara-timur.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -965,7 +965,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Dayak Kanayatn",
     islandRegion: "KALIMANTAN",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kalimantan-barat.glb",
+    modelUrl: "/models/houses/kalimantan-barat.glb",
     philosophy: "“Adat ka’ talino, bertobat ka’ saruga” — Kebersamaan puluhan kepala keluarga dalam satu atap melatih solidaritas gotong royong dan kedamaian.",
     specs: {
       structure: "Panggung raksasa setinggi 5-7 meter dengan ratusan tiang pancang kayu ulin anti rayap dan air.",
@@ -991,8 +991,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kalimantan-barat.glb",
-        url: "/api/models/houses/kalimantan-barat.glb",
+        storagePath: "/models/houses/kalimantan-barat.glb",
+        url: "/models/houses/kalimantan-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1013,7 +1013,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Dayak Ngaju",
     islandRegion: "KALIMANTAN",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kalimantan-tengah.glb",
+    modelUrl: "/models/houses/kalimantan-tengah.glb",
     philosophy: "“Belom Bahadat” — Tata hidup beradab dalam naungan komunal tanpa sekat, merawat kesetaraan dan toleransi lintas suku dan keyakinan.",
     specs: {
       structure: "Rumah panggung raksasa setinggi 3-5 meter ditopang puluhan pilar kayu ulin anti-lapuk puluhan dekade.",
@@ -1039,8 +1039,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kalimantan-tengah.glb",
-        url: "/api/models/houses/kalimantan-tengah.glb",
+        storagePath: "/models/houses/kalimantan-tengah.glb",
+        url: "/models/houses/kalimantan-tengah.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1061,7 +1061,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Banjar",
     islandRegion: "KALIMANTAN",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kalimantan-selatan.glb",
+    modelUrl: "/models/houses/kalimantan-selatan.glb",
     philosophy: "“Kayuh baimbai, bujur-bujur maniti buih” — Atap lancip menjulang ke angkasa sebagai perlambang pohon hayat kosmis penyatu dunia fana dan keabadian.",
     specs: {
       structure: "Panggung kayu ulin beralas tanah rawa pasang surut dengan pasak kayu tanpa paku korosi.",
@@ -1087,8 +1087,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kalimantan-selatan.glb",
-        url: "/api/models/houses/kalimantan-selatan.glb",
+        storagePath: "/models/houses/kalimantan-selatan.glb",
+        url: "/models/houses/kalimantan-selatan.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1109,7 +1109,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Dayak Kenyah",
     islandRegion: "KALIMANTAN",
     has3DModel: true,
-    modelUrl: "/api/models/houses/kalimantan-timur.glb",
+    modelUrl: "/models/houses/kalimantan-timur.glb",
     philosophy: "“Ahe gina, hete gina” — Di mana bumi dipijak di situ saling menolong, dihiasi motif taring aso penolak energi buruk rimba.",
     specs: {
       structure: "Panggung kayu ulin berukuran lebar 15-25 meter dan panjang hingga 200 meter di atas tiang gelondong besar.",
@@ -1135,8 +1135,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/kalimantan-timur.glb",
-        url: "/api/models/houses/kalimantan-timur.glb",
+        storagePath: "/models/houses/kalimantan-timur.glb",
+        url: "/models/houses/kalimantan-timur.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1157,7 +1157,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Tidung",
     islandRegion: "KALIMANTAN",
     has3DModel: true,
-    modelUrl: "/api/models/houses/baloy-mayo.glb",
+    modelUrl: "/models/houses/baloy-mayo.glb",
     philosophy: "Menghadap ke arah utara laut sebagai perlambang kesiapan menyambut rezeki dan para pelaut dari penjuru mata angin samudra.",
     specs: {
       structure: "Panggung bertiang kayu ulin dengan lantai bertingkat sesuai strata fungsi adat suku Tidung.",
@@ -1183,8 +1183,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 33797168,
-        storagePath: "/api/models/houses/baloy-mayo.glb",
-        url: "/api/models/houses/baloy-mayo.glb",
+        storagePath: "/models/houses/baloy-mayo.glb",
+        url: "/models/houses/baloy-mayo.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1205,7 +1205,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Minahasa",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sulawesi-utara.glb",
+    modelUrl: "/models/houses/sulawesi-utara.glb",
     philosophy: "“Si Tou Timou Tumou Tou” — Manusia baru bermakna jika hidupnya mampu memanusiakan dan menolong sesama insan.",
     specs: {
       structure: "Panggung kayu besi bertiang bulat balok tebal yang dipahat tanpa sambungan paku besi rapuh.",
@@ -1231,8 +1231,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sulawesi-utara.glb",
-        url: "/api/models/houses/sulawesi-utara.glb",
+        storagePath: "/models/houses/sulawesi-utara.glb",
+        url: "/models/houses/sulawesi-utara.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1253,7 +1253,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Gorontalo",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/gorontalo.glb",
+    modelUrl: "/models/houses/gorontalo.glb",
     philosophy: "“Aadate hula-hulaa to saraa, saraa hula-hulaa to Kuru’ani” — Adat bersendikan syariat, syariat bersendikan Al-Qur’an.",
     specs: {
       structure: "Panggung bertiang pilar kayu utama yang melambangkan empat suku kekerabatan utama Gorontalo.",
@@ -1279,8 +1279,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/gorontalo.glb",
-        url: "/api/models/houses/gorontalo.glb",
+        storagePath: "/models/houses/gorontalo.glb",
+        url: "/models/houses/gorontalo.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1301,7 +1301,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Kaili",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sulawesi-tengah.glb",
+    modelUrl: "/models/houses/sulawesi-tengah.glb",
     philosophy: "“Nggau sangata, tesa sanga” — Satu kata satu perbuatan, keterbukaan hati bangsawan dalam melayani kesejahteraan rakyat jelata.",
     specs: {
       structure: "Panggung 36 tiang kayu ulin/kayu besi bersendi umpak batu bebas amblas saat gempa likuefaksi.",
@@ -1327,8 +1327,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sulawesi-tengah.glb",
-        url: "/api/models/houses/sulawesi-tengah.glb",
+        storagePath: "/models/houses/sulawesi-tengah.glb",
+        url: "/models/houses/sulawesi-tengah.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1349,7 +1349,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Mandar",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sulawesi-barat.glb",
+    modelUrl: "/models/houses/sulawesi-barat.glb",
     philosophy: "“Mellamun dio la’na, mattette dio pambuanganna” — Berpegang teguh pada asal mula, menjaga kehormatan pelaut Mandar mengarungi samudra.",
     specs: {
       structure: "Tiang-tiang kayu panggung berdiri bebas di atas umpak batu tanpa ditanam ke tanah (struktur isolasi seismik purba).",
@@ -1375,8 +1375,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sulawesi-barat.glb",
-        url: "/api/models/houses/sulawesi-barat.glb",
+        storagePath: "/models/houses/sulawesi-barat.glb",
+        url: "/models/houses/sulawesi-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1397,7 +1397,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Toraja",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sulawesi-selatan.glb",
+    modelUrl: "/models/houses/sulawesi-selatan.glb",
     philosophy: "“Misa’ kada dipotuo, pantan kada dipomate” — Ikatan sehati penegak rumpun leluhur yang berorientasi vertikal ke arah utara Puang Matua.",
     specs: {
       structure: "Panggung kayu uru dengan tiang penyangga silinder kokoh berkunci balok tulak somba penopang atap perahu.",
@@ -1423,8 +1423,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sulawesi-selatan.glb",
-        url: "/api/models/houses/sulawesi-selatan.glb",
+        storagePath: "/models/houses/sulawesi-selatan.glb",
+        url: "/models/houses/sulawesi-selatan.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1445,7 +1445,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Buton / Muna",
     islandRegion: "SULAWESI",
     has3DModel: true,
-    modelUrl: "/api/models/houses/sulawesi-tenggara.glb",
+    modelUrl: "/models/houses/sulawesi-tenggara.glb",
     philosophy: "“Yinda-yindamo sara poma-masiaka” — Mengutamakan cinta kasih sesama dalam naungan hukum syariat Kesultanan Buton.",
     specs: {
       structure: "Konstruksi panggung 4 lantai menggunakan sistem pasak kayu kait siku berantai (tada) tahan badai gempa.",
@@ -1471,8 +1471,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/sulawesi-tenggara.glb",
-        url: "/api/models/houses/sulawesi-tenggara.glb",
+        storagePath: "/models/houses/sulawesi-tenggara.glb",
+        url: "/models/houses/sulawesi-tenggara.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1493,7 +1493,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Maluku",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/maluku.glb",
+    modelUrl: "/models/houses/maluku.glb",
     philosophy: "“Pela Gandong” — Ikatan persaudaraan abadi lintas negeri dan keyakinan, balai tanpa dinding melambangkan keterbukaan musyawarah warga.",
     specs: {
       structure: "Panggung lantai kayu tanpa dinding berpilar 9 tiang di sisi depan dan belakang perlambang Siwa-Lima.",
@@ -1519,8 +1519,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/maluku.glb",
-        url: "/api/models/houses/maluku.glb",
+        storagePath: "/models/houses/maluku.glb",
+        url: "/models/houses/maluku.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1541,7 +1541,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Sahu (Halmahera)",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/maluku-utara.glb",
+    modelUrl: "/models/houses/maluku-utara.glb",
     philosophy: "Keterbukaan enam pintu masuk melambangkan kebersamaan masyarakat menyambut tamu dari berbagai latar tanpa diskriminasi.",
     specs: {
       structure: "Rangka terbuka bertiang kayu gupasa dengan sistem kuncian tali ijuk dan pasak kayu tanpa paku besi.",
@@ -1567,8 +1567,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/maluku-utara.glb",
-        url: "/api/models/houses/maluku-utara.glb",
+        storagePath: "/models/houses/maluku-utara.glb",
+        url: "/models/houses/maluku-utara.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1589,7 +1589,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Moi / Maybrat",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua-barat-daya.glb",
+    modelUrl: "/models/houses/papua-barat-daya.glb",
     philosophy: "Institusi pendidikan luhur suku Moi, tempat inisiasi pemuda mempelajari hukum adat, astronomi, pengobatan herbal, dan kepemimpinan.",
     specs: {
       structure: "Panggung bertiang kayu hutan puluhan pilar rapat bersendi tanah padat tebing bukit kapur.",
@@ -1615,8 +1615,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua-barat-daya.glb",
-        url: "/api/models/houses/papua-barat-daya.glb",
+        storagePath: "/models/houses/papua-barat-daya.glb",
+        url: "/models/houses/papua-barat-daya.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1637,7 +1637,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Arfak",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua-barat.glb",
+    modelUrl: "/models/houses/papua-barat.glb",
     philosophy: "“Menopang bersama di lereng terjal” — Ratusan tiang penopang melambangkan gotong royong dan ketahanan menghadapi ancaman musuh serta hewan buas.",
     specs: {
       structure: "Panggung tinggi dengan ratusan tiang kayu bulat berdiameter kecil yang ditancapkan rapat di lereng perbukitan.",
@@ -1663,8 +1663,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua-barat.glb",
-        url: "/api/models/houses/papua-barat.glb",
+        storagePath: "/models/houses/papua-barat.glb",
+        url: "/models/houses/papua-barat.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1685,7 +1685,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Kamoro / Mee",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua-tengah.glb",
+    modelUrl: "/models/houses/papua-tengah.glb",
     philosophy: "Simbol rahim ibu pertiwi yang melahirkan kembali kedewasaan dan keberanian anak-anak suku Kamoro dalam upacara suci Karapao.",
     specs: {
       structure: "Rangka panggung kayu pantai diikat tali rotan hutan dengan lantai kulit kayu lapis.",
@@ -1711,8 +1711,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua-tengah.glb",
-        url: "/api/models/houses/papua-tengah.glb",
+        storagePath: "/models/houses/papua-tengah.glb",
+        url: "/models/houses/papua-tengah.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1733,7 +1733,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Dani / Tobati",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua.glb",
+    modelUrl: "/models/houses/papua.glb",
     philosophy: "“Satu tungku kehangatan” — Mempertautkan persaudaraan tanpa sekat pembeda dalam lingkaran pelindung dari dinginnya alam raya Papua.",
     specs: {
       structure: "Rangka melingkar bertingkat dua dengan empat tiang utama kayu lokop penyangga loteng tidur.",
@@ -1759,8 +1759,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua.glb",
-        url: "/api/models/houses/papua.glb",
+        storagePath: "/models/houses/papua.glb",
+        url: "/models/houses/papua.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1781,7 +1781,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Dani / Nduga",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua-pegunungan.glb",
+    modelUrl: "/models/houses/papua-pegunungan.glb",
     philosophy: "Pusat ketahanan adat pegunungan tinggi, perapian tungku di dalam rumah melambangkan ikatan kekerabatan klan pejuang tangguh.",
     specs: {
       structure: "Panggung kayu rimba pegunungan bersendi tiang kokoh dengan perapian tungku batu bersusun.",
@@ -1807,8 +1807,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua-pegunungan.glb",
-        url: "/api/models/houses/papua-pegunungan.glb",
+        storagePath: "/models/houses/papua-pegunungan.glb",
+        url: "/models/houses/papua-pegunungan.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [
@@ -1829,7 +1829,7 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
     ethnicGroup: "Asmat / Marind-Anim",
     islandRegion: "PAPUA_MALUKU",
     has3DModel: true,
-    modelUrl: "/api/models/houses/papua-selatan.glb",
+    modelUrl: "/models/houses/papua-selatan.glb",
     philosophy: "Harmoni adaptasi di muara sungai dan rawa pesisir selatan Papua, simbol kesiapsiagaan kaum bahari menghadapi pasang surut air laut.",
     specs: {
       structure: "Panggung bertiang kayu besi dan bakau pasang surut yang ditancapkan kuat di tanah lumpur muara.",
@@ -1855,8 +1855,8 @@ export const HOUSES_38_CATALOGUE: TraditionalHouse[] = [
         format: "glb",
         mimeType: "model/gltf-binary",
         size: 2500000,
-        storagePath: "/api/models/houses/papua-selatan.glb",
-        url: "/api/models/houses/papua-selatan.glb",
+        storagePath: "/models/houses/papua-selatan.glb",
+        url: "/models/houses/papua-selatan.glb",
         attribution: "Digitalisasi Warisan 3D WaraNusa",
       },
       hotspots: [

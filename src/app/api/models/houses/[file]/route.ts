@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -18,28 +16,18 @@ export async function GET(
     const targetFile =
       file === "kalimantan-utara.glb" || file === "kalimantan-utara-baloy-mayo.glb"
         ? "baloy-mayo.glb"
-        : file;
+        : file.endsWith(".glb")
+        ? file
+        : `${file}.glb`;
 
-    const filePath = path.join(process.cwd(), "public", "models", "houses", targetFile);
-
-    if (!fs.existsSync(filePath)) {
-      // Fallback ke static URL di Vercel CDN bila serverless function tidak menyertakan folder public
-      return NextResponse.redirect(new URL(`/models/houses/${file}`, _req.url));
-    }
-
-    const fileBuffer = await fs.promises.readFile(filePath);
-
-    return new NextResponse(fileBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "model/gltf-binary",
-        "Content-Length": String(fileBuffer.byteLength),
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    // Redirect langsung (HTTP 307) ke file static di Vercel CDN
+    // Menghindari batas payload serverless function (4.5 MB) pada model besar (seperti baloy-mayo 33 MB)
+    return NextResponse.redirect(
+      new URL(`/models/houses/${targetFile}`, _req.url),
+      307
+    );
   } catch (error) {
-    console.error("Error serving GLB file:", error);
+    console.error("Error redirecting house GLB file:", error);
     return new NextResponse("Error serving model", { status: 500 });
   }
 }

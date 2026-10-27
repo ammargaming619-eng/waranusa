@@ -354,7 +354,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-angklung",
       "name": "Model 3D Alat Musik Angklung",
-      "url": "/api/models/instruments/angklung.glb",
+      "url": "/models/instruments/jawa-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -393,7 +393,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-bonang-barung",
       "name": "Model 3D Alat Musik Bonang Barung",
-      "url": "/api/models/instruments/bonang-barung.glb",
+      "url": "/models/instruments/jawa-tengah.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -432,7 +432,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-burdah-palembang",
       "name": "Model 3D Alat Musik Burdah",
-      "url": "/api/models/instruments/burdah-palembang.glb",
+      "url": "/models/instruments/sumatera-selatan.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -471,7 +471,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-dambus-babel",
       "name": "Model 3D Alat Musik Dambus",
-      "url": "/api/models/instruments/dambus-babel.glb",
+      "url": "/models/instruments/kepulauan-bangka-belitung.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -510,7 +510,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-dogdog-lojor",
       "name": "Model 3D Alat Musik Dogdog Lojor",
-      "url": "/api/models/instruments/dogdog-lojor.glb",
+      "url": "/models/instruments/banten.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -549,7 +549,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-dol-bengkulu",
       "name": "Model 3D Alat Musik Dol",
-      "url": "/api/models/instruments/dol-bengkulu.glb",
+      "url": "/models/instruments/bengkulu.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -588,7 +588,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-fu-kerang",
       "name": "Model 3D Alat Musik Fu",
-      "url": "/api/models/instruments/fu-kerang.glb",
+      "url": "/models/instruments/maluku-utara.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -627,7 +627,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gambus-selodang",
       "name": "Model 3D Alat Musik Gambus Selodang",
-      "url": "/api/models/instruments/gambus-selodang.glb",
+      "url": "/models/instruments/riau.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -666,7 +666,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gamolan-pekhing",
       "name": "Model 3D Alat Musik Gamolan Pekhing",
-      "url": "/api/models/instruments/gamolan-pekhing.glb",
+      "url": "/models/instruments/lampung.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -705,7 +705,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gendang-beleq",
       "name": "Model 3D Alat Musik Gendang Beleq",
-      "url": "/api/models/instruments/gendang-beleq.glb",
+      "url": "/models/instruments/nusa-tenggara-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -744,7 +744,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gendang-panjang",
       "name": "Model 3D Alat Musik Gendang Panjang",
-      "url": "/api/models/instruments/gendang-panjang.glb",
+      "url": "/models/instruments/kepulauan-riau.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -783,7 +783,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gimba-kaili",
       "name": "Model 3D Alat Musik Gimba",
-      "url": "/api/models/instruments/gimba-kaili.glb",
+      "url": "/models/instruments/sulawesi-tengah.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -822,7 +822,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-guoto-arfak",
       "name": "Model 3D Alat Musik Guoto",
-      "url": "/api/models/instruments/guoto-arfak.glb",
+      "url": "/models/instruments/papua-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -861,7 +861,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-hasapi-batak",
       "name": "Model 3D Alat Musik Hasapi",
-      "url": "/api/models/instruments/hasapi-batak.glb",
+      "url": "/models/instruments/sumatera-utara.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -900,7 +900,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-japen-kalteng",
       "name": "Model 3D Alat Musik Japen",
-      "url": "/api/models/instruments/japen-kalteng.glb",
+      "url": "/models/instruments/kalimantan-tengah.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -939,7 +939,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-jatung-utang",
       "name": "Model 3D Alat Musik Jatung Utang",
-      "url": "/api/models/instruments/jatung-utang.glb",
+      "url": "/models/instruments/kalimantan-utara.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -978,7 +978,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-kecapi-mandar",
       "name": "Model 3D Alat Musik Kecapi Mandar",
-      "url": "/api/models/instruments/kecapi-mandar.glb",
+      "url": "/models/instruments/sulawesi-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1017,7 +1017,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-kelintang-kayu",
       "name": "Model 3D Alat Musik Kelintang Kayu",
-      "url": "/api/models/instruments/kelintang-kayu.glb",
+      "url": "/models/instruments/jambi.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1056,7 +1056,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-kendang-reog",
       "name": "Model 3D Alat Musik Kendang Reog",
-      "url": "/api/models/instruments/kendang-reog.glb",
+      "url": "/models/instruments/jawa-timur.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1095,7 +1095,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-keso-keso",
       "name": "Model 3D Alat Musik Keso-Keso",
-      "url": "/api/models/instruments/keso-keso.glb",
+      "url": "/models/instruments/sulawesi-selatan.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1134,7 +1134,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-kolintang-minahasa",
       "name": "Model 3D Alat Musik Kolintang",
-      "url": "/api/models/instruments/kolintang-minahasa.glb",
+      "url": "/models/instruments/sulawesi-utara.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1173,7 +1173,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-lado-lado",
       "name": "Model 3D Alat Musik Ladolado",
-      "url": "/api/models/instruments/lado-lado.glb",
+      "url": "/models/instruments/sulawesi-tenggara.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1212,7 +1212,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-musik-panting",
       "name": "Model 3D Alat Musik Panting",
-      "url": "/api/models/instruments/musik-panting.glb",
+      "url": "/models/instruments/kalimantan-selatan.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1251,7 +1251,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-pikon-dani",
       "name": "Model 3D Alat Musik Pikon",
-      "url": "/api/models/instruments/pikon-dani.glb",
+      "url": "/models/instruments/papua-pegunungan.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1290,7 +1290,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-polopalo-gorontalo",
       "name": "Model 3D Alat Musik Polopalo",
-      "url": "/api/models/instruments/polopalo-gorontalo.glb",
+      "url": "/models/instruments/gorontalo.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1329,7 +1329,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-rapai-aceh",
       "name": "Model 3D Alat Musik Rapai",
-      "url": "/api/models/instruments/rapai-aceh.glb",
+      "url": "/models/instruments/aceh.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1368,7 +1368,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-rindik-bali",
       "name": "Model 3D Alat Musik Rindik",
-      "url": "/api/models/instruments/rindik-bali.glb",
+      "url": "/models/instruments/bali.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1407,7 +1407,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-sampe-dayak-kaltim",
       "name": "Model 3D Alat Musik Sape",
-      "url": "/api/models/instruments/sampe-dayak-kaltim.glb",
+      "url": "/models/instruments/kalimantan-timur.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1446,7 +1446,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-gamelan-jawa",
       "name": "Model 3D Alat Musik Saron Demung",
-      "url": "/api/models/instruments/gamelan-jawa.glb",
+      "url": "/models/instruments/jawa-tengah.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1485,7 +1485,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-sasando-rote",
       "name": "Model 3D Alat Musik Sasando",
-      "url": "/api/models/instruments/sasando-rote.glb",
+      "url": "/models/instruments/nusa-tenggara-timur.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1524,7 +1524,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-talempong-minang",
       "name": "Model 3D Alat Musik Talempong",
-      "url": "/api/models/instruments/talempong-minang.glb",
+      "url": "/models/instruments/sumatera-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1563,7 +1563,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tehyan-jakarta",
       "name": "Model 3D Alat Musik Tehyan",
-      "url": "/api/models/instruments/tehyan-jakarta.glb",
+      "url": "/models/instruments/dki-jakarta.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1602,7 +1602,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tifa-asmat",
       "name": "Model 3D Alat Musik Tifa Asmat",
-      "url": "/api/models/instruments/tifa-asmat.glb",
+      "url": "/models/instruments/papua-selatan.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1641,7 +1641,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tifa-kamoro",
       "name": "Model 3D Alat Musik Tifa Kamoro",
-      "url": "/api/models/instruments/tifa-kamoro.glb",
+      "url": "/models/instruments/papua-tengah.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1680,7 +1680,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tifa-sentani",
       "name": "Model 3D Alat Musik Tifa Sentani",
-      "url": "/api/models/instruments/tifa-sentani.glb",
+      "url": "/models/instruments/papua.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1719,7 +1719,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tifa-totobuang",
       "name": "Model 3D Alat Musik Totobuang",
-      "url": "/api/models/instruments/tifa-totobuang.glb",
+      "url": "/models/instruments/maluku.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1758,7 +1758,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-triton-raja-ampat",
       "name": "Model 3D Alat Musik Triton",
-      "url": "/api/models/instruments/triton-raja-ampat.glb",
+      "url": "/models/instruments/papua-barat-daya.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",
@@ -1797,7 +1797,7 @@ export const MASTER_CULTURAL_CATALOGUE = ([
     "modelMedia": {
       "id": "model-tuma-dayak",
       "name": "Model 3D Alat Musik Tuma",
-      "url": "/api/models/instruments/tuma-dayak.glb",
+      "url": "/models/instruments/kalimantan-barat.glb",
       "type": "MODEL_3D"
     },
     "actionBadge": "Mainkan Nada",

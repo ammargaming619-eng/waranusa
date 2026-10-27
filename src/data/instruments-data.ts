@@ -1525,7 +1525,7 @@ ensembleFunction: "Iringan tari prajurit perang Sasak kuno, upacara adat Begawe 
 ];
 
 export const INSTRUMENTS_38_CATALOGUE: TraditionalInstrument38[] = RAW_INSTRUMENTS_38.map((raw) => {
-  const glbUrl = `/api/models/instruments/${raw.provinceSlug}.glb`;
+  const glbUrl = `/models/instruments/${raw.provinceSlug}.glb`;
   const audioSampleUrl = `/audio/instruments/${raw.id}.mp3`;
   const notes = (raw.notes && raw.notes.length > 0)
     ? raw.notes

@@ -48,6 +48,7 @@ import {
 } from "@/components/three/air-gamelan";
 
 interface BoundaryProps {
+  resetKey?: string;
   onError: () => void;
   children: React.ReactNode;
 }
@@ -64,6 +65,12 @@ class GlbErrorBoundary extends React.Component<BoundaryProps, { hasError: boolea
 
   componentDidCatch() {
     this.props.onError();
+  }
+
+  componentDidUpdate(prevProps: BoundaryProps) {
+    if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
   }
 
   render() {
@@ -108,6 +115,43 @@ function ResponsiveInstrumentCamera() {
   return null;
 }
 
+function ModelLoadingIndicator({ title }: { title?: string }) {
+  const gemRef = React.useRef<THREE.Mesh>(null);
+  const ringRef = React.useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (gemRef.current) {
+      gemRef.current.rotation.y += delta * 1.6;
+      gemRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.2;
+      gemRef.current.position.y = 0.55 + Math.sin(state.clock.elapsedTime * 3) * 0.08;
+    }
+    if (ringRef.current) {
+      ringRef.current.rotation.z += delta * 0.9;
+    }
+  });
+
+  return (
+    <group position={[0, 0, 0]}>
+      {/* Cincin Hologram Emas Berputar */}
+      <mesh ref={ringRef} position={[0, 0.55, 0]} rotation={[-Math.PI / 2.5, 0, 0]}>
+        <ringGeometry args={[0.65, 0.72, 32]} />
+        <meshBasicMaterial color="#E0A93B" transparent opacity={0.6} side={THREE.DoubleSide} />
+      </mesh>
+      {/* Kristal Resonansi 3D */}
+      <mesh ref={gemRef} position={[0, 0.55, 0]}>
+        <octahedronGeometry args={[0.32, 0]} />
+        <meshStandardMaterial
+          color="#FAF5EB"
+          emissive="#D4A843"
+          emissiveIntensity={0.65}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+    </group>
+  );
+}
+
 function LoadedGlbModel({ url }: { url: string }) {
   const { scene } = useGLTF(url);
 
@@ -118,31 +162,18 @@ function LoadedGlbModel({ url }: { url: string }) {
         obj.castShadow = true;
         obj.receiveShadow = true;
         if (obj.material) {
-          const mat = obj.material as THREE.MeshStandardMaterial;
-          mat.side = THREE.DoubleSide;
-          if (typeof mat.metalness === "number") {
-            mat.metalness = Math.min(mat.metalness, 0.75);
-          }
-          if (typeof mat.roughness === "number") {
-            mat.roughness = Math.max(0.25, Math.min(0.75, mat.roughness));
-          }
-          // Kompresi tone adaptif: teduhkan elemen yang terlalu terang agar warna & tekstur kelihatan
-          mat.onBeforeCompile = (shader) => {
-            shader.fragmentShader = shader.fragmentShader.replace(
-              "#include <dithering_fragment>",
-              `
-              #include <dithering_fragment>
-              // Kompresi tone: teduhkan elemen yang terlalu terang agar tekstur & kontur kelihatan
-              float texLum = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
-              if (texLum > 0.52) {
-                gl_FragColor.rgb *= mix(1.0, 0.72, smoothstep(0.52, 0.95, texLum));
-              } else if (texLum < 0.22) {
-                gl_FragColor.rgb += vec3(0.08 * smoothstep(0.22, 0.05, texLum));
+          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          for (const mat of mats) {
+            if (mat) {
+              mat.side = THREE.DoubleSide;
+              if ("metalness" in mat && typeof mat.metalness === "number") {
+                mat.metalness = Math.min(mat.metalness, 0.75);
               }
-              `
-            );
-          };
-          mat.needsUpdate = true;
+              if ("roughness" in mat && typeof mat.roughness === "number") {
+                mat.roughness = Math.max(0.25, Math.min(0.75, mat.roughness));
+              }
+            }
+          }
         }
       }
     });
@@ -393,14 +424,13 @@ function ReactiveInstrumentScene({
         }}
       >
         {shouldTryGlb ? (
-          <GlbErrorBoundary onError={() => setGlbFailed(true)}>
+          <GlbErrorBoundary
+            key={instrument.modelUrl}
+            resetKey={instrument.modelUrl}
+            onError={() => setGlbFailed(true)}
+          >
             <React.Suspense
-              fallback={
-                <ProceduralInstrumentFallback
-                  interactionType={instrument.interactionType}
-                  activeNoteIdx={activeNoteIdx}
-                />
-              }
+              fallback={<ModelLoadingIndicator title={instrument.title} />}
             >
               <LoadedGlbModel url={instrument.modelUrl} />
             </React.Suspense>
