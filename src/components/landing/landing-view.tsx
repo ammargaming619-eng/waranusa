@@ -629,15 +629,15 @@ function Interactive3DPavilion() {
                 <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    Saka Guru &amp; Tumpangsari
+                    {t("3d.chip_saka", "Saka Guru & Tumpangsari")}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    360&deg; Rotasi Bebas
+                    {t("3d.chip_rotate", "360° Rotasi Bebas")}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    38 Rumah Adat Lengkap
+                    {t("3d.chip_houses_count", "38 Rumah Adat Lengkap")}
                   </span>
                 </div>
 
@@ -646,27 +646,27 @@ function Interactive3DPavilion() {
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">Saka Guru &amp; Tumpangsari</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.h1_title", "Saka Guru & Tumpangsari")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Struktur balok kayu bertingkat presisi yang kokoh tanpa paku besi.
+                        {t("3d.h1_desc", "Struktur balok kayu bertingkat presisi yang kokoh tanpa paku besi.")}
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">360&deg; Rotasi &amp; Hotspot</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.h2_title", "360° Rotasi & Hotspot")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Amati konstruksi atap tajug dan detail sambungan pasak secara leluasa.
+                        {t("3d.h2_desc", "Amati konstruksi atap tajug dan detail sambungan pasak secara leluasa.")}
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">38 Rumah Adat Provinsi</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.h3_title", "38 Rumah Adat Provinsi")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Dokumentasi digital arsitektur adat lengkap dari Sabang sampai Merauke.
+                        {t("3d.h3_desc", "Dokumentasi digital arsitektur adat lengkap dari Sabang sampai Merauke.")}
                       </p>
                     </div>
                   </li>
@@ -697,15 +697,15 @@ function Interactive3DPavilion() {
                 <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    Bilah Logam Perunggu
+                    {t("3d.chip_bronze", "Bilah Logam Perunggu")}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    Tangga Pelog &amp; Slendro
+                    {t("3d.chip_pelog", "Tangga Pelog & Slendro")}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD2BF] bg-[#FAF5EC] px-3 py-1.5 text-xs font-semibold text-[#52331C]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#8C5835]" />
-                    38 Instrumen Nusantara
+                    {t("3d.chip_instruments_count", "38 Instrumen Nusantara")}
                   </span>
                 </div>
 
@@ -714,27 +714,27 @@ function Interactive3DPavilion() {
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">01</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">Model 3D Nyata</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.i1_title", "Model 3D Nyata")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Amati rancakan kayu ukir berprada emas dan bilah logam perunggu.
+                        {t("3d.i1_desc", "Amati rancakan kayu ukir berprada emas dan bilah logam perunggu.")}
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">02</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">Tangga Nada Pelog &amp; Slendro</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.i2_title", "Tangga Nada Pelog & Slendro")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Sentuh bilah nada 1–7 untuk memicu denting synthesizer Web Audio.
+                        {t("3d.i2_desc", "Sentuh bilah nada 1–7 untuk memicu denting synthesizer Web Audio.")}
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="mt-0.5 font-mono text-xs font-bold text-[#7A4B29]">03</span>
                     <div>
-                      <h4 className="font-bold text-[#2D1E12]">38 Instrumen Daerah</h4>
+                      <h4 className="font-bold text-[#2D1E12]">{t("3d.i3_title", "38 Instrumen Daerah")}</h4>
                       <p className="text-xs sm:text-sm text-stone-700 mt-0.5">
-                        Studio lengkap alat musik petik, tabuh, tiup, dan gesek nusantara.
+                        {t("3d.i3_desc", "Studio lengkap alat musik petik, tabuh, tiup, dan gesek nusantara.")}
                       </p>
                     </div>
                   </li>

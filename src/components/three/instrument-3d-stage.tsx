@@ -1640,16 +1640,16 @@ export function Instrument3DStage({
                     playNoteByIndex(idx, 0.95);
                   }}
                   className={cn(
-                    "group relative flex flex-col items-center justify-center rounded-xl border py-2.5 sm:py-3 px-1.5 sm:px-2 transition-all duration-100 cursor-pointer select-none touch-manipulation min-h-[64px] xs:min-h-[70px] sm:min-h-[76px]",
+                    "group relative flex flex-col items-center justify-between rounded-2xl border py-2.5 sm:py-3.5 px-1.5 sm:px-2 transition-all duration-150 cursor-pointer select-none touch-manipulation min-h-[70px] xs:min-h-[76px] sm:min-h-[82px] shadow-2xs",
                     isHitRippling
-                      ? "scale-105 border-amber-400 bg-gradient-to-b from-[#FFF5D6] to-[#F59E0B] text-stone-950 shadow-[0_0_24px_rgba(251,191,36,0.9)] ring-4 ring-amber-300 font-extrabold z-10"
+                      ? "scale-105 border-amber-500 bg-gradient-to-b from-[#FFF5D6] via-[#FDE047] to-[#F59E0B] text-stone-950 shadow-[0_0_24px_rgba(251,191,36,0.85)] ring-4 ring-amber-300 font-extrabold z-10"
                       : isPlaying
-                      ? "scale-98 border-[#D49B27] bg-gradient-to-b from-[#FFE082] to-[#D49B27] text-[#2D1E12] shadow-md ring-2 ring-amber-400"
+                      ? "scale-98 border-[#B4791E] bg-gradient-to-b from-[#FFEAA0] to-[#D49B27] text-[#2D1E12] shadow-md ring-2 ring-amber-400 font-bold"
                       : isCameraTarget
                       ? "border-amber-500 bg-amber-50/95 text-[#2D1E12] ring-3 ring-amber-400 shadow-md scale-102 font-bold"
                       : isSelected
-                      ? "border-[#6E472D]/50 bg-[#FAF3E6] text-[#2D1E12] hover:bg-[#F3E6D0]"
-                      : "border-[#DFD3C2] bg-white text-stone-700 hover:border-[#6E472D]/40 hover:bg-[#FAF6EE] active:scale-95"
+                      ? "border-[#6E472D] bg-[#F7EFE4] text-[#2D1E12] shadow-xs ring-1 ring-[#6E472D]/30"
+                      : "border-[#D8C7B2] bg-gradient-to-b from-[#FFFDF9] via-[#FAF6F0] to-[#F3EDE2] text-stone-800 hover:border-[#8C5835] hover:bg-white active:scale-95 hover:shadow-xs"
                   )}
                 >
                   {/* Efek visual ripple melingkar saat bilah nada terkena tabuhan (Air Tap / Pinch) */}
@@ -1662,14 +1662,14 @@ export function Instrument3DStage({
                       🎯 Bidik
                     </span>
                   )}
-                  <span className="font-mono text-[10px] xs:text-xs font-extrabold uppercase tracking-wider text-[#7A4B29]">
+                  <span className="font-mono text-[10px] xs:text-xs font-black uppercase tracking-wider text-[#7A4B29]">
                     {note.code}
                   </span>
-                  <span className="mt-0.5 font-serif text-xs xs:text-sm sm:text-base font-bold text-[#2D1E12] line-clamp-1">
+                  <span className="my-0.5 font-serif text-sm xs:text-base sm:text-lg font-extrabold text-[#2D1E12] line-clamp-1 leading-tight">
                     {note.label}
                   </span>
-                  <span className="mt-0.5 font-mono text-[9px] xs:text-[10px] text-stone-500">
-                    {note.subLabel ? note.subLabel : `${Math.round(note.freq)}Hz`}
+                  <span className="font-mono text-[9px] xs:text-[10px] font-semibold text-stone-600 bg-black/5 rounded px-1.5 py-0.5">
+                    {Math.round(note.freq)} Hz
                   </span>
                 </button>
               );

@@ -25,8 +25,6 @@ interface CulturalTag {
   description: string;
   routeHref: string;
   pin: { x: number; y: number };
-  card: { x: number; y: number };
-  dashedLine?: { from: { x: number; y: number }; to: { x: number; y: number } };
 }
 
 export const CULTURAL_TAGS: CulturalTag[] = [
@@ -39,7 +37,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Arsitektur vernakular Minangkabau dengan atap gonjong bertanduk kerbau yang menjulang tinggi, bersanding dengan alunan syahdu tiupan bambu instrumen Saluang.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 17.2, y: 56.5 },
-    card: { x: 17.5, y: 48.5 },
   },
   {
     id: "kalimantan",
@@ -50,7 +47,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Arsitektur panggung kayu ulin suku Dayak sebagai pusat kebersamaan komunitas adat, bersanding dengan petikan dawai merdu instrumen Sape'.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 44.5, y: 44.5 },
-    card: { x: 47.0, y: 35.5 },
   },
   {
     id: "jogja",
@@ -61,8 +57,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Arsitektur adiluhung Kraton Ngayogyakarta beratap lambang gantung bertingkat, bersanding dengan deretan gong perunggu penata gending Gamelan Bonang berlaras Pelog dan Slendro.",
     routeHref: "#/instrumen",
     pin: { x: 35.8, y: 73.5 },
-    card: { x: 31.0, y: 84.5 },
-    dashedLine: { from: { x: 35.8, y: 73.5 }, to: { x: 32.5, y: 79.5 } },
   },
   {
     id: "bali",
@@ -73,8 +67,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Gerak ekspresif mata (seledet), liukan jemari anggun berbusana prada emas, dan persembahan sakral seni tari Pulau Dewata yang menyatu dalam ritme dinamis gamelan.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 46.2, y: 76.5 },
-    card: { x: 54.0, y: 86.5 },
-    dashedLine: { from: { x: 46.2, y: 76.5 }, to: { x: 51.0, y: 81.5 } },
   },
   {
     id: "sulsel",
@@ -85,7 +77,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Arsitektur panggung perahu kosmis beratap parabolik suku Toraja dihiasi ukiran pa’ssura dan deretan tanduk kabongo, bersanding dengan alunan gesekan dawai Keso-Keso khas Sulawesi Selatan.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 53.2, y: 65.5 },
-    card: { x: 59.5, y: 59.5 },
   },
   {
     id: "papua",
@@ -96,7 +87,6 @@ export const CULTURAL_TAGS: CulturalTag[] = [
       "Arsitektur bundar beratap jerami penahan dingin pegunungan Baliem dan dentuman ritme sakral alat musik Tifa khas Papua.",
     routeHref: "#/eksplorasi-3d",
     pin: { x: 86.8, y: 61.5 },
-    card: { x: 84.5, y: 51.5 },
   },
 ];
 
@@ -182,36 +172,30 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           </motion.div>
         </div>
 
-        {/* Garis-Garis Petunjuk SVG Relatif (Hanya di layar MD+ agar bersih di layar kecil) */}
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full z-10 hidden md:block"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {CULTURAL_TAGS.map((tag) => {
-            if (!tag.dashedLine) return null;
-            return (
-              <line
-                key={`line-${tag.id}`}
-                x1={tag.dashedLine.from.x}
-                y1={tag.dashedLine.from.y}
-                x2={tag.dashedLine.to.x}
-                y2={tag.dashedLine.to.y}
-                stroke="#7D573B"
-                strokeWidth="0.4"
-                strokeDasharray="1.2 1.2"
-              />
-            );
-          })}
-        </svg>
-
-        {/* Pin Penanda Lokasi Interaktif di Atas Pulau */}
+        {/* Pin Penanda Lokasi Budaya Interaktif dengan Floating Popover Seragam */}
         {CULTURAL_TAGS.map((tag, idx) => {
           const isHovered = hoveredTag === tag.id;
 
+          // Hitung alignment popover horizontal agar selalu strictly di dalam kontainer peta
+          const popoverAlignClass =
+            tag.pin.x < 25
+              ? "left-0 translate-x-0"
+              : tag.pin.x > 75
+              ? "right-0 translate-x-0"
+              : "left-1/2 -translate-x-1/2";
+
           return (
-            <div key={tag.id} className="contents">
-              {/* Pin Penanda Lokasi Peta (Touch-friendly target) */}
+            <div
+              key={tag.id}
+              className="absolute z-20 transition-all duration-300"
+              style={{
+                left: `${tag.pin.x}%`,
+                top: `${tag.pin.y}%`,
+              }}
+              onMouseEnter={() => setHoveredTag(tag.id)}
+              onMouseLeave={() => setHoveredTag(null)}
+            >
+              {/* Pin Penanda Titik Lokasi Peta dengan Efek Pulse Elegan */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.4, y: 8 }}
                 animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.4, y: 8 }}
@@ -220,61 +204,66 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   duration: 0.55,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="absolute z-20 -translate-x-1/2 -translate-y-full transition-transform duration-300"
-                style={{
-                  left: `${tag.pin.x}%`,
-                  top: `${tag.pin.y}%`,
-                }}
+                className="-translate-x-1/2 -translate-y-full"
               >
                 <button
                   type="button"
                   onClick={() => setActiveTag(tag)}
-                  onMouseEnter={() => setHoveredTag(tag.id)}
-                  onMouseLeave={() => setHoveredTag(null)}
                   aria-label={`Lihat budaya ${tag.title} (${tag.region})`}
                   className={cn(
-                    "flex flex-col items-center justify-center group/pin focus:outline-none min-w-[48px] min-h-[48px] p-1.5",
-                    isHovered ? "scale-115" : "hover:scale-110"
+                    "relative flex flex-col items-center justify-center group/pin focus:outline-none min-w-[44px] min-h-[44px] p-1.5 transition-transform duration-300 cursor-pointer",
+                    isHovered ? "scale-115 z-30" : "hover:scale-110"
                   )}
                 >
+                  {/* Lingkaran Berdenyut Halus (Soft Pulse Animation) */}
+                  <span className="absolute h-8 w-8 rounded-full bg-[#6E472D]/25 animate-ping opacity-75 pointer-events-none" />
+
+                  {/* Pin Utama */}
                   <div
                     className={cn(
-                      "flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-full shadow-lg border-2 border-white transition-all duration-300",
+                      "relative flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-full shadow-lg border-2 border-white transition-all duration-300",
                       isHovered
-                        ? "bg-[#482B18] text-white ring-4 ring-[#482B18]/30"
+                        ? "bg-[#482B18] text-white ring-4 ring-[#482B18]/30 shadow-xl"
                         : "bg-[#53341E] text-[#F4EAD4] group-hover/pin:bg-[#3D2514]"
                     )}
                   >
                     <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-white shadow-xs" />
                   </div>
+                  {/* Ujung lancip pin */}
                   <div className="w-1.5 h-1.5 bg-[#53341E] rotate-45 -mt-1 shadow-xs" />
                 </button>
               </motion.div>
 
-              {/* Kartu Pratinjau Budaya Melayang (Desktop / Layar Lebar md+) */}
+              {/* Floating Cultural Popover Card (Desktop MD+) Melayang Presisi di Atas Pin */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.78, y: 18 }}
-                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.78, y: 18 }}
+                initial={{ opacity: 0, scale: 0.82, y: 8 }}
+                animate={
+                  introRevealed
+                    ? {
+                        opacity: isHovered ? 1 : 0.94,
+                        scale: isHovered ? 1.04 : 1,
+                        y: isHovered ? -4 : 0,
+                      }
+                    : { opacity: 0, scale: 0.82, y: 8 }
+                }
                 transition={{
-                  delay: 0.48 + idx * 0.09,
-                  duration: 0.65,
+                  delay: 0.45 + idx * 0.08,
+                  duration: 0.35,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className={cn(
-                  "hidden md:block absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
-                  isHovered ? "z-40" : "z-30"
+                  "hidden md:block absolute bottom-full mb-2.5 pointer-events-auto transition-all duration-300",
+                  popoverAlignClass,
+                  isHovered ? "z-50" : "z-30"
                 )}
-                style={{
-                  left: `${tag.card.x}%`,
-                  top: `${tag.card.y}%`,
-                }}
               >
                 <button
                   type="button"
                   onClick={() => setActiveTag(tag)}
                   className={cn(
-                    "group flex items-center gap-2.5 lg:gap-3 rounded-2xl bg-white/95 backdrop-blur-md px-2.5 py-1.5 lg:px-3 lg:py-2 shadow-lg border border-stone-200/90 text-left transition-all duration-300",
-                    "hover:scale-105 hover:shadow-2xl hover:border-stone-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-stone-400"
+                    "group flex items-center gap-2.5 lg:gap-3 rounded-2xl bg-white/95 backdrop-blur-md px-2.5 py-1.5 lg:px-3 lg:py-2 text-left transition-all duration-300 cursor-pointer",
+                    "border border-stone-200/90 shadow-md hover:shadow-xl hover:border-[#6E472D]/50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#6E472D]/40",
+                    isHovered && "ring-2 ring-[#6E472D]/30 border-[#6E472D] shadow-xl"
                   )}
                 >
                   {/* Thumbnail Foto Budaya */}
@@ -290,14 +279,19 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   </div>
 
                   {/* Teks Wilayah & Nama Budaya */}
-                  <div className="pr-2">
-                    <p className="text-[10px] lg:text-[11px] font-semibold text-stone-700 leading-tight">
-                      {tag.region}:
+                  <div className="pr-1.5 max-w-[170px] lg:max-w-[210px]">
+                    <p className="text-[10px] lg:text-[11px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block" />
+                      {tag.region}
                     </p>
-                    <p className="text-xs lg:text-sm font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors whitespace-nowrap">
+                    <p className="text-xs lg:text-[13px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
                       {tag.title}
                     </p>
                   </div>
+
+                  <span className="hidden lg:inline-flex h-6 w-6 items-center justify-center rounded-full bg-stone-100 group-hover:bg-[#6E472D] group-hover:text-white text-stone-500 transition-colors shrink-0">
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
                 </button>
               </motion.div>
             </div>

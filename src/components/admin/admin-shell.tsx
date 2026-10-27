@@ -144,27 +144,28 @@ export function AdminShell({ route, children }: { route: Route; children: React.
           {navList}
         </div>
         <div className="border-t border-border p-3 bg-secondary/30 mt-auto">
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-card border border-border shadow-xs">
-            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#6E472D]/10 text-[#6E472D]">
-              <Globe className="h-4 w-4" />
-              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[11px] font-bold text-foreground truncate">Portal WaraNusa</div>
-              <div className="text-[10px] text-muted-foreground flex items-center gap-1">
-                <span>Situs Publik</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-emerald-500"></span>
-                <span className="text-emerald-700 font-medium">Aktif</span>
+          <div className="flex items-center justify-between gap-2.5 p-2.5 rounded-xl bg-card border border-border shadow-xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#6E472D]/10 text-[#6E472D]">
+                <Globe className="h-4 w-4" />
+                <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold text-foreground truncate">Portal WaraNusa</div>
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span className="text-emerald-700 font-semibold truncate">Sistem Online</span>
+                </div>
               </div>
             </div>
             <a
               href="#/"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-[#6E472D] transition-colors"
-              title="Buka Situs Publik"
-              aria-label="Buka Situs Publik"
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/70 hover:bg-secondary text-muted-foreground hover:text-[#6E472D] transition-colors"
+              title="Buka Beranda Situs Publik"
+              aria-label="Buka Beranda Situs Publik"
             >
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
