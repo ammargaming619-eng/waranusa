@@ -320,7 +320,7 @@ export const PROVINCES_38_ALPHABETICAL: Region[] = [
   },
 ];
 
-export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
+export const MASTER_CULTURAL_CATALOGUE = ([
   {
     "id": "item-inst-angklung",
     "slug": "angklung",
@@ -4605,7 +4605,7 @@ export const MASTER_CULTURAL_CATALOGUE: CulturalItem[] = [
     "actionBadge": "Lihat",
     "actionUrl": "#/budaya/wayang-kulit-purwa"
   }
-];
+] as unknown) as CulturalItem[];
 
 
 export interface CatalogueQueryParams {

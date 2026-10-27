@@ -6,7 +6,6 @@
  * formulir masuk kanan + kartu akun demo (hanya pengisian otomatis, bukan login langsung).
  */
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { HashLink as Link } from "@/components/shared/hash-link";
 import { ArrowLeft, Box, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
@@ -28,27 +27,29 @@ const DEMO_ACCOUNTS = [
   { email: "kontributor@waranusa.id", password: "Kontrib#2025", role: "Kontributor" },
 ] as const;
 
+function checkEvaluatorMode(route?: Route): boolean {
+  if (route?.query?.demo === "evaluator") return true;
+  if (typeof window !== "undefined") {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("demo") === "evaluator") return true;
+      if (window.location.hash.includes("demo=evaluator")) return true;
+    } catch {}
+  }
+  return false;
+}
+
 export default function LoginView({ route }: { route?: Route } = {}) {
   const user = useAuth((s) => s.user);
   const login = useAuth((s) => s.login);
   const canAccessCMS = useAuth((s) => s.canAccessCMS);
 
-  // Evaluator mode: hanya aktif jika parameter ?demo=evaluator disertakan
-  let searchParams: ReturnType<typeof useSearchParams> = null;
-  try {
-    searchParams = useSearchParams();
-  } catch {
-    searchParams = null;
-  }
-
   const [showDemoManual, setShowDemoManual] = useState(false);
+  const [isEvaluatorMode, setIsEvaluatorMode] = useState(false);
 
-  const isEvaluatorMode =
-    searchParams?.get("demo") === "evaluator" ||
-    route?.query?.demo === "evaluator" ||
-    (typeof window !== "undefined" &&
-      (new URLSearchParams(window.location.search).get("demo") === "evaluator" ||
-        window.location.hash.includes("demo=evaluator")));
+  useEffect(() => {
+    setIsEvaluatorMode(checkEvaluatorMode(route));
+  }, [route]);
 
   const showDemoAccounts = isEvaluatorMode || showDemoManual;
 

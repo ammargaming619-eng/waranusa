@@ -6,7 +6,7 @@
  * (#/jelajah, #/katalog, #/admin/...) sesuai batasan lingkungan preview.
  * Setiap view bertanggung jawab mengambil datanya sendiri via REST API.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -92,7 +92,11 @@ export default function WaraNusaApp() {
 
   // Login: tampilan mandiri
   if (isLogin) {
-    return <LoginView route={route} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+        <LoginView route={route} />
+      </Suspense>
+    );
   }
 
   // Situs publik: header + view + footer (footer menempel di bawah, mt-auto)
