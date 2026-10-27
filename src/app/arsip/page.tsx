@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import ArchiveView from "@/components/archive/archive-view";
 import { PublicShell } from "@/components/site/public-shell";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Arsip & Rujukan Budaya — WaraNusa",
   description: "Daftar sumber, buku rujukan, dan dokumentasi akademik pelestarian budaya Indonesia di WaraNusa.",

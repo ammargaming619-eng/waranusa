@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import ExploreView from "@/components/explore/explore-view";
 import { PublicShell } from "@/components/site/public-shell";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Jelajahi Wilayah Budaya 38 Provinsi — WaraNusa",
   description: "Peta interaktif sebaran warisan budaya, rumah adat, dan instrumen musik tradisional di 38 provinsi Indonesia.",

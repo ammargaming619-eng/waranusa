@@ -8,7 +8,7 @@ export const metadata = {
   description: "Panel pengelolaan konten dan kurasi data budaya Nusantara WaraNusa.",
 };
 
-export default function AdminPage() {
+export default function AdminOptionalSlugPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-stone-900" />}>
       <AdminApp />
