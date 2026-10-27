@@ -154,7 +154,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               size="lg"
               className="btn-waranusa rounded-full px-5 sm:px-7 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-md hover:shadow-lg min-h-[44px]"
             >
-              <Link href="#/jelajah" className="flex items-center gap-2">
+              <Link href="/jelajah" className="flex items-center gap-2">
                 {t("hero.map_btn", "Peta 38 Provinsi")}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
@@ -166,16 +166,19 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               variant="outline"
               className="rounded-full border border-stone-400/60 bg-white/85 hover:bg-white text-stone-800 px-5 sm:px-6 py-2.5 text-xs sm:text-sm md:text-base font-semibold shadow-xs hover:shadow-sm transition-all min-h-[44px]"
             >
-              <Link href="#/katalog" className="flex items-center gap-2">
+              <Link href="/catalog" className="flex items-center gap-2">
                 {t("hero.catalog_btn", "Katalog Budaya")}
               </Link>
             </Button>
           </motion.div>
         </div>
 
-        {/* Pin Penanda Lokasi Budaya Interaktif dengan Floating Popover Seragam */}
+        {/* Pin Penanda Lokasi Budaya Interaktif dengan Floating Popover Selalu Muncul (Always Visible) */}
         {CULTURAL_TAGS.map((tag, idx) => {
           const isHovered = hoveredTag === tag.id;
+
+          // Pengaturan vertikal agar Bali tidak bertabrakan dengan Jawa/Sulawesi
+          const isBelow = tag.id === "bali";
 
           // Hitung alignment popover horizontal agar selalu strictly di dalam kontainer peta
           const popoverAlignClass =
@@ -185,10 +188,14 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               ? "right-0 translate-x-0"
               : "left-1/2 -translate-x-1/2";
 
+          const verticalPositionClass = isBelow
+            ? "top-full mt-2.5"
+            : "bottom-full mb-2.5";
+
           return (
             <div
               key={tag.id}
-              className="absolute z-20 transition-all duration-300"
+              className={cn("absolute transition-all duration-300", isHovered ? "z-40" : "z-20")}
               style={{
                 left: `${tag.pin.x}%`,
                 top: `${tag.pin.y}%`,
@@ -201,7 +208,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 initial={{ opacity: 0, scale: 0.4, y: 8 }}
                 animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.4, y: 8 }}
                 transition={{
-                  delay: 0.4 + idx * 0.08,
+                  delay: 0.35 + idx * 0.08,
                   duration: 0.55,
                   ease: [0.16, 1, 0.3, 1],
                 }}
@@ -212,7 +219,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   onClick={() => setActiveTag(tag)}
                   aria-label={`Lihat budaya ${tag.title} (${tag.region})`}
                   className={cn(
-                    "relative flex flex-col items-center justify-center group/pin focus:outline-none min-w-[44px] min-h-[44px] p-1.5 transition-transform duration-300 cursor-pointer",
+                    "relative flex flex-col items-center justify-center group/pin focus:outline-none min-w-[36px] min-h-[36px] p-1 transition-transform duration-300 cursor-pointer",
                     isHovered ? "scale-115 z-30" : "hover:scale-110"
                   )}
                 >
@@ -235,70 +242,82 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 </button>
               </motion.div>
 
-              {/* Floating Cultural Popover Card (Desktop MD+) Melayang di Atas Pin — HANYA MUNCUL SAAT DI-HOVER */}
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div
-                    key={`popover-${tag.id}`}
-                    initial={{ opacity: 0, scale: 0.88, y: 8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 4 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className={cn(
-                      "hidden md:block absolute bottom-full mb-3 pointer-events-auto z-50",
-                      popoverAlignClass
-                    )}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setActiveTag(tag)}
-                      className={cn(
-                        "group relative flex items-center gap-2.5 lg:gap-3 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-2 text-left transition-all duration-200 cursor-pointer shadow-xl",
-                        "border border-stone-200/90 hover:shadow-2xl hover:border-[#6E472D] hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#6E472D]/40"
-                      )}
-                    >
-                      {/* Thumbnail Foto Budaya */}
-                      <div className="relative h-10 w-10 lg:h-11 lg:w-11 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
-                        <Image
-                          src={tag.image}
-                          alt={tag.title}
-                          fill
-                          sizes="48px"
-                          loading="lazy"
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      </div>
-
-                      {/* Teks Wilayah & Nama Budaya */}
-                      <div className="pr-1.5 max-w-[180px] lg:max-w-[220px]">
-                        <p className="text-[10px] lg:text-[11px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block" />
-                          {tag.region}
-                        </p>
-                        <p className="text-xs lg:text-[13px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
-                          {tag.title}
-                        </p>
-                      </div>
-
-                      <span className="h-6 w-6 inline-flex items-center justify-center rounded-full bg-stone-100 group-hover:bg-[#6E472D] group-hover:text-white text-stone-500 transition-colors shrink-0">
-                        <ArrowRight className="h-3 w-3" />
-                      </span>
-
-                      {/* Segitiga Penunjuk ke Bawah (Pointing Arrow directly to Pin) */}
-                      <div
-                        className={cn(
-                          "absolute top-full -mt-1 w-2.5 h-2.5 bg-white border-r border-b border-stone-200/90 rotate-45",
-                          tag.pin.x < 25
-                            ? "left-5"
-                            : tag.pin.x > 75
-                            ? "right-5"
-                            : "left-1/2 -translate-x-1/2"
-                        )}
-                      />
-                    </button>
-                  </motion.div>
+              {/* Floating Cultural Popover Card (Desktop MD+) — LANGSUNG MUNCUL TANPA PERLU HOVER */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85, y: isBelow ? -6 : 6 }}
+                animate={
+                  introRevealed
+                    ? {
+                        opacity: 1,
+                        scale: isHovered ? 1.05 : 1,
+                        y: isHovered ? (isBelow ? 3 : -3) : 0,
+                      }
+                    : { opacity: 0, scale: 0.85, y: isBelow ? -6 : 6 }
+                }
+                transition={{
+                  delay: 0.45 + idx * 0.08,
+                  duration: 0.45,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={cn(
+                  "hidden md:block absolute pointer-events-auto transition-all duration-200",
+                  verticalPositionClass,
+                  popoverAlignClass,
+                  isHovered ? "z-50" : "z-30"
                 )}
-              </AnimatePresence>
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveTag(tag)}
+                  className={cn(
+                    "group relative flex items-center gap-2 lg:gap-2.5 rounded-2xl bg-white/95 backdrop-blur-md px-2.5 py-1.5 lg:px-3 lg:py-2 text-left transition-all duration-200 cursor-pointer shadow-md",
+                    "border border-stone-200/90 hover:shadow-xl hover:border-[#6E472D] hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#6E472D]/40",
+                    isHovered && "ring-2 ring-[#6E472D]/30 border-[#6E472D] shadow-xl"
+                  )}
+                >
+                  {/* Thumbnail Foto Budaya */}
+                  <div className="relative h-8 w-8 lg:h-10 lg:w-10 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 shadow-inner">
+                    <Image
+                      src={tag.image}
+                      alt={tag.title}
+                      fill
+                      sizes="40px"
+                      loading="lazy"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+
+                  {/* Teks Wilayah & Nama Budaya */}
+                  <div className="pr-1 max-w-[130px] lg:max-w-[170px]">
+                    <p className="text-[9px] lg:text-[10px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block shrink-0" />
+                      <span className="truncate">{tag.region}</span>
+                    </p>
+                    <p className="text-[11px] lg:text-[12px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
+                      {tag.title}
+                    </p>
+                  </div>
+
+                  <span className="h-5 w-5 lg:h-6 lg:w-6 inline-flex items-center justify-center rounded-full bg-stone-100 group-hover:bg-[#6E472D] group-hover:text-white text-stone-500 transition-colors shrink-0">
+                    <ArrowRight className="h-2.5 w-2.5 lg:h-3 lg:w-3" />
+                  </span>
+
+                  {/* Segitiga Penunjuk (Pointing Arrow directly to Pin) */}
+                  <div
+                    className={cn(
+                      "absolute w-2.5 h-2.5 bg-white rotate-45",
+                      isBelow
+                        ? "bottom-full -mb-1.5 border-l border-t border-stone-200/90"
+                        : "top-full -mt-1.5 border-r border-b border-stone-200/90",
+                      tag.pin.x < 25
+                        ? "left-4"
+                        : tag.pin.x > 75
+                        ? "right-4"
+                        : "left-1/2 -translate-x-1/2"
+                    )}
+                  />
+                </button>
+              </motion.div>
             </div>
           );
         })}
