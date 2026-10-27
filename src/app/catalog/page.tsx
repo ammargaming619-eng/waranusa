@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import CatalogView from "@/components/catalog/catalog-view";
 import { PublicShell } from "@/components/site/public-shell";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Katalog Budaya Nusantara — WaraNusa",
   description: "Jelajahi dokumentasi lengkap warisan budaya Indonesia: rumah adat, alat musik, tekstil, kuliner, seni pertunjukan, dan tradisi lokal.",

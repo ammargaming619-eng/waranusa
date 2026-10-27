@@ -182,7 +182,9 @@ export default function WaraNusaApp() {
             transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
             className="w-full"
           >
-            {view}
+            <Suspense fallback={<div className="min-h-screen bg-[#FCF8EC]" />}>
+              {view}
+            </Suspense>
           </motion.div>
         </AnimatePresence>
       </main>

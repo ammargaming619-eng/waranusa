@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useRoute } from "@/lib/router";
 import { motion } from "framer-motion";
 import {
@@ -87,7 +86,6 @@ export const INSTRUMENTS_CATALOGUE: TraditionalInstrument38[] = INSTRUMENTS_38_C
 type MainTabFilter = "all" | "architecture" | "instruments";
 
 export default function Exploration3DView() {
-  const searchParams = useSearchParams();
   const route = useRoute();
   const [activeMainTab, setActiveMainTab] = useState<MainTabFilter>("all");
   
@@ -140,10 +138,25 @@ export default function Exploration3DView() {
 
   // Sinkronkan pilihan rumah adat & alat musik jika dibuka dari peta (?house=slug / ?province=name / ?instrument=slug)
   useEffect(() => {
-    const requestedHouse = searchParams?.get("house") ?? route.query.house;
-    const requestedProvince = searchParams?.get("province") ?? searchParams?.get("provinsi") ?? route.query.province ?? route.query.provinsi;
-    const requestedInst = searchParams?.get("instrument") ?? searchParams?.get("instrumen") ?? route.query.instrument ?? route.query.instrumen;
-    const requestedTab = searchParams?.get("tab") ?? route.query.tab;
+    let houseParam: string | null = null;
+    let provParam: string | null = null;
+    let instParam: string | null = null;
+    let tabParam: string | null = null;
+
+    if (typeof window !== "undefined") {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        houseParam = sp.get("house");
+        provParam = sp.get("province") ?? sp.get("provinsi");
+        instParam = sp.get("instrument") ?? sp.get("instrumen");
+        tabParam = sp.get("tab");
+      } catch {}
+    }
+
+    const requestedHouse = houseParam ?? route.query.house;
+    const requestedProvince = provParam ?? route.query.province ?? route.query.provinsi;
+    const requestedInst = instParam ?? route.query.instrument ?? route.query.instrumen;
+    const requestedTab = tabParam ?? route.query.tab;
 
     if (requestedTab === "architecture" || requestedTab === "instruments" || requestedTab === "all") {
       setActiveMainTab(requestedTab);

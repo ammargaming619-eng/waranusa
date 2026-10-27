@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import AdminApp from "@/components/admin/admin-app";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "CMS Dashboard — WaraNusa",
   description: "Panel pengelolaan konten dan kurasi data budaya Nusantara WaraNusa.",

@@ -6,7 +6,7 @@
  * yang sepenuhnya disinkronkan ke query URL: ?q=&kategori=&wilayah=&sort=&page=
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FilterX, SearchX, SlidersHorizontal } from "lucide-react";
 import type { Route } from "@/lib/router";
@@ -71,24 +71,39 @@ function readRoute(route: Route): CatalogState {
   };
 }
 
+function readQueryParams(): CatalogState {
+  if (typeof window === "undefined") {
+    return { q: "", kategori: "", wilayah: "", sort: "newest", page: 1 };
+  }
+  try {
+    const sp = new URLSearchParams(window.location.search);
+    const sortParam = sp.get("sort");
+    const sort = SORTS.some((s) => s.value === sortParam) ? (sortParam as SortKey) : "newest";
+    return {
+      q: sp.get("q") ?? sp.get("search") ?? "",
+      kategori: sp.get("kategori") ?? sp.get("category") ?? "",
+      wilayah: sp.get("wilayah") ?? sp.get("region") ?? "",
+      sort,
+      page: Math.max(1, Number(sp.get("page")) || 1),
+    };
+  } catch {
+    return { q: "", kategori: "", wilayah: "", sort: "newest", page: 1 };
+  }
+}
+
 export default function CatalogView({ route }: { route?: Route } = {}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [clientParams, setClientParams] = useState<CatalogState>(() =>
+    route ? readRoute(route) : readQueryParams()
+  );
 
-  const state = useMemo(() => {
-    if (route) return readRoute(route);
-    const sortParam = searchParams?.get("sort");
-    const sort = SORTS.some((s) => s.value === sortParam)
-      ? (sortParam as SortKey)
-      : "newest";
-    return {
-      q: searchParams?.get("q") ?? searchParams?.get("search") ?? "",
-      kategori: searchParams?.get("kategori") ?? searchParams?.get("category") ?? "",
-      wilayah: searchParams?.get("wilayah") ?? searchParams?.get("region") ?? "",
-      sort,
-      page: Math.max(1, Number(searchParams?.get("page")) || 1),
-    };
-  }, [route, searchParams]);
+  useEffect(() => {
+    if (!route) {
+      setClientParams(readQueryParams());
+    }
+  }, [route]);
+
+  const state = route ? readRoute(route) : clientParams;
 
   // ---- Filter data referensi ----
   const categoriesQ = useAsyncData(() => api.categories.list(), []);
@@ -169,6 +184,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
           page: next.page > 1 ? String(next.page) : undefined,
         }), { replace: true });
       } else {
+        setClientParams(next);
         router.replace(targetUrl);
       }
     },
@@ -199,6 +215,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
     if (route) {
       navigate(buildQuery("katalog", {}), { replace: true });
     } else {
+      setClientParams({ q: "", kategori: "", wilayah: "", sort: "newest", page: 1 });
       router.replace("/catalog");
     }
   };

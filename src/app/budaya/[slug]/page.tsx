@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import CultureDetailView from "@/components/culture/culture-detail-view";
 import { PublicShell } from "@/components/site/public-shell";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

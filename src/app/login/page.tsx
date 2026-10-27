@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import LoginView from "@/components/account/login-view";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Masuk ke WaraNusa",
   description: "Masuk ke platform WaraNusa untuk mengakses dashboard pengelolaan budaya atau kontribusi.",

@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Box, Eye, EyeOff, KeyRound, Lock, LogIn, MapPinned, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { navigate, type Route } from "@/lib/router";
@@ -30,7 +30,6 @@ const DEMO_ACCOUNTS = [
 
 export default function LoginView({ route }: { route?: Route } = {}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const user = useAuth((s) => s.user);
   const login = useAuth((s) => s.login);
   const canAccessCMS = useAuth((s) => s.canAccessCMS);
@@ -39,11 +38,17 @@ export default function LoginView({ route }: { route?: Route } = {}) {
   const [isEvaluatorMode, setIsEvaluatorMode] = useState(false);
 
   useEffect(() => {
-    const fromSearch = searchParams?.get("demo") === "evaluator";
+    let fromSearch = false;
+    if (typeof window !== "undefined") {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        fromSearch = sp.get("demo") === "evaluator";
+      } catch {}
+    }
     const fromHash = typeof window !== "undefined" && window.location.hash.includes("demo=evaluator");
     const fromRoute = route?.query?.demo === "evaluator";
     setIsEvaluatorMode(Boolean(fromSearch || fromHash || fromRoute));
-  }, [route, searchParams]);
+  }, [route]);
 
   const showDemoAccounts = isEvaluatorMode || showDemoManual;
 
