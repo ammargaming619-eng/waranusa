@@ -189,8 +189,20 @@ export function DashboardView() {
               </span>
             }
           />
-          <StatCard index={1} icon={Shapes} label="Kategori" value={stats.categoriesTotal} />
-          <StatCard index={2} icon={MapPin} label="Wilayah" value={stats.regionsTotal} />
+          <StatCard
+            index={1}
+            icon={Shapes}
+            label="Kategori"
+            value={stats.categoriesTotal}
+            sub="6 ragam kategori budaya Nusantara"
+          />
+          <StatCard
+            index={2}
+            icon={MapPin}
+            label="Wilayah"
+            value={stats.regionsTotal}
+            sub="38 provinsi dari Sabang hingga Merauke"
+          />
           <StatCard
             index={3}
             icon={Boxes}
@@ -211,9 +223,9 @@ export function DashboardView() {
             index={4}
             tone="gold"
             icon={HandHeart}
-            label="Kontribusi"
+            label="Kontribusi Menunggu"
             value={stats.contributionsPending}
-            sub="Menunggu peninjauan — klik untuk meninjau"
+            sub="Antrean moderasi kurator — klik untuk meninjau"
             onClick={() => navigate("/admin/contributions")}
           />
           <StatCard index={5} icon={Users2} label="Pengguna" value={stats.usersTotal} />

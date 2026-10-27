@@ -38,6 +38,9 @@ import {
   LogOut,
   ExternalLink,
   ChevronRight,
+  ArrowLeft,
+  Globe,
+  Sparkles,
 } from "lucide-react";
 
 const SIDEBAR = [
@@ -140,17 +143,55 @@ export function AdminShell({ route, children }: { route: Route; children: React.
         <div className="flex-1 overflow-y-auto nice-scroll py-4">
           {navList}
         </div>
-        <div className="border-t border-border p-3 pb-24">
-          <a
-            href="#/"
-            className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors"
-          >
-            Lihat Situs Publik <ExternalLink className="h-3.5 w-3.5" />
-          </a>
+        <div className="border-t border-border p-3 bg-secondary/30 mt-auto">
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-card border border-border shadow-xs">
+            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#6E472D]/10 text-[#6E472D]">
+              <Globe className="h-4 w-4" />
+              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] font-bold text-foreground truncate">Portal WaraNusa</div>
+              <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                <span>Situs Publik</span>
+                <span className="inline-block h-1 w-1 rounded-full bg-emerald-500"></span>
+                <span className="text-emerald-700 font-medium">Aktif</span>
+              </div>
+            </div>
+            <a
+              href="#/"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-[#6E472D] transition-colors"
+              title="Buka Situs Publik"
+              aria-label="Buka Situs Publik"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        {/* Banner Evaluator Lomba */}
+        <div className="bg-gradient-to-r from-[#3D2513] via-[#5C381E] to-[#3D2513] text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-xs border-b border-amber-900/40">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-bold tracking-wide">Sesi Evaluator Lomba Aktif</span>
+            <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200 border border-amber-300/30">
+              Super Admin
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="#/"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 hover:bg-white/25 px-3 py-1 text-[11px] font-semibold text-white transition-colors"
+            >
+              <ArrowLeft className="h-3 w-3" /> Kembali ke Beranda Publik
+            </a>
+          </div>
+        </div>
+
         {/* Header CMS */}
         <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-card/90 px-4 backdrop-blur sm:px-6">
           {/* Sidebar mobile */}

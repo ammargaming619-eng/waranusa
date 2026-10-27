@@ -202,7 +202,22 @@ export function AccessibilityWidget() {
   const { language, t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = () => {
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      setIsAdmin(hash.startsWith("#/admin"));
+    };
+    checkAdmin();
+    window.addEventListener("hashchange", checkAdmin);
+    window.addEventListener("popstate", checkAdmin);
+    return () => {
+      window.removeEventListener("hashchange", checkAdmin);
+      window.removeEventListener("popstate", checkAdmin);
+    };
+  }, []);
   const [state, setState] = useState<A11yState>(DEFAULT_STATE);
 
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -521,6 +536,8 @@ export function AccessibilityWidget() {
     t("a11y.contrast_low", "Monokrom"),
     t("a11y.contrast_invert", "Invert"),
   ];
+
+  if (isAdmin) return null;
 
   return (
     <div data-a11y-ignore className="select-none">
