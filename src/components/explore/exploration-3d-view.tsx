@@ -174,22 +174,23 @@ export default function Exploration3DView() {
           initial={{ opacity: 0, y: 16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-3xl mx-auto pt-0 pb-3 sm:pb-4"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-4 sm:pb-5 border-b border-[#DFD3C2]"
         >
-          <div className="inline-flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29] mb-1.5">
-            <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
-            <span>Ruang Pamer Digital Nusantara</span>
-            <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
+          <div>
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29] mb-1.5">
+              <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
+              <span>Ruang Pamer Digital Nusantara</span>
+            </div>
+            <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
+              Eksplorasi 3D Rumah Adat Nusantara
+            </h1>
+            <p className="mt-1.5 max-w-2xl text-stone-600 text-xs sm:text-sm leading-relaxed">
+              Jelajahi keagungan arsitektur vernakular, bedah konstruksi saka guru, dan falsafah ruang rumah adat 38 provinsi di Indonesia.
+            </p>
           </div>
-          <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
-            Eksplorasi 3D Rumah Adat Nusantara
-          </h1>
-          <p className="mt-1.5 text-stone-600 text-xs sm:text-sm leading-relaxed">
-            Jelajahi keagungan arsitektur vernakular, bedah konstruksi saka guru, dan falsafah ruang rumah adat 38 provinsi di Indonesia.
-          </p>
 
           {/* BADGE KOLEKSI & PINTASAN KE INSTRUMEN */}
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0 self-start md:self-auto">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 border border-[#DFD3C2] px-3.5 py-1.5 text-xs font-bold text-[#2D1E12] shadow-2xs">
               <Building2 className="h-3.5 w-3.5 text-[#7A4B29]" />
               <span>38 Rumah Adat Vernakular 3D</span>
