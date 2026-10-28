@@ -247,6 +247,7 @@ export interface ModelViewerProps {
   showHotspots?: boolean;
   autoRotate?: boolean;
   className?: string;
+  hideControls?: boolean;
 }
 
 export default function ModelViewer({
@@ -255,6 +256,7 @@ export default function ModelViewer({
   showHotspots = true,
   autoRotate = false,
   className,
+  hideControls = false,
 }: ModelViewerProps) {
   const wrapRef = React.useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = React.useState(false);
@@ -581,30 +583,35 @@ export default function ModelViewer({
           </SilentErrorBoundary>
 
           {/* Kontrol overlay */}
-          <div className="absolute right-3 top-3 z-10 flex flex-col gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Reset kamera"
-              title="Reset kamera"
-              onClick={resetCamera}
-              className="h-9 w-9 rounded-lg border-brand-line bg-white/90 text-brand-ink shadow-sm backdrop-blur hover:bg-white"
-            >
-              <RotateCcw className="h-4 w-4" aria-hidden />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label={spin ? "Matikan rotasi otomatis" : "Aktifkan rotasi otomatis"}
-              title={spin ? "Matikan rotasi otomatis" : "Aktifkan rotasi otomatis"}
-              onClick={() => setSpin((s) => !s)}
-              className="h-9 w-9 rounded-lg border-brand-line bg-white/90 text-brand-ink shadow-sm backdrop-blur hover:bg-white"
-            >
-              {spin ? <Pause className="h-4 w-4" aria-hidden /> : <Rotate3d className="h-4 w-4" aria-hidden />}
-            </Button>
-          </div>
+          {!hideControls && (
+            <div className="absolute right-3 top-3 z-10 flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label="Reset kamera"
+                title="Reset kamera"
+                onClick={resetCamera}
+                className="h-9 w-9 rounded-lg border-brand-line bg-white/90 text-brand-ink shadow-sm backdrop-blur hover:bg-white"
+              >
+                <RotateCcw className="h-4 w-4" aria-hidden />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label={spin ? "Matikan rotasi otomatis" : "Aktifkan rotasi otomatis"}
+                title={spin ? "Matikan rotasi otomatis" : "Aktifkan rotasi otomatis"}
+                onClick={() => setSpin((s) => !s)}
+                className={cn(
+                  "h-9 w-9 rounded-lg border-brand-line bg-white/90 text-brand-ink shadow-sm backdrop-blur hover:bg-white",
+                  spin && "text-brand-teal"
+                )}
+              >
+                {spin ? <Pause className="h-4 w-4" aria-hidden /> : <Rotate3d className="h-4 w-4" aria-hidden />}
+              </Button>
+            </div>
+          )}
 
           {/* Panel hotspot */}
           {openHotspot && (

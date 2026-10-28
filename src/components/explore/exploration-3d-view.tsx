@@ -428,34 +428,34 @@ export default function Exploration3DView() {
               <div className="lg:col-span-7 space-y-3">
                 <div className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-[#FAF7F2] shadow-inner p-2 sm:p-3">
                   {/* Floating Action Toolbar di Kanvas */}
-                  <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-stone-200/80 shadow-md">
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-stone-200/90 shadow-md">
                     <button
                       type="button"
                       onClick={() => setIsAutoRotate((prev) => !prev)}
                       className={cn(
-                        "flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold transition-all",
+                        "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer",
                         isAutoRotate
-                          ? "bg-amber-100 text-amber-900"
-                          : "bg-stone-100 text-stone-600 hover:text-stone-900"
+                          ? "bg-[#6E472D] text-white shadow-2xs"
+                          : "bg-stone-100 text-stone-700 hover:text-stone-900"
                       )}
                       title={isAutoRotate ? "Jeda Rotasi Otomatis" : "Mulai Rotasi Otomatis"}
                     >
-                      {isAutoRotate ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
-                      <span className="hidden sm:inline">{isAutoRotate ? "Jeda" : "Putar"}</span>
+                      {isAutoRotate ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                      <span>{isAutoRotate ? "Jeda" : "Putar"}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setModelViewerKey((k) => k + 1)}
-                      className="rounded-full p-1.5 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-                      title="Reset Pandangan Kamera"
+                      className="rounded-full p-1.5 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors cursor-pointer"
+                      title="Reset Posisi Kamera"
                     >
                       <RotateCcw className="h-3.5 w-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsFullscreenModal(true)}
-                      className="rounded-full p-1.5 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-                      title="Buka Layar Penuh (Fullscreen)"
+                      className="rounded-full p-1.5 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors cursor-pointer"
+                      title="Buka Layar Penuh"
                     >
                       <Maximize2 className="h-3.5 w-3.5" />
                     </button>
@@ -469,6 +469,7 @@ export default function Exploration3DView() {
                       className="h-[340px] xs:h-[380px] sm:h-[440px] md:h-[500px] lg:h-[520px]"
                       autoRotate={isAutoRotate}
                       showHotspots
+                      hideControls={true}
                     />
                   </div>
                 </div>
@@ -477,129 +478,126 @@ export default function Exploration3DView() {
                 <div className="rounded-xl bg-[#F8F4EC] border border-[#E9DECE] px-4 py-2.5 text-xs text-stone-600 flex flex-wrap items-center justify-between gap-3">
                   <span className="flex items-center gap-2 text-stone-700">
                     <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-                    <strong className="font-medium text-[#2D1E12]">Kanvas 360° Interaktif:</strong> Seret mouse/layar sentuh untuk memutar, gulir untuk zoom, &amp; klik nomor emas untuk membedah anatomi rangka.
+                    <strong className="font-medium text-[#2D1E12]">Kanvas 360° Interaktif:</strong> Seret mouse untuk memutar, gulir untuk zoom, &amp; klik nomor emas untuk anatomi rangka.
                   </span>
-                  <span className="inline-block text-[11px] text-[#8A5B38] font-mono bg-[#8A5B38]/10 px-2 py-0.5 rounded-md">
-                    {activeHouse.modelUrl.split("/").pop()}
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A5B38] bg-[#8A5B38]/10 px-2.5 py-0.5 rounded-full">
+                    Model 3D Interaktif
                   </span>
                 </div>
               </div>
 
               {/* KOLOM KANAN: EDITORIAL SCHOLARSHIP & SPESIFIKASI ARSITEKTUR */}
-              <div className="lg:col-span-5 space-y-5">
+              <div className="lg:col-span-5 space-y-4">
                 {/* Header Identitas Rumah */}
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline" className="border-[#6E472D]/30 bg-[#6E472D]/5 text-[#6E472D] font-semibold text-xs">
+                    <Badge variant="outline" className="border-[#6E472D]/30 bg-[#6E472D]/10 text-[#6E472D] font-bold text-xs px-3 py-1">
                       <MapPin className="h-3 w-3 mr-1" />
                       {activeHouse.province}
                     </Badge>
-                    <Badge variant="secondary" className="bg-[#F5EFE4] text-stone-700 border border-[#E2D6C5] text-xs font-medium">
+                    <Badge variant="secondary" className="bg-[#FAF6EE] text-stone-700 border border-[#E2D6C5] text-xs font-semibold px-2.5 py-1">
                       Suku {activeHouse.ethnicGroup}
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#FAF6EE] text-[#6E472D] border border-[#E2D6C5] text-xs font-medium">
-                      Wilayah {activeHouse.islandRegion}
                     </Badge>
                   </div>
 
                   <div>
-                    <h3 className="font-serif text-3xl font-bold text-[#2D1E12] tracking-tight">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D1E12] tracking-tight">
                       {activeHouse.title}
                     </h3>
-                    <p className="text-xs italic text-[#7A4B29] font-serif mt-0.5">
-                      Nama vernakular: {activeHouse.indigenousName}
+                    <p className="text-xs font-semibold text-[#8A5B38] mt-1">
+                      Nama vernakular: <span className="italic">{activeHouse.indigenousName}</span>
                     </p>
                   </div>
 
-                  <p className="text-stone-600 text-sm leading-relaxed pt-1">
+                  <p className="text-stone-700 text-sm sm:text-[15px] leading-relaxed pt-1">
                     {viewerItem.summary}
                   </p>
                 </div>
 
                 {/* KUTIPAN FILOSOFI ADAT LELUHUR */}
-                <div className="relative rounded-xl border-l-4 border-[#6E472D] bg-gradient-to-r from-[#FAF4E8] to-[#F5ECE0] p-4 text-xs sm:text-sm text-stone-800">
-                  <p className="font-bold text-[11px] uppercase tracking-[0.16em] text-[#7A4B29] mb-1">
+                <div className="rounded-2xl border border-[#E6DCD0] bg-[#FAF7F2] p-4 text-sm text-stone-800 shadow-2xs">
+                  <p className="font-bold text-[11px] uppercase tracking-wider text-[#8A5B38] mb-1.5">
                     Falsafah Ruang &amp; Adat Leluhur
                   </p>
-                  <blockquote className="font-serif italic text-stone-700 leading-relaxed">
-                    {activeHouse.philosophy}
+                  <blockquote className="font-serif italic text-[#3D2817] text-sm sm:text-[15px] leading-relaxed">
+                    &ldquo;{activeHouse.philosophy}&rdquo;
                   </blockquote>
                 </div>
 
-                {/* GRID 2x2 SPESIFIKASI ANATOMI ARSITEKTUR (EDITORIAL HAIRLINE TANPA KOTAK BERTUMPUK) */}
-                <div className="space-y-3 pt-1">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 block">
+                {/* SPESIFIKASI ARSITEKTUR BERSIH, LEGA, & MUDAH DIBACA */}
+                <div className="space-y-2.5 pt-1">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
                     Karakteristik &amp; Rekayasa Tradisi
                   </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-xs">
-                    {/* Spec 1: Struktur & Pondasi */}
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {/* Spec 1: Sambungan */}
+                    <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Hammer className="h-3.5 w-3.5" />
                         <span>Sistem Sambungan</span>
                       </div>
-                      <p className="text-stone-600 leading-relaxed">
+                      <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.structure}
                       </p>
                     </div>
 
-                    {/* Spec 2: Material Alami */}
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                    {/* Spec 2: Material */}
+                    <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <TreePine className="h-3.5 w-3.5" />
                         <span>Material Tradisional</span>
                       </div>
-                      <p className="text-stone-600 leading-relaxed">
+                      <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.material}
                       </p>
                     </div>
 
                     {/* Spec 3: Geometri Atap */}
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                    <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Compass className="h-3.5 w-3.5" />
                         <span>Bentuk &amp; Geometri Atap</span>
                       </div>
-                      <p className="text-stone-600 leading-relaxed">
+                      <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.roofGeometry}
                       </p>
                     </div>
 
-                    {/* Spec 4: Fungsi Ruang Sakral */}
-                    <div className="border-t border-[#DFD3C2] pt-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold">
+                    {/* Spec 4: Fungsi Ruang */}
+                    <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
+                      <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Building2 className="h-3.5 w-3.5" />
                         <span>Fungsi Ruang &amp; Adat</span>
                       </div>
-                      <p className="text-stone-600 leading-relaxed">
+                      <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.sacredFunction}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Tautan ke Ensiklopedia Budaya & Pintasan ke Studio Musik */}
-                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                  <Button
-                    asChild
-                    className="w-full sm:w-auto btn-waranusa rounded-full text-white px-6 text-xs sm:text-sm font-semibold shadow-sm"
-                  >
-                    <Link href={`#/budaya/${activeHouse.slug}`}>
-                      Pelajari Sejarah &amp; Rujukan Ilmiah
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-
-                  {matchingInstrument && (
+                {/* Pintasan Interaktif ke Studio Musik Tradisional */}
+                <div className="pt-2">
+                  {matchingInstrument ? (
                     <Button
                       asChild
-                      variant="outline"
-                      className="w-full sm:w-auto rounded-full border-[#DFD3C2] bg-white hover:bg-stone-50 text-[#6E472D] hover:text-[#52331E] text-xs sm:text-sm font-bold shadow-2xs gap-1.5"
+                      className="w-full sm:w-auto btn-waranusa rounded-full text-white px-6 py-2.5 text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all gap-2"
                     >
                       <Link href={`/virtual-instruments?instrument=${matchingInstrument.id}`}>
-                        <Music4 className="h-3.5 w-3.5 text-[#7A4B29]" />
+                        <Music4 className="h-4 w-4" />
                         <span>Mainkan {matchingInstrument.title} ({activeHouse.province})</span>
-                        <ArrowRight className="h-3.5 w-3.5" />
+                        <ArrowRight className="h-4 w-4 ml-1" />
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      className="w-full sm:w-auto btn-waranusa rounded-full text-white px-6 py-2.5 text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all gap-2"
+                    >
+                      <Link href="/virtual-instruments">
+                        <Music4 className="h-4 w-4" />
+                        <span>Buka Studio Instrumen Tradisional</span>
+                        <ArrowRight className="h-4 w-4 ml-1" />
                       </Link>
                     </Button>
                   )}
@@ -640,11 +638,13 @@ export default function Exploration3DView() {
                     </Button>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="outline"
                       onClick={() => setIsFullscreenModal(false)}
-                      className="text-stone-300 hover:text-white hover:bg-stone-800 rounded-full h-8 w-8 p-0"
+                      className="border-stone-700 bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                      title="Keluar dari layar penuh"
                     >
-                      <X className="h-5 w-5" />
+                      <X className="h-4 w-4" />
+                      <span>Keluar</span>
                     </Button>
                   </div>
                 </div>
@@ -656,6 +656,7 @@ export default function Exploration3DView() {
                       height="100%"
                       autoRotate={isAutoRotate}
                       showHotspots
+                      hideControls={true}
                       className="h-full w-full min-h-[300px]"
                     />
                   </div>
