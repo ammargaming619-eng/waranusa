@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { usePathname } from "next/navigation";
 import {
   X,
   Send,
@@ -456,28 +457,14 @@ function AngklungMascotIllustration({ className }: { className?: string }) {
 
 export function UnifiedAssistantWidget() {
   const { language, t } = useTranslation();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthPage, setIsAuthPage] = useState(false);
 
-  useEffect(() => {
-    const checkRoute = () => {
-      const hash = typeof window !== "undefined" ? window.location.hash : "";
-      const path = typeof window !== "undefined" ? window.location.pathname : "";
-      setIsAuthPage(
-        hash.startsWith("#/login") ||
-        hash.startsWith("#/masuk") ||
-        path.startsWith("/login") ||
-        path.startsWith("/masuk")
-      );
-    };
-    checkRoute();
-    window.addEventListener("hashchange", checkRoute);
-    window.addEventListener("popstate", checkRoute);
-    return () => {
-      window.removeEventListener("hashchange", checkRoute);
-      window.removeEventListener("popstate", checkRoute);
-    };
-  }, []);
+  // Sembunyikan secara absolut di rute /admin/* dan auth (/login, /masuk)
+  const isHashAdmin = typeof window !== "undefined" && window.location.hash.startsWith("#/admin");
+  const isHashAuth = typeof window !== "undefined" && (window.location.hash.startsWith("#/login") || window.location.hash.startsWith("#/masuk"));
+  const isAdmin = Boolean((pathname && pathname.startsWith("/admin")) || isHashAdmin);
+  const isAuthPage = Boolean((pathname && (pathname.startsWith("/login") || pathname.startsWith("/masuk"))) || isHashAuth);
 
   const welcomeText = t(
     "chat.welcome_initial",
@@ -686,7 +673,7 @@ export function UnifiedAssistantWidget() {
     } catch {}
   };
 
-  if (isAuthPage) return null;
+  if (isAdmin || isAuthPage) return null;
 
   return (
     <>

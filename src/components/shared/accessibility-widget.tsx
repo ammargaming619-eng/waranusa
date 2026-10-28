@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { X, RotateCcw, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n-store";
@@ -295,34 +296,18 @@ function StepIndicator({
 
 export function AccessibilityWidget() {
   const { language, t } = useTranslation();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAuthPage, setIsAuthPage] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeProfile, setActiveProfile] = useState<AccessibilityProfile>(null);
   const [profilesOpen, setProfilesOpen] = useState(false);
 
-  useEffect(() => {
-    const checkRoute = () => {
-      const hash = typeof window !== "undefined" ? window.location.hash : "";
-      const path = typeof window !== "undefined" ? window.location.pathname : "";
-      setIsAdmin(hash.startsWith("#/admin") || path.startsWith("/admin"));
-      setIsAuthPage(
-        hash.startsWith("#/login") ||
-        hash.startsWith("#/masuk") ||
-        path.startsWith("/login") ||
-        path.startsWith("/masuk")
-      );
-    };
-    checkRoute();
-    window.addEventListener("hashchange", checkRoute);
-    window.addEventListener("popstate", checkRoute);
-    return () => {
-      window.removeEventListener("hashchange", checkRoute);
-      window.removeEventListener("popstate", checkRoute);
-    };
-  }, []);
+  // Sembunyikan secara absolut di rute /admin/* dan auth (/login, /masuk)
+  const isHashAdmin = typeof window !== "undefined" && window.location.hash.startsWith("#/admin");
+  const isHashAuth = typeof window !== "undefined" && (window.location.hash.startsWith("#/login") || window.location.hash.startsWith("#/masuk"));
+  const isAdmin = Boolean((pathname && pathname.startsWith("/admin")) || isHashAdmin);
+  const isAuthPage = Boolean((pathname && (pathname.startsWith("/login") || pathname.startsWith("/masuk"))) || isHashAuth);
   const [state, setState] = useState<A11yState>(DEFAULT_STATE);
 
   const popoverRef = useRef<HTMLDivElement>(null);

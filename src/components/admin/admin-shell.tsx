@@ -177,7 +177,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
   );
 
   return (
-    <div className="flex min-h-screen bg-brand-soft">
+    <div className="flex min-h-screen bg-[#FBF8F1]">
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border bg-card">
         <div className="flex h-16 items-center px-4 border-b border-border">
@@ -423,7 +423,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 bg-[#FBF8F1]">{children}</main>
       </div>
     </div>
   );
