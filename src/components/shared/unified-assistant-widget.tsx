@@ -457,6 +457,27 @@ function AngklungMascotIllustration({ className }: { className?: string }) {
 export function UnifiedAssistantWidget() {
   const { language, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthPage, setIsAuthPage] = useState(false);
+
+  useEffect(() => {
+    const checkRoute = () => {
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      const path = typeof window !== "undefined" ? window.location.pathname : "";
+      setIsAuthPage(
+        hash.startsWith("#/login") ||
+        hash.startsWith("#/masuk") ||
+        path.startsWith("/login") ||
+        path.startsWith("/masuk")
+      );
+    };
+    checkRoute();
+    window.addEventListener("hashchange", checkRoute);
+    window.addEventListener("popstate", checkRoute);
+    return () => {
+      window.removeEventListener("hashchange", checkRoute);
+      window.removeEventListener("popstate", checkRoute);
+    };
+  }, []);
 
   const welcomeText = t(
     "chat.welcome_initial",
@@ -664,6 +685,8 @@ export function UnifiedAssistantWidget() {
       sessionStorage.removeItem(CHAT_STORAGE_KEY);
     } catch {}
   };
+
+  if (isAuthPage) return null;
 
   return (
     <>

@@ -298,21 +298,29 @@ export function AccessibilityWidget() {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthPage, setIsAuthPage] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeProfile, setActiveProfile] = useState<AccessibilityProfile>(null);
   const [profilesOpen, setProfilesOpen] = useState(false);
 
   useEffect(() => {
-    const checkAdmin = () => {
+    const checkRoute = () => {
       const hash = typeof window !== "undefined" ? window.location.hash : "";
-      setIsAdmin(hash.startsWith("#/admin"));
+      const path = typeof window !== "undefined" ? window.location.pathname : "";
+      setIsAdmin(hash.startsWith("#/admin") || path.startsWith("/admin"));
+      setIsAuthPage(
+        hash.startsWith("#/login") ||
+        hash.startsWith("#/masuk") ||
+        path.startsWith("/login") ||
+        path.startsWith("/masuk")
+      );
     };
-    checkAdmin();
-    window.addEventListener("hashchange", checkAdmin);
-    window.addEventListener("popstate", checkAdmin);
+    checkRoute();
+    window.addEventListener("hashchange", checkRoute);
+    window.addEventListener("popstate", checkRoute);
     return () => {
-      window.removeEventListener("hashchange", checkAdmin);
-      window.removeEventListener("popstate", checkAdmin);
+      window.removeEventListener("hashchange", checkRoute);
+      window.removeEventListener("popstate", checkRoute);
     };
   }, []);
   const [state, setState] = useState<A11yState>(DEFAULT_STATE);
@@ -743,7 +751,7 @@ export function AccessibilityWidget() {
     t("a11y.contrast_invert", "Invert"),
   ];
 
-  if (isAdmin) return null;
+  if (isAdmin || isAuthPage) return null;
 
   return (
     <div data-a11y-ignore className="select-none">
