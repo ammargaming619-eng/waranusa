@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { X, RotateCcw } from "lucide-react";
+import { X, RotateCcw, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n-store";
 
@@ -168,6 +168,97 @@ function AlignLeftIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+/** Ikon Kursi Roda (Gangguan Motorik) */
+function WheelchairIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="12" cy="4" r="2" fill="currentColor" stroke="none" />
+      <path d="M12 6V13L16 17" />
+      <path d="M9 11H14" />
+      <path d="M17 19C15.8954 20.2227 14.0435 21 12 21C8.13401 21 5 17.866 5 14C5 10.6067 7.42371 7.77885 10.627 7.12646" />
+    </svg>
+  );
+}
+
+/** Ikon Tetes Kontras (Buta Warna) */
+function DropletContrastIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+      <path d="M12 2.69V22a8 8 0 0 0 5.66-2.34A8 8 0 0 0 17.66 8.35z" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Ikon Mata (Gangguan Penglihatan) */
+function EyeVisionIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Ikon Otak (Kejang dan Epilepsi) */
+function BrainIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z" />
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z" />
+    </svg>
+  );
+}
+
+/** Ikon Keping Puzzle (Kognitif & Pembelajaran) */
+function PuzzleIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
+      <path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z" />
+    </svg>
+  );
+}
+
+/** Ikon Target Konsentris (ADHD) */
+function TargetADHDIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export type AccessibilityProfile =
+  | "motor"
+  | "blind"
+  | "colorblind"
+  | "dyslexia"
+  | "lowvision"
+  | "cognitive"
+  | "epilepsy"
+  | "adhd"
+  | null;
+
+interface ProfileDef {
+  id: NonNullable<AccessibilityProfile>;
+  labelId: string;
+  labelEn: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const PROFILES: ProfileDef[] = [
+  { id: "motor", labelId: "Gangguan Motorik", labelEn: "Motor Impairment", icon: WheelchairIcon },
+  { id: "blind", labelId: "Netra Total", labelEn: "Blindness", icon: VoiceWaveIcon },
+  { id: "colorblind", labelId: "Buta Warna", labelEn: "Color Blindness", icon: DropletContrastIcon },
+  { id: "dyslexia", labelId: "Disleksia", labelEn: "Dyslexia", icon: DyslexicDfIcon },
+  { id: "lowvision", labelId: "Gangguan Penglihatan", labelEn: "Low Vision", icon: EyeVisionIcon },
+  { id: "cognitive", labelId: "Kognitif & Belajar", labelEn: "Cognitive", icon: PuzzleIcon },
+  { id: "epilepsy", labelId: "Kejang & Epilepsi", labelEn: "Seizure Safe", icon: BrainIcon },
+  { id: "adhd", labelId: "ADHD", labelEn: "ADHD Friendly", icon: TargetADHDIcon },
+];
+
 // =========================================================================
 // KOMPONEN INDIKATOR BATANG TINGKAT ("UKURAN" SESUAI REFERENSI FOTO)
 // =========================================================================
@@ -208,6 +299,8 @@ export function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [activeProfile, setActiveProfile] = useState<AccessibilityProfile>(null);
+  const [profilesOpen, setProfilesOpen] = useState(false);
 
   useEffect(() => {
     const checkAdmin = () => {
@@ -482,11 +575,119 @@ export function AccessibilityWidget() {
 
   // 10. Rata Kiri Teks (Toggle)
   const handleToggleTextAlign = () => {
+    setActiveProfile(null);
     updateState((prev) => ({ ...prev, textAlignLeft: !prev.textAlignLeft }));
+  };
+
+  // Penerapan Profil Aksesibilitas Terpadu (Preskriptif Sesuai Kebutuhan Khusus)
+  const handleSelectProfile = (profileId: NonNullable<AccessibilityProfile>) => {
+    if (activeProfile === profileId) {
+      setActiveProfile(null);
+      handleReset();
+      return;
+    }
+
+    setActiveProfile(profileId);
+
+    // Hentikan suara jika sedang aktif sebelum berganti profil
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+
+    let nextState: A11yState = { ...DEFAULT_STATE };
+
+    switch (profileId) {
+      case "motor":
+        // Gangguan Motorik: Kursor besar, tautan jelas digarisbawahi, teks & baris lebih lega untuk navigasi stabil
+        nextState = {
+          ...DEFAULT_STATE,
+          largeCursor: true,
+          underlineLinks: true,
+          fontStep: 1,
+          lineHeightStep: 1,
+        };
+        break;
+      case "blind":
+        // Netra Total: Tautan digarisbawahi & aktifkan pembacaan teks otomatis (TTS)
+        nextState = {
+          ...DEFAULT_STATE,
+          underlineLinks: true,
+        };
+        setTimeout(() => {
+          toggleVoiceMode();
+        }, 150);
+        break;
+      case "colorblind":
+        // Buta Warna: Kontras tinggi dipertegas, tautan diberi garis bawah
+        nextState = {
+          ...DEFAULT_STATE,
+          contrastStep: 1,
+          underlineLinks: true,
+        };
+        break;
+      case "dyslexia":
+        // Disleksia: Tipografi khusus disleksia, teks rata kiri, spasi & tinggi baris diperlebar
+        nextState = {
+          ...DEFAULT_STATE,
+          dyslexicFont: true,
+          textAlignLeft: true,
+          lineHeightStep: 2,
+          letterSpacingStep: 2,
+        };
+        break;
+      case "lowvision":
+        // Gangguan Penglihatan: Teks diperbesar (130%), kontras tinggi, tinggi baris lega, kursor besar
+        nextState = {
+          ...DEFAULT_STATE,
+          fontStep: 3,
+          contrastStep: 1,
+          lineHeightStep: 2,
+          largeCursor: true,
+        };
+        break;
+      case "cognitive":
+        // Kognitif & Belajar: Redam animasi bergerak, garis bawahi link, teks rata kiri, spasi lega
+        nextState = {
+          ...DEFAULT_STATE,
+          pauseAnimations: true,
+          underlineLinks: true,
+          textAlignLeft: true,
+          letterSpacingStep: 1,
+        };
+        break;
+      case "epilepsy":
+        // Kejang & Epilepsi: Matikan semua animasi & efek gerak seketika, reduksi saturasi agresif
+        nextState = {
+          ...DEFAULT_STATE,
+          pauseAnimations: true,
+          contrastStep: 2,
+        };
+        break;
+      case "adhd":
+        // ADHD: Minimalkan distraksi (jeda animasi), fokus teks rata kiri dengan spasi baris teratur
+        nextState = {
+          ...DEFAULT_STATE,
+          pauseAnimations: true,
+          textAlignLeft: true,
+          lineHeightStep: 1,
+          letterSpacingStep: 1,
+        };
+        break;
+    }
+
+    setState(nextState);
+    applyDOMState(nextState);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    } catch {
+      // noop
+    }
   };
 
   // Reset Semua Pengaturan
   const handleReset = () => {
+    setActiveProfile(null);
     setState(DEFAULT_STATE);
     applyDOMState(DEFAULT_STATE);
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -501,6 +702,7 @@ export function AccessibilityWidget() {
   };
 
   const hasAnyActive =
+    activeProfile !== null ||
     state.fontStep > 0 ||
     state.lineHeightStep > 0 ||
     state.letterSpacingStep > 0 ||
@@ -629,6 +831,107 @@ export function AccessibilityWidget() {
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
+          </div>
+
+          {/* ============ 1.5 ACCORDION PROFIL AKSESIBILITAS ============ */}
+          <div className="border-b border-stone-200/90 bg-[#FAF7F2]">
+            <button
+              type="button"
+              onClick={() => setProfilesOpen((prev) => !prev)}
+              aria-expanded={profilesOpen}
+              className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#F5EFEB]/70 transition-colors text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#2D1E12] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:bg-[#6E472D] transition-colors">
+                  <AccessibilityIcon className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-stone-800 tracking-tight block">
+                    {language === "EN" ? "Profil Aksesibilitas" : "Profil Aksesibilitas"}
+                  </span>
+                  {activeProfile ? (
+                    <span className="text-[11px] font-semibold text-[#8C5E3C] block leading-none mt-0.5">
+                      {language === "EN" ? "Aktif: " : "Aktif: "}
+                      {PROFILES.find((p) => p.id === activeProfile)?.[language === "EN" ? "labelEn" : "labelId"]}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-stone-500 block leading-none mt-0.5">
+                      {language === "EN" ? "Sesuaikan dengan kebutuhan khusus" : "Sesuaikan dengan kebutuhan khusus"}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-stone-400 group-hover:text-stone-700 transition-colors">
+                {profilesOpen ? (
+                  <ChevronDown className="w-5 h-5 text-stone-600 transition-transform duration-200" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-stone-600 transition-transform duration-200" />
+                )}
+              </div>
+            </button>
+
+            {/* Konten Accordion Terbuka: Grid 8 Profil */}
+            {profilesOpen && (
+              <div className="p-3 pt-1 pb-3.5 bg-[#F5EFEB]/50 border-t border-stone-200/60 animate-in fade-in slide-in-from-top-2 duration-150">
+                <p className="text-[11px] text-stone-500 mb-2.5 px-1 font-medium">
+                  {language === "EN"
+                    ? "Pilih profil untuk mengaktifkan pengaturan otomatis yang sesuai kebutuhan:"
+                    : "Pilih profil untuk mengaktifkan pengaturan otomatis yang sesuai kebutuhan:"}
+                </p>
+                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  {PROFILES.map((profile) => {
+                    const Icon = profile.icon;
+                    const isSelected = activeProfile === profile.id;
+                    return (
+                      <button
+                        key={profile.id}
+                        type="button"
+                        onClick={() => handleSelectProfile(profile.id)}
+                        className={cn(
+                          "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px] relative",
+                          isSelected
+                            ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/15"
+                            : "bg-[#FAF7F2] border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                        )}
+                        aria-pressed={isSelected}
+                      >
+                        {isSelected && (
+                          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#6E472D] ring-2 ring-amber-300" />
+                        )}
+                        <div
+                          className={cn(
+                            "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors mb-1.5",
+                            isSelected
+                              ? "bg-[#6E472D] text-white shadow-xs"
+                              : "bg-[#EAE2D8] text-[#6E472D]"
+                          )}
+                        >
+                          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </div>
+                        <span
+                          className={cn(
+                            "font-bold text-xs sm:text-[13px] leading-tight line-clamp-2",
+                            isSelected ? "text-[#6E472D]" : "text-stone-800"
+                          )}
+                        >
+                          {language === "EN" ? profile.labelEn : profile.labelId}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-[10px] mt-1 font-medium",
+                            isSelected ? "text-[#6E472D] font-semibold" : "text-stone-400"
+                          )}
+                        >
+                          {isSelected
+                            ? (language === "EN" ? "Aktif" : "Aktif")
+                            : (language === "EN" ? "Preset" : "Preset")}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ============ 2. GRID KONTROL BER-INDIKATOR TINGKAT ("UKURAN") ============ */}
