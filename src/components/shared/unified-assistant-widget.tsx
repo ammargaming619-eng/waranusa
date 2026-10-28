@@ -609,27 +609,35 @@ export function UnifiedAssistantWidget() {
     setIsAnalyzingImage(Boolean(imageToSend));
 
     try {
-      const res = await fetch("/api/chat", {
+      let res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages, language }),
       });
+
+      if (!res.ok) {
+        res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: updatedMessages, language }),
+        });
+      }
 
       if (!res.ok) throw new Error("Gagal menerima balasan");
 
       const data = await res.json();
       const defaultReply =
         language === "EN"
-          ? "Thank you for your question regarding Indonesian heritage."
-          : "Terima kasih atas pertanyaannya seputar budaya Nusantara.";
+          ? "The AI assistant connection is currently unstable. Please try again in a moment."
+          : "Koneksi asisten AI sedang tidak stabil. Silakan coba beberapa saat lagi.";
       const botReply = data.content || defaultReply;
       setMessages((prev) => [...prev, { role: "assistant", content: botReply }]);
     } catch (err) {
       console.error("[Chat Error]:", err);
       const errorMsg =
         language === "EN"
-          ? "We encountered an issue processing your request. Please try asking again."
-          : "Mohon maaf, terjadi kendala saat memproses jawaban. Silakan ajukan pertanyaan kembali.";
+          ? "The AI assistant connection is currently unstable. Please try again in a moment."
+          : "Koneksi asisten AI sedang tidak stabil. Silakan coba beberapa saat lagi.";
       setMessages((prev) => [
         ...prev,
         {

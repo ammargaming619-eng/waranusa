@@ -130,18 +130,26 @@ export function CulturalChatWidget() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      let res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages }),
       });
 
       if (!res.ok) {
+        res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: updatedMessages }),
+        });
+      }
+
+      if (!res.ok) {
         throw new Error("Gagal menerima balasan");
       }
 
       const data = await res.json();
-      const botReply = data.content || "Terima kasih atas pertanyaannya seputar budaya Nusantara.";
+      const botReply = data.content || "Koneksi asisten AI sedang tidak stabil. Silakan coba beberapa saat lagi.";
 
       setMessages((prev) => [...prev, { role: "assistant", content: botReply }]);
     } catch (err) {
@@ -151,7 +159,7 @@ export function CulturalChatWidget() {
         {
           role: "assistant",
           content:
-            "Mohon maaf, terjadi kendala saat memproses jawaban. Silakan ajukan pertanyaan kembali.",
+            "Koneksi asisten AI sedang tidak stabil. Silakan coba beberapa saat lagi.",
         },
       ]);
     } finally {
