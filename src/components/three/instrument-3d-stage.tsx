@@ -584,9 +584,16 @@ export function Instrument3DStage({
     };
   }, [stopDemo]);
 
+  const lastPlayTimeRef = React.useRef<number>(0);
+
   // Fungsi memicu nada tunggal (Strike / Pluck / Shake / Tap)
   const playNoteByIndex = React.useCallback(
     (idx: number, velocity = 0.9) => {
+      // Debounce minimal 80ms untuk mencegah double-trigger audio click
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      if (now - lastPlayTimeRef.current < 80) return;
+      lastPlayTimeRef.current = now;
+
       const note = instrument.notes[idx] ?? instrument.notes[0];
       if (!note) return;
 

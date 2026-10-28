@@ -393,180 +393,184 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
         </div>
       </div>
 
-      {/* ============ PANGGUNG 3D UTAMA (ABOVE THE FOLD) ============ */}
-      <div className="mt-3 sm:mt-4">
-        <div className="rounded-3xl border border-[#DFD3C2] bg-white/95 p-2 sm:p-5 shadow-md overflow-hidden">
-          <Instrument3DStage
-            instrument={activeInstrument}
-            volume={volume}
-            onVolumeChange={setVolume}
-          />
-        </div>
-      </div>
-
-      {/* ============ DETAIL KAJIAN & PANDUAN MULTI-INPUT (DI BAWAH FOLD) ============ */}
-      <div className="mt-8 border-t border-[#E5DACB] pt-6">
-        <div className="flex items-center gap-2 mb-4">
-          <button
-            type="button"
-            onClick={() => setActiveEditorialTab("controls")}
-            className={cn(
-              "rounded-full px-4 py-1.5 text-xs font-bold transition-all border cursor-pointer",
-              activeEditorialTab === "controls"
-                ? "bg-[#6E472D] text-white border-[#583720] shadow-xs"
-                : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50"
-            )}
-          >
-            Panduan Bermain Multi-Input
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveEditorialTab("culture")}
-            className={cn(
-              "rounded-full px-4 py-1.5 text-xs font-bold transition-all border cursor-pointer",
-              activeEditorialTab === "culture"
-                ? "bg-[#6E472D] text-white border-[#583720] shadow-xs"
-                : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50"
-            )}
-          >
-            Kajian Falsafah &amp; Organologi
-          </button>
+      {/* ============ STUDIO SPLIT VIEW: SISI KIRI 3D (~60%) & SISI KANAN ENSIKLOPEDIA (~40%) ============ */}
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Sisi Kiri (~60% / 7 cols): Panggung 3D & Bilah Nada Interaktif */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="rounded-3xl border border-[#DFD3C2] bg-white/95 p-2 sm:p-4 shadow-md overflow-hidden">
+            <Instrument3DStage
+              instrument={activeInstrument}
+              volume={volume}
+              onVolumeChange={setVolume}
+            />
+          </div>
         </div>
 
-        {activeEditorialTab === "controls" ? (
-          <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
-            <CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
-                Sistem Kontrol Multi-Input ({interactionMeta.label})
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
-              <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-xs sm:text-sm text-stone-700">
-                <li className="flex items-start gap-2.5 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <MousePointerClick
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[#6E472D]"
-                    aria-hidden="true"
-                  />
-                  <span>
-                    <strong className="font-semibold text-[#2D1E12]">
-                      Mouse &amp; Layar Sentuh:
-                    </strong>{" "}
-                    {activeInstrument.mouseGuide}
-                  </span>
-                </li>
-                <li className="flex items-start gap-2.5 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <Keyboard
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[#6E472D]"
-                    aria-hidden="true"
-                  />
-                  <span>
-                    <strong className="font-semibold text-[#2D1E12]">
-                      Pintasan Keyboard Nada:
-                    </strong>{" "}
-                    Tekan tombol angka{" "}
-                    <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1.5 py-0.5 font-mono text-xs">
-                      1
-                    </kbd>
-                    –
-                    <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1.5 py-0.5 font-mono text-xs">
-                      7
-                    </kbd>{" "}
-                    untuk membunyikan 7 tingkat nada laras.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2.5 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <Sparkles
-                    className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
-                    aria-hidden="true"
-                  />
-                  <span>
-                    <strong className="font-semibold text-[#2D1E12]">
-                      Mode Kamera AI (MediaPipe Hands):
-                    </strong>{" "}
-                    {activeInstrument.cameraGuide}
-                  </span>
-                </li>
-              </ol>
+        {/* Sisi Kanan (~40% / 5 cols): Ringkasan Ensiklopedia & Organologi Budaya */}
+        <div className="lg:col-span-5 space-y-3">
+          {/* Tab Pemilih Kajian vs Kontrol */}
+          <div className="flex items-center gap-1.5 p-1 bg-stone-100/80 rounded-full border border-stone-200/80 w-fit">
+            <button
+              type="button"
+              onClick={() => setActiveEditorialTab("culture")}
+              className={cn(
+                "rounded-full px-3.5 py-1 text-xs font-bold transition-all cursor-pointer",
+                activeEditorialTab === "culture"
+                  ? "bg-[#6E472D] text-white shadow-xs"
+                  : "text-stone-600 hover:text-stone-900"
+              )}
+            >
+              Kajian Falsafah &amp; Organologi
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveEditorialTab("controls")}
+              className={cn(
+                "rounded-full px-3.5 py-1 text-xs font-bold transition-all cursor-pointer",
+                activeEditorialTab === "controls"
+                  ? "bg-[#6E472D] text-white shadow-xs"
+                  : "text-stone-600 hover:text-stone-900"
+              )}
+            >
+              Panduan Multi-Input
+            </button>
+          </div>
 
-              <div className="space-y-2 pt-2 max-w-sm">
-                <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="volume-studio"
-                    className="text-xs sm:text-sm font-semibold text-[#2D1E12]"
+          {activeEditorialTab === "culture" ? (
+            <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
+              <CardHeader className="pb-2 px-4 sm:px-5 pt-4 sm:pt-5">
+                <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
+                  Kajian Organologi &amp; Falsafah {activeInstrument.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3.5 text-xs sm:text-sm leading-relaxed text-stone-600 px-4 sm:px-5 pb-4 sm:pb-5">
+                <blockquote className="rounded-2xl border-l-4 border-[#6E472D] bg-[#FAF6EE] p-3.5 font-serif italic text-stone-700">
+                  &ldquo;{activeInstrument.philosophy}&rdquo;
+                </blockquote>
+
+                <div className="space-y-2 pt-1">
+                  <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
+                      Sistem Tangga Nada
+                    </span>
+                    <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.tuningSystem}</strong>
+                  </div>
+                  <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
+                      Material Akustik
+                    </span>
+                    <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.materialAcoustic}</strong>
+                  </div>
+                  <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
+                      Fungsi Ritus &amp; Ansambel
+                    </span>
+                    <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.ensembleFunction}</strong>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-stone-200/60">
+                  <p className="flex items-center gap-1.5 text-[11px] text-stone-500">
+                    <BookOpen className="h-3.5 w-3.5 text-[#6E472D]" aria-hidden="true" />
+                    Portal Budaya Kemdikbudristek RI
+                  </p>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="rounded-full btn-waranusa font-bold text-white text-xs px-4 shadow-xs"
                   >
-                    Volume Master Studio
-                  </Label>
-                  <span
-                    className="text-xs sm:text-sm font-bold text-[#7A4B29]"
-                    aria-live="polite"
-                  >
-                    {Math.round(volume * 100)}%
-                  </span>
+                    <a href={`#/budaya/${activeInstrument.slug}`}>
+                      Buka Lembar Ensiklopedia
+                      <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  </Button>
                 </div>
-                <Slider
-                  id="volume-studio"
-                  value={[volume]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(v) => setVolume(v[0] ?? 0.78)}
-                  aria-label="Kenyaringan instrumen"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
-            <CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
-                Kajian Organologi &amp; Falsafah {activeInstrument.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-xs sm:text-sm leading-relaxed text-stone-600 px-4 sm:px-6 pb-4 sm:pb-6">
-              <blockquote className="rounded-2xl border-l-4 border-[#6E472D] bg-[#FAF6EE] p-4 font-serif italic text-stone-700">
-                &ldquo;{activeInstrument.philosophy}&rdquo;
-              </blockquote>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
+              <CardHeader className="pb-2 px-4 sm:px-5 pt-4 sm:pt-5">
+                <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
+                  Sistem Kontrol Multi-Input ({interactionMeta.label})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 px-4 sm:px-5 pb-4 sm:pb-5">
+                <ol className="space-y-2.5 text-xs sm:text-[13px] text-stone-700">
+                  <li className="flex items-start gap-2 rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-3">
+                    <MousePointerClick
+                      className="mt-0.5 h-4 w-4 shrink-0 text-[#6E472D]"
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <strong className="font-semibold text-[#2D1E12]">
+                        Mouse &amp; Layar Sentuh:
+                      </strong>{" "}
+                      {activeInstrument.mouseGuide}
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2 rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-3">
+                    <Keyboard
+                      className="mt-0.5 h-4 w-4 shrink-0 text-[#6E472D]"
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <strong className="font-semibold text-[#2D1E12]">
+                        Pintasan Keyboard Nada:
+                      </strong>{" "}
+                      Tekan tombol angka{" "}
+                      <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1 py-0.5 font-mono text-xs">
+                        1
+                      </kbd>
+                      –
+                      <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1 py-0.5 font-mono text-xs">
+                        7
+                      </kbd>{" "}
+                      untuk membunyikan bilah nada.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2 rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-3">
+                    <Sparkles
+                      className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <strong className="font-semibold text-[#2D1E12]">
+                        Mode Kamera AI (MediaPipe):
+                      </strong>{" "}
+                      {activeInstrument.cameraGuide}
+                    </span>
+                  </li>
+                </ol>
 
-              <div className="grid gap-3 sm:grid-cols-3 pt-1">
-                <div className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
-                    Sistem Tangga Nada
-                  </span>
-                  <strong className="text-stone-800 text-xs sm:text-sm">{activeInstrument.specs.tuningSystem}</strong>
+                <div className="space-y-1.5 pt-2 max-w-sm">
+                  <div className="flex items-center justify-between">
+                    <Label
+                      htmlFor="volume-studio"
+                      className="text-xs font-semibold text-[#2D1E12]"
+                    >
+                      Volume Master Studio
+                    </Label>
+                    <span
+                      className="text-xs font-bold text-[#7A4B29]"
+                      aria-live="polite"
+                    >
+                      {Math.round(volume * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    id="volume-studio"
+                    value={[volume]}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    onValueChange={(v) => setVolume(v[0] ?? 0.78)}
+                    aria-label="Kenyaringan instrumen"
+                  />
                 </div>
-                <div className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
-                    Material Akustik
-                  </span>
-                  <strong className="text-stone-800 text-xs sm:text-sm">{activeInstrument.specs.materialAcoustic}</strong>
-                </div>
-                <div className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
-                    Fungsi Ritus &amp; Ansambel
-                  </span>
-                  <strong className="text-stone-800 text-xs sm:text-sm">{activeInstrument.specs.ensembleFunction}</strong>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-stone-200/60">
-                <p className="flex items-center gap-1.5 text-xs text-stone-500">
-                  <BookOpen className="h-4 w-4 text-[#6E472D]" aria-hidden="true" />
-                  Rujukan: Portal Warisan Budaya Takbenda Kemdikbudristek RI
-                </p>
-                <Button
-                  asChild
-                  size="sm"
-                  className="rounded-full btn-waranusa font-bold text-white text-xs px-5 shadow-xs"
-                >
-                  <a href={`#/budaya/${activeInstrument.slug}`}>
-                    Buka Lembar Ensiklopedia {activeInstrument.title}
-                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </motion.div>
   );

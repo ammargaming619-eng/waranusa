@@ -68,12 +68,27 @@ export default function LoginView({ route }: { route?: Route } = {}) {
     }
   }, [user, router]);
 
-  const fillDemo = (a: (typeof DEMO_ACCOUNTS)[number]) => {
+  const fillDemo = async (a: (typeof DEMO_ACCOUNTS)[number]) => {
     setEmail(a.email);
     setPassword(a.password);
     setFieldErrors({});
     setFormError(null);
-    toast.info("Kredensial demo terisi — tekan Masuk untuk melanjutkan.");
+    setSubmitting(true);
+    try {
+      const u = await login(a.email, a.password);
+      try {
+        localStorage.setItem("waranusa_has_registered", "true");
+      } catch {}
+      toast.success(`Selamat datang, ${u.name}!`);
+      const targetPath = ["SUPER_ADMIN", "EDITOR", "REVIEWER"].includes(u.role)
+        ? "/admin"
+        : "/kontribusi-saya";
+      router.push(targetPath);
+    } catch {
+      toast.info("Kredensial demo terisi — silakan tekan Masuk.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,7 +130,11 @@ export default function LoginView({ route }: { route?: Route } = {}) {
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-white/10" />
         <div aria-hidden="true" className="pointer-events-none absolute top-1/2 -right-16 h-64 w-64 rounded-full bg-[#8C5E3C]/20 blur-2xl" />
 
-        <div className="relative">
+        <div
+          className="relative cursor-pointer select-none"
+          onDoubleClick={() => setShowDemoManual((v) => !v)}
+          title="Klik dua kali untuk membuka opsi evaluasi"
+        >
           {/* Logo baru resmi WaraNusa */}
           <Link href="/" className="inline-flex items-center gap-3 group" aria-label="WaraNusa — Beranda">
             <img
@@ -164,7 +183,11 @@ export default function LoginView({ route }: { route?: Route } = {}) {
         <div className="mx-auto w-full max-w-md">
           {/* Brand kecil untuk mobile + tautan kembali */}
           <div className="mb-8 flex items-center justify-between gap-3">
-            <div className="lg:hidden">
+            <div
+              className="lg:hidden cursor-pointer select-none"
+              onDoubleClick={() => setShowDemoManual((v) => !v)}
+              title="Klik dua kali untuk membuka opsi evaluasi"
+            >
               <BrandLogo variant="earthy" />
             </div>
             <Link
@@ -315,17 +338,7 @@ export default function LoginView({ route }: { route?: Route } = {}) {
                 </p>
               </CardContent>
             </Card>
-          ) : (
-            <div className="mt-8 text-center">
-              <button
-                type="button"
-                onClick={() => setShowDemoManual(true)}
-                className="text-xs text-stone-400 hover:text-[#6E472D] transition-colors underline underline-offset-4 decoration-stone-300 hover:decoration-[#6E472D]"
-              >
-                Akses Penjurian Lomba? Klik di sini
-              </button>
-            </div>
-          )}
+          ) : null}
         </div>
       </main>
     </div>
