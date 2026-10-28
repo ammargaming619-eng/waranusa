@@ -254,8 +254,8 @@ const PROFILES: ProfileDef[] = [
   { id: "colorblind", labelId: "Buta Warna", labelEn: "Color Blindness", icon: DropletContrastIcon },
   { id: "dyslexia", labelId: "Disleksia", labelEn: "Dyslexia", icon: DyslexicDfIcon },
   { id: "lowvision", labelId: "Gangguan Penglihatan", labelEn: "Low Vision", icon: EyeVisionIcon },
-  { id: "cognitive", labelId: "Kognitif & Belajar", labelEn: "Cognitive", icon: PuzzleIcon },
-  { id: "epilepsy", labelId: "Kejang & Epilepsi", labelEn: "Seizure Safe", icon: BrainIcon },
+  { id: "cognitive", labelId: "Kognitif & Pembelajaran", labelEn: "Cognitive & Learning", icon: PuzzleIcon },
+  { id: "epilepsy", labelId: "Kejang dan Epilepsi", labelEn: "Seizure & Epilepsy", icon: BrainIcon },
   { id: "adhd", labelId: "ADHD", labelEn: "ADHD Friendly", icon: TargetADHDIcon },
 ];
 
@@ -834,51 +834,42 @@ export function AccessibilityWidget() {
           </div>
 
           {/* ============ 1.5 ACCORDION PROFIL AKSESIBILITAS ============ */}
-          <div className="border-b border-stone-200/90 bg-[#FAF7F2]">
+          <div className="border-b border-stone-200/80 bg-[#FAF7F2]">
             <button
               type="button"
               onClick={() => setProfilesOpen((prev) => !prev)}
               aria-expanded={profilesOpen}
-              className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#F5EFEB]/70 transition-colors text-left cursor-pointer group"
+              className="w-full px-4 py-2.5 sm:py-3 flex items-center justify-between hover:bg-[#F5EFEB]/70 transition-colors text-left cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#2D1E12] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:bg-[#6E472D] transition-colors">
-                  <AccessibilityIcon className="w-4 h-4 text-white" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#2D1E12] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:bg-[#6E472D] transition-colors">
+                  <AccessibilityIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-stone-800 tracking-tight block">
-                    {language === "EN" ? "Profil Aksesibilitas" : "Profil Aksesibilitas"}
+                  <span className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight block">
+                    Profil Aksesibilitas
                   </span>
-                  {activeProfile ? (
-                    <span className="text-[11px] font-semibold text-[#8C5E3C] block leading-none mt-0.5">
+                  {activeProfile && (
+                    <span className="text-[10px] font-semibold text-[#8C5E3C] block leading-none mt-0.5">
                       {language === "EN" ? "Aktif: " : "Aktif: "}
                       {PROFILES.find((p) => p.id === activeProfile)?.[language === "EN" ? "labelEn" : "labelId"]}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-stone-500 block leading-none mt-0.5">
-                      {language === "EN" ? "Sesuaikan dengan kebutuhan khusus" : "Sesuaikan dengan kebutuhan khusus"}
                     </span>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-stone-400 group-hover:text-stone-700 transition-colors">
+              <div className="flex items-center text-stone-500 group-hover:text-stone-800 transition-colors">
                 {profilesOpen ? (
-                  <ChevronDown className="w-5 h-5 text-stone-600 transition-transform duration-200" />
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200" />
                 ) : (
-                  <ChevronRight className="w-5 h-5 text-stone-600 transition-transform duration-200" />
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200" />
                 )}
               </div>
             </button>
 
-            {/* Konten Accordion Terbuka: Grid 8 Profil */}
+            {/* Konten Accordion Terbuka: Grid 8 Profil Lebih Kecil & Kompak Horizontal Sesuai Referensi Foto */}
             {profilesOpen && (
-              <div className="p-3 pt-1 pb-3.5 bg-[#F5EFEB]/50 border-t border-stone-200/60 animate-in fade-in slide-in-from-top-2 duration-150">
-                <p className="text-[11px] text-stone-500 mb-2.5 px-1 font-medium">
-                  {language === "EN"
-                    ? "Pilih profil untuk mengaktifkan pengaturan otomatis yang sesuai kebutuhan:"
-                    : "Pilih profil untuk mengaktifkan pengaturan otomatis yang sesuai kebutuhan:"}
-                </p>
-                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+              <div className="px-3 pb-3 pt-1 bg-[#F5EFEB]/40 border-t border-stone-200/60 animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                   {PROFILES.map((profile) => {
                     const Icon = profile.icon;
                     const isSelected = activeProfile === profile.id;
@@ -888,43 +879,30 @@ export function AccessibilityWidget() {
                         type="button"
                         onClick={() => handleSelectProfile(profile.id)}
                         className={cn(
-                          "flex flex-col items-center justify-between p-2.5 sm:p-3 rounded-2xl transition-all duration-200 cursor-pointer text-center min-h-[96px] relative",
+                          "flex items-center gap-2 px-2.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl transition-all duration-150 cursor-pointer text-left min-h-[38px] sm:min-h-[42px]",
                           isSelected
-                            ? "bg-white border-2 border-[#6E472D] shadow-sm ring-2 ring-[#6E472D]/15"
-                            : "bg-[#FAF7F2] border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-white hover:shadow-xs"
+                            ? "bg-white border-2 border-[#6E472D] shadow-xs ring-1 ring-[#6E472D]/20"
+                            : "bg-white border border-stone-200/90 hover:border-[#8C5E3C]/60 hover:bg-[#FAF7F2] hover:shadow-xs"
                         )}
                         aria-pressed={isSelected}
                       >
-                        {isSelected && (
-                          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#6E472D] ring-2 ring-amber-300" />
-                        )}
                         <div
                           className={cn(
-                            "w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors mb-1.5",
+                            "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-xs",
                             isSelected
-                              ? "bg-[#6E472D] text-white shadow-xs"
-                              : "bg-[#EAE2D8] text-[#6E472D]"
+                              ? "bg-[#6E472D] text-white"
+                              : "bg-stone-100 text-stone-700"
                           )}
                         >
-                          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <Icon className="w-3.5 h-3.5" />
                         </div>
                         <span
                           className={cn(
-                            "font-bold text-xs sm:text-[13px] leading-tight line-clamp-2",
+                            "font-bold text-[11px] sm:text-[11.5px] leading-tight line-clamp-2",
                             isSelected ? "text-[#6E472D]" : "text-stone-800"
                           )}
                         >
                           {language === "EN" ? profile.labelEn : profile.labelId}
-                        </span>
-                        <span
-                          className={cn(
-                            "text-[10px] mt-1 font-medium",
-                            isSelected ? "text-[#6E472D] font-semibold" : "text-stone-400"
-                          )}
-                        >
-                          {isSelected
-                            ? (language === "EN" ? "Aktif" : "Aktif")
-                            : (language === "EN" ? "Preset" : "Preset")}
                         </span>
                       </button>
                     );
