@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
+import { ArrowRight, ExternalLink, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -96,6 +96,37 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
   const [activeTag, setActiveTag] = useState<CulturalTag | null>(null);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 
+  // Ref container untuk layer latar belakang dekoratif (kartografi grid + siluet peta batik)
+  const bgLayerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Hormati preferensi aksesibilitas pengguna (prefers-reduced-motion)
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) return;
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (bgLayerRef.current) {
+            const scrollY = window.scrollY;
+            // Hanya aktifkan translasi saat Hero masih di dalam viewport (< 1100px)
+            if (scrollY < 1100) {
+              const translateY = Math.round(scrollY * 0.25 * 10) / 10;
+              bgLayerRef.current.style.transform = `translate3d(0, ${translateY}px, 0)`;
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="w-full select-none overflow-x-clip px-2 sm:px-4 md:px-6">
       {/* ========================================================================= */}
@@ -108,21 +139,29 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           className="pointer-events-none absolute inset-1.5 sm:inset-2.5 rounded-xl sm:rounded-2xl border border-[#CBB8A1] z-10"
         />
 
-        {/* POLA KOTAK GRID KARTOGRAFI DIGITAL */}
+        {/* ========================================================================= */}
+        {/* LAYER LATAR BELAKANG DEKORATIF DENGAN PARALLAX SCROLL PASIF RINGAN (60FPS) */}
+        {/* ========================================================================= */}
         <div
+          ref={bgLayerRef}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 opacity-55 bg-[linear-gradient(to_right,#8C5E3C18_1px,transparent_1px),linear-gradient(to_bottom,#8C5E3C18_1px,transparent_1px)] bg-[size:36px_36px] sm:bg-[size:52px_52px] md:bg-[size:64px_64px]"
-        />
+          className="pointer-events-none absolute -top-10 -bottom-10 -left-2 -right-2 z-0 will-change-transform"
+        >
+          {/* POLA KOTAK GRID KARTOGRAFI DIGITAL */}
+          <div
+            className="absolute inset-0 opacity-55 bg-[linear-gradient(to_right,#8C5E3C18_1px,transparent_1px),linear-gradient(to_bottom,#8C5E3C18_1px,transparent_1px)] bg-[size:36px_36px] sm:bg-[size:52px_52px] md:bg-[size:64px_64px]"
+          />
 
-        {/* GAMBAR PETA SEBAGAI FULL BACKGROUND (object-contain agar pulau presisi 100%) */}
-        <Image
-          src="/images/indonesia-map-batik.png"
-          alt="Peta Budaya Kepulauan Nusantara WaraNusa"
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw, 1400px"
-          className="object-contain object-center pointer-events-none select-none drop-shadow-sm"
-        />
+          {/* GAMBAR PETA SEBAGAI FULL BACKGROUND (object-contain agar pulau presisi 100%) */}
+          <Image
+            src="/images/indonesia-map-batik.png"
+            alt="Peta Budaya Kepulauan Nusantara WaraNusa"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 1400px"
+            className="object-contain object-center pointer-events-none select-none drop-shadow-sm"
+          />
+        </div>
 
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
         <div className="relative z-20 pt-3 sm:pt-5 md:pt-6 lg:pt-8 px-4 text-center max-w-2xl sm:max-w-4xl lg:max-w-5xl mx-auto">
@@ -370,7 +409,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             <div>
               <DialogHeader>
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8A5B38]">
-                  <Sparkles className="h-4 w-4" />
+                  <Compass className="h-4 w-4" aria-hidden="true" />
                   {activeTag.region}
                 </div>
                 <DialogTitle className="mt-1 font-serif text-2xl font-bold text-[#2D1E12]">
