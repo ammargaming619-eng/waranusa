@@ -187,7 +187,11 @@ function StepIndicator({
             key={i}
             className={cn(
               "h-1.5 rounded-full transition-all duration-200",
-              isActive
+              total === 1
+                ? isActive
+                  ? "w-7 sm:w-8 bg-[#6E472D] shadow-xs"
+                  : "w-7 sm:w-8 bg-stone-300/80"
+                : isActive
                 ? "w-4 sm:w-5 bg-[#6E472D] shadow-xs"
                 : "w-2.5 sm:w-3 bg-stone-300/80"
             )}
@@ -658,7 +662,7 @@ export function AccessibilityWidget() {
                   {isSpeaking ? t("a11y.voice_reading", "Membaca...") : t("a11y.voice_inactive", "Nonaktif")}
                 </span>
               </div>
-              <StepIndicator total={2} current={isSpeaking ? 2 : 0} />
+              <StepIndicator total={1} current={isSpeaking ? 1 : 0} />
             </button>
 
             {/* 2. Perbesar Teks (4 Ukuran / Steps) */}
@@ -814,7 +818,7 @@ export function AccessibilityWidget() {
                   {state.dyslexicFont ? t("a11y.status_active", "Aktif") : t("a11y.status_default", "Bawaan")}
                 </span>
               </div>
-              <StepIndicator total={2} current={state.dyslexicFont ? 2 : 0} />
+              <StepIndicator total={1} current={state.dyslexicFont ? 1 : 0} />
             </button>
 
             {/* 7. Jeda Animasi (Toggle) */}
@@ -846,7 +850,7 @@ export function AccessibilityWidget() {
                   {state.pauseAnimations ? t("a11y.status_paused", "Dijeda") : t("a11y.status_normal", "Normal")}
                 </span>
               </div>
-              <StepIndicator total={2} current={state.pauseAnimations ? 2 : 0} />
+              <StepIndicator total={1} current={state.pauseAnimations ? 1 : 0} />
             </button>
 
             {/* 8. Kursor Besar (Toggle) */}
@@ -878,7 +882,7 @@ export function AccessibilityWidget() {
                   {state.largeCursor ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
-              <StepIndicator total={2} current={state.largeCursor ? 2 : 0} />
+              <StepIndicator total={1} current={state.largeCursor ? 1 : 0} />
             </button>
 
             {/* 9. Garis Bawahi Tautan (Toggle) */}
@@ -910,7 +914,7 @@ export function AccessibilityWidget() {
                   {state.underlineLinks ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
-              <StepIndicator total={2} current={state.underlineLinks ? 2 : 0} />
+              <StepIndicator total={1} current={state.underlineLinks ? 1 : 0} />
             </button>
 
             {/* 10. Rata Kiri Teks (Toggle) */}
@@ -942,7 +946,7 @@ export function AccessibilityWidget() {
                   {state.textAlignLeft ? t("a11y.status_active", "Aktif") : t("a11y.status_standard", "Standar")}
                 </span>
               </div>
-              <StepIndicator total={2} current={state.textAlignLeft ? 2 : 0} />
+              <StepIndicator total={1} current={state.textAlignLeft ? 1 : 0} />
             </button>
           </div>
 
