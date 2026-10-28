@@ -548,39 +548,36 @@ export function UnifiedAssistantWidget() {
     }
   };
 
-  const quickChips = useMemo(
-    () => [
-      {
-        title: t("chat.quick_house", "Filosofi Rumah Gadang"),
-        prompt: t(
-          "chat.quick_house_prompt",
-          "Jelaskan filosofi arsitektur Rumah Gadang Minangkabau dan makna atap gonjongnya."
-        ),
-      },
-      {
-        title: t("chat.quick_gamelan", "Gamelan Saron & Slendro"),
-        prompt: t(
-          "chat.quick_gamelan_prompt",
-          "Bagaimana cara memainkan Gamelan Saron dan apa perbedaan laras Pelog dan Slendro?"
-        ),
-      },
-      {
-        title: t("chat.quick_batik", "Makna Ragam Motif Batik"),
-        prompt: t(
-          "chat.quick_batik_prompt",
-          "Apa filosofi dan makna di balik motif Batik Parang dan Megamendung?"
-        ),
-      },
-      {
-        title: t("chat.quick_pinisi", "Sejarah Kapal Pinisi"),
-        prompt: t(
-          "chat.quick_pinisi_prompt",
-          "Ceritakan sejarah dan keistimewaan pembuatan perahu Pinisi Bugis-Makassar."
-        ),
-      },
-    ],
-    [t]
-  );
+  const quickChips = [
+    {
+      title: t("chat.quick_house", "Filosofi Rumah Gadang"),
+      prompt: t(
+        "chat.quick_house_prompt",
+        "Jelaskan filosofi arsitektur Rumah Gadang Minangkabau dan makna atap gonjongnya."
+      ),
+    },
+    {
+      title: t("chat.quick_gamelan", "Gamelan Saron & Slendro"),
+      prompt: t(
+        "chat.quick_gamelan_prompt",
+        "Bagaimana cara memainkan Gamelan Saron dan apa perbedaan laras Pelog dan Slendro?"
+      ),
+    },
+    {
+      title: t("chat.quick_batik", "Makna Ragam Motif Batik"),
+      prompt: t(
+        "chat.quick_batik_prompt",
+        "Apa filosofi dan makna di balik motif Batik Parang dan Megamendung?"
+      ),
+    },
+    {
+      title: t("chat.quick_pinisi", "Sejarah Kapal Pinisi"),
+      prompt: t(
+        "chat.quick_pinisi_prompt",
+        "Ceritakan sejarah dan keistimewaan pembuatan perahu Pinisi Bugis-Makassar."
+      ),
+    },
+  ];
 
   // ---------------- Chat Handlers ----------------
   const handleSendMessage = async (textToSend?: string) => {
