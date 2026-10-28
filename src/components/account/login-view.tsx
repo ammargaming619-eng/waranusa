@@ -22,10 +22,38 @@ import { toast } from "sonner";
 void Sparkles;
 
 const DEMO_ACCOUNTS = [
-  { email: "admin@waranusa.id", password: "Admin#2025", role: "Super Admin" },
-  { email: "editor@waranusa.id", password: "Editor#2025", role: "Editor" },
-  { email: "reviewer@waranusa.id", password: "Reviewer#2025", role: "Reviewer" },
-  { email: "kontributor@waranusa.id", password: "Kontrib#2025", role: "Kontributor" },
+  {
+    name: "Dewan Juri UINIC 8.0",
+    email: "evaluator@waranusa.id",
+    password: "JuriUINIC#2026",
+    role: "Super Admin",
+    roleKey: "super_admin",
+    badgeClass: "border-purple-200 bg-purple-50 text-purple-800",
+  },
+  {
+    name: "Tim Pengembang WaraNusa",
+    email: "dev@waranusa.id",
+    password: "DevWaraNusa*2026",
+    role: "Editor",
+    roleKey: "editor",
+    badgeClass: "border-sky-200 bg-sky-50 text-sky-800",
+  },
+  {
+    name: "Kurator Ahli Budaya",
+    email: "kurator@waranusa.id",
+    password: "KurasiWaraNusa&26",
+    role: "Reviewer",
+    roleKey: "reviewer",
+    badgeClass: "border-amber-200 bg-amber-50 text-amber-800",
+  },
+  {
+    name: "Komunitas Budaya Daerah",
+    email: "kontributor@waranusa.id",
+    password: "MitraWaraNusa^26",
+    role: "Kontributor",
+    roleKey: "kontributor",
+    badgeClass: "border-stone-200 bg-stone-100 text-stone-700",
+  },
 ] as const;
 
 export default function LoginView({ route }: { route?: Route } = {}) {
@@ -313,20 +341,25 @@ export default function LoginView({ route }: { route?: Route } = {}) {
                 {DEMO_ACCOUNTS.map((a) => (
                   <div
                     key={a.email}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 shadow-xs"
+                    className="flex flex-wrap items-center justify-between gap-2.5 rounded-xl border border-stone-200 bg-white p-3 shadow-xs"
                   >
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#2D1E12]">{a.role}</p>
-                      <p className="truncate font-mono text-[11px] text-stone-500">
-                        {a.email} / {a.password}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-bold text-[#2D1E12] truncate">{a.name}</p>
+                        <span className={`rounded-md border px-1.5 py-0.2 text-[10px] font-semibold ${a.badgeClass}`}>
+                          {a.role}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 truncate font-mono text-[11px] text-stone-500">
+                        {a.email} <span className="text-stone-300">|</span> <span className="text-stone-600">{a.password}</span>
                       </p>
                     </div>
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={() => fillDemo(a)}
-                      className="min-h-[36px] shrink-0 rounded-full text-xs font-bold text-[#6E472D] hover:bg-[#8C5E3C]/10 hover:text-[#5C3B24]"
+                      className="min-h-[34px] shrink-0 rounded-full border-[#8C5E3C]/30 text-xs font-bold text-[#6E472D] hover:bg-[#8C5E3C]/10 hover:text-[#5C3B24] transition-all"
                     >
                       Isi otomatis
                     </Button>
@@ -334,7 +367,7 @@ export default function LoginView({ route }: { route?: Route } = {}) {
                 ))}
                 <p className="flex items-start gap-1.5 pt-1 text-[11px] text-stone-500">
                   <Lock className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
-                  Kredensial demo disediakan khusus untuk evaluasi dan pengujian sistem.
+                  Kredensial demo disediakan khusus untuk evaluasi penjurian UINIC 8.0.
                 </p>
               </CardContent>
             </Card>

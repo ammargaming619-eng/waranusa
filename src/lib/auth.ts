@@ -30,9 +30,43 @@ export function verifyPassword(plain: string, hash: string): boolean {
 const hashToken = (t: string) => createHash("sha256").update(t).digest("hex");
 
 export const DEMO_FALLBACK_USERS: Record<string, AuthUser & { plainPass: string }> = {
+  // Sesi Penjurian UINIC 8.0 — Data Evaluator Resmi
+  "evaluator@waranusa.id": {
+    id: "usr-evaluator-demo",
+    name: "Dewan Juri UINIC 8.0",
+    email: "evaluator@waranusa.id",
+    role: "SUPER_ADMIN",
+    active: true,
+    plainPass: "JuriUINIC#2026",
+  },
+  "dev@waranusa.id": {
+    id: "usr-dev-demo",
+    name: "Tim Pengembang WaraNusa",
+    email: "dev@waranusa.id",
+    role: "EDITOR",
+    active: true,
+    plainPass: "DevWaraNusa*2026",
+  },
+  "kurator@waranusa.id": {
+    id: "usr-kurator-demo",
+    name: "Kurator Ahli Budaya",
+    email: "kurator@waranusa.id",
+    role: "REVIEWER",
+    active: true,
+    plainPass: "KurasiWaraNusa&26",
+  },
+  "kontributor@waranusa.id": {
+    id: "usr-kontributor-demo",
+    name: "Komunitas Budaya Daerah",
+    email: "kontributor@waranusa.id",
+    role: "CONTRIBUTOR",
+    active: true,
+    plainPass: "MitraWaraNusa^26",
+  },
+  // Alias kredensial lama untuk backward-compatibility
   "admin@waranusa.id": {
     id: "usr-admin-demo",
-    name: "Admin WaraNusa (Demo)",
+    name: "Dewan Juri UINIC 8.0",
     email: "admin@waranusa.id",
     role: "SUPER_ADMIN",
     active: true,
@@ -40,7 +74,7 @@ export const DEMO_FALLBACK_USERS: Record<string, AuthUser & { plainPass: string 
   },
   "editor@waranusa.id": {
     id: "usr-editor-demo",
-    name: "Sari Wulandari (Demo)",
+    name: "Tim Pengembang WaraNusa",
     email: "editor@waranusa.id",
     role: "EDITOR",
     active: true,
@@ -48,19 +82,11 @@ export const DEMO_FALLBACK_USERS: Record<string, AuthUser & { plainPass: string 
   },
   "reviewer@waranusa.id": {
     id: "usr-reviewer-demo",
-    name: "Bayu Setiawan (Demo)",
+    name: "Kurator Ahli Budaya",
     email: "reviewer@waranusa.id",
     role: "REVIEWER",
     active: true,
     plainPass: "Reviewer#2025",
-  },
-  "kontributor@waranusa.id": {
-    id: "usr-kontributor-demo",
-    name: "Dewi Lestari (Demo)",
-    email: "kontributor@waranusa.id",
-    role: "CONTRIBUTOR",
-    active: true,
-    plainPass: "Kontrib#2025",
   },
 };
 

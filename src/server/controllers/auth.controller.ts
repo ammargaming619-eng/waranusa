@@ -35,23 +35,42 @@ export async function login(req: Request): Promise<Response> {
 
     // Bila user ditemukan di DB, verifikasi password hash
     if (user) {
-      if (!user.active || !verifyPassword(input.password, user.passwordHash)) {
+      const demoUser = DEMO_FALLBACK_USERS[email];
+      const isDemoPass = demoUser && input.password === demoUser.plainPass;
+      if (!user.active || (!verifyPassword(input.password, user.passwordHash) && !isDemoPass)) {
         return unauthorized("Email atau kata sandi salah.");
       }
+      if (demoUser && isDemoPass) {
+        user.name = demoUser.name;
+        user.role = demoUser.role;
+      }
     } else {
-      // Fallback demo user bila database sedang offline/tidak terhubung
+      // Fallback demo user bila user demo belum ada di DB atau DB offline
       const demoUser = DEMO_FALLBACK_USERS[email];
       if (demoUser && input.password === demoUser.plainPass) {
-        user = {
-          id: demoUser.id,
-          name: demoUser.name,
-          email: demoUser.email,
-          role: demoUser.role,
-          active: true,
-          passwordHash: "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+        try {
+          user = await db.user.create({
+            data: {
+              id: demoUser.id,
+              name: demoUser.name,
+              email: demoUser.email,
+              role: demoUser.role,
+              passwordHash: "",
+              active: true,
+            },
+          });
+        } catch {
+          user = {
+            id: demoUser.id,
+            name: demoUser.name,
+            email: demoUser.email,
+            role: demoUser.role,
+            active: true,
+            passwordHash: "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+        }
       } else {
         return unauthorized("Email atau kata sandi salah.");
       }

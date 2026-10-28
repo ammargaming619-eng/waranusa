@@ -42,19 +42,23 @@ async function main() {
   await db.region.deleteMany();
   await db.user.deleteMany();
 
-  // ============ USERS ============
+  // ============ USERS (DATA EVALUASI UINIC 8.0) ============
   const pass = (p: string) => bcrypt.hashSync(p, 10);
   const admin = await db.user.create({
-    data: { name: "Admin WaraNusa", email: "admin@waranusa.id", passwordHash: pass("Admin#2025"), role: "SUPER_ADMIN" },
+    data: { name: "Dewan Juri UINIC 8.0", email: "evaluator@waranusa.id", passwordHash: pass("JuriUINIC#2026"), role: "SUPER_ADMIN" },
   });
   const editor = await db.user.create({
-    data: { name: "Sari Wulandari", email: "editor@waranusa.id", passwordHash: pass("Editor#2025"), role: "EDITOR" },
+    data: { name: "Tim Pengembang WaraNusa", email: "dev@waranusa.id", passwordHash: pass("DevWaraNusa*2026"), role: "EDITOR" },
   });
   const reviewer = await db.user.create({
-    data: { name: "Bayu Setiawan", email: "reviewer@waranusa.id", passwordHash: pass("Reviewer#2025"), role: "REVIEWER" },
+    data: { name: "Kurator Ahli Budaya", email: "kurator@waranusa.id", passwordHash: pass("KurasiWaraNusa&26"), role: "REVIEWER" },
   });
   await db.user.create({
-    data: { name: "Dewi Lestari", email: "kontributor@waranusa.id", passwordHash: pass("Kontrib#2025"), role: "CONTRIBUTOR" },
+    data: { name: "Komunitas Budaya Daerah", email: "kontributor@waranusa.id", passwordHash: pass("MitraWaraNusa^26"), role: "CONTRIBUTOR" },
+  });
+  // Akun cadangan legacy
+  await db.user.create({
+    data: { name: "Dewan Juri UINIC 8.0 (Legacy)", email: "admin@waranusa.id", passwordHash: pass("Admin#2025"), role: "SUPER_ADMIN" },
   });
 
   // ============ SETTINGS ============

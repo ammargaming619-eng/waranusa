@@ -156,7 +156,7 @@ export function DashboardView() {
     <div className="mx-auto max-w-6xl space-y-6">
       <SectionHeading
         eyebrow={isEn ? "CMS Dashboard" : "Dashboard CMS"}
-        title={isEn ? `Welcome, ${user?.name?.split(" ")[0] ?? "Admin"} 👋` : `Selamat datang, ${user?.name?.split(" ")[0] ?? "Admin"} 👋`}
+        title={isEn ? `Welcome, ${user?.name ?? "Admin"} 👋` : `Selamat datang, ${user?.name ?? "Admin"} 👋`}
         description={isEn ? "Archival summary of living cultural assets, 3D media, and moderation queue." : "Ringkasan koleksi budaya nusantara, media, dan antrean moderasi hari ini."}
       />
 
