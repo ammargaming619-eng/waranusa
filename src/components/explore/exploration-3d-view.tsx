@@ -227,7 +227,7 @@ export default function Exploration3DView() {
             {/* Status hitungan katalog */}
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-3 py-1 text-xs font-semibold text-[#2D1E12]">
-                <span className="h-2 w-2 rounded-full bg-[#147A76]" />
+                <span className="h-2 w-2 rounded-full bg-[#E5A93C]" />
                 <span>38 Model 3D Interaktif</span>
               </span>
             </div>
@@ -477,7 +477,7 @@ export default function Exploration3DView() {
                 {/* Panduan Interaksi Singkat & Berkelas */}
                 <div className="rounded-xl bg-[#F8F4EC] border border-[#E9DECE] px-4 py-2.5 text-xs text-stone-600 flex flex-wrap items-center justify-between gap-3">
                   <span className="flex items-center gap-2 text-stone-700">
-                    <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-[#E5A93C] animate-pulse" />
                     <strong className="font-medium text-[#2D1E12]">Kanvas 360° Interaktif:</strong> Seret mouse untuk memutar, gulir untuk zoom, &amp; klik nomor emas untuk anatomi rangka.
                   </span>
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A5B38] bg-[#8A5B38]/10 px-2.5 py-0.5 rounded-full">
