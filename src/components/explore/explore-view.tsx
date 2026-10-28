@@ -32,6 +32,7 @@ import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 
 const IndonesiaMap = dynamic(() => import("@/components/map/indonesia-map"), {
   ssr: false,
@@ -56,10 +57,26 @@ void Pin;
 void Sparkles;
 
 export default function ExploreView({ route }: { route?: Route } = {}) {
+  const { language, t } = useTranslation();
   const searchParams = useSearchParams();
   const [selectedIsland, setSelectedIsland] = useState<Province38["islandGroup"] | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeRegionCode, setActiveRegionCode] = useState<string | null>(null);
+
+  const getIslandTabLabel = (tab: { id: Province38["islandGroup"] | "ALL"; label: string }) => {
+    if (language !== "EN") return tab.label;
+    switch (tab.id) {
+      case "ALL": return "All (38)";
+      case "SUMATERA": return "Sumatra";
+      case "JAWA": return "Java";
+      case "KALIMANTAN": return "Kalimantan";
+      case "SULAWESI": return "Sulawesi";
+      case "BALI_NUSA": return "Bali & Nusa Tenggara";
+      case "MALUKU": return "Maluku";
+      case "PAPUA": return "Papua";
+      default: return tab.label;
+    }
+  };
 
   useEffect(() => {
     let code: string | null = null;
@@ -226,20 +243,20 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
           <div>
             <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7A4B29] mb-2">
               <span aria-hidden="true" className="inline-block h-[1.5px] w-6 bg-[#7A4B29]" />
-              <span>Atlas Geografi &amp; Budaya Nusantara</span>
+              <span>{t("atlas.header_badge", "Atlas Geografi & Budaya Nusantara")}</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
-              Jelajahi 38 Provinsi Indonesia
+              {t("atlas.header_title", "Jelajahi 38 Provinsi Indonesia")}
             </h1>
             <p className="mt-2 max-w-2xl text-xs sm:text-sm text-stone-600 leading-relaxed">
-              Pilih penanda kuning emas pada peta untuk menelaah koordinat wilayah, ibu kota provinsi, arsitektur rumah adat, serta pusaka tradisi dari Sabang sampai Merauke.
+              {t("atlas.header_sub", "Pilih penanda kuning emas pada peta untuk menelaah koordinat wilayah, ibu kota provinsi, arsitektur rumah adat, serta pusaka tradisi dari Sabang sampai Merauke.")}
             </p>
           </div>
 
           {/* Indikator Cakupan */}
           <div className="flex items-center gap-2.5 text-xs font-semibold text-[#2D1E12] bg-white/90 border border-[#DFD3C2] px-4 py-2 rounded-full shadow-2xs shrink-0 self-start md:self-auto">
             <span className="flex h-2.5 w-2.5 rounded-full bg-[#E5A93C] ring-4 ring-[#E5A93C]/20" />
-            <span>38 Provinsi Terpetakan</span>
+            <span>{language === "EN" ? "38 Provinces Mapped" : "38 Provinsi Terpetakan"}</span>
           </div>
         </motion.div>
 
@@ -261,7 +278,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                     : "bg-white/85 text-stone-700 hover:bg-white hover:text-[#2D1E12] border border-[#DFD3C2]"
                 )}
               >
-                {tab.label}
+                {getIslandTabLabel(tab)}
               </button>
             );
           })}
@@ -285,14 +302,14 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                 <div className="flex items-center gap-2">
                   <Layers className="h-4 w-4 text-[#7A4B29]" />
                   <h3 className="font-serif text-sm sm:text-base font-bold text-[#2D1E12]">
-                    Indeks Provinsi ({filteredProvinces.length} Wilayah)
+                    {language === "EN" ? `Provincial Index (${filteredProvinces.length} Regions)` : `Indeks Provinsi (${filteredProvinces.length} Wilayah)`}
                   </h3>
                 </div>
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
                   <Input
                     type="search"
-                    placeholder="Cari provinsi, ibu kota, rumah adat..."
+                    placeholder={t("atlas.search_placeholder", "Cari provinsi atau ibu kota...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="h-8 pl-8 text-xs rounded-full bg-[#FAF7F2] border-[#DFD3C2] focus-visible:ring-1 focus-visible:ring-[#6E472D]"
@@ -334,7 +351,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                 <div className="bg-gradient-to-br from-[#3C2517] via-[#2E1B10] to-[#1C1009] px-5 py-5 text-white border-b border-[#D4A843]/25">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="font-bold uppercase tracking-[0.18em] text-[#D4A843]">
-                      Kepulauan {selectedMeta.islandLabel}
+                      {language === "EN" ? `${selectedMeta.islandLabel} Islands` : `Kepulauan ${selectedMeta.islandLabel}`}
                     </span>
                     <span className="text-stone-300/90 font-mono">
                       {selectedMeta.lat.toFixed(3)}°, {selectedMeta.lng.toFixed(3)}°
@@ -346,7 +363,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                   <p className="mt-1.5 flex items-center gap-1.5 text-xs text-stone-200">
                     <Building2 className="h-3.5 w-3.5 text-[#D4A843]" aria-hidden="true" />
                     <span>
-                      Ibu Kota Provinsi: <strong className="text-white">{selectedMeta.capital}</strong>
+                      {t("atlas.capital", "Ibu Kota")}: <strong className="text-white">{selectedMeta.capital}</strong>
                     </span>
                   </p>
                 </div>
@@ -355,7 +372,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                 <CardContent className="divide-y divide-[#EAE0D2] p-5 text-stone-800">
                   <div className="pb-4">
                     <h4 className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7A4B29] mb-1.5">
-                      Karakter Budaya &amp; Lanskap
+                      {language === "EN" ? "Cultural Landscape & Identity" : "Karakter Budaya & Lanskap"}
                     </h4>
                     <p className="text-xs sm:text-sm leading-relaxed text-stone-700">
                       {selectedMeta.summary}
@@ -365,7 +382,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                   {/* Pusaka & Warisan Tradisi */}
                   <div className="py-4">
                     <h4 className="text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500 mb-2.5">
-                      Pusaka &amp; Warisan Tradisi Utama
+                      {language === "EN" ? "Living Traditions & Intangible Heritage" : "Pusaka & Warisan Tradisi Utama"}
                     </h4>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedMeta.culturalHighlights.map((tag) => (
@@ -382,8 +399,8 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                   {/* Arsitektur Adat 3D Terhubung */}
                   <div className="py-4">
                     <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-stone-500 font-bold mb-1">
-                      <span>Arsitektur Vernakular</span>
-                      <span className="font-mono text-[10px] text-[#147A76]">Model 3D Tersedia</span>
+                      <span>{t("atlas.house_label", "Arsitektur Vernakular")}</span>
+                      <span className="font-mono text-[10px] text-[#147A76]">{language === "EN" ? "3D Model Available" : "Model 3D Tersedia"}</span>
                     </div>
                     <p className="font-serif text-base font-bold text-[#2D1E12]">
                       {selectedMeta.traditionalHouseTitle}
@@ -395,7 +412,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                     >
                       <Link href={`/eksplorasi-3d?house=${selectedMeta.traditionalHouseSlug}&province=${encodeURIComponent(selectedRegion.name)}`}>
                         <Box className="mr-1.5 h-3.5 w-3.5" />
-                        Bedah Struktur 3D di Ruang Pamer
+                        {language === "EN" ? "Inspect 3D Timber Structure" : "Bedah Struktur 3D di Ruang Pamer"}
                         <ExternalLink className="ml-1.5 h-3 w-3" />
                       </Link>
                     </Button>
@@ -405,14 +422,14 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                   {matchingInstrument && (
                     <div className="py-4 border-t border-[#E8DEC0]/80">
                       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-stone-500 font-bold mb-1">
-                        <span>Alat Musik Tradisional</span>
-                        <span className="font-mono text-[10px] text-[#7A4B29]">Studio 3D Tersedia</span>
+                        <span>{t("atlas.instrument_label", "Alat Musik Tradisional")}</span>
+                        <span className="font-mono text-[10px] text-[#7A4B29]">{language === "EN" ? "3D Studio Available" : "Studio 3D Tersedia"}</span>
                       </div>
                       <p className="font-serif text-base font-bold text-[#2D1E12]">
                         {matchingInstrument.title}
                       </p>
                       <p className="text-[11px] text-stone-500 mt-0.5">
-                        {matchingInstrument.organologyLabel} &bull; Suku {matchingInstrument.ethnicGroup}
+                        {matchingInstrument.organologyLabel} &bull; {language === "EN" ? "Ethnic Group " : "Suku "}{matchingInstrument.ethnicGroup}
                       </p>
                       <Button
                         asChild
@@ -421,7 +438,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                       >
                         <Link href={`/virtual-instruments?instrument=${matchingInstrument.id}`}>
                           <Music4 className="mr-1.5 h-3.5 w-3.5" />
-                          Mainkan {matchingInstrument.title} di Studio
+                          {language === "EN" ? `Play ${matchingInstrument.title} in Studio` : `Mainkan ${matchingInstrument.title} di Studio`}
                           <ExternalLink className="ml-1.5 h-3 w-3" />
                         </Link>
                       </Button>
@@ -436,7 +453,7 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                       className="w-full rounded-xl border-[#D5C6B2] text-[#2D1E12] hover:bg-[#FAF7F2] text-xs font-semibold"
                     >
                       <Link href={`/budaya/${selectedMeta.traditionalHouseSlug}`}>
-                        Baca Ensiklopedia {selectedMeta.traditionalHouseTitle}
+                        {language === "EN" ? `Explore Archive of ${selectedMeta.traditionalHouseTitle}` : `Baca Ensiklopedia ${selectedMeta.traditionalHouseTitle}`}
                         <MoveRight className="ml-1.5 h-3.5 w-3.5" />
                       </Link>
                     </Button>
@@ -449,13 +466,13 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                   <MapPin className="h-6 w-6 text-[#C2881C]" />
                 </div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29]">
-                  Panduan Peta
+                  {language === "EN" ? "Atlas Guide" : "Panduan Peta"}
                 </p>
                 <h3 className="mt-1 font-serif text-lg font-bold text-[#2D1E12]">
-                  Pilih Provinsi pada Peta
+                  {language === "EN" ? "Select a Province on Map" : "Pilih Provinsi pada Peta"}
                 </h3>
                 <p className="mt-2 max-w-xs text-xs sm:text-sm text-stone-600 leading-relaxed">
-                  Klik salah satu dari 38 titik penanda kuning emas pada peta atau pilih nama provinsi dari indeks di bawah peta untuk membuka rincian budaya daerah.
+                  {t("atlas.no_province", "Klik salah satu dari 38 titik penanda kuning emas pada peta atau pilih nama provinsi dari indeks di bawah peta untuk membuka rincian budaya daerah.")}
                 </p>
               </Card>
             )}

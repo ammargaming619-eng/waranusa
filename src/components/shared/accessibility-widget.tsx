@@ -847,11 +847,11 @@ export function AccessibilityWidget() {
                 </div>
                 <div>
                   <span className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight block">
-                    Profil Aksesibilitas
+                    {language === "EN" ? "Accessibility Profiles" : "Profil Aksesibilitas"}
                   </span>
                   {activeProfile && (
                     <span className="text-[10px] font-semibold text-[#8C5E3C] block leading-none mt-0.5">
-                      {language === "EN" ? "Aktif: " : "Aktif: "}
+                      {language === "EN" ? "Active: " : "Aktif: "}
                       {PROFILES.find((p) => p.id === activeProfile)?.[language === "EN" ? "labelEn" : "labelId"]}
                     </span>
                   )}

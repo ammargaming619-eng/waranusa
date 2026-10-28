@@ -19,6 +19,7 @@ import { ErrorState, SectionHeading } from "@/components/shared/states";
 import { fmtDateID } from "./media-picker";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useTranslation } from "@/lib/i18n-store";
 import {
   Activity,
   Archive,
@@ -136,6 +137,8 @@ function StatCard({ icon: Icon, label, value, sub, tone = "default", index = 0, 
 }
 
 export function DashboardView() {
+  const { language, t } = useTranslation();
+  const isEn = language === "EN";
   const user = useAuth((s) => s.user);
   const canManage = !!user && (user.role === "SUPER_ADMIN" || user.role === "EDITOR");
 
@@ -152,9 +155,9 @@ export function DashboardView() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <SectionHeading
-        eyebrow="Dashboard CMS"
-        title={`Selamat datang, ${user?.name?.split(" ")[0] ?? "Admin"} 👋`}
-        description="Ringkasan koleksi budaya nusantara, media, dan antrean moderasi hari ini."
+        eyebrow={isEn ? "CMS Dashboard" : "Dashboard CMS"}
+        title={isEn ? `Welcome, ${user?.name?.split(" ")[0] ?? "Admin"} 👋` : `Selamat datang, ${user?.name?.split(" ")[0] ?? "Admin"} 👋`}
+        description={isEn ? "Archival summary of living cultural assets, 3D media, and moderation queue." : "Ringkasan koleksi budaya nusantara, media, dan antrean moderasi hari ini."}
       />
 
       {statsQ.error ? (
@@ -170,13 +173,13 @@ export function DashboardView() {
           <StatCard
             index={0}
             icon={LayoutGrid}
-            label="Objek Budaya"
+            label={t("admin.cultural_items", "Objek Budaya")}
             value={stats.itemsTotal}
             sub={
               <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="inline-flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-brand-tropic" aria-hidden />
-                  {stats.itemsPublished} terpublikasi
+                  {stats.itemsPublished} {isEn ? "published" : "terpublikasi"}
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-slate-400" aria-hidden />
@@ -184,7 +187,7 @@ export function DashboardView() {
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-stone-400" aria-hidden />
-                  {stats.itemsArchived} arsip
+                  {stats.itemsArchived} {isEn ? "archived" : "arsip"}
                 </span>
               </span>
             }
@@ -192,26 +195,26 @@ export function DashboardView() {
           <StatCard
             index={1}
             icon={Shapes}
-            label="Kategori"
+            label={t("admin.categories", "Kategori")}
             value={stats.categoriesTotal}
-            sub="6 ragam kategori budaya Nusantara"
+            sub={isEn ? "6 cultural domains across Nusantara" : "6 ragam kategori budaya Nusantara"}
           />
           <StatCard
             index={2}
             icon={MapPin}
-            label="Wilayah"
+            label={t("admin.regions", "Wilayah")}
             value={stats.regionsTotal}
-            sub="38 provinsi dari Sabang hingga Merauke"
+            sub={isEn ? "38 provinces mapped Sabang to Merauke" : "38 provinsi dari Sabang hingga Merauke"}
           />
           <StatCard
             index={3}
             icon={Boxes}
-            label="Media"
+            label={isEn ? "Media Assets" : "Media"}
             value={stats.mediaTotal}
             sub={
               <span className="flex items-center gap-3">
                 <span className="inline-flex items-center gap-1">
-                  <Boxes className="h-3.5 w-3.5" aria-hidden /> {stats.models3dTotal} Model 3D
+                  <Boxes className="h-3.5 w-3.5" aria-hidden /> {stats.models3dTotal} {isEn ? "3D Models" : "Model 3D"}
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <AudioLines className="h-3.5 w-3.5" aria-hidden /> {stats.audioTotal} Audio
@@ -223,12 +226,12 @@ export function DashboardView() {
             index={4}
             tone="gold"
             icon={HandHeart}
-            label="Kontribusi Menunggu"
+            label={isEn ? "Pending Submissions" : "Kontribusi Menunggu"}
             value={stats.contributionsPending}
-            sub="Antrean moderasi kurator — klik untuk meninjau"
+            sub={isEn ? "Curator moderation queue — click to review" : "Antrean moderasi kurator — klik untuk meninjau"}
             onClick={() => navigate("/admin/contributions")}
           />
-          <StatCard index={5} icon={Users2} label="Pengguna" value={stats.usersTotal} />
+          <StatCard index={5} icon={Users2} label={t("admin.users", "Pengguna")} value={stats.usersTotal} />
         </div>
       )}
 
@@ -237,12 +240,12 @@ export function DashboardView() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <History className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> Aktivitas Terbaru
+              <History className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> {t("admin.recent_activity", "Aktivitas Terbaru")}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             {activityQ.error ? (
-              <ErrorState title="Gagal memuat aktivitas" message={activityQ.error} onRetry={activityQ.refetch} className="py-8" />
+              <ErrorState title={isEn ? "Failed to load activity" : "Gagal memuat aktivitas"} message={activityQ.error} onRetry={activityQ.refetch} className="py-8" />
             ) : activityQ.loading ? (
               <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -250,7 +253,7 @@ export function DashboardView() {
                 ))}
               </div>
             ) : !activityQ.data || activityQ.data.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">Belum ada aktivitas tercatat.</p>
+              <p className="py-6 text-center text-sm text-muted-foreground">{isEn ? "No recent activities recorded." : "Belum ada aktivitas tercatat."}</p>
             ) : (
               <ul className="divide-y divide-border">
                 {activityQ.data.map((a) => {
@@ -266,7 +269,7 @@ export function DashboardView() {
                           {a.entityType && <span className="ml-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{a.entityType}</span>}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {a.user?.name ?? "Sistem"} · {relTime(a.createdAt)}
+                          {a.user?.name ?? (isEn ? "System" : "Sistem")} · {relTime(a.createdAt)}
                         </p>
                       </div>
                     </li>
@@ -281,14 +284,14 @@ export function DashboardView() {
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <ClipboardList className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> Aksi Cepat
+              <ClipboardList className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> {t("admin.quick_actions", "Aksi Cepat")}
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2 pt-0">
             {canManage && (
               <Button className="justify-between bg-gradient-to-r from-[#6E472D] to-[#8C5E3C] hover:from-[#5C3B24] hover:to-[#785032] text-white shadow-sm" onClick={() => navigate("/admin/cultural-items/create")}>
                 <span className="flex items-center gap-2">
-                  <PlusCircle className="h-4 w-4" aria-hidden /> Objek Budaya Baru
+                  <PlusCircle className="h-4 w-4" aria-hidden /> {isEn ? "New Cultural Item" : "Objek Budaya Baru"}
                 </span>
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>
@@ -296,27 +299,28 @@ export function DashboardView() {
             {canManage && (
               <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/media")}>
                 <span className="flex items-center gap-2">
-                  <Upload className="h-4 w-4" aria-hidden /> Unggah Media
+                  <Upload className="h-4 w-4" aria-hidden /> {isEn ? "Upload Media" : "Unggah Media"}
                 </span>
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>
             )}
             <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/contributions")}>
               <span className="flex items-center gap-2">
-                <HandHeart className="h-4 w-4" aria-hidden /> Tinjau Kontribusi
+                <HandHeart className="h-4 w-4" aria-hidden /> {isEn ? "Review Submissions" : "Tinjau Kontribusi"}
               </span>
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button variant="outline" className="justify-between border-stone-200 hover:bg-[#FAF6F0] hover:text-[#6E472D] transition-colors" onClick={() => navigate("/admin/regions")}>
               <span className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" aria-hidden /> Kelola Wilayah
+                <MapPin className="h-4 w-4" aria-hidden /> {isEn ? "Manage Regions" : "Kelola Wilayah"}
               </span>
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Separator className="my-1" />
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Semua perubahan konten terekam di riwayat aktivitas. Objek berstatus{" "}
-              <span className="font-semibold text-brand-ink">Draft</span> tidak tampil di situs publik hingga dipublikasikan.
+              {isEn
+                ? "All editorial updates are timestamped in activity logs. Draft records remain hidden on public catalog until approved & published."
+                : "Semua perubahan konten terekam di riwayat aktivitas. Objek berstatus Draft tidak tampil di situs publik hingga dipublikasikan."}
             </p>
           </CardContent>
         </Card>

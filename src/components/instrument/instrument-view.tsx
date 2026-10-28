@@ -47,6 +47,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 import { ISLAND_TABS, type IslandRegion } from "@/data/traditional-houses";
 import {
   INSTRUMENTS_38_CATALOGUE,
@@ -65,6 +66,7 @@ const Instrument3DStage = dynamic(
 );
 
 export default function InstrumentView({ route }: { route?: Route } = {}) {
+  const { language, t } = useTranslation();
   const searchParams = useSearchParams();
   const [activeId, setActiveId] = useState<string>("saron-demung-jateng");
   const [selectedIsland, setSelectedIsland] = useState<IslandRegion>("ALL");
@@ -74,6 +76,47 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
   const [volume, setVolume] = useState(0.78);
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [activeEditorialTab, setActiveEditorialTab] = useState<"controls" | "culture">("controls");
+
+  const getIslandLabel = (island: { id: IslandRegion; label: string }) => {
+    if (language !== "EN") return island.label;
+    const match = island.label.match(/\((\d+)\)/);
+    const countStr = match ? ` (${match[1]})` : "";
+    switch (island.id) {
+      case "ALL":
+        return `All Regions${countStr}`;
+      case "SUMATERA":
+        return `Sumatra${countStr}`;
+      case "JAWA":
+        return `Java${countStr}`;
+      case "KALIMANTAN":
+        return `Kalimantan${countStr}`;
+      case "SULAWESI":
+        return `Sulawesi${countStr}`;
+      case "BALI_NUSA":
+        return `Bali & Nusa Tenggara${countStr}`;
+      case "PAPUA_MALUKU":
+        return `Papua & Maluku${countStr}`;
+      default:
+        return island.label;
+    }
+  };
+
+  const getInteractionMeta = (type: string) => {
+    const meta = INTERACTION_META[type as keyof typeof INTERACTION_META] || INTERACTION_META.strike;
+    if (language !== "EN") return meta;
+    const enLabels: Record<string, { badge: string; label: string }> = {
+      strike: { badge: "Strike / Percussion", label: "Strike" },
+      pluck: { badge: "Pluck / Strings", label: "Pluck" },
+      bow: { badge: "Bow / Strings", label: "Bow" },
+      shake: { badge: "Shake / Bamboo", label: "Shake" },
+      blow: { badge: "Blow / Wind", label: "Blow" },
+    };
+    return {
+      ...meta,
+      badge: enLabels[type]?.badge ?? meta.badge,
+      label: enLabels[type]?.label ?? meta.label,
+    };
+  };
 
   const gamelanItem = useAsyncData(() => api.items.detail("gamelan-jawa"), []);
   void gamelanItem;
@@ -187,15 +230,15 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#8A5B38]">
             <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#8A5B38]" />
-            <span>Studio Musik Tradisional 3D</span>
+            <span>{t("instruments.studio_badge", "Studio Musik Tradisional 3D")}</span>
             <span className="text-stone-300">•</span>
-            <span className="text-stone-500 font-semibold">38 Provinsi</span>
+            <span className="text-stone-500 font-semibold">{t("instruments.studio_provinces", "38 Provinsi")}</span>
           </div>
           <h1 className="mt-0.5 font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#2D1E12] tracking-tight truncate">
             {activeInstrument.title} — {activeInstrument.province}
           </h1>
           <p className="text-xs text-stone-600 truncate mt-0.5">
-            {activeInstrument.organologyLabel} &bull; Suku {activeInstrument.ethnicGroup} &bull; Vernakular: {activeInstrument.vernacularName}
+            {activeInstrument.organologyLabel} &bull; {language === "EN" ? "Ethnic Group" : "Suku"} {activeInstrument.ethnicGroup} &bull; {t("instruments.prop_vernacular", "Vernakular")}: {activeInstrument.vernacularName}
           </p>
         </div>
 
@@ -209,14 +252,14 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                 className="rounded-full border-[#DFD3C2] bg-white hover:bg-stone-50 text-[#3C2213] text-xs font-bold px-3.5 h-9 shadow-2xs gap-1.5 cursor-pointer"
               >
                 <LayoutGrid className="h-3.5 w-3.5 text-[#8C5E3C]" />
-                <span>Pilih dari 38 Alat Musik</span>
+                <span>{t("instruments.select_btn", "Pilih dari 38 Alat Musik")}</span>
                 <ChevronDown className="h-3 w-3 text-stone-400" />
               </Button>
             </DialogTrigger>
             <DialogContent className="w-[95vw] max-w-4xl rounded-3xl border border-stone-200 bg-[#FCFAF6] p-5 sm:p-7 text-stone-900 shadow-2xl max-h-[85vh] overflow-hidden flex flex-col">
               <DialogHeader className="shrink-0">
                 <DialogTitle className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12]">
-                  Pilih dari 38 Alat Musik Nusantara
+                  {t("instruments.select_title", "Pilih dari 38 Alat Musik Nusantara")}
                 </DialogTitle>
               </DialogHeader>
 
@@ -227,7 +270,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                   <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Cari provinsi, nama alat musik, suku..."
+                    placeholder={t("instruments.search_placeholder", "Cari provinsi, nama alat musik, suku...")}
                     className="pl-10 h-10 rounded-full border-stone-300 bg-white text-xs sm:text-sm"
                   />
                 </div>
@@ -251,7 +294,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                             : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                         )}
                       >
-                        {island.label}
+                        {getIslandLabel(island)}
                       </button>
                     );
                   })}
@@ -263,7 +306,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1">
                   {filteredInstruments.map((inst) => {
                     const isActive = inst.id === activeInstrument.id;
-                    const meta = INTERACTION_META[inst.interactionType];
+                    const meta = getInteractionMeta(inst.interactionType);
                     return (
                       <button
                         key={inst.id}
@@ -308,7 +351,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                             isActive ? "text-stone-200" : "text-stone-500"
                           )}
                         >
-                          Suku {inst.ethnicGroup}
+                          {language === "EN" ? "Ethnic Group" : "Suku"} {inst.ethnicGroup}
                         </span>
                       </button>
                     );
@@ -322,7 +365,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
             variant="outline"
             className="hidden sm:inline-flex rounded-full border-[#6E472D]/30 bg-[#6E472D]/8 text-[#6E472D] text-xs font-semibold px-3 py-1"
           >
-            {interactionMeta.badge}
+            {getInteractionMeta(activeInstrument.interactionType).badge}
           </Badge>
         </div>
       </div>
@@ -333,7 +376,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#7A4B29] mr-1 shrink-0 flex items-center gap-1">
             <SlidersHorizontal className="h-3 w-3 text-[#7A4B29]" />
-            Wilayah:
+            {language === "EN" ? "Region:" : "Wilayah:"}
           </span>
           {ISLAND_TABS.filter((island) =>
             island.id === "ALL" ||
@@ -352,7 +395,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     : "bg-[#FAF7F2] text-stone-700 hover:bg-stone-200/80 border border-stone-200/80"
                 )}
               >
-                {island.label}
+                {getIslandLabel(island)}
               </button>
             );
           })}
@@ -362,7 +405,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
         <div className="flex items-center gap-2 overflow-x-auto pt-1 pb-1 no-scrollbar snap-x border-t border-stone-200/60">
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#7A4B29] mr-1 shrink-0 flex items-center gap-1">
             <Music2 className="h-3 w-3 text-[#7A4B29]" />
-            Koleksi:
+            {language === "EN" ? "Collection:" : "Koleksi:"}
           </span>
           {filteredInstruments.map((inst) => {
             const isActive = inst.id === activeInstrument.id;
@@ -420,7 +463,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                   : "text-stone-600 hover:text-stone-900"
               )}
             >
-              Kajian Falsafah &amp; Organologi
+              {language === "EN" ? "Organology & Heritage" : "Kajian Falsafah & Organologi"}
             </button>
             <button
               type="button"
@@ -432,7 +475,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                   : "text-stone-600 hover:text-stone-900"
               )}
             >
-              Panduan Multi-Input
+              {language === "EN" ? "Multi-Input Controls" : "Panduan Multi-Input"}
             </button>
           </div>
 
@@ -440,7 +483,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
             <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
               <CardHeader className="pb-2 px-4 sm:px-5 pt-4 sm:pt-5">
                 <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
-                  Kajian Organologi &amp; Falsafah {activeInstrument.title}
+                  {language === "EN" ? `Organology & Heritage of ${activeInstrument.title}` : `Kajian Organologi & Falsafah ${activeInstrument.title}`}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3.5 text-xs sm:text-sm leading-relaxed text-stone-600 px-4 sm:px-5 pb-4 sm:pb-5">
@@ -451,19 +494,19 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                 <div className="space-y-2 pt-1">
                   <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
-                      Sistem Tangga Nada
+                      {t("instruments.prop_tuning", "Sistem Tangga Nada")}
                     </span>
                     <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.tuningSystem}</strong>
                   </div>
                   <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
-                      Material Akustik
+                      {t("instruments.prop_material", "Material Akustik")}
                     </span>
                     <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.materialAcoustic}</strong>
                   </div>
                   <div className="rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-2.5">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-0.5">
-                      Fungsi Ritus &amp; Ansambel
+                      {t("instruments.prop_ensemble", "Fungsi Musik & Ensemble")}
                     </span>
                     <strong className="text-stone-800 text-xs sm:text-[13px]">{activeInstrument.specs.ensembleFunction}</strong>
                   </div>
@@ -472,7 +515,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                 <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-stone-200/60">
                   <p className="flex items-center gap-1.5 text-[11px] text-stone-500">
                     <BookOpen className="h-3.5 w-3.5 text-[#6E472D]" aria-hidden="true" />
-                    Portal Budaya Kemdikbudristek RI
+                    {language === "EN" ? "Kemdikbudristek Cultural Archive" : "Portal Budaya Kemdikbudristek RI"}
                   </p>
                   <Button
                     asChild
@@ -480,7 +523,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     className="rounded-full btn-waranusa font-bold text-white text-xs px-4 shadow-xs"
                   >
                     <a href={`#/budaya/${activeInstrument.slug}`}>
-                      Buka Lembar Ensiklopedia
+                      {language === "EN" ? "View Full Record" : "Buka Lembar Ensiklopedia"}
                       <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   </Button>
@@ -491,7 +534,9 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
             <Card className="rounded-3xl border-[#DFD3C2] bg-white/95 shadow-xs">
               <CardHeader className="pb-2 px-4 sm:px-5 pt-4 sm:pt-5">
                 <CardTitle className="font-serif text-base sm:text-lg text-[#2D1E12]">
-                  Sistem Kontrol Multi-Input ({interactionMeta.label})
+                  {language === "EN"
+                    ? `Multi-Input Control Guide (${getInteractionMeta(activeInstrument.interactionType).label})`
+                    : `Sistem Kontrol Multi-Input (${getInteractionMeta(activeInstrument.interactionType).label})`}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 px-4 sm:px-5 pb-4 sm:pb-5">
@@ -503,7 +548,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     />
                     <span>
                       <strong className="font-semibold text-[#2D1E12]">
-                        Mouse &amp; Layar Sentuh:
+                        {language === "EN" ? "Mouse & Touchscreen:" : "Mouse & Layar Sentuh:"}
                       </strong>{" "}
                       {activeInstrument.mouseGuide}
                     </span>
@@ -515,9 +560,9 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     />
                     <span>
                       <strong className="font-semibold text-[#2D1E12]">
-                        Pintasan Keyboard Nada:
+                        {language === "EN" ? "Keyboard Number Shortcuts:" : "Pintasan Keyboard Nada:"}
                       </strong>{" "}
-                      Tekan tombol angka{" "}
+                      {language === "EN" ? "Press keys " : "Tekan tombol angka "}
                       <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1 py-0.5 font-mono text-xs">
                         1
                       </kbd>
@@ -525,7 +570,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                       <kbd className="rounded border border-[#DFD3C2] bg-[#FAF6EE] px-1 py-0.5 font-mono text-xs">
                         7
                       </kbd>{" "}
-                      untuk membunyikan bilah nada.
+                      {language === "EN" ? "to play harmonic notes." : "untuk membunyikan bilah nada."}
                     </span>
                   </li>
                   <li className="flex items-start gap-2 rounded-xl border border-stone-200/80 bg-[#FAF7F2] p-3">
@@ -535,7 +580,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     />
                     <span>
                       <strong className="font-semibold text-[#2D1E12]">
-                        Mode Kamera AI (MediaPipe):
+                        {language === "EN" ? "AI Camera Mode (MediaPipe):" : "Mode Kamera AI (MediaPipe):"}
                       </strong>{" "}
                       {activeInstrument.cameraGuide}
                     </span>
@@ -548,7 +593,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                       htmlFor="volume-studio"
                       className="text-xs font-semibold text-[#2D1E12]"
                     >
-                      Volume Master Studio
+                      {t("instruments.master_volume", "Volume Master")}
                     </Label>
                     <span
                       className="text-xs font-bold text-[#7A4B29]"
@@ -564,7 +609,7 @@ export default function InstrumentView({ route }: { route?: Route } = {}) {
                     max={1}
                     step={0.05}
                     onValueChange={(v) => setVolume(v[0] ?? 0.78)}
-                    aria-label="Kenyaringan instrumen"
+                    aria-label={t("instruments.master_volume", "Volume Master")}
                   />
                 </div>
               </CardContent>

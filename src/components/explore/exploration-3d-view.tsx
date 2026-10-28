@@ -35,6 +35,7 @@ import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
 import type { CulturalItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 import {
   HOUSES_38_CATALOGUE,
   ISLAND_TABS,
@@ -64,6 +65,7 @@ export const INSTRUMENTS_CATALOGUE: TraditionalInstrument38[] = INSTRUMENTS_38_C
 
 export default function Exploration3DView() {
   const route = useRoute();
+  const { language, t } = useTranslation();
   
   // State untuk Wahana Rumah Adat 38 Provinsi
   const [selectedHouseIsland, setSelectedHouseIsland] = useState<IslandRegion>("ALL");
@@ -73,6 +75,30 @@ export default function Exploration3DView() {
   const [isAutoRotate, setIsAutoRotate] = useState<boolean>(true);
   const [modelViewerKey, setModelViewerKey] = useState<number>(0);
   const [isFullscreenModal, setIsFullscreenModal] = useState<boolean>(false);
+
+  const getIslandLabel = (island: { id: IslandRegion; label: string }) => {
+    if (language !== "EN") return island.label;
+    const match = island.label.match(/\((\d+)\)/);
+    const countStr = match ? ` (${match[1]})` : "";
+    switch (island.id) {
+      case "ALL":
+        return `All Regions${countStr}`;
+      case "SUMATERA":
+        return `Sumatra${countStr}`;
+      case "JAWA":
+        return `Java${countStr}`;
+      case "KALIMANTAN":
+        return `Kalimantan${countStr}`;
+      case "SULAWESI":
+        return `Sulawesi${countStr}`;
+      case "BALI_NUSA":
+        return `Bali & Nusa Tenggara${countStr}`;
+      case "PAPUA_MALUKU":
+        return `Papua & Maluku${countStr}`;
+      default:
+        return island.label;
+    }
+  };
 
   const handleSelectHouse = (houseId: string) => {
     setActiveHouseId(houseId);
@@ -179,13 +205,13 @@ export default function Exploration3DView() {
           <div>
             <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A4B29] mb-1.5">
               <span aria-hidden="true" className="inline-block h-[1.5px] w-5 bg-[#7A4B29]" />
-              <span>Ruang Pamer Digital Nusantara</span>
+              <span>{language === "EN" ? "Nusantara Digital Virtual Showroom" : "Ruang Pamer Digital Nusantara"}</span>
             </div>
             <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#2D1E12]">
-              Eksplorasi 3D Rumah Adat Nusantara
+              {t("explore3d.header_title", "Eksplorasi 3D Rumah Adat Nusantara")}
             </h1>
             <p className="mt-1.5 max-w-2xl text-stone-600 text-xs sm:text-sm leading-relaxed">
-              Jelajahi keagungan arsitektur vernakular, bedah konstruksi saka guru, dan falsafah ruang rumah adat 38 provinsi di Indonesia.
+              {t("explore3d.header_sub", "Jelajahi keagungan arsitektur vernakular, bedah konstruksi saka guru, dan falsafah ruang rumah adat 38 provinsi di Indonesia.")}
             </p>
           </div>
 
@@ -193,7 +219,7 @@ export default function Exploration3DView() {
           <div className="flex flex-wrap items-center gap-2 shrink-0 self-start md:self-auto">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 border border-[#DFD3C2] px-3.5 py-1.5 text-xs font-bold text-[#2D1E12] shadow-2xs">
               <Building2 className="h-3.5 w-3.5 text-[#7A4B29]" />
-              <span>38 Rumah Adat Vernakular 3D</span>
+              <span>{language === "EN" ? "38 Vernacular Houses 3D" : "38 Rumah Adat Vernakular 3D"}</span>
             </span>
             <Button
               asChild
@@ -203,7 +229,7 @@ export default function Exploration3DView() {
             >
               <Link href="/virtual-instruments">
                 <Music4 className="h-3.5 w-3.5 text-[#7A4B29]" />
-                <span>Buka Studio Instrumen Virtual</span>
+                <span>{language === "EN" ? "Open Virtual Instruments" : "Buka Studio Instrumen Virtual"}</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>
@@ -217,10 +243,10 @@ export default function Exploration3DView() {
             <div>
               <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A4B29]">
                 <span aria-hidden="true" className="inline-block h-[1.5px] w-4 bg-[#7A4B29]" />
-                <span>Katalog Arsitektur Vernakular Nusantara</span>
+                <span>{language === "EN" ? "Vernacular Architecture Archive" : "Katalog Arsitektur Vernakular Nusantara"}</span>
               </div>
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2D1E12] mt-0.5">
-                Bedah Struktur Rumah Adat
+                {language === "EN" ? "Architectural Structural Dissection" : "Bedah Struktur Rumah Adat"}
               </h2>
             </div>
 
@@ -228,7 +254,7 @@ export default function Exploration3DView() {
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6EE] border border-[#DFD3C2] px-3 py-1 text-xs font-semibold text-[#2D1E12]">
                 <span className="h-2 w-2 rounded-full bg-[#E5A93C]" />
-                <span>38 Model 3D Interaktif</span>
+                <span>{language === "EN" ? "38 Interactive 3D Models" : "38 Model 3D Interaktif"}</span>
               </span>
             </div>
           </div>
@@ -252,7 +278,7 @@ export default function Exploration3DView() {
                           : "bg-stone-100/90 text-stone-600 hover:bg-stone-200/70 hover:text-stone-900 border border-stone-200/60"
                       )}
                     >
-                      {island.label}
+                      {getIslandLabel(island)}
                     </button>
                   );
                 })}
@@ -266,7 +292,7 @@ export default function Exploration3DView() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
                 <Input
                   type="text"
-                  placeholder="Cari provinsi, nama rumah, suku..."
+                  placeholder={t("explore3d.search_placeholder", "Cari provinsi, nama rumah, suku...")}
                   value={houseSearchQuery}
                   onChange={(e) => setHouseSearchQuery(e.target.value)}
                   className="pl-8 pr-8 h-8 text-xs rounded-full bg-white border-stone-200 focus-visible:ring-[#8A5B38]"
@@ -296,7 +322,7 @@ export default function Exploration3DView() {
                   title="Tampilan Strip Mendatar"
                 >
                   <SlidersHorizontal className="h-3 w-3" />
-                  <span>Strip</span>
+                  <span>{t("explore3d.view_strip", "Strip")}</span>
                 </button>
                 <button
                   type="button"
@@ -310,7 +336,7 @@ export default function Exploration3DView() {
                   title="Tampilan Kisi-Kisi 38 Provinsi"
                 >
                   <LayoutGrid className="h-3 w-3" />
-                  <span>Grid ({filteredHouses.length})</span>
+                  <span>{t("explore3d.view_grid", "Grid")} ({filteredHouses.length})</span>
                 </button>
               </div>
             </div>
@@ -478,10 +504,13 @@ export default function Exploration3DView() {
                 <div className="rounded-xl bg-[#F8F4EC] border border-[#E9DECE] px-4 py-2.5 text-xs text-stone-600 flex flex-wrap items-center justify-between gap-3">
                   <span className="flex items-center gap-2 text-stone-700">
                     <span className="h-2 w-2 rounded-full bg-[#E5A93C] animate-pulse" />
-                    <strong className="font-medium text-[#2D1E12]">Kanvas 360° Interaktif:</strong> Seret mouse untuk memutar, gulir untuk zoom, &amp; klik nomor emas untuk anatomi rangka.
+                    <strong className="font-medium text-[#2D1E12]">{language === "EN" ? "Interactive 360° Canvas:" : "Kanvas 360° Interaktif:"}</strong>{" "}
+                    {language === "EN"
+                      ? "Drag mouse to rotate, scroll to zoom, & click golden pins for anatomical structural details."
+                      : "Seret mouse untuk memutar, gulir untuk zoom, & klik nomor emas untuk anatomi rangka."}
                   </span>
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A5B38] bg-[#8A5B38]/10 px-2.5 py-0.5 rounded-full">
-                    Model 3D Interaktif
+                    {language === "EN" ? "3D Interactive Model" : "Model 3D Interaktif"}
                   </span>
                 </div>
               </div>
@@ -496,7 +525,7 @@ export default function Exploration3DView() {
                       {activeHouse.province}
                     </Badge>
                     <Badge variant="secondary" className="bg-[#FAF6EE] text-stone-700 border border-[#E2D6C5] text-xs font-semibold px-2.5 py-1">
-                      Suku {activeHouse.ethnicGroup}
+                      {language === "EN" ? "Ethnic Group" : "Suku"} {activeHouse.ethnicGroup}
                     </Badge>
                   </div>
 
@@ -505,7 +534,7 @@ export default function Exploration3DView() {
                       {activeHouse.title}
                     </h3>
                     <p className="text-xs font-semibold text-[#8A5B38] mt-1">
-                      Nama vernakular: <span className="italic">{activeHouse.indigenousName}</span>
+                      {language === "EN" ? "Vernacular name: " : "Nama vernakular: "}<span className="italic">{activeHouse.indigenousName}</span>
                     </p>
                   </div>
 
@@ -517,7 +546,7 @@ export default function Exploration3DView() {
                 {/* KUTIPAN FILOSOFI ADAT LELUHUR */}
                 <div className="rounded-2xl border border-[#E6DCD0] bg-[#FAF7F2] p-4 text-sm text-stone-800 shadow-2xs">
                   <p className="font-bold text-[11px] uppercase tracking-wider text-[#8A5B38] mb-1.5">
-                    Falsafah Ruang &amp; Adat Leluhur
+                    {language === "EN" ? "Spatial Philosophy & Living Heritage" : "Falsafah Ruang & Adat Leluhur"}
                   </p>
                   <blockquote className="font-serif italic text-[#3D2817] text-sm sm:text-[15px] leading-relaxed">
                     &ldquo;{activeHouse.philosophy}&rdquo;
@@ -527,14 +556,14 @@ export default function Exploration3DView() {
                 {/* SPESIFIKASI ARSITEKTUR BERSIH, LEGA, & MUDAH DIBACA */}
                 <div className="space-y-2.5 pt-1">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
-                    Karakteristik &amp; Rekayasa Tradisi
+                    {language === "EN" ? "Traditional Engineering Specifications" : "Karakteristik & Rekayasa Tradisi"}
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* Spec 1: Sambungan */}
                     <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
                       <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Hammer className="h-3.5 w-3.5" />
-                        <span>Sistem Sambungan</span>
+                        <span>{t("explore3d.spec_structure", "Sistem Sambungan Pasak")}</span>
                       </div>
                       <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.structure}
@@ -545,7 +574,7 @@ export default function Exploration3DView() {
                     <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
                       <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <TreePine className="h-3.5 w-3.5" />
-                        <span>Material Tradisional</span>
+                        <span>{t("explore3d.spec_material", "Material Alami Vernakular")}</span>
                       </div>
                       <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.material}
@@ -556,7 +585,7 @@ export default function Exploration3DView() {
                     <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
                       <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Compass className="h-3.5 w-3.5" />
-                        <span>Bentuk &amp; Geometri Atap</span>
+                        <span>{t("explore3d.spec_roof", "Bentuk & Geometri Atap")}</span>
                       </div>
                       <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.roofGeometry}
@@ -567,7 +596,7 @@ export default function Exploration3DView() {
                     <div className="rounded-xl bg-[#FAF7F2] border border-[#E8DFC8] p-3 space-y-1">
                       <div className="flex items-center gap-1.5 text-[#6E472D] font-bold text-xs">
                         <Building2 className="h-3.5 w-3.5" />
-                        <span>Fungsi Ruang &amp; Adat</span>
+                        <span>{t("explore3d.spec_sacred", "Fungsi Sosial & Sakral")}</span>
                       </div>
                       <p className="text-stone-700 text-xs sm:text-[12.5px] leading-relaxed">
                         {activeHouse.specs.sacredFunction}
@@ -585,7 +614,7 @@ export default function Exploration3DView() {
                     >
                       <Link href={`/virtual-instruments?instrument=${matchingInstrument.id}`}>
                         <Music4 className="h-4 w-4" />
-                        <span>Mainkan {matchingInstrument.title} ({activeHouse.province})</span>
+                        <span>{language === "EN" ? `Play ${matchingInstrument.title} (${activeHouse.province})` : `Mainkan ${matchingInstrument.title} (${activeHouse.province})`}</span>
                         <ArrowRight className="h-4 w-4 ml-1" />
                       </Link>
                     </Button>
@@ -596,7 +625,7 @@ export default function Exploration3DView() {
                     >
                       <Link href="/virtual-instruments">
                         <Music4 className="h-4 w-4" />
-                        <span>Buka Studio Instrumen Tradisional</span>
+                        <span>{language === "EN" ? "Explore Virtual Instruments Studio" : "Buka Studio Instrumen Tradisional"}</span>
                         <ArrowRight className="h-4 w-4 ml-1" />
                       </Link>
                     </Button>
@@ -614,7 +643,7 @@ export default function Exploration3DView() {
                       {activeHouse.title} — {activeHouse.province}
                     </h3>
                     <p className="text-[11px] sm:text-xs text-stone-400 truncate">
-                      Nama asli: {activeHouse.indigenousName} &bull; Suku {activeHouse.ethnicGroup}
+                      {language === "EN" ? "Vernacular name: " : "Nama asli: "}{activeHouse.indigenousName} &bull; {language === "EN" ? "Ethnic Group " : "Suku "}{activeHouse.ethnicGroup}
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
@@ -625,7 +654,7 @@ export default function Exploration3DView() {
                       className="border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 text-xs rounded-full px-2.5 sm:px-3"
                     >
                       {isAutoRotate ? <Pause className="h-3.5 w-3.5 sm:mr-1" /> : <Play className="h-3.5 w-3.5 sm:mr-1" />}
-                      <span className="hidden sm:inline">{isAutoRotate ? "Jeda Rotasi" : "Mulai Putar"}</span>
+                      <span className="hidden sm:inline">{isAutoRotate ? (language === "EN" ? "Pause" : "Jeda Rotasi") : (language === "EN" ? "Auto Rotate" : "Mulai Putar")}</span>
                     </Button>
                     <Button
                       size="sm"
@@ -634,17 +663,17 @@ export default function Exploration3DView() {
                       className="border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 text-xs rounded-full px-2.5 sm:px-3"
                     >
                       <RotateCcw className="h-3.5 w-3.5 sm:mr-1" />
-                      <span className="hidden sm:inline">Reset Kamera</span>
+                      <span className="hidden sm:inline">{language === "EN" ? "Reset Camera" : "Reset Kamera"}</span>
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setIsFullscreenModal(false)}
                       className="border-stone-700 bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                      title="Keluar dari layar penuh"
+                      title={language === "EN" ? "Exit Fullscreen" : "Keluar dari layar penuh"}
                     >
                       <X className="h-4 w-4" />
-                      <span>Keluar</span>
+                      <span>{t("explore3d.exit_fullscreen", "Keluar")}</span>
                     </Button>
                   </div>
                 </div>

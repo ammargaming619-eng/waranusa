@@ -42,26 +42,29 @@ import {
   ChevronRight,
   ArrowLeft,
   Globe,
+  Check,
+  ChevronDown,
   Sparkles,
 } from "lucide-react";
+import { useTranslation } from "@/lib/i18n-store";
 
 const SIDEBAR = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/cultural-items", label: "Objek Budaya", icon: LayoutGrid },
-  { href: "/admin/regions", label: "Wilayah", icon: MapPin },
-  { href: "/admin/categories", label: "Kategori", icon: Shapes },
-  { href: "/admin/media", label: "Media Manager", icon: Images },
-  { href: "/admin/sources", label: "Sumber & Atribusi", icon: BookMarked },
-  { href: "/admin/contributions", label: "Kontribusi", icon: HandHeart },
-  { href: "/admin/users", label: "Pengguna", icon: Users2, superAdminOnly: true },
-  { href: "/admin/settings", label: "Pengaturan", icon: Settings2, superAdminOnly: true },
+  { href: "/admin/dashboard", labelId: "Dashboard", labelEn: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/cultural-items", labelId: "Objek Budaya", labelEn: "Cultural Items", icon: LayoutGrid },
+  { href: "/admin/regions", labelId: "Wilayah", labelEn: "Regions", icon: MapPin },
+  { href: "/admin/categories", labelId: "Kategori", labelEn: "Categories", icon: Shapes },
+  { href: "/admin/media", labelId: "Media Manager", labelEn: "Media Manager", icon: Images },
+  { href: "/admin/sources", labelId: "Sumber & Atribusi", labelEn: "Sources & Attribution", icon: BookMarked },
+  { href: "/admin/contributions", labelId: "Kontribusi", labelEn: "Contributions", icon: HandHeart },
+  { href: "/admin/users", labelId: "Pengguna", labelEn: "Users", icon: Users2, superAdminOnly: true },
+  { href: "/admin/settings", labelId: "Pengaturan", labelEn: "Settings", icon: Settings2, superAdminOnly: true },
 ];
 
-export function breadcrumbsFor(path: string): { label: string; href?: string }[] {
+export function breadcrumbsFor(path: string, isEn = false): { label: string; href?: string }[] {
   const segs = path.split("/").filter(Boolean);
-  const crumbs: { label: string; href?: string }[] = [{ label: "Beranda", href: "/admin/dashboard" }];
+  const crumbs: { label: string; href?: string }[] = [{ label: isEn ? "Home" : "Beranda", href: "/admin/dashboard" }];
   if (segs[0] !== "admin") return crumbs;
-  const known: Record<string, string> = {
+  const knownId: Record<string, string> = {
     dashboard: "Dashboard",
     "cultural-items": "Objek Budaya",
     regions: "Wilayah",
@@ -72,9 +75,21 @@ export function breadcrumbsFor(path: string): { label: string; href?: string }[]
     users: "Pengguna",
     settings: "Pengaturan",
   };
+  const knownEn: Record<string, string> = {
+    dashboard: "Dashboard",
+    "cultural-items": "Cultural Items",
+    regions: "Regions",
+    categories: "Categories",
+    media: "Media Manager",
+    sources: "Sources & Attribution",
+    contributions: "Contributions",
+    users: "Users",
+    settings: "Settings",
+  };
+  const known = isEn ? knownEn : knownId;
   for (let i = 1; i < segs.length; i++) {
     const s = segs[i];
-    const label = known[s] ?? (s === "create" ? "Tambah Baru" : s.length === 24 ? "Detail" : s);
+    const label = known[s] ?? (s === "create" ? (isEn ? "Create New" : "Tambah Baru") : s.length === 24 ? "Detail" : s);
     const href = i < segs.length - 1 ? `/${segs.slice(0, i + 1).join("/")}` : undefined;
     crumbs.push({ label, href });
   }
@@ -85,6 +100,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
   const router = useRouter();
   const currentPathname = usePathname();
   const { user, logout } = useAuth();
+  const { language, setLanguage, t } = useTranslation();
   const initialized = useAuth((s) => s.initialized);
   const [open, setOpen] = useState(false);
 
@@ -97,7 +113,8 @@ export function AdminShell({ route, children }: { route?: Route; children: React
     }
   }, [activePath, initialized, router]);
 
-  const crumbs = breadcrumbsFor(activePath);
+  const isEn = language === "EN";
+  const crumbs = breadcrumbsFor(activePath, isEn);
   const items = SIDEBAR.filter((s) => !s.superAdminOnly || user?.role === "SUPER_ADMIN");
 
   const navList = (
@@ -105,6 +122,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
       {items.map((s) => {
         const itemPath = s.href.slice(1);
         const active = activePath === itemPath || (s.href !== "/admin/dashboard" && activePath.startsWith(itemPath));
+        const label = isEn ? s.labelEn : s.labelId;
         return (
           <Link
             key={s.href}
@@ -118,7 +136,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
             )}
           >
             <s.icon className="h-4 w-4 shrink-0" />
-            {s.label}
+            {label}
             {s.href === "/admin/contributions" && <span className="ml-auto rounded-full bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#8C5E3C]">review</span>}
           </Link>
         );
@@ -141,7 +159,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
               <div className="font-serif text-base font-bold tracking-tight text-[#2D1E12]">
                 WaraNusa
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-wider text-[#8C5E3C] mt-0.5">CMS Pengelolaan</div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-[#8C5E3C] mt-0.5">{isEn ? "Curator Portal" : "CMS Pengelolaan"}</div>
             </div>
           </Link>
         </div>
@@ -162,15 +180,15 @@ export function AdminShell({ route, children }: { route?: Route; children: React
                 <div className="text-[11px] font-bold text-foreground truncate">Portal WaraNusa</div>
                 <div className="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span className="text-emerald-700 font-semibold truncate">Sistem Online</span>
+                  <span className="text-emerald-700 font-semibold truncate">{isEn ? "System Online" : "Sistem Online"}</span>
                 </div>
               </div>
             </div>
             <Link
               href="/"
               className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/70 hover:bg-secondary text-muted-foreground hover:text-[#6E472D] transition-colors"
-              title="Buka Beranda Situs Publik"
-              aria-label="Buka Beranda Situs Publik"
+              title={isEn ? "Open Public Homepage" : "Buka Beranda Situs Publik"}
+              aria-label={isEn ? "Open Public Homepage" : "Buka Beranda Situs Publik"}
             >
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
@@ -183,7 +201,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
         <div className="bg-gradient-to-r from-[#3D2513] via-[#5C381E] to-[#3D2513] text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-xs border-b border-amber-900/40">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-bold tracking-wide">Sesi Evaluator Lomba Aktif</span>
+            <span className="font-bold tracking-wide">{isEn ? "Evaluator / Judge Active Session" : "Sesi Evaluator Lomba Aktif"}</span>
             <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200 border border-amber-300/30">
               Super Admin
             </span>
@@ -193,7 +211,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
               href="/"
               className="inline-flex items-center gap-1.5 rounded-full bg-white/15 hover:bg-white/25 px-3 py-1 text-[11px] font-semibold text-white transition-colors"
             >
-              <ArrowLeft className="h-3 w-3" /> Kembali ke Beranda Publik
+              <ArrowLeft className="h-3 w-3" /> {isEn ? "Back to Public Home" : "Kembali ke Beranda Publik"}
             </Link>
           </div>
         </div>
@@ -203,7 +221,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
           {/* Sidebar mobile */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="lg:hidden" aria-label="Buka menu CMS">
+              <Button variant="outline" size="icon" className="lg:hidden" aria-label={isEn ? "Open CMS menu" : "Buka menu CMS"}>
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
@@ -242,10 +260,58 @@ export function AdminShell({ route, children }: { route?: Route; children: React
             </BreadcrumbList>
           </Breadcrumb>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <Link href="/" className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-[#6E472D] items-center gap-1">
-              Situs Publik <ExternalLink className="h-3 w-3" />
+              {isEn ? "Public Site" : "Situs Publik"} <ExternalLink className="h-3 w-3" />
             </Link>
+
+            {/* Language Switcher Dropdown in CMS Header */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2 rounded-full text-foreground hover:bg-secondary border border-border shadow-2xs flex items-center gap-1 text-xs font-semibold shrink-0 transition-all cursor-pointer"
+                  aria-label="Pilih Bahasa / Select Language"
+                >
+                  <Globe className="h-3.5 w-3.5 text-[#8C5E3C]" />
+                  <span className="text-[11px] font-bold text-[#442816] tracking-tight">{language}</span>
+                  <ChevronDown className="h-3 w-3 opacity-60 text-stone-500" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44 rounded-2xl border-stone-200 bg-white p-1.5 shadow-lg">
+                <DropdownMenuLabel className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                  {language === "ID" ? "Pilih Bahasa" : "Select Language"}
+                </DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => setLanguage("ID")}
+                  className={cn(
+                    "flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold cursor-pointer transition-colors",
+                    language === "ID" ? "bg-amber-50 text-[#8C5E3C]" : "text-stone-700 hover:bg-stone-50"
+                  )}
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm">🇮🇩</span>
+                    <span>Bahasa Indonesia</span>
+                  </span>
+                  {language === "ID" && <Check className="h-3.5 w-3.5 text-[#8C5E3C]" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setLanguage("EN")}
+                  className={cn(
+                    "flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold cursor-pointer transition-colors",
+                    language === "EN" ? "bg-amber-50 text-[#8C5E3C]" : "text-stone-700 hover:bg-stone-50"
+                  )}
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm">🇬🇧</span>
+                    <span>English (EN)</span>
+                  </span>
+                  {language === "EN" && <Check className="h-3.5 w-3.5 text-[#8C5E3C]" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 rounded-full border border-border bg-background py-1 pl-1 pr-3 hover:bg-secondary transition-colors" aria-label="Menu akun">
@@ -269,7 +335,7 @@ export function AdminShell({ route, children }: { route?: Route; children: React
                   }}
                   className="text-destructive focus:text-destructive"
                 >
-                  <LogOut className="mr-2 h-4 w-4" /> Keluar
+                  <LogOut className="mr-2 h-4 w-4" /> {isEn ? "Log Out" : "Keluar"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

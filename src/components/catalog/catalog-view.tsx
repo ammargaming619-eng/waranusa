@@ -35,6 +35,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState, ErrorState, SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
+import { useTranslation } from "@/lib/i18n-store";
 import {
   CULTURAL_CATEGORIES_DATASET,
   PROVINCES_38_ALPHABETICAL,
@@ -93,6 +94,7 @@ function readQueryParams(): CatalogState {
 
 export default function CatalogView({ route }: { route?: Route } = {}) {
   const router = useRouter();
+  const { language, t } = useTranslation();
   const [clientParams, setClientParams] = useState<CatalogState>(() =>
     route ? readRoute(route) : readQueryParams()
   );
@@ -225,8 +227,10 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
     if (!activeMeta || activeMeta.total === 0) return null;
     const start = (activeMeta.page - 1) * activeMeta.pageSize + 1;
     const end = Math.min(activeMeta.page * activeMeta.pageSize, activeMeta.total);
-    return `Menampilkan ${start}–${end} dari ${activeMeta.total} objek budaya`;
-  }, [activeMeta]);
+    return language === "EN"
+      ? `Showing ${start}–${end} of ${activeMeta.total} cultural records`
+      : `Menampilkan ${start}–${end} dari ${activeMeta.total} objek budaya`;
+  }, [activeMeta, language]);
 
   const totalPages = activeMeta?.totalPages ?? 1;
   const currentPage = activeMeta?.page ?? state.page;
@@ -254,6 +258,13 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
     return pages;
   }, [totalPages, currentPage]);
 
+  const sortOptions = useMemo(() => [
+    { value: "newest", label: language === "EN" ? "Newest" : "Terbaru" },
+    { value: "oldest", label: language === "EN" ? "Oldest" : "Terlama" },
+    { value: "popular", label: language === "EN" ? "Most Popular" : "Terpopuler" },
+    { value: "title", label: language === "EN" ? "Title A–Z" : "Judul A–Z" },
+  ], [language]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
       <motion.div
@@ -262,9 +273,9 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       >
         <SectionHeading
-          eyebrow="Katalog"
-          title="Objek Budaya Nusantara"
-          description="Telusuri dokumentasi budaya berdasarkan kata kunci, kategori, dan wilayah asal."
+          eyebrow={language === "EN" ? "Catalog" : "Katalog"}
+          title={t("catalog.header_title", "Objek Budaya Nusantara")}
+          description={t("catalog.header_sub", "Telusuri dokumentasi budaya berdasarkan kata kunci, kategori, dan wilayah asal.")}
         />
       </motion.div>
 
@@ -274,7 +285,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
           {/* Search */}
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-1 lg:col-start-1">
             <Label htmlFor="katalog-search" className="sr-only">
-              Cari objek budaya
+              {language === "EN" ? "Search cultural objects" : "Cari objek budaya"}
             </Label>
             <div className="relative">
               <SlidersHorizontal
@@ -284,7 +295,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
               <Input
                 id="katalog-search"
                 type="search"
-                placeholder="Cari judul, mis. batik…"
+                placeholder={t("catalog.search_placeholder", "Cari objek budaya, tradisi, arsitektur...")}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="min-h-[44px] pl-9"
@@ -296,17 +307,17 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
           {/* Kategori */}
           <div className="space-y-1.5">
             <Label htmlFor="filter-kategori" className="sr-only">
-              Filter kategori
+              {language === "EN" ? "Filter category" : "Filter kategori"}
             </Label>
             <Select
               value={state.kategori || "all"}
               onValueChange={(v) => updateQuery({ kategori: v === "all" ? "" : v, page: 1 })}
             >
               <SelectTrigger id="filter-kategori" className="min-h-[44px] w-full" aria-label="Filter kategori">
-                <SelectValue placeholder="Semua Kategori" />
+                <SelectValue placeholder={t("catalog.all_categories", "Semua Kategori")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Kategori</SelectItem>
+                <SelectItem value="all">{t("catalog.all_categories", "Semua Kategori")}</SelectItem>
                 {categories.map((c) => (
                   <SelectItem key={c.id} value={c.slug}>
                     {c.name}
@@ -319,17 +330,17 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
           {/* Wilayah */}
           <div className="space-y-1.5">
             <Label htmlFor="filter-wilayah" className="sr-only">
-              Filter wilayah
+              {language === "EN" ? "Filter region" : "Filter wilayah"}
             </Label>
             <Select
               value={state.wilayah || "all"}
               onValueChange={(v) => updateQuery({ wilayah: v === "all" ? "" : v, page: 1 })}
             >
               <SelectTrigger id="filter-wilayah" className="min-h-[44px] w-full" aria-label="Filter wilayah">
-                <SelectValue placeholder="Semua Wilayah" />
+                <SelectValue placeholder={t("catalog.all_regions", "Semua Wilayah (38)")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Wilayah</SelectItem>
+                <SelectItem value="all">{t("catalog.all_regions", "Semua Wilayah (38)")}</SelectItem>
                 {regions.map((r) => (
                   <SelectItem key={r.id} value={r.code}>
                     {r.name}
@@ -342,14 +353,14 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
           {/* Urutan */}
           <div className="space-y-1.5">
             <Label htmlFor="filter-sort" className="sr-only">
-              Urutkan
+              {t("catalog.sort_label", "Urutkan")}
             </Label>
             <Select value={state.sort} onValueChange={(v) => updateQuery({ sort: v as SortKey, page: 1 })}>
               <SelectTrigger id="filter-sort" className="min-h-[44px] w-full" aria-label="Urutkan hasil">
-                <SelectValue placeholder="Urutkan" />
+                <SelectValue placeholder={t("catalog.sort_label", "Urutan")} />
               </SelectTrigger>
               <SelectContent>
-                {SORTS.map((s) => (
+                {sortOptions.map((s) => (
                   <SelectItem key={s.value} value={s.value}>
                     {s.label}
                   </SelectItem>
@@ -363,7 +374,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
       {/* Info rentang + reset */}
       {(rangeInfo || hasActiveFilter) && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-          <p aria-live="polite">{rangeInfo ?? "Memfilter hasil…"}</p>
+          <p aria-live="polite">{rangeInfo ?? (language === "EN" ? "Filtering records…" : "Memfilter hasil…")}</p>
           {hasActiveFilter && (
             <Button
               variant="ghost"
@@ -372,7 +383,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
               className="min-h-[44px] rounded-full text-[#7A4B29] hover:bg-[#7A4B29]/10 hover:text-[#52331C]"
             >
               <FilterX className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              Reset filter
+              {t("catalog.reset_filters", "Reset Filter")}
             </Button>
           )}
         </div>
@@ -398,13 +409,13 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
         ) : currentItems.length === 0 ? (
           <EmptyState
             icon={SearchX}
-            title="Tidak ada objek budaya yang cocok"
-            message="Coba ubah kata kunci atau longgarkan filter kategori/wilayah."
+            title={t("catalog.empty_title", "Tidak ada objek budaya yang cocok")}
+            message={t("catalog.empty_sub", "Coba ubah kata kunci atau longgarkan filter kategori/wilayah.")}
             action={
               hasActiveFilter && (
                 <Button onClick={resetFilter} className="min-h-[44px] rounded-full btn-waranusa font-bold text-white">
                   <FilterX className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                  Reset semua filter
+                  {t("catalog.reset_filters", "Reset semua filter")}
                 </Button>
               )
             }
@@ -426,7 +437,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
-                  aria-label="Halaman sebelumnya"
+                  aria-label={language === "EN" ? "Previous page" : "Halaman sebelumnya"}
                   className={cnPaginationDisabled(currentPage <= 1)}
                   onClick={(e) => {
                     e.preventDefault();
@@ -444,7 +455,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
                     <PaginationLink
                       href="#"
                       isActive={p === currentPage}
-                      aria-label={`Ke halaman ${p}`}
+                      aria-label={language === "EN" ? `Go to page ${p}` : `Ke halaman ${p}`}
                       className={
                         p === currentPage
                           ? "min-h-[40px] min-w-[40px] rounded-full border-[#482B18] bg-[#482B18] font-bold text-white hover:bg-[#382112] hover:text-white shadow-xs"
@@ -463,7 +474,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  aria-label="Halaman berikutnya"
+                  aria-label={language === "EN" ? "Next page" : "Halaman berikutnya"}
                   className={cnPaginationDisabled(currentPage >= totalPages)}
                   onClick={(e) => {
                     e.preventDefault();
@@ -474,7 +485,7 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
             </PaginationContent>
           </Pagination>
           <p className="text-center text-xs text-muted-foreground">
-            Halaman {currentPage} dari {totalPages}
+            {language === "EN" ? `Page ${currentPage} of ${totalPages}` : `Halaman ${currentPage} dari ${totalPages}`}
           </p>
         </div>
       )}
