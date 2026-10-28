@@ -28,7 +28,6 @@ import {
   Music,
   Share2,
   ShieldCheck,
-  Sparkles,
   UtensilsCrossed,
   Volume2,
 } from "lucide-react";
@@ -86,6 +85,51 @@ const SOURCE_ICON: Record<SourceType, LucideIcon> = {
   ARCHIVE: Archive,
   OTHER: FolderOpen,
 };
+
+/** Ikon Tenun Wastra Nusantara (Filosofi Motif & Kriya Tekstil Tradisional) */
+function WastraIcon({ className = "h-7 w-7 text-[#E5A93C]" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <polygon points="12 2 21 12 12 22 3 12" />
+      <line x1="12" y1="6" x2="12" y2="18" />
+      <line x1="6" y1="12" x2="18" y2="12" />
+      <polygon points="12 7 17 12 12 17 7 12" fill="currentColor" fillOpacity="0.25" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+/** Ikon Seni Pertunjukan & Koreografi Tari Tradisional */
+function TariTradisionalIcon({ className = "h-7 w-7 text-[#E5A93C]" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="5" r="2.5" fill="currentColor" fillOpacity="0.2" />
+      <path d="M6 10c2-1 4-1 6 1s4 2 6 1" />
+      <path d="M12 7.5v6.5" />
+      <path d="M8 14c2 3 4 3 4 7" />
+      <path d="M16 14c-2 3-4 3-4 7" />
+      <path d="M4 14c2.5 1 5-1 7-3" />
+      <path d="M20 14c-2.5 1-5-1-7-3" />
+    </svg>
+  );
+}
 
 /** Bangun CulturalItem lengkap dari katalog 38 Rumah Adat, 38 Instrumen, atau Katalog Master bila belum ada di DB */
 function buildCatalogueFallbackItem(slug: string): CulturalItem | null {
@@ -587,7 +631,7 @@ export default function CultureDetailView({ route, slug: propSlug }: { route?: {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#52331C] text-white shadow-md">
-                  <Sparkles className="h-7 w-7 text-[#E5A93C]" aria-hidden="true" />
+                  <WastraIcon className="h-7 w-7 text-[#E5A93C]" />
                 </div>
                 <div>
                   <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7A4B29]">
@@ -616,7 +660,7 @@ export default function CultureDetailView({ route, slug: propSlug }: { route?: {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#52331C] text-white shadow-md">
-                  <Sparkles className="h-7 w-7 text-[#E5A93C]" aria-hidden="true" />
+                  <TariTradisionalIcon className="h-7 w-7 text-[#E5A93C]" />
                 </div>
                 <div>
                   <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7A4B29]">
