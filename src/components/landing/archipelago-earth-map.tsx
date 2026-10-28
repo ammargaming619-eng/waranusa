@@ -183,19 +183,19 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           // Hitung alignment popover horizontal agar selalu strictly di dalam kontainer peta
           const popoverAlignClass =
             tag.pin.x < 25
-              ? "left-0 translate-x-0"
+              ? "left-[-12px] translate-x-0"
               : tag.pin.x > 75
-              ? "right-0 translate-x-0"
-              : "left-1/2 -translate-x-1/2";
+              ? "right-[-12px] translate-x-0"
+              : "left-0 -translate-x-1/2";
 
           const verticalPositionClass = isBelow
-            ? "top-full mt-2.5"
-            : "bottom-full mb-2.5";
+            ? "top-[12px]"
+            : "bottom-[44px]";
 
           return (
             <div
               key={tag.id}
-              className={cn("absolute transition-all duration-300", isHovered ? "z-40" : "z-20")}
+              className={cn("absolute w-0 h-0 transition-all duration-300", isHovered ? "z-50" : "z-20")}
               style={{
                 left: `${tag.pin.x}%`,
                 top: `${tag.pin.y}%`,
@@ -220,7 +220,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   aria-label={`Lihat budaya ${tag.title} (${tag.region})`}
                   className={cn(
                     "relative flex flex-col items-center justify-center group/pin focus:outline-none min-w-[36px] min-h-[36px] p-1 transition-transform duration-300 cursor-pointer",
-                    isHovered ? "scale-115 z-30" : "hover:scale-110"
+                    isHovered ? "scale-115 z-40" : "hover:scale-110 z-30"
                   )}
                 >
                   {/* Lingkaran Berdenyut Halus (Soft Pulse Animation) */}
@@ -289,9 +289,8 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
                   {/* Teks Wilayah & Nama Budaya */}
                   <div className="pr-1 max-w-[130px] lg:max-w-[170px]">
-                    <p className="text-[9px] lg:text-[10px] font-bold text-[#7A4B29] leading-tight flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block shrink-0" />
-                      <span className="truncate">{tag.region}</span>
+                    <p className="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider text-[#7A4B29] leading-tight truncate">
+                      {tag.region}
                     </p>
                     <p className="text-[11px] lg:text-[12px] font-bold text-stone-900 leading-tight group-hover:text-[#53341E] transition-colors truncate">
                       {tag.title}
