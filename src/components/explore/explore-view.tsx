@@ -5,7 +5,8 @@
  * Peta interaktif wilayah budaya 38 Provinsi Indonesia (kiri) + panel kuratorial wilayah (kanan).
  * Mengusung tata letak editorial bersih, gradasi marun-jati, dan navigasi kepulauan tanpa emoji.
  */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -55,8 +56,31 @@ void Pin;
 void Sparkles;
 
 export default function ExploreView({ route }: { route?: Route } = {}) {
+  const searchParams = useSearchParams();
   const [selectedIsland, setSelectedIsland] = useState<Province38["islandGroup"] | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeRegionCode, setActiveRegionCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    let code: string | null = null;
+    if (searchParams) {
+      try {
+        code = searchParams.get("region");
+      } catch {}
+    }
+    if (!code && typeof window !== "undefined") {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        code = sp.get("region");
+      } catch {}
+    }
+    if (!code && route?.query?.region) {
+      code = route.query.region;
+    }
+    if (code) {
+      setActiveRegionCode(code);
+    }
+  }, [searchParams, route?.query?.region]);
 
   const regionsQ = useAsyncData(() => api.regions.list(), []);
 
@@ -110,16 +134,22 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
     return allProvincesAsRegions.filter((r) => allowedCodes.has(r.code));
   }, [allProvincesAsRegions, filteredProvinces]);
 
-  // Wilayah terpilih diturunkan dari URL (?region=CODE)
+  // Wilayah terpilih diturunkan dari URL (?region=CODE) atau klik interaktif
   const selectedRegion = useMemo(() => {
-    const code = route.query.region;
+    const code =
+      activeRegionCode ??
+      (searchParams ? searchParams.get("region") : null) ??
+      route?.query?.region ??
+      null;
     if (!code) return null;
+    const normalized = code.toLowerCase().trim();
     return (
-      allProvincesAsRegions.find((r) => r.code === code) ??
-      allProvincesAsRegions.find((r) => r.id === code) ??
+      allProvincesAsRegions.find((r) => r.code.toLowerCase() === normalized) ??
+      allProvincesAsRegions.find((r) => r.id.toLowerCase() === normalized) ??
+      allProvincesAsRegions.find((r) => r.name.toLowerCase() === normalized) ??
       null
     );
-  }, [allProvincesAsRegions, route.query.region]);
+  }, [allProvincesAsRegions, activeRegionCode, searchParams, route?.query?.region]);
 
   const selectedMeta = useMemo(() => {
     if (!selectedRegion) return null;
@@ -148,6 +178,14 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
   const detailPanelRef = useRef<HTMLElement>(null);
 
   const selectRegion = (r: Region) => {
+    setActiveRegionCode(r.code);
+    if (typeof window !== "undefined") {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("region", r.code);
+        window.history.replaceState(null, "", url.toString());
+      } catch {}
+    }
     navigate(buildQuery("jelajah", { region: r.code }), { replace: true });
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       setTimeout(() => {
@@ -162,6 +200,14 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
     if (selectedRegion && islandId !== "ALL") {
       const currentMeta = PROVINCES_38_DATASET.find((p) => p.code === selectedRegion.code);
       if (currentMeta && currentMeta.islandGroup !== islandId) {
+        setActiveRegionCode(null);
+        if (typeof window !== "undefined") {
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("region");
+            window.history.replaceState(null, "", url.toString());
+          } catch {}
+        }
         navigate(buildQuery("jelajah", {}), { replace: true });
       }
     }

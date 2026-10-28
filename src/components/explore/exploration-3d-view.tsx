@@ -91,8 +91,8 @@ export default function Exploration3DView() {
       } catch {}
     }
 
-    const requestedHouse = houseParam ?? route.query.house;
-    const requestedProvince = provParam ?? route.query.province ?? route.query.provinsi;
+    const requestedHouse = houseParam ?? route?.query?.house;
+    const requestedProvince = provParam ?? route?.query?.province ?? route?.query?.provinsi;
 
     if (requestedHouse) {
       const found = HOUSES_38_CATALOGUE.find(
@@ -119,9 +119,9 @@ export default function Exploration3DView() {
       }
     }
   }, [
-    route.query.house,
-    route.query.province,
-    route.query.provinsi,
+    route?.query?.house,
+    route?.query?.province,
+    route?.query?.provinsi,
   ]);
 
   // Filter daftar rumah adat (berdasarkan Wilayah Kepulauan & Pencarian)
