@@ -2,8 +2,11 @@
 
 /**
  * WaraNusa — LoginView (#/masuk / #/login)
- * - Mobile (< lg): Full-screen soft heritage gradient, circular back button,
- *   rounded-2xl modern input fields, dan horizontal role selector pills untuk juri.
+ * - Mobile (< lg): Konsep referensi kontemporer:
+ *   * Gradasi cokelat hangat di area atas dengan logo WaraNusa besar di tengah atas.
+ *   * Circular back button di pojok kiri atas.
+ *   * Bottom sheet putih melengkung (rounded-t-[36px]) membungkus form input empuk,
+ *     tombol masuk tembaga, dan panel peran juri UINIC 8.0.
  * - Desktop (lg:): Split-screen 50:50 beraksen kayu tua hangat dan kanvas krem simetris.
  */
 import { useEffect, useState } from "react";
@@ -21,7 +24,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
-import { BrandLogo } from "@/components/shared/brand-logo";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,168 +165,178 @@ export default function LoginView({ route }: { route?: Route } = {}) {
   return (
     <div className="w-full min-h-screen overflow-x-hidden">
       {/* ========================================================================= */}
-      {/* 1. TAMPILAN MOBILE (< lg): FULL-SCREEN SOFT HERITAGE GRADIENT APP STYLE   */}
+      {/* 1. TAMPILAN MOBILE (< lg): HEADER GRADASI COKELAT DENGAN LOGO DI TENGAH   */}
       {/* ========================================================================= */}
-      <div className="lg:hidden w-full min-h-screen flex flex-col justify-between px-6 pt-7 pb-9 bg-gradient-to-b from-[#F5EFE6] via-[#FAF7F2] to-white selection:bg-[#6E472D] selection:text-white">
-        {/* Top Bar Mobile: Circular Back Button & Logo WaraNusa */}
-        <div className="flex items-center justify-between w-full">
-          <Link
-            href="/"
-            className="w-11 h-11 rounded-full bg-white/90 shadow-xs border border-stone-200/70 flex items-center justify-center text-stone-700 hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
-            aria-label="Kembali ke Beranda"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <div
-            className="cursor-pointer select-none"
-            onDoubleClick={() => setShowDemoManual((v) => !v)}
-            title="Klik dua kali untuk membuka opsi evaluasi"
-          >
+      <div className="lg:hidden w-full min-h-screen flex flex-col justify-between bg-gradient-to-b from-[#EBDBC9] via-[#F5ECE1] to-[#FAF7F2] selection:bg-[#6E472D] selection:text-white relative">
+        {/* Tombol Kembali Bundar di Kiri Atas */}
+        <Link
+          href="/"
+          className="absolute top-5 left-5 z-20 w-11 h-11 rounded-full bg-white/85 backdrop-blur-sm shadow-xs border border-stone-200/80 flex items-center justify-center text-stone-700 hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
+          aria-label="Kembali ke Beranda"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+
+        {/* Header Atas: Logo WaraNusa Besar di Tengah Atas */}
+        <div
+          className="pt-12 pb-7 px-6 flex flex-col items-center justify-center text-center select-none cursor-pointer"
+          onDoubleClick={() => setShowDemoManual((v) => !v)}
+          title="Klik dua kali untuk membuka opsi evaluasi"
+        >
+          <div className="relative group">
             <img
               src="/images/brand/waranusa-logo.png?v=3"
               alt="Logo WaraNusa"
-              className="h-8 w-auto object-contain drop-shadow-xs"
+              className="h-16 w-auto object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
             />
           </div>
+          <span className="font-serif text-2xl font-bold tracking-tight text-[#2D1E12] mt-2.5">
+            WaraNusa
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8C5E3C] mt-0.5">
+            Pelestarian Warisan Nusantara
+          </span>
         </div>
 
-        {/* Content Body Mobile */}
-        <div className="my-auto py-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold tracking-tight text-stone-900">
-              Selamat Datang 👋
-            </h1>
-            <p className="mt-1.5 text-xs text-stone-500 leading-relaxed">
-              Silakan masukkan email dan sandi untuk mengakses portal kurasi WaraNusa.
-            </p>
-          </div>
-
-          {formError && (
-            <Alert variant="destructive" role="alert" className="rounded-2xl mb-4">
-              <AlertDescription>{formError}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit} noValidate>
-            {/* Field Email Mobile */}
-            <div className="relative w-full mb-3.5">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setFieldErrors((fe) => ({ ...fe, email: undefined }));
-                }}
-                placeholder="nama@waranusa.id"
-                autoComplete="email"
-                className="w-full rounded-2xl bg-white border border-stone-200/90 py-3.5 pl-11 pr-4 text-sm text-stone-800 placeholder:text-stone-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/30 focus:border-[#8C5E3C] transition-all min-h-[48px]"
-              />
-              {fieldErrors.email && (
-                <p className="text-xs text-destructive mt-1 pl-1">{fieldErrors.email}</p>
-              )}
+        {/* Kontainer Formulir Lembut (Bottom Sheet Melengkung rounded-t-[36px]) */}
+        <div className="w-full rounded-t-[36px] bg-white shadow-[0_-8px_30px_rgba(45,30,18,0.06)] border-t border-stone-200/80 px-6 pt-7 pb-8 flex-1 flex flex-col justify-between">
+          <div>
+            <div className="text-center mb-5">
+              <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-stone-900">
+                Masuk ke Akun Anda
+              </h1>
+              <p className="mt-1 text-xs text-stone-500">
+                Masukkan email dan sandi untuk mengakses portal kurasi WaraNusa.
+              </p>
             </div>
 
-            {/* Field Sandi Mobile */}
-            <div className="relative w-full mb-4">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setFieldErrors((fe) => ({ ...fe, password: undefined }));
-                }}
-                placeholder="••••••••"
-                autoComplete="current-password"
-                className="w-full rounded-2xl bg-white border border-stone-200/90 py-3.5 pl-11 pr-11 text-sm text-stone-800 placeholder:text-stone-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/30 focus:border-[#8C5E3C] transition-all min-h-[48px]"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 hover:text-stone-700"
-                aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-              {fieldErrors.password && (
-                <p className="text-xs text-destructive mt-1 pl-1">{fieldErrors.password}</p>
-              )}
-            </div>
+            {formError && (
+              <Alert variant="destructive" role="alert" className="rounded-2xl mb-4">
+                <AlertDescription>{formError}</AlertDescription>
+              </Alert>
+            )}
 
-            {/* Tombol CTA Masuk Mobile */}
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="w-full rounded-2xl py-3.5 font-semibold text-white bg-gradient-to-r from-[#8C5E3C] to-[#6E472B] shadow-lg shadow-[#8C5E3C]/25 hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm min-h-[50px] cursor-pointer"
-            >
-              {submitting ? (
-                "Memproses Masuk…"
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4" />
-                  <span>Masuk ke Sistem</span>
-                </>
-              )}
-            </Button>
-
-            <p className="text-[11px] text-stone-400 text-center flex items-center justify-center gap-1.5 mt-4">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#8C5E3C]" />
-              <span>Koneksi Terenkripsi TLS 1.3 • Sesi Terproteksi</span>
-            </p>
-          </form>
-
-          {/* Panel Evaluator Lomba di Mobile: Horizontal Role Selector Pills */}
-          {showDemoAccounts && (
-            <div className="mt-6 pt-5 border-t border-stone-200/70 space-y-3 animate-in fade-in duration-300">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Award className="h-4 w-4 text-amber-700" />
-                  <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider">
-                    Akses Dewan Juri UINIC 8.0
-                  </span>
-                </div>
-                {!isEvaluatorMode && (
-                  <button
-                    type="button"
-                    onClick={() => setShowDemoManual(false)}
-                    className="text-[10px] font-semibold text-stone-400 hover:text-stone-600"
-                  >
-                    Tutup
-                  </button>
+            <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+              {/* Field Email Mobile */}
+              <div className="relative w-full">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setFieldErrors((fe) => ({ ...fe, email: undefined }));
+                  }}
+                  placeholder="nama@waranusa.id"
+                  autoComplete="email"
+                  className="w-full rounded-2xl bg-[#FAF8F5] border border-stone-200/90 py-3.5 pl-11 pr-4 text-sm text-stone-800 placeholder:text-stone-400 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/30 focus:border-[#8C5E3C] transition-all min-h-[48px]"
+                />
+                {fieldErrors.email && (
+                  <p className="text-xs text-destructive mt-1 pl-1">{fieldErrors.email}</p>
                 )}
               </div>
 
-              {/* 4 Role Selector Pills (2x2 grid ringkas yang sangat mudah di-tap) */}
-              <div className="grid grid-cols-2 gap-2">
-                {DEMO_ACCOUNTS.map((a) => (
-                  <button
-                    key={`mobile-pill-${a.email}`}
-                    type="button"
-                    onClick={() => fillDemo(a)}
-                    disabled={submitting}
-                    className="flex flex-col text-left p-2.5 rounded-xl border border-stone-200/80 bg-white/95 shadow-2xs active:bg-amber-50 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <span className={`w-fit rounded px-1.5 py-0.2 text-[9px] font-bold ${a.badgeClass}`}>
-                      {a.role}
-                    </span>
-                    <span className="mt-1 text-xs font-bold text-stone-800 truncate">
-                      {a.name.split(" ")[0]} {a.name.split(" ")[1] ?? ""}
-                    </span>
-                    <span className="text-[10px] text-stone-400 truncate font-mono">
-                      {a.accessLabel}
-                    </span>
-                  </button>
-                ))}
+              {/* Field Sandi Mobile */}
+              <div className="relative w-full">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setFieldErrors((fe) => ({ ...fe, password: undefined }));
+                  }}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  className="w-full rounded-2xl bg-[#FAF8F5] border border-stone-200/90 py-3.5 pl-11 pr-11 text-sm text-stone-800 placeholder:text-stone-400 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C5E3C]/30 focus:border-[#8C5E3C] transition-all min-h-[48px]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-stone-400 hover:text-stone-700"
+                  aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+                {fieldErrors.password && (
+                  <p className="text-xs text-destructive mt-1 pl-1">{fieldErrors.password}</p>
+                )}
               </div>
-            </div>
-          )}
-        </div>
 
-        {/* Footer Kecil Mobile */}
-        <p className="text-[10.5px] text-stone-400 text-center">
-          Hak Cipta &copy; 2026 WaraNusa. Preservasi Budaya Nusantara.
-        </p>
+              {/* Tombol Masuk Utama Mobile */}
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-2xl py-3.5 font-semibold text-white bg-gradient-to-r from-[#8C5E3C] to-[#6E472B] shadow-lg shadow-[#8C5E3C]/25 hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm min-h-[50px] cursor-pointer mt-2"
+              >
+                {submitting ? (
+                  "Memproses Masuk…"
+                ) : (
+                  <>
+                    <LogIn className="h-4 w-4" />
+                    <span>Masuk ke Sistem</span>
+                  </>
+                )}
+              </Button>
+
+              <p className="text-[11px] text-stone-400 text-center flex items-center justify-center gap-1.5 pt-2">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#8C5E3C]" />
+                <span>Koneksi Terenkripsi TLS 1.3 • Sesi Terproteksi</span>
+              </p>
+            </form>
+
+            {/* Panel Evaluator Lomba di Mobile: Horizontal Role Selector Pills */}
+            {showDemoAccounts && (
+              <div className="mt-5 pt-4 border-t border-stone-100 space-y-2.5 animate-in fade-in duration-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Award className="h-4 w-4 text-amber-700" />
+                    <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider">
+                      Akses Dewan Juri UINIC 8.0
+                    </span>
+                  </div>
+                  {!isEvaluatorMode && (
+                    <button
+                      type="button"
+                      onClick={() => setShowDemoManual(false)}
+                      className="text-[10px] font-semibold text-stone-400 hover:text-stone-600"
+                    >
+                      Tutup
+                    </button>
+                  )}
+                </div>
+
+                {/* 4 Role Selector Pills (2x2 grid ringkas yang sangat mudah di-tap) */}
+                <div className="grid grid-cols-2 gap-2">
+                  {DEMO_ACCOUNTS.map((a) => (
+                    <button
+                      key={`mobile-pill-${a.email}`}
+                      type="button"
+                      onClick={() => fillDemo(a)}
+                      disabled={submitting}
+                      className="flex flex-col text-left p-2.5 rounded-xl border border-stone-200/80 bg-[#FAF8F5] shadow-2xs active:bg-amber-50 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <span className={`w-fit rounded px-1.5 py-0.2 text-[9px] font-bold ${a.badgeClass}`}>
+                        {a.role}
+                      </span>
+                      <span className="mt-1 text-xs font-bold text-stone-800 truncate">
+                        {a.name.split(" ")[0]} {a.name.split(" ")[1] ?? ""}
+                      </span>
+                      <span className="text-[10px] text-stone-400 truncate font-mono">
+                        {a.accessLabel}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer Kecil Mobile */}
+          <p className="text-[10.5px] text-stone-400 text-center pt-6">
+            Hak Cipta &copy; 2026 WaraNusa. Preservasi Warisan Budaya Nusantara.
+          </p>
+        </div>
       </div>
 
       {/* ========================================================================= */}
