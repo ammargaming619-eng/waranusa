@@ -4608,6 +4608,58 @@ export const MASTER_CULTURAL_CATALOGUE = ([
 ] as unknown) as CulturalItem[];
 
 
+// =========================================================================
+// INTERLEAVED CATALOGUE (CAMPURAN SEIMBANG SELURUH KATEGORI BUDAYA)
+// Menjamin halaman awal menampilkan ragam kategori secara proporsional
+// (Rumah Adat, Alat Musik, Kuliner, Tekstil, Tarian, Tradisi)
+// =========================================================================
+function createInterleavedCatalogue(catalogue: CulturalItem[]): CulturalItem[] {
+  const categoryOrder = [
+    "rumah-adat",
+    "alat-musik",
+    "kuliner",
+    "tekstil",
+    "tarian",
+    "tradisi",
+  ];
+
+  const byCategory: Record<string, CulturalItem[]> = {
+    "rumah-adat": [],
+    "alat-musik": [],
+    "kuliner": [],
+    "tekstil": [],
+    "tarian": [],
+    "tradisi": [],
+  };
+
+  const others: CulturalItem[] = [];
+
+  for (const item of catalogue) {
+    const slug = item.category?.slug;
+    if (slug && byCategory[slug]) {
+      byCategory[slug].push(item);
+    } else {
+      others.push(item);
+    }
+  }
+
+  const result: CulturalItem[] = [];
+  const maxLen = Math.max(...categoryOrder.map((cat) => byCategory[cat].length));
+
+  for (let i = 0; i < maxLen; i++) {
+    for (const cat of categoryOrder) {
+      if (i < byCategory[cat].length) {
+        result.push(byCategory[cat][i]);
+      }
+    }
+  }
+
+  result.push(...others);
+  return result;
+}
+
+export const INTERLEAVED_MASTER_CATALOGUE: CulturalItem[] = createInterleavedCatalogue(MASTER_CULTURAL_CATALOGUE);
+
 export interface CatalogueQueryParams {
   search?: string;
   categorySlug?: string;
@@ -4629,7 +4681,13 @@ export function queryCatalogue(params: CatalogueQueryParams = {}) {
     pageSize = 12,
   } = params;
 
-  let filtered = [...MASTER_CULTURAL_CATALOGUE];
+  // Bila pengguna memilih "Semua Kategori" dan urutan kronologis, sajikan katalog ter-interleave (campur seimbang)
+  const isAllCategories = !categorySlug || categorySlug === "all";
+  const baseItems = isAllCategories && (sort === "newest" || sort === "oldest")
+    ? INTERLEAVED_MASTER_CATALOGUE
+    : MASTER_CULTURAL_CATALOGUE;
+
+  let filtered = [...baseItems];
 
   if (featured !== undefined) {
     filtered = filtered.filter((it) => Boolean(it.featured) === featured);
