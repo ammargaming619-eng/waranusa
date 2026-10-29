@@ -282,8 +282,10 @@ export function AirGestureCursorOverlay({
 }: AirGestureCursorOverlayProps) {
   if (!cursor || !handDetected) return null;
 
-  const leftPercent = `${(cursor.x * 100).toFixed(2)}%`;
-  const topPercent = `${(cursor.y * 100).toFixed(2)}%`;
+  const x = typeof cursor?.x === "number" && !isNaN(cursor.x) ? cursor.x : 0;
+  const y = typeof cursor?.y === "number" && !isNaN(cursor.y) ? cursor.y : 0;
+  const leftPercent = `${(x * 100).toFixed(2)}%`;
+  const topPercent = `${(y * 100).toFixed(2)}%`;
   const isHovering = hoveredNote !== null;
 
   // SVG circular dwell progress (radius 22px)

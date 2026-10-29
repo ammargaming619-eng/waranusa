@@ -69,8 +69,8 @@ export function serializeRegion(r: Region, itemCount?: number) {
     capital: r.capital,
     summary: r.summary,
     description: r.description,
-    lat: r.lat,
-    lng: r.lng,
+    lat: typeof r.lat === "number" && !isNaN(r.lat) ? r.lat : 0,
+    lng: typeof r.lng === "number" && !isNaN(r.lng) ? r.lng : 0,
     ...(itemCount !== undefined ? { itemCount } : {}),
   };
 }

@@ -354,7 +354,8 @@ export default function ExploreView({ route }: { route?: Route } = {}) {
                       {language === "EN" ? `${selectedMeta.islandLabel} Islands` : `Kepulauan ${selectedMeta.islandLabel}`}
                     </span>
                     <span className="text-stone-300/90 font-mono">
-                      {selectedMeta.lat.toFixed(3)}°, {selectedMeta.lng.toFixed(3)}°
+                      {typeof selectedMeta.lat === "number" && !isNaN(selectedMeta.lat) ? selectedMeta.lat.toFixed(3) : (Number(selectedMeta.lat) || 0).toFixed(3)}°,{" "}
+                      {typeof selectedMeta.lng === "number" && !isNaN(selectedMeta.lng) ? selectedMeta.lng.toFixed(3) : (Number(selectedMeta.lng) || 0).toFixed(3)}°
                     </span>
                   </div>
                   <h2 className="mt-2 font-serif text-2xl font-bold tracking-tight text-[#FAF6F0]">

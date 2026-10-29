@@ -9,6 +9,7 @@ import { regionSchema, regionUpdateSchema } from "@/server/validators/region";
 import { serializeRegion } from "@/server/serializers";
 import { logActivity } from "@/server/services/audit";
 import { guard, readJson } from "@/server/services/http";
+import { PROVINCES_38_DATASET } from "@/data/regions-38";
 
 interface RegionCtx {
   params: Promise<{ id: string }>;
@@ -23,9 +24,39 @@ export async function listAdminRegions(): Promise<Response> {
       orderBy: { name: "asc" },
       include: { _count: { select: { culturalItems: true } } },
     });
+    if (!rows || rows.length === 0) {
+      return ok(
+        PROVINCES_38_DATASET.map((p) => ({
+          id: `reg-id-${p.code.slice(3).toLowerCase()}`,
+          code: p.code,
+          name: p.name,
+          islandGroup: p.islandGroup,
+          capital: p.capital,
+          summary: p.summary,
+          description: p.summary,
+          lat: p.lat ?? 0,
+          lng: p.lng ?? 0,
+          itemCount: 0,
+        }))
+      );
+    }
     return ok(rows.map((r) => serializeRegion(r, r._count.culturalItems)));
   } catch (e) {
-    return handleApiError(e);
+    console.error("[listAdminRegions error, fallback to dataset]", e);
+    return ok(
+      PROVINCES_38_DATASET.map((p) => ({
+        id: `reg-id-${p.code.slice(3).toLowerCase()}`,
+        code: p.code,
+        name: p.name,
+        islandGroup: p.islandGroup,
+        capital: p.capital,
+        summary: p.summary,
+        description: p.summary,
+        lat: p.lat ?? 0,
+        lng: p.lng ?? 0,
+        itemCount: 0,
+      }))
+    );
   }
 }
 

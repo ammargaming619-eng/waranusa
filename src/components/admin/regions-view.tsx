@@ -5,7 +5,7 @@
  * Tabel + dialog create/edit wilayah (kode ID-XX, kelompok pulau, koordinat).
  * Error 409 hapus (masih dipakai objek) ditampilkan apa adanya dari server.
  */
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { api, ApiError } from "@/lib/api-client";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { useAuth } from "@/lib/auth-store";
@@ -23,7 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState, ErrorState } from "@/components/shared/states";
-import { PROVINCES_38_ALPHABETICAL } from "@/data/cultural-catalogue";
+import { PROVINCES_38_DATASET } from "@/data/regions-38";
 import { MapPin, Pencil, PlusCircle, Search, Trash2 } from "lucide-react";
 
 const ISLAND_LABELS: Record<string, string> = {
@@ -37,6 +37,15 @@ const ISLAND_LABELS: Record<string, string> = {
 
 export function labelIslandGroup(g: string): string {
   return ISLAND_LABELS[g] ?? g;
+}
+
+export function formatCoord(val: number | string | null | undefined, digits = 4): string {
+  if (typeof val === "number" && !isNaN(val)) return val.toFixed(digits);
+  if (typeof val === "string" && val.trim() !== "") {
+    const num = Number(val);
+    if (!isNaN(num)) return num.toFixed(digits);
+  }
+  return "-";
 }
 
 interface FormState {
@@ -65,7 +74,36 @@ export function RegionsView() {
   const [busyDeleteId, setBusyDeleteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const rawRows = listQ.data && listQ.data.length >= 38 ? listQ.data : (PROVINCES_38_ALPHABETICAL as any as Region[]);
+  const rawRows = useMemo(() => {
+    const baseList: Region[] =
+      listQ.data && listQ.data.length > 0
+        ? listQ.data
+        : (PROVINCES_38_DATASET.map((p) => ({
+            id: p.id,
+            code: p.code,
+            name: p.name,
+            islandGroup: p.islandGroup,
+            capital: p.capital,
+            summary: p.summary,
+            description: null,
+            lat: p.lat,
+            lng: p.lng,
+            itemCount: 0,
+          })) as Region[]);
+
+    return baseList.map((r) => {
+      const match = PROVINCES_38_DATASET.find(
+        (p) => p.code === r.code || p.name.toLowerCase() === r.name.toLowerCase()
+      );
+      return {
+        ...r,
+        capital: r.capital || match?.capital || "-",
+        lat: typeof r.lat === "number" && !isNaN(r.lat) ? r.lat : (match?.lat ?? 0),
+        lng: typeof r.lng === "number" && !isNaN(r.lng) ? r.lng : (match?.lng ?? 0),
+      };
+    });
+  }, [listQ.data]);
+
   const rows = rawRows.filter((r) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -93,8 +131,8 @@ export function RegionsView() {
       capital: r.capital ?? "",
       summary: r.summary,
       description: r.description ?? "",
-      lat: String(r.lat),
-      lng: String(r.lng),
+      lat: typeof r.lat === "number" && !isNaN(r.lat) ? String(r.lat) : (r.lat ? String(r.lat) : "0"),
+      lng: typeof r.lng === "number" && !isNaN(r.lng) ? String(r.lng) : (r.lng ? String(r.lng) : "0"),
     });
     setFieldErrors({});
     setDialogOpen(true);
@@ -230,7 +268,7 @@ export function RegionsView() {
                   <TableCell className="hidden text-sm md:table-cell">{labelIslandGroup(r.islandGroup)}</TableCell>
                   <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{r.capital || "-"}</TableCell>
                   <TableCell className="hidden text-xs tabular-nums text-muted-foreground lg:table-cell">
-                    {r.lat.toFixed(4)}, {r.lng.toFixed(4)}
+                    {formatCoord(r.lat)}, {formatCoord(r.lng)}
                   </TableCell>
                   <TableCell className="text-right text-sm font-bold tabular-nums">{r.itemCount ?? 0}</TableCell>
                   {canManage && (
