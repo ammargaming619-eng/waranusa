@@ -1,20 +1,25 @@
 <div align="center">
 
-# 🏛️ WaraNusa (Wacana Ragam Nusantara)
+# 🏛️ WaraNusa — Platform Interaktif Digital Preservasi Budaya Nusantara
 ### *Digital Cultural Heritage Living Archives & Interactive 3D Exploration Platform*
+
+**Kategori Lomba:** Web Development Competition  
+**Ajang Kompetisi:** UIN Informatics Competition (UINIC) 8.0 — Tahun 2026  
+**Tim Pengembang:** **I'm Back To Come** — **SMK Negeri 1 Bantul**  
 
 [![Next.js](https://img.shields.io/badge/Next.js-16_App_Router-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL_3D-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
-[![Google Gemini](https://img.shields.io/badge/Gemini_AI-Multimodal_Vision-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Gemini_AI-1.5_Flash_Vision-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-Air_Gamelan_Vision-00A389?style=for-the-badge&logo=google)](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker)
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
 
 **Kenali Akar, Jelajahi Budaya.**  
-Platform digital terpadu untuk eksplorasi, pelestarian, dan pembelajaran warisan hidup budaya 38 provinsi di Nusantara melalui visualisasi digital twin 3D, organologi instrumen akustik virtual berbasis gestur tangan, asisten kurator AI cerdas, serta arsip sumber ilmiah yang terverifikasi.
+Platform digital terpadu untuk eksplorasi, pelestarian, dan pembelajaran warisan hidup budaya 38 provinsi di Nusantara melalui visualisasi digital twin 3D, organologi instrumen akustik virtual berbasis gestur tangan, asisten kurator AI cerdas, serta arsip sumber ilmiah yang terverifikasi (Pencapaian SDG 11.4).
 
-[Jelajahi Beranda](#-panduan-memulai-cepat) • [Fitur Utama](#-fitur-unggulan--nilai-inovasi) • [Arsitektur Proyek](#-arsitektur--struktur-folder) • [Panduan Evaluator Lomba](#-panduan-evaluator--juri-lomba)
+[Jelajahi Beranda](#-panduan-memulai-cepat) • [Fitur Utama](#-fitur-unggulan) • [Arsitektur Proyek](#-arsitektur--struktur-folder) • [Panduan Evaluator Lomba](#-panduan-evaluator--juri-lomba-uinic-80)
 
 ---
 
@@ -147,24 +152,29 @@ waranusa/
 
 ---
 
-## 👨‍⚖️ Panduan Evaluator & Juri Lomba
+## 👨‍⚖️ Panduan Evaluator & Juri Lomba UINIC 8.0
 
-Untuk mempermudah peninjauan dan evaluasi sistem secara menyeluruh, evaluator dapat menguji langsung alur hak akses menggunakan akun demonstrasi:
+Untuk mempermudah peninjauan dan evaluasi sistem secara menyeluruh, Dewan Juri UINIC 8.0 dapat mengakses mode evaluasi terisolasi dengan membuka tautan:  
+👉 **`https://waranusa.vercel.app/login?demo=evaluator`** (atau via **`/?demo=evaluator`** / klik ganda logo WaraNusa di halaman masuk).
 
-Akses halaman login: `#/login` (atau klik tombol **Masuk** di navigasi).
+Sistem akan otomatis membuka panel lencana khusus evaluator beserta 4 kartu profil kredensial instan dengan tombol **"Isi otomatis"**:
 
-| Peran | Alamat Email | Kata Sandi | Cakupan Hak Akses |
-|---|---|---|---|
-| **Super Admin** | `admin@waranusa.id` | `Admin#2025` | Akses penuh: Pengaturan situs, CRUD seluruh data, manajemen akun & media |
-| **Editor** | `editor@waranusa.id` | `Editor#2025` | Manajemen katalog budaya, model 3D, hotspot, wilayah, dan kategori |
-| **Reviewer** | `reviewer@waranusa.id` | `Reviewer#2025` | Moderasi dan peninjauan formulir kiriman kontribusi publik |
-| **Kontributor** | `kontributor@waranusa.id` | `Kontrib#2025` | Pelacakan status artikel & kiriman dokumentasi mandiri |
+| Peran Akun (*Role*) | Nama Profil Evaluator | Alamat Email | Kata Sandi (*Password*) | Lingkup Hak Akses (*RBAC*) |
+|---|---|---|---|---|
+| **Super Admin** | **Dewan Juri UINIC 8.0** | `evaluator@waranusa.id` | `JuriUINIC#2026` | Akses penuh: Dasbor Bento Grid, CRUD seluruh data budaya, moderasi kilat, dan konfigurasi master sistem. |
+| **Editor** | **Tim Pengembang WaraNusa** | `dev@waranusa.id` | `DevWaraNusa*2026` | Manajemen katalog budaya, model 3D, hotspot, wilayah, dan kategori. |
+| **Reviewer** | **Kurator Ahli Budaya** | `kurator@waranusa.id` | `KurasiWaraNusa&26` | Moderasi dan validasi rujukan ilmiah draf kiriman kontribusi publik. |
+| **Kontributor** | **Komunitas Budaya Daerah** | `kontributor@waranusa.id` | `MitraWaraNusa^26` | Mengajukan draf budaya daerah baru ke dalam antrean review (*Crowdsourced Submissions*). |
+
+> **Catatan Pengujian Penjurian:**  
+> Dewan Juri dapat berganti-ganti peran secara instan menggunakan fitur *Role Switcher* di pojok kanan atas Dasbor Admin (`/admin`) tanpa perlu logout manual. Hal ini memudahkan verifikasi isolasi batas hak akses (*Role-Based Access Control / RBAC*) secara transparan.
 
 ### Skenario Uji Coba Cepat untuk Evaluator:
-1. **Uji 3D & Hotspot**: Masuk ke menu `Eksplorasi 3D`, pilih rumah adat dari provinsi mana pun, putar objek, dan klik salah satu titik penanda (*hotspot*).
-2. **Uji Air Gamelan AI**: Masuk ke menu `Atelier Musik`, aktifkan toggle kamera "Air Gamelan", dan arahkan telunjuk tangan ke kamera untuk memainkan bilah Saron di udara.
-3. **Uji Vision AI Chatbot**: Buka widget asisten di sisi kanan, klik ikon kamera, unggah gambar batik/rumah adat, dan saksikan analisis terstruktur instan dari kurator AI.
+1. **Uji 3D & Hotspot**: Masuk ke menu `Eksplorasi 3D`, pilih rumah adat dari provinsi mana pun (misal: Rumah Gadang Minangkabau atau Tongkonan Toraja), putar objek 360°, dan klik titik penanda (*hotspot*) untuk melihat anotasi anatomi struktural.
+2. **Uji Air Gamelan AI**: Masuk ke menu `Atelier Musik`, aktifkan toggle kamera "Air Gamelan", dan arahkan telunjuk tangan ke kamera untuk memainkan bilah Saron di udara via MediaPipe Vision (21 landmark tracking).
+3. **Uji Vision AI Chatbot**: Buka widget asisten di sisi kanan, klik ikon kamera, unggah gambar batik/rumah adat, dan saksikan analisis terstruktur instan dari asisten AI WaraAI berbasis Google Gemini 1.5 Flash.
 4. **Uji Aksesibilitas & Mode Suara**: Klik ikon aksesibilitas di kiri bawah, aktifkan "Mode Suara" untuk mendengarkan narasi Web Speech API alami berkecepatan 0.95.
+5. **Uji Dasbor CMS Bento Grid**: Akses `/login?demo=evaluator`, pilih akun Super Admin, dan verifikasi tampilan dasbor Bento Grid yang bersih dari tombol melayang (*floating widgets* disembunyikan otomatis saat berada di rute `/admin`).
 
 ---
 

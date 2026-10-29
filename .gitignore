@@ -13,6 +13,9 @@ coverage/
 *.tsbuildinfo
 
 # Environment & Secrets (only .env.example is tracked)
+.env
+.env.local
+.env*.local
 .env*
 !.env.example
 *.pem
@@ -36,11 +39,12 @@ db/
 upload/
 downloads/
 
-# OS Artifacts & Agent Caches
+# OS Artifacts, Agent Files & AI Rules
 .DS_Store
 Thumbs.db
 __pycache__/
 *.pyc
 .agents/
+AGENTS.md
 .gemini/
 .aider*
