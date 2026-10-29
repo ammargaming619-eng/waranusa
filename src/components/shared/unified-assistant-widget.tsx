@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import {
   X,
@@ -10,9 +11,12 @@ import {
   Camera,
   Sparkles,
 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n-store";
+
+const ReactMarkdown = dynamic(() => import("react-markdown"), {
+  loading: () => <span className="opacity-70 text-xs">...</span>,
+});
 
 // ============================================================================
 // TYPES & CONSTANTS

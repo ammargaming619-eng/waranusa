@@ -1,6 +1,15 @@
 import { Suspense } from "react";
-import InstrumentView from "@/components/instrument/instrument-view";
+import dynamic from "next/dynamic";
 import { PublicShell } from "@/components/site/public-shell";
+
+const InstrumentView = dynamic(() => import("@/components/instrument/instrument-view"), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-screen bg-[#1A110B] flex items-center justify-center font-mono text-sm text-[#E5A93C]">
+      Memuat Studio Atelier Musik Tradisional...
+    </div>
+  ),
+});
 
 export const dynamic = "force-dynamic";
 

@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { UnifiedAssistantWidget } from "@/components/shared/unified-assistant-widget";
-import { AccessibilityWidget } from "@/components/shared/accessibility-widget";
+
+const AccessibilityWidget = dynamic(
+  () => import("@/components/shared/accessibility-widget").then((m) => m.AccessibilityWidget),
+  { ssr: false }
+);
+
+const UnifiedAssistantWidget = dynamic(
+  () => import("@/components/shared/unified-assistant-widget").then((m) => m.UnifiedAssistantWidget),
+  { ssr: false }
+);
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",

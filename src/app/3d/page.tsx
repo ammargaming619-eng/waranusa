@@ -1,6 +1,15 @@
 import { Suspense } from "react";
-import Exploration3DView from "@/components/explore/exploration-3d-view";
+import dynamic from "next/dynamic";
 import { PublicShell } from "@/components/site/public-shell";
+
+const Exploration3DView = dynamic(() => import("@/components/explore/exploration-3d-view"), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-screen bg-[#FCF8EC] flex items-center justify-center font-mono text-sm text-[#7A4B29]">
+      Memuat Studio 3D Rumah Adat...
+    </div>
+  ),
+});
 
 export const dynamic = "force-dynamic";
 
