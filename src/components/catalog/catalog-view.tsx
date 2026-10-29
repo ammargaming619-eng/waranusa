@@ -36,6 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState, ErrorState, SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
 import { useTranslation } from "@/lib/i18n-store";
+import { useCmsStore } from "@/lib/cms-store";
 import {
   CULTURAL_CATEGORIES_DATASET,
   PROVINCES_38_ALPHABETICAL,
@@ -95,6 +96,7 @@ function readQueryParams(): CatalogState {
 export default function CatalogView({ route }: { route?: Route } = {}) {
   const router = useRouter();
   const { language, t } = useTranslation();
+  const { customItems, deletedItemIds } = useCmsStore();
   const [clientParams, setClientParams] = useState<CatalogState>(() =>
     route ? readRoute(route) : readQueryParams()
   );
@@ -154,16 +156,79 @@ export default function CatalogView({ route }: { route?: Route } = {}) {
     });
   }, [state.q, state.kategori, state.wilayah, state.sort, state.page]);
 
-  // Objek budaya yang aktif ditampilkan
-  const currentItems = useMemo(() => {
-    if (itemsQ.data && itemsQ.data.length > 0) {
-      return itemsQ.data;
-    }
-    if (itemsQ.loading) return [];
-    return fallbackData.items;
-  }, [itemsQ.data, itemsQ.loading, fallbackData.items]);
+  // Objek budaya kustom dari CMS yang berstatus PUBLISHED dan cocok dengan filter
+  const publishedCustomItems = useMemo(() => {
+    return customItems
+      .filter((c) => c.status === "PUBLISHED" && !deletedItemIds.includes(c.id))
+      .filter((c) => {
+        if (state.q) {
+          const qLower = state.q.toLowerCase();
+          const matchTitle = c.title.toLowerCase().includes(qLower);
+          const matchSum = c.summary.toLowerCase().includes(qLower);
+          const matchProv = c.province.toLowerCase().includes(qLower);
+          if (!matchTitle && !matchSum && !matchProv) return false;
+        }
+        if (state.kategori && c.categorySlug !== state.kategori) return false;
+        if (state.wilayah && c.regionId !== state.wilayah) return false;
+        return true;
+      })
+      .map((c) => ({
+        id: c.id,
+        slug: c.slug,
+        title: c.title,
+        summary: c.summary,
+        description: c.description,
+        status: "PUBLISHED" as const,
+        featured: false,
+        viewCount: 1,
+        categoryId: c.categorySlug,
+        category: {
+          id: c.categorySlug,
+          name: c.categoryName,
+          slug: c.categorySlug,
+          color: "#8C5E3C",
+          sortOrder: 1,
+        },
+        regionId: c.regionId,
+        region: {
+          id: c.regionId,
+          code: "ID-PROV",
+          name: c.province,
+          islandGroup: "NUSANTARA",
+          capital: c.province,
+          summary: c.province,
+          lat: 0,
+          lng: 0,
+        },
+        coverMedia: c.coverImage
+          ? {
+              id: `media-${c.id}`,
+              title: c.title,
+              url: c.coverImage,
+              type: "IMAGE" as any,
+              mimeType: "image/jpeg",
+              sizeBytes: 1024,
+            }
+          : null,
+        createdAt: c.createdAt,
+        updatedAt: c.createdAt,
+      }));
+  }, [customItems, deletedItemIds, state.q, state.kategori, state.wilayah]);
 
-  const activeMeta = itemsQ.meta?.total ? itemsQ.meta : fallbackData.meta;
+  // Objek budaya yang aktif ditampilkan (kustom diprioritaskan di atas)
+  const currentItems = useMemo(() => {
+    const base = itemsQ.data && itemsQ.data.length > 0 ? itemsQ.data : fallbackData.items;
+    const filteredBase = base.filter((i) => !deletedItemIds.includes(i.id));
+    return [...publishedCustomItems, ...filteredBase];
+  }, [itemsQ.data, fallbackData.items, deletedItemIds, publishedCustomItems]);
+
+  const activeMeta = useMemo(() => {
+    const baseMeta = itemsQ.meta?.total ? itemsQ.meta : fallbackData.meta;
+    return {
+      ...baseMeta,
+      total: baseMeta.total + publishedCustomItems.length,
+    };
+  }, [itemsQ.meta, fallbackData.meta, publishedCustomItems.length]);
 
   // ---- Pembaruan URL (replace agar riwayat tidak menumpuk) ----
   const updateQuery = useCallback(

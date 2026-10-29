@@ -13,6 +13,7 @@ import { ApiError, api, contributionStatusColor } from "@/lib/api-client";
 import type { Contribution } from "@/lib/types";
 import { labelContributionStatus } from "@/lib/constants";
 import { useAuth } from "@/lib/auth-store";
+import { useCmsStore } from "@/lib/cms-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +26,7 @@ const fmtDate = (iso: string) =>
 
 export default function MyContributionsView(_props?: { route?: Route }) {
   const user = useAuth((s) => s.user);
+  const { contributions: storeContributions } = useCmsStore();
 
   const [items, setItems] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,11 +37,57 @@ export default function MyContributionsView(_props?: { route?: Route }) {
     let alive = true;
     setLoading(true);
     setError(null);
+
+    const storeMatched: Contribution[] = user
+      ? storeContributions
+          .filter((c) => c.submitterEmail.toLowerCase() === user.email.toLowerCase())
+          .map((s) => ({
+            id: s.id,
+            refCode: s.refCode,
+            title: s.title,
+            regionId: s.regionId,
+            region: {
+              id: s.regionId,
+              code: "ID-PROV",
+              name: s.province,
+              islandGroup: "NUSANTARA",
+              capital: s.province,
+              summary: s.province,
+              lat: 0,
+              lng: 0,
+            },
+            categorySlug: s.categorySlug,
+            description: s.description,
+            sourceRef: s.sourceRef ?? null,
+            submitterName: s.submitterName,
+            submitterEmail: s.submitterEmail,
+            status: s.status as any,
+            createdAt: s.createdAt,
+            updatedAt: s.createdAt,
+            reviews: s.reviewNote
+              ? [
+                  {
+                    id: `rev-${s.id}`,
+                    action: s.status === "APPROVED" ? "APPROVE" : s.status === "REJECTED" ? "REJECT" : "SUBMIT",
+                    note: s.reviewNote,
+                    createdAt: s.createdAt,
+                    reviewer: { id: "usr", name: "Evaluator", role: "REVIEWER" },
+                  },
+                ]
+              : [],
+          }))
+      : [];
+
     api.contributions
       .my()
       .then(({ data }) => {
         if (!alive) return;
-        setItems(data);
+        const combined = [...storeMatched, ...(data ?? [])];
+        const uniqueMap = new Map<string, Contribution>();
+        combined.forEach((c) => {
+          if (!uniqueMap.has(c.id)) uniqueMap.set(c.id, c);
+        });
+        setItems(Array.from(uniqueMap.values()));
         setLoading(false);
       })
       .catch((e: unknown) => {
@@ -48,13 +96,18 @@ export default function MyContributionsView(_props?: { route?: Route }) {
           navigate("/masuk", { replace: true });
           return;
         }
-        setError(e instanceof ApiError ? e.message : "Gagal memuat kontribusi Anda.");
-        setLoading(false);
+        if (storeMatched.length > 0) {
+          setItems(storeMatched);
+          setLoading(false);
+        } else {
+          setError(e instanceof ApiError ? e.message : "Gagal memuat kontribusi Anda.");
+          setLoading(false);
+        }
       });
     return () => {
       alive = false;
     };
-  }, []);
+  }, [user, storeContributions]);
 
   const cleanupRef = useRef<null | (() => void)>(null);
   useEffect(() => {

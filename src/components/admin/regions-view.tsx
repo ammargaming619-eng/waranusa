@@ -23,7 +23,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState, ErrorState } from "@/components/shared/states";
-import { MapPin, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { PROVINCES_38_ALPHABETICAL } from "@/data/cultural-catalogue";
+import { MapPin, Pencil, PlusCircle, Search, Trash2 } from "lucide-react";
 
 const ISLAND_LABELS: Record<string, string> = {
   SUMATERA: "Sumatera",
@@ -62,8 +63,19 @@ export function RegionsView() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [busyDeleteId, setBusyDeleteId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const rows = listQ.data ?? [];
+  const rawRows = listQ.data && listQ.data.length >= 38 ? listQ.data : (PROVINCES_38_ALPHABETICAL as any as Region[]);
+  const rows = rawRows.filter((r) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      r.name.toLowerCase().includes(q) ||
+      r.code.toLowerCase().includes(q) ||
+      (r.capital && r.capital.toLowerCase().includes(q)) ||
+      (r.islandGroup && r.islandGroup.toLowerCase().includes(q))
+    );
+  });
 
   const openCreate = () => {
     setEditing(null);
@@ -163,11 +175,24 @@ export function RegionsView() {
           <p className="text-sm text-muted-foreground">Provinsi/daerah asal objek budaya — dipakai peta & katalog.</p>
         </div>
         {canManage && (
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" /> Wilayah
+          <Button onClick={openCreate} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold cursor-pointer">
+            <PlusCircle className="h-4 w-4 mr-1.5" /> Wilayah
           </Button>
         )}
       </div>
+
+      {/* Search Bar Wilayah */}
+      <Card className="p-3">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari provinsi, kode wilayah, ibu kota, atau kelompok pulau…"
+            className="pl-9 h-10 text-xs sm:text-sm"
+          />
+        </div>
+      </Card>
 
       <Card className="overflow-hidden">
         {listQ.error ? (

@@ -11,6 +11,7 @@ import { buildQuery, navigate, type Route } from "@/lib/router";
 import { api, ApiError, contributionStatusColor } from "@/lib/api-client";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { useAuth } from "@/lib/auth-store";
+import { useCmsStore } from "@/lib/cms-store";
 import type { Contribution } from "@/lib/types";
 import { labelContributionStatus } from "@/lib/constants";
 import { toast } from "sonner";
@@ -162,6 +163,11 @@ const DEFAULT_MOCK_CONTRIBUTIONS: Contribution[] = [
 export function ContributionsView({ route }: { route: Route }) {
   const user = useAuth((s) => s.user);
   const canPublish = !!user && (user.role === "SUPER_ADMIN" || user.role === "EDITOR");
+  const {
+    contributions: storeContributions,
+    approveContribution,
+    rejectContribution,
+  } = useCmsStore();
 
   const active = TABS.some((t) => t.value === route.query.status) ? (route.query.status as string) : "ALL";
   const page = Math.max(1, Number(route.query.page ?? "1") || 1);
@@ -289,16 +295,23 @@ export function ContributionsView({ route }: { route: Route }) {
       if (modAction === "approve" && publishNow) createdId = `item-draft-${detail.id}`;
     }
 
+    // Update reactive cms-store
+    if (modAction === "approve") {
+      approveContribution(detail.id, note);
+    } else if (modAction === "reject") {
+      rejectContribution(detail.id, note);
+    }
+
     setLocalOverrides((prev) => ({ ...prev, [detail.id]: updated }));
     toast.success(
       modAction === "revise"
         ? "Permintaan revisi dikirim ke kontributor."
         : modAction === "reject"
           ? "Kontribusi ditolak."
-          : "Kontribusi berhasil disetujui & dipublikasikan!"
+          : `Kontribusi "${detail.title}" berhasil disetujui & dipublikasikan ke katalog!`
     );
-    if (modAction === "approve" && publishNow && canPublish) {
-      toast.info("Objek budaya draft dibuat" + (createdId ? ` (ID: ${createdId.slice(0, 8)}…)` : "") + " — siap ditinjau di menu Objek Budaya.");
+    if (modAction === "approve") {
+      toast.info(`Objek budaya "${detail.title}" otomatis terbit di Katalog Publik & Objek Budaya.`);
     }
     setModAction(null);
     setDetailId(null);
@@ -306,7 +319,51 @@ export function ContributionsView({ route }: { route: Route }) {
     setActionBusy(false);
   };
 
-  const baseItems = listQ.data && listQ.data.length > 0 ? listQ.data : DEFAULT_MOCK_CONTRIBUTIONS;
+  // Gabungkan kontribusi dari reactive store & mock fallback
+  const storeConverted: Contribution[] = storeContributions.map((s) => ({
+    id: s.id,
+    refCode: s.refCode,
+    title: s.title,
+    regionId: s.regionId,
+    region: {
+      id: s.regionId,
+      code: "ID-PROV",
+      name: s.province,
+      islandGroup: "NUSANTARA",
+      capital: "Ibu Kota",
+      summary: s.province,
+      lat: 0,
+      lng: 0,
+    },
+    categorySlug: s.categorySlug,
+    description: s.description,
+    sourceRef: s.sourceRef ?? null,
+    submitterName: s.submitterName,
+    submitterEmail: s.submitterEmail,
+    status: s.status as any,
+    createdAt: s.createdAt,
+    updatedAt: s.createdAt,
+    reviews: s.reviewNote
+      ? [
+          {
+            id: `rev-${s.id}`,
+            action: s.status === "APPROVED" ? "APPROVE" : s.status === "REJECTED" ? "REJECT" : "SUBMIT",
+            note: s.reviewNote,
+            createdAt: s.createdAt,
+            reviewer: { id: "usr", name: "Evaluator", role: "REVIEWER" },
+          },
+        ]
+      : [],
+  }));
+
+  const combinedRaw = [...storeConverted, ...DEFAULT_MOCK_CONTRIBUTIONS];
+  const uniqueItemsMap = new Map<string, Contribution>();
+  combinedRaw.forEach((item) => {
+    if (!uniqueItemsMap.has(item.id)) uniqueItemsMap.set(item.id, item);
+  });
+  const allInitial = Array.from(uniqueItemsMap.values());
+
+  const baseItems = listQ.data && listQ.data.length > 0 ? listQ.data : allInitial;
   const itemsWithOverrides = baseItems.map((c) => localOverrides[c.id] ?? c);
   const items = active === "ALL" ? itemsWithOverrides : itemsWithOverrides.filter((c) => c.status === active);
 

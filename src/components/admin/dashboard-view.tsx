@@ -14,6 +14,7 @@ import { navigate } from "@/lib/router";
 import { useAuth } from "@/lib/auth-store";
 import { api } from "@/lib/api-client";
 import { useAsyncData } from "@/hooks/use-async-data";
+import { useCmsStore } from "@/lib/cms-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -107,6 +108,16 @@ export function DashboardView() {
   const user = useAuth((s) => s.user);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const {
+    pendingContributions,
+    approveContribution,
+    rejectContribution,
+    totalItems,
+    publishedItems,
+    draftItems,
+    curatedPercentage,
+  } = useCmsStore();
+
   const statsQ = useAsyncData(() => api.admin.stats(), []);
   const activityQ = useAsyncData(() => api.admin.activity({ page: 1, pageSize: 6 }), []);
 
@@ -116,6 +127,10 @@ export function DashboardView() {
 
   const stats = statsQ.data;
   const loading = statsQ.loading;
+
+  const displayItemsTotal = stats ? Math.max(stats.itemsTotal, totalItems) : totalItems;
+  const displayItemsPublished = stats ? Math.max(stats.itemsPublished, publishedItems) : publishedItems;
+  const displayPending = pendingContributions.length;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -197,15 +212,15 @@ export function DashboardView() {
             </div>
             <div className="mt-4">
               <p className="font-serif text-3xl font-extrabold text-[#2D1E12] tracking-tight">
-                {stats.itemsTotal}
+                {displayItemsTotal}
               </p>
               <div className="mt-1.5 flex items-center gap-2 text-xs text-stone-600 font-medium">
                 <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block" />
-                  {stats.itemsPublished} {isEn ? "Published" : "Terpublikasi"}
+                  {displayItemsPublished} {isEn ? "Published" : "Terpublikasi"}
                 </span>
                 <span className="text-stone-300">•</span>
-                <span>0 Draft</span>
+                <span>{draftItems} Draft</span>
               </div>
             </div>
           </div>
@@ -272,14 +287,17 @@ export function DashboardView() {
                 <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
               <p className="mt-2.5 font-serif text-xl font-bold text-[#FCF8EC] leading-tight">
-                98% {isEn ? "Verified Archive" : "Data Terkurasi"}
+                {curatedPercentage}% {isEn ? "Verified Archive" : "Data Terkurasi"}
               </p>
               {/* Progress Bar */}
               <div className="mt-2.5 h-2 w-full rounded-full bg-white/15 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300 w-[98%]" />
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300 transition-all duration-500"
+                  style={{ width: `${curatedPercentage}%` }}
+                />
               </div>
               <p className="mt-2 text-[11px] text-stone-300">
-                {stats.contributionsPending}{" "}
+                {displayPending}{" "}
                 {isEn ? "pending community submissions" : "kontribusi siap ditinjau"}
               </p>
             </div>
@@ -392,51 +410,81 @@ export function DashboardView() {
           </div>
 
           <div className="mt-3.5 space-y-3">
-            {SAMPLE_MODERATION.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-xl border border-stone-100 bg-[#FAF8F5] p-3 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#8C5E3C]/15 text-[#8C5E3C] font-bold text-xs shrink-0">
-                      {item.sender[0]}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#2D1E12] truncate">{item.title}</p>
-                      <p className="text-[10px] text-stone-500 truncate">
-                        {item.sender} • {item.province}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
-                    {item.type}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-1 border-t border-stone-200/50">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      toast.success(`Draf "${item.title}" ditolak.`);
-                    }}
-                    className="h-6.5 px-2 text-[10px] font-semibold text-stone-500 hover:text-red-700 hover:bg-red-50 rounded-lg cursor-pointer"
-                  >
-                    Tolak
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      toast.success(`Artefak "${item.title}" disetujui & dipublikasikan!`);
-                    }}
-                    className="h-6.5 px-2.5 text-[10px] font-bold text-white bg-[#8C5E3C] hover:bg-[#6E472D] rounded-lg shadow-2xs cursor-pointer"
-                  >
-                    Setujui
-                  </Button>
-                </div>
+            {pendingContributions.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-stone-200 bg-[#FAF8F5] p-6 text-center">
+                <CheckCircle2 className="mx-auto h-7 w-7 text-emerald-600 mb-1.5" />
+                <p className="text-xs font-bold text-[#2D1E12]">Semua Kontribusi Terkurasi!</p>
+                <p className="text-[11px] text-stone-500 mt-0.5">
+                  Tidak ada antrean kurasi baru yang menunggu peninjauan.
+                </p>
               </div>
-            ))}
+            ) : (
+              pendingContributions.slice(0, 3).map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-xl border border-stone-100 bg-[#FAF8F5] p-3 flex flex-col gap-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#8C5E3C]/15 text-[#8C5E3C] font-bold text-xs shrink-0">
+                        {item.submitterName ? item.submitterName[0].toUpperCase() : "K"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[#2D1E12] truncate">{item.title}</p>
+                        <p className="text-[10px] text-stone-500 truncate">
+                          {item.submitterName} • {item.province}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">
+                      {item.categoryName}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-1 border-t border-stone-200/50">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        const reason = window.prompt(
+                          `Alasan penolakan kontribusi "${item.title}":`,
+                          "Perlu perbaikan kelengkapan sumber referensi & atribusi adat."
+                        );
+                        if (reason !== null) {
+                          rejectContribution(item.id, reason);
+                          try {
+                            api.admin.contributions.updateStatus(item.id, {
+                              status: "REJECTED",
+                              note: reason,
+                            });
+                          } catch {}
+                          toast.success(`Kontribusi "${item.title}" berhasil ditolak.`);
+                        }
+                      }}
+                      className="h-6.5 px-2 text-[10px] font-semibold text-stone-500 hover:text-red-700 hover:bg-red-50 rounded-lg cursor-pointer"
+                    >
+                      Tolak
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        approveContribution(item.id);
+                        try {
+                          api.admin.contributions.updateStatus(item.id, {
+                            status: "APPROVED",
+                            publishItemId: true,
+                          });
+                        } catch {}
+                        toast.success(`Kontribusi "${item.title}" berhasil disetujui dan dipublikasikan ke katalog!`);
+                      }}
+                      className="h-6.5 px-2.5 text-[10px] font-bold text-white bg-[#8C5E3C] hover:bg-[#6E472D] rounded-lg shadow-2xs cursor-pointer"
+                    >
+                      Setujui
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <Button

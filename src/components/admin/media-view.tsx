@@ -283,7 +283,13 @@ export function MediaView({ route }: { route: Route }) {
     }
   };
 
-  const assets = listQ.data ?? [];
+  const rawAssets = listQ.data ?? [];
+  const assets = rawAssets.filter((a) => {
+    if (q && !a.name.toLowerCase().includes(q.toLowerCase()) && !a.originalName?.toLowerCase().includes(q.toLowerCase())) {
+      return false;
+    }
+    return true;
+  });
   const metaInfo = listQ.meta;
 
   return (
