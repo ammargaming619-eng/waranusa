@@ -263,7 +263,7 @@ export function RegionsView() {
             <TableBody>
               {rows.map((r) => (
                 <TableRow key={r.id}>
-                  <TableCell className="font-mono text-xs font-bold text-brand-teal">{r.code}</TableCell>
+                  <TableCell className="font-mono text-xs font-bold text-[#8C5E3C]">{r.code}</TableCell>
                   <TableCell className="font-semibold text-brand-ink">{r.name}</TableCell>
                   <TableCell className="hidden text-sm md:table-cell">{labelIslandGroup(r.islandGroup)}</TableCell>
                   <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{r.capital || "-"}</TableCell>
@@ -381,7 +381,7 @@ export function RegionsView() {
             <Button variant="ghost" onClick={() => setDialogOpen(false)} disabled={saving}>
               Batal
             </Button>
-            <Button onClick={() => void save()} disabled={saving}>
+            <Button onClick={() => void save()} disabled={saving} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold">
               {saving && <span className="mr-1 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden />}
               {editing ? "Simpan Perubahan" : "Tambah Wilayah"}
             </Button>

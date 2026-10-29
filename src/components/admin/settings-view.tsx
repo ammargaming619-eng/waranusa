@@ -134,7 +134,7 @@ export function SettingsView() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Settings2 className="h-4 w-4 text-brand-teal" aria-hidden /> Identitas Situs
+              <Settings2 className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> Identitas Situs
             </CardTitle>
             <CardDescription>Perubahan langsung terlihat pada header, footer, dan halaman kontribusi.</CardDescription>
           </CardHeader>
@@ -193,7 +193,7 @@ export function SettingsView() {
                 <Info className="h-3.5 w-3.5" aria-hidden />
                 {savedAt ? `Terakhir disimpan pukul ${savedAt} WIB` : "Belum ada perubahan tersimpan pada sesi ini."}
               </p>
-              <Button onClick={() => void save()} disabled={saving}>
+              <Button onClick={() => void save()} disabled={saving} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold">
                 {saving ? <span className="mr-1 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden /> : <Save className="h-4 w-4" />}
                 Simpan Pengaturan
               </Button>

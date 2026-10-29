@@ -448,7 +448,7 @@ export function ContributionsView({ route }: { route: Route }) {
                   )}
                   <span>{fmtDateID(c.createdAt)}</span>
                 </div>
-                <p className="font-mono text-[10px] font-semibold text-brand-teal">{c.refCode}</p>
+                <p className="font-mono text-[10px] font-semibold text-[#8C5E3C]">{c.refCode}</p>
               </CardContent>
             </Card>
           ))}
@@ -483,7 +483,7 @@ export function ContributionsView({ route }: { route: Route }) {
                   </Badge>
                 </div>
                 <DialogDescription>
-                  <span className="font-mono font-semibold text-brand-teal">{detail.refCode}</span> · diajukan {fmtDateID(detail.createdAt, true)}
+                  <span className="font-mono font-semibold text-[#8C5E3C]">{detail.refCode}</span> · diajukan {fmtDateID(detail.createdAt, true)}
                 </DialogDescription>
               </DialogHeader>
 
@@ -527,7 +527,7 @@ export function ContributionsView({ route }: { route: Route }) {
                         .map((r, i, arr) => (
                           <li key={r.id} className="relative flex gap-3 pb-4 last:pb-0">
                             {i < arr.length - 1 && <span className="absolute left-[7px] top-4 h-full w-px bg-border" aria-hidden />}
-                            <span className="relative mt-1 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border-2 border-brand-teal bg-background" aria-hidden />
+                            <span className="relative mt-1 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border-2 border-[#8C5E3C] bg-background" aria-hidden />
                             <div className="min-w-0">
                               <p className="text-sm font-bold text-brand-ink">{ACTION_LABELS[r.action] ?? r.action}</p>
                               <p className="text-xs text-muted-foreground">

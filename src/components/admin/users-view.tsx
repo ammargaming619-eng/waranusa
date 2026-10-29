@@ -134,8 +134,8 @@ export function UsersView() {
           <h1 className="text-xl font-extrabold tracking-tight text-brand-ink sm:text-2xl">Pengguna</h1>
           <p className="text-sm text-muted-foreground">Kelola akun tim redaksi — peran menentukan hak akses CMS.</p>
         </div>
-        <Button onClick={openCreate}>
-          <UserPlus className="h-4 w-4" /> Pengguna
+        <Button onClick={openCreate} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold cursor-pointer">
+          <UserPlus className="h-4 w-4 mr-1.5" /> Pengguna
         </Button>
       </div>
 
@@ -174,7 +174,7 @@ export function UsersView() {
                       </span>
                       <span className="truncate">
                         {u.name}
-                        {u.id === me?.id && <span className="ml-1.5 text-[10px] font-bold text-brand-teal">(Anda)</span>}
+                        {u.id === me?.id && <span className="ml-1.5 text-[10px] font-bold text-[#8C5E3C]">(Anda)</span>}
                       </span>
                     </span>
                   </TableCell>
@@ -281,7 +281,7 @@ export function UsersView() {
             <Button variant="ghost" onClick={() => setDialogOpen(false)} disabled={saving}>
               Batal
             </Button>
-            <Button onClick={() => void save()} disabled={saving}>
+            <Button onClick={() => void save()} disabled={saving} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold">
               {saving && <span className="mr-1 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden />}
               {editing ? "Simpan Perubahan" : "Tambah Pengguna"}
             </Button>

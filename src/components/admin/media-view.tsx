@@ -358,7 +358,7 @@ export function MediaView({ route }: { route: Route }) {
         }}
         className={cn(
           "rounded-2xl border-2 border-dashed p-3 transition-colors sm:p-4",
-          dragOver ? "border-brand-teal bg-brand-teal/5" : "border-transparent"
+          dragOver ? "border-[#8C5E3C] bg-[#8C5E3C]/5" : "border-transparent"
         )}
       >
         {listQ.error ? (
@@ -387,7 +387,7 @@ export function MediaView({ route }: { route: Route }) {
                 key={a.id}
                 type="button"
                 onClick={() => setDetailId(a.id)}
-                className="group overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:-translate-y-0.5 hover:border-brand-teal/60 hover:shadow-md"
+                className="group overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:-translate-y-0.5 hover:border-[#8C5E3C]/60 hover:shadow-md"
                 aria-label={`Buka detail media ${a.name}`}
               >
                 <div className="relative aspect-square w-full overflow-hidden bg-secondary">
@@ -700,7 +700,7 @@ export function MediaView({ route }: { route: Route }) {
                       <div className="flex flex-col gap-0.5">
                         <dt className="text-muted-foreground">URL Embed</dt>
                         <dd className="break-all font-mono text-[10px]">
-                          <a href={detail.embedUrl} target="_blank" rel="noopener noreferrer" className="text-brand-teal hover:underline">
+                          <a href={detail.embedUrl} target="_blank" rel="noopener noreferrer" className="text-[#8C5E3C] hover:text-[#6E472D] hover:underline">
                             {detail.embedUrl}
                           </a>
                         </dd>

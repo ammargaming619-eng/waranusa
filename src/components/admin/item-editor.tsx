@@ -587,7 +587,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
               key={c.id}
               type="button"
               onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-brand-teal/60 hover:text-brand-teal"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-[#8C5E3C]/60 hover:text-[#8C5E3C]"
             >
               <c.icon className="h-3.5 w-3.5" aria-hidden /> {c.label}
             </button>
@@ -602,7 +602,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card id="bagian-identitas" className="scroll-mt-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Landmark className="h-4 w-4 text-brand-teal" aria-hidden /> A. Identitas
+                <Landmark className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> A. Identitas
               </CardTitle>
               <CardDescription>Nama, klasifikasi, dan penempatan objek budaya.</CardDescription>
             </CardHeader>
@@ -687,7 +687,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card id="bagian-konten" className="scroll-mt-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <BookOpen className="h-4 w-4 text-brand-teal" aria-hidden /> B. Konten
+                <BookOpen className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> B. Konten
               </CardTitle>
               <CardDescription>Narasi budaya yang tampil di halaman publik.</CardDescription>
             </CardHeader>
@@ -748,7 +748,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card id="bagian-media" className="scroll-mt-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Images className="h-4 w-4 text-brand-teal" aria-hidden /> C. Media
+                <Images className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> C. Media
               </CardTitle>
               <CardDescription>Sampul, model 3D, audio, dan galeri foto objek.</CardDescription>
             </CardHeader>
@@ -797,7 +797,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
             <Card id="bagian-hotspot" className="scroll-mt-24">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Anchor className="h-4 w-4 text-brand-teal" aria-hidden /> D. Hotspot 3D
+                  <Anchor className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> D. Hotspot 3D
                 </CardTitle>
                 <CardDescription>Titik interaktif pada model 3D — tiap hotspot disimpan sendiri.</CardDescription>
               </CardHeader>
@@ -914,7 +914,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card id="bagian-sumber" className="scroll-mt-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Link2 className="h-4 w-4 text-brand-teal" aria-hidden /> E. Sumber
+                <Link2 className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> E. Sumber
               </CardTitle>
               <CardDescription>Referensi & atribusi keilmuan — tersimpan bersama objek.</CardDescription>
             </CardHeader>
@@ -988,7 +988,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card id="bagian-atribusi" className="scroll-mt-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Sparkles className="h-4 w-4 text-brand-teal" aria-hidden /> F. Atribusi & Lisensi
+                <Sparkles className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> F. Atribusi & Lisensi
               </CardTitle>
               <CardDescription>Kredit yang tampil di halaman publik objek.</CardDescription>
             </CardHeader>
@@ -1008,7 +1008,7 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Shapes className="h-4 w-4 text-brand-teal" aria-hidden /> G. Status & Aksi
+                <Shapes className="h-4 w-4 text-[#8C5E3C]" aria-hidden /> G. Status & Aksi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1136,9 +1136,9 @@ export function ItemEditor({ mode, itemId }: { mode: "create" | "edit"; itemId?:
             </CardContent>
           </Card>
 
-          <Card className="bg-brand-teal/5">
+          <Card className="bg-amber-50/60 border-amber-200/60">
             <CardContent className="flex items-start gap-2.5 p-4">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" aria-hidden />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8C5E3C]" aria-hidden />
               <p className="text-xs leading-relaxed text-muted-foreground">
                 Keamanan sesungguhnya divalidasi di server — peran Anda:{" "}
                 <span className="font-bold text-brand-ink">{user?.role ?? "-"}</span>.

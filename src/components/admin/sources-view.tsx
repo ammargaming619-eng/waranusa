@@ -28,11 +28,11 @@ import { EmptyState, ErrorState } from "@/components/shared/states";
 import { BookMarked, ExternalLink, Pencil, PlusCircle, Search, Trash2 } from "lucide-react";
 
 const SOURCE_BADGE: Record<SourceType, string> = {
-  BOOK: "bg-brand-sea/10 text-brand-sea border-brand-sea/30",
-  JOURNAL: "bg-brand-tropic/10 text-brand-tropic border-brand-tropic/30",
-  WEBSITE: "bg-brand-teal/10 text-brand-teal border-brand-teal/30",
-  MUSEUM: "bg-brand-gold/20 text-brand-orange border-brand-gold/40",
-  ARCHIVE: "bg-stone-100 text-stone-600 border-stone-200",
+  BOOK: "bg-amber-100/70 text-[#7A4B29] border-amber-300/80",
+  JOURNAL: "bg-[#8C5E3C]/10 text-[#6E472D] border-[#8C5E3C]/30",
+  WEBSITE: "bg-amber-50 text-[#8C5E3C] border-amber-200/80",
+  MUSEUM: "bg-orange-50 text-[#7A4B29] border-amber-200/80",
+  ARCHIVE: "bg-stone-100 text-stone-700 border-stone-200",
   OTHER: "bg-secondary text-muted-foreground border-border",
 };
 
@@ -178,8 +178,8 @@ export function SourcesView() {
           <p className="text-sm text-muted-foreground">Referensi keilmuan yang memperkuat kredibilitas konten budaya.</p>
         </div>
         {canManage && (
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" /> Sumber
+          <Button onClick={openCreate} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold cursor-pointer">
+            <PlusCircle className="h-4 w-4 mr-1.5" /> Sumber
           </Button>
         )}
       </div>
@@ -261,7 +261,7 @@ export function SourcesView() {
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       {linked ? (
-                        <a href={`#/budaya/${linked.slug}`} target="_blank" rel="noreferrer" className="inline-flex max-w-44 items-center gap-1 truncate text-xs font-semibold text-brand-teal hover:underline" title={linked.title}>
+                        <a href={`#/budaya/${linked.slug}`} target="_blank" rel="noreferrer" className="inline-flex max-w-44 items-center gap-1 truncate text-xs font-semibold text-[#8C5E3C] hover:text-[#6E472D] hover:underline" title={linked.title}>
                           {linked.title} <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
                         </a>
                       ) : (
@@ -270,7 +270,7 @@ export function SourcesView() {
                     </TableCell>
                     <TableCell className="hidden max-w-44 xl:table-cell">
                       {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 truncate text-xs text-brand-teal hover:underline" title={s.url}>
+                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 truncate text-xs text-[#8C5E3C] hover:text-[#6E472D] hover:underline" title={s.url}>
                           {s.url.replace(/^https?:\/\//, "")} <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
                         </a>
                       ) : (
@@ -392,7 +392,7 @@ export function SourcesView() {
             <Button variant="ghost" onClick={() => setDialogOpen(false)} disabled={saving}>
               Batal
             </Button>
-            <Button onClick={() => void save()} disabled={saving}>
+            <Button onClick={() => void save()} disabled={saving} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold">
               {saving && <span className="mr-1 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden />}
               {editing ? "Simpan Perubahan" : "Tambah Sumber"}
             </Button>

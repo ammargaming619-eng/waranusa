@@ -160,8 +160,8 @@ export function CategoriesView() {
           <p className="text-sm text-muted-foreground">Pengelompokan objek budaya untuk katalog & filter jelajah.</p>
         </div>
         {canManage && (
-          <Button onClick={openCreate}>
-            <PlusCircle className="h-4 w-4" /> Kategori
+          <Button onClick={openCreate} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold cursor-pointer">
+            <PlusCircle className="h-4 w-4 mr-1.5" /> Kategori
           </Button>
         )}
       </div>
@@ -197,7 +197,7 @@ export function CategoriesView() {
                 <TableRow key={c.id}>
                   <TableCell>
                     <span className="flex items-center gap-2.5 font-semibold text-brand-ink">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-teal/10 text-brand-teal">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-[#8C5E3C] border border-amber-200/60 shadow-2xs">
                         <CategoryIcon name={c.icon} className="h-4 w-4" />
                       </span>
                       {c.name}
@@ -289,7 +289,7 @@ export function CategoriesView() {
                 <Select value={form.icon} onValueChange={(v) => set("icon", v)}>
                   <SelectTrigger id="c-icon" className="w-full">
                     <span className="flex items-center gap-2">
-                      <CategoryIcon name={form.icon} className="h-4 w-4 text-brand-teal" />
+                      <CategoryIcon name={form.icon} className="h-4 w-4 text-[#8C5E3C]" />
                       <SelectValue />
                     </span>
                   </SelectTrigger>
@@ -297,7 +297,7 @@ export function CategoriesView() {
                     {ICON_OPTIONS.map((o) => (
                       <SelectItem key={o.value} value={o.value}>
                         <span className="flex items-center gap-2">
-                          <o.icon className="h-4 w-4 text-brand-teal" aria-hidden />
+                          <o.icon className="h-4 w-4 text-[#8C5E3C]" aria-hidden />
                           {o.label}
                         </span>
                       </SelectItem>
@@ -316,7 +316,7 @@ export function CategoriesView() {
             <Button variant="ghost" onClick={() => setDialogOpen(false)} disabled={saving}>
               Batal
             </Button>
-            <Button onClick={() => void save()} disabled={saving}>
+            <Button onClick={() => void save()} disabled={saving} className="bg-[#8C5E3C] hover:bg-[#6E472D] text-white font-bold">
               {saving && <span className="mr-1 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" aria-hidden />}
               {editing ? "Simpan Perubahan" : "Tambah Kategori"}
             </Button>

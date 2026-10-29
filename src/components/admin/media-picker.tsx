@@ -153,7 +153,7 @@ export function MediaPreview({ asset, className }: { asset: MediaAsset; classNam
   }
   if (asset.type === "AUDIO") {
     return (
-      <div className={cn("flex h-full w-full flex-col items-center justify-center gap-1 bg-brand-teal/10 text-brand-teal", className)}>
+      <div className={cn("flex h-full w-full flex-col items-center justify-center gap-1 bg-[#8C5E3C]/10 text-[#8C5E3C]", className)}>
         <AudioLines className="h-6 w-6" aria-hidden />
         <span className="px-1 text-center text-[10px] font-bold uppercase">{asset.format}</span>
       </div>
@@ -357,11 +357,11 @@ export function UploadInline({
         }}
         className={cn(
           "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors",
-          dragging ? "border-brand-teal bg-brand-teal/10" : "border-border bg-secondary/50 hover:border-brand-teal/60 hover:bg-brand-teal/5"
+          dragging ? "border-[#8C5E3C] bg-[#8C5E3C]/10" : "border-border bg-secondary/50 hover:border-[#8C5E3C]/60 hover:bg-[#8C5E3C]/5"
         )}
       >
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-teal/10">
-          <CloudUpload className="h-5 w-5 text-brand-teal" aria-hidden />
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#8C5E3C]/10">
+          <CloudUpload className="h-5 w-5 text-[#8C5E3C]" aria-hidden />
         </div>
         <p className="text-sm font-semibold">Tarik & lepas berkas di sini</p>
         <p className="text-xs text-muted-foreground">
@@ -390,7 +390,7 @@ export function UploadInline({
                 <span className="shrink-0 text-[11px] text-muted-foreground">{humanSize(t.file.size)}</span>
                 {t.status === "done" && <Check className="h-4 w-4 shrink-0 text-brand-tropic" aria-label="Selesai" />}
                 {t.status === "error" && <TriangleAlert className="h-4 w-4 shrink-0 text-destructive" aria-label="Gagal" />}
-                {t.status === "uploading" && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand-teal" aria-label="Mengunggah" />}
+                {t.status === "uploading" && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-[#8C5E3C]" aria-label="Mengunggah" />}
               </div>
               {t.status === "uploading" && <Progress value={t.progress} className="mt-1.5 h-1.5" aria-label={`Progres unggah ${t.file.name}`} />}
               {t.error && <p className="mt-1 text-xs text-destructive">{t.error}</p>}
@@ -568,7 +568,7 @@ export function MediaPicker({
                       aria-label={`Pilih media ${a.name}`}
                       className={cn(
                         "group relative overflow-hidden rounded-xl border bg-background text-left transition-all",
-                        active ? "border-brand-teal ring-2 ring-brand-teal" : "border-border hover:border-brand-teal/60"
+                        active ? "border-[#8C5E3C] ring-2 ring-[#8C5E3C]" : "border-border hover:border-[#8C5E3C]/60"
                       )}
                     >
                       <div className="aspect-square w-full overflow-hidden bg-secondary">
@@ -582,7 +582,7 @@ export function MediaPicker({
                       <span
                         className={cn(
                           "absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full border transition-colors",
-                          active ? "border-brand-teal bg-brand-teal text-white" : "border-white/70 bg-black/40 text-transparent group-hover:border-white"
+                          active ? "border-[#8C5E3C] bg-[#8C5E3C] text-white" : "border-white/70 bg-black/40 text-transparent group-hover:border-white"
                         )}
                       >
                         <Check className="h-3 w-3" aria-hidden />
@@ -691,7 +691,7 @@ export function MediaPickerButton({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-brand-teal/50 bg-brand-teal/5 text-brand-teal transition hover:bg-brand-teal/10"
+            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#8C5E3C]/40 bg-[#8C5E3C]/5 text-[#8C5E3C] transition hover:bg-[#8C5E3C]/10"
             aria-label={label ?? "Tambah media"}
           >
             <Plus className="h-5 w-5" aria-hidden />
@@ -743,7 +743,7 @@ export function MediaPickerButton({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-secondary/40 py-7 text-sm font-semibold text-muted-foreground transition hover:border-brand-teal/60 hover:bg-brand-teal/5 hover:text-brand-teal"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-secondary/40 py-7 text-sm font-semibold text-muted-foreground transition hover:border-[#8C5E3C]/60 hover:bg-[#8C5E3C]/5 hover:text-[#8C5E3C]"
           aria-label={label ?? "Pilih media"}
         >
           <CloudUpload className="h-4.5 w-4.5" aria-hidden />
