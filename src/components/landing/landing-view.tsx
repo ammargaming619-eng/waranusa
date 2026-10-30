@@ -926,69 +926,69 @@ function NusantaraCurvedTicker() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textPathMobileRef = useRef<SVGTextPathElement>(null);
   const textPathDesktopRef = useRef<SVGTextPathElement>(null);
-  const measureMobileRef = useRef<SVGTextElement>(null);
-  const measureDesktopRef = useRef<SVGTextElement>(null);
-  const [phraseWidthMobile, setPhraseWidthMobile] = useState(0);
-  const [phraseWidthDesktop, setPhraseWidthDesktop] = useState(0);
-
-  useEffect(() => {
-    if (measureMobileRef.current) {
-      const len = measureMobileRef.current.getComputedTextLength();
-      if (len > 0) setPhraseWidthMobile(len);
-    }
-    if (measureDesktopRef.current) {
-      const len = measureDesktopRef.current.getComputedTextLength();
-      if (len > 0) setPhraseWidthDesktop(len);
-    }
-  }, [phrase]);
 
   useEffect(() => {
     let animId: number;
     let offsetMobile = 0;
     let offsetDesktop = 0;
-    let isVisible = true;
-    const unitMobile = phraseWidthMobile > 0 ? phraseWidthMobile : 420;
-    const unitDesktop = phraseWidthDesktop > 0 ? phraseWidthDesktop : 560;
+    let isVisible = false;
+    let frameCount = 0;
+
+    const unitMobile = phrase.length * 11.2;
+    const unitDesktop = phrase.length * 14.8;
 
     const step = () => {
       if (!isVisible) return;
-      offsetMobile -= 0.65;
-      if (Math.abs(offsetMobile) >= unitMobile) {
-        offsetMobile += unitMobile;
-      }
-      if (textPathMobileRef.current) {
-        textPathMobileRef.current.setAttribute("startOffset", `${offsetMobile}px`);
-      }
+      frameCount++;
 
-      offsetDesktop -= 0.85;
-      if (Math.abs(offsetDesktop) >= unitDesktop) {
-        offsetDesktop += unitDesktop;
-      }
-      if (textPathDesktopRef.current) {
-        textPathDesktopRef.current.setAttribute("startOffset", `${offsetDesktop}px`);
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+      if (isMobile) {
+        // Pada mobile, perbarui setiap 2 frame untuk memangkas beban CPU thread utama hingga 50%
+        if (frameCount % 2 === 0) {
+          offsetMobile -= 1.3;
+          if (Math.abs(offsetMobile) >= unitMobile) {
+            offsetMobile += unitMobile;
+          }
+          if (textPathMobileRef.current) {
+            textPathMobileRef.current.setAttribute("startOffset", `${offsetMobile}px`);
+          }
+        }
+      } else {
+        offsetDesktop -= 0.85;
+        if (Math.abs(offsetDesktop) >= unitDesktop) {
+          offsetDesktop += unitDesktop;
+        }
+        if (textPathDesktopRef.current) {
+          textPathDesktopRef.current.setAttribute("startOffset", `${offsetDesktop}px`);
+        }
       }
 
       animId = requestAnimationFrame(step);
     };
 
     const observer = new IntersectionObserver(([entry]) => {
-      isVisible = !!entry?.isIntersecting;
-      if (isVisible) {
-        cancelAnimationFrame(animId);
-        animId = requestAnimationFrame(step);
+      const nowVisible = !!entry?.isIntersecting;
+      if (nowVisible !== isVisible) {
+        isVisible = nowVisible;
+        if (isVisible) {
+          cancelAnimationFrame(animId);
+          animId = requestAnimationFrame(step);
+        } else {
+          cancelAnimationFrame(animId);
+        }
       }
-    });
+    }, { threshold: 0.05, rootMargin: "100px" });
 
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
 
-    animId = requestAnimationFrame(step);
     return () => {
       observer.disconnect();
       cancelAnimationFrame(animId);
     };
-  }, [phraseWidthMobile, phraseWidthDesktop]);
+  }, [phrase]);
 
   return (
     <div
@@ -1017,14 +1017,6 @@ function NusantaraCurvedTicker() {
             <feDropShadow dx="0" dy="5" stdDeviation="7" floodColor="#26160B" floodOpacity="0.32" />
           </filter>
         </defs>
-
-        <text
-          ref={measureMobileRef}
-          className="fill-transparent text-[15.5px] font-sans font-black tracking-[0.2em] uppercase"
-          style={{ visibility: "hidden" }}
-        >
-          {phrase}
-        </text>
 
         <path
           id="nusantara-ribbon-path-mobile"
@@ -1077,14 +1069,6 @@ function NusantaraCurvedTicker() {
             <feDropShadow dx="0" dy="7" stdDeviation="9" floodColor="#26160B" floodOpacity="0.28" />
           </filter>
         </defs>
-
-        <text
-          ref={measureDesktopRef}
-          className="fill-transparent text-[20px] font-sans font-black tracking-[0.24em] uppercase"
-          style={{ visibility: "hidden" }}
-        >
-          {phrase}
-        </text>
 
         <path
           id="nusantara-ribbon-path-desktop"
