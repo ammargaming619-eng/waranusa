@@ -46,12 +46,19 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
-        {/* Responsive LCP Image Preload untuk Mobile 4G */}
+        {/* Responsive LCP Image Preload untuk Mobile 4G & Desktop (Sesuai output srcset Next.js) */}
+        <link
+          rel="preload"
+          as="image"
+          href="/_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=360&q=75"
+          media="(max-width: 380px)"
+          fetchPriority="high"
+        />
         <link
           rel="preload"
           as="image"
           href="/_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=640&q=75"
-          media="(max-width: 640px)"
+          media="(min-width: 381px) and (max-width: 640px)"
           fetchPriority="high"
         />
         <link
