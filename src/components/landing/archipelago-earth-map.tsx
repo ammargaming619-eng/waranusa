@@ -167,11 +167,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
 
         {/* HEADER JUDUL & CTA DI ATAS BACKGROUND PETA (MELAYANG DI RUANG LAUT UTARA TERBUKA) */}
         <div className="relative z-20 pt-3 sm:pt-5 md:pt-6 lg:pt-8 px-4 text-center max-w-2xl sm:max-w-4xl lg:max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.88, y: 26 }}
-            animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.88, y: 26 }}
-            transition={{ delay: 0.18, duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div>
             <h1
               id="hero-title"
               className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold tracking-tight text-[#2D1E12] leading-tight drop-shadow-xs whitespace-nowrap"
@@ -181,15 +177,10 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             <p className="mt-1 sm:mt-2 md:mt-2.5 text-xs sm:text-sm md:text-base text-stone-700 max-w-xl mx-auto font-medium whitespace-nowrap sm:whitespace-normal">
               {t("hero.subtitle", "Dari Sabang hingga Merauke, setiap tradisi punya cerita.")}
             </p>
-          </motion.div>
+          </div>
 
           {/* Tombol CTA: Peta 38 Provinsi & Katalog Budaya */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: 20 }}
-            animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.85, y: 20 }}
-            transition={{ delay: 0.36, duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4"
-          >
+          <div className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
             <Button
               asChild
               size="lg"
@@ -211,7 +202,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 {t("hero.catalog_btn", "Katalog Budaya")}
               </Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
 
         {/* Pin Penanda Lokasi Budaya Interaktif dengan Floating Popover Selalu Muncul (Always Visible) */}
@@ -245,16 +236,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               onMouseLeave={() => setHoveredTag(null)}
             >
               {/* Pin Penanda Titik Lokasi Peta dengan Efek Pulse Elegan */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.4, y: 8 }}
-                animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.4, y: 8 }}
-                transition={{
-                  delay: 0.35 + idx * 0.08,
-                  duration: 0.55,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="-translate-x-1/2 -translate-y-full"
-              >
+              <div className="-translate-x-1/2 -translate-y-full">
                 <button
                   type="button"
                   onClick={() => setActiveTag(tag)}
@@ -281,30 +263,15 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                   {/* Ujung lancip pin */}
                   <div className="w-1.5 h-1.5 bg-[#53341E] rotate-45 -mt-1 shadow-xs" />
                 </button>
-              </motion.div>
+              </div>
 
               {/* Floating Cultural Popover Card (Desktop MD+) — LANGSUNG MUNCUL TANPA PERLU HOVER */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85, y: isBelow ? -6 : 6 }}
-                animate={
-                  introRevealed
-                    ? {
-                        opacity: 1,
-                        scale: isHovered ? 1.05 : 1,
-                        y: isHovered ? (isBelow ? 3 : -3) : 0,
-                      }
-                    : { opacity: 0, scale: 0.85, y: isBelow ? -6 : 6 }
-                }
-                transition={{
-                  delay: 0.45 + idx * 0.08,
-                  duration: 0.45,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+              <div
                 className={cn(
                   "hidden md:block absolute pointer-events-auto transition-all duration-200",
                   verticalPositionClass,
                   popoverAlignClass,
-                  isHovered ? "z-50" : "z-30"
+                  isHovered ? "z-50 scale-105" : "z-30 scale-100"
                 )}
               >
                 <button
@@ -357,7 +324,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                     )}
                   />
                 </button>
-              </motion.div>
+              </div>
             </div>
           );
         })}
@@ -366,12 +333,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
       {/* ========================================================================= */}
       {/* KHUSUS MOBILE: STRIP KARTU BUDAYA HORIZONTAL (TOUCH-FRIENDLY & NO OVERFLOW) */}
       {/* ========================================================================= */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 20 }}
-        animate={introRevealed ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.92, y: 20 }}
-        transition={{ delay: 0.38, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="block md:hidden px-4 mt-2"
-      >
+      <div className="block md:hidden px-4 mt-2">
         <p className="text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Sparkles className="h-3 w-3 text-amber-700" />
           <span>{t("hero.touch_hint", "Sentuh Pin Peta atau Jelajahi Ikon Budaya:")}</span>
@@ -402,7 +364,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             </button>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* ================= MODAL DETAIL BUDAYA PIN INTERAKTIF ================= */}
       <Dialog open={!!activeTag} onOpenChange={(open) => !open && setActiveTag(null)}>

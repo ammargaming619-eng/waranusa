@@ -59,8 +59,8 @@ export default function WaraNusaApp() {
   const { init, initialized } = useAuth();
   const settings = useSiteSettings((s) => s.settings);
   const loadSettings = useSiteSettings((s) => s.load);
-  const [introRevealed, setIntroRevealed] = useState(false);
-  const [introDone, setIntroDone] = useState(false);
+  const [introRevealed, setIntroRevealed] = useState(true);
+  const [introDone, setIntroDone] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -91,21 +91,6 @@ export default function WaraNusaApp() {
       setIntroDone(true);
     }
   }, [isDirectNonLanding]);
-
-  // Hindari perbedaan SSR vs Client Hydration pada hash router SPA
-  if (!mounted) {
-    return (
-      <div className="flex min-h-screen flex-col bg-[#FCF8EC] text-stone-900 overflow-x-hidden">
-        <div className="h-16 w-full border-b border-stone-200/40 bg-[#FCF8EC]" />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <span className="h-9 w-9 animate-pulse rounded-full bg-[#159D9A]/30" />
-            <p className="text-xs font-medium text-stone-500">Memuat WaraNusa…</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   // Pengaturan situs (untuk footer) diambil ringan dari settings API publik
   const isAdmin = route.segments[0] === "admin";
