@@ -261,10 +261,11 @@ function CarouselCardContent({
             src={cover}
             alt={item.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 380px, 300px"
+            quality={70}
             loading="lazy"
             onError={() => setImgFailed(true)}
-            className="object-cover transition-transform duration-700 hover:scale-105 pointer-events-none"
+            className="object-cover transition-transform duration-700 hover:scale-105 pointer-events-none transform-gpu will-change-transform"
           />
         ) : (
           <div

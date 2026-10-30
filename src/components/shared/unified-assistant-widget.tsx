@@ -280,6 +280,8 @@ function AngklungMascotIllustration({ className }: { className?: string }) {
         .angklung-goyang-anim {
           transform-origin: 50% 88%;
           animation: angklungGoyang 3.2s ease-in-out infinite;
+          will-change: transform;
+          backface-visibility: hidden;
         }
         .angklung-goyang-anim:hover {
           animation-duration: 1.2s;
@@ -287,21 +289,26 @@ function AngklungMascotIllustration({ className }: { className?: string }) {
         .angklung-eye-anim {
           transform-origin: 64px 66px;
           animation: angklungBlink 3.6s ease-in-out infinite;
+          will-change: transform;
         }
         .note-float-1 {
           animation: noteFloatLeft 3.2s ease-in-out infinite;
           transform-origin: 46px 36px;
+          will-change: transform, opacity;
         }
         .note-float-2 {
           animation: noteFloatRight 3.2s ease-in-out infinite;
           transform-origin: 82px 48px;
+          will-change: transform, opacity;
         }
         .angklung-halo-anim {
           animation: angklungPulseHalo 3.2s ease-in-out infinite;
+          will-change: transform, opacity;
         }
         .angklung-crown-anim {
           transform-origin: 64px 16px;
           animation: crownTwinkle 2.6s ease-in-out infinite;
+          will-change: transform, opacity;
         }
       `}</style>
 

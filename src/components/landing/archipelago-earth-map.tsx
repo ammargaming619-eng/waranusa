@@ -100,8 +100,8 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
   const bgLayerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Hormati preferensi aksesibilitas pengguna (prefers-reduced-motion)
-    if (typeof window === "undefined") return;
+    // Lewati parallax di mobile (< 768px) atau preferensi reduced-motion untuk performa 60FPS murni
+    if (typeof window === "undefined" || window.innerWidth < 768) return;
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mediaQuery.matches) return;
 
@@ -145,7 +145,7 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
         <div
           ref={bgLayerRef}
           aria-hidden="true"
-          className="pointer-events-none absolute -top-10 -bottom-10 -left-2 -right-2 z-0 will-change-transform"
+          className="pointer-events-none absolute -top-10 -bottom-10 -left-2 -right-2 z-0 will-change-transform transform-gpu"
         >
           {/* POLA KOTAK GRID KARTOGRAFI DIGITAL */}
           <div
