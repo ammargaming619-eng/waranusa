@@ -166,6 +166,10 @@ function LoadedGlbModel({ url }: { url: string }) {
           for (const mat of mats) {
             if (mat) {
               mat.side = THREE.DoubleSide;
+              if ("map" in mat && (mat as THREE.MeshStandardMaterial).map) {
+                (mat as THREE.MeshStandardMaterial).map!.colorSpace = THREE.SRGBColorSpace;
+                (mat as THREE.MeshStandardMaterial).map!.needsUpdate = true;
+              }
               if ("metalness" in mat && typeof mat.metalness === "number") {
                 mat.metalness = Math.min(mat.metalness, 0.75);
               }

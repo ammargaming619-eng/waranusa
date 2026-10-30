@@ -91,11 +91,17 @@ class SilentErrorBoundary extends React.Component<BoundaryProps, { hasError: boo
 function StudioEnvironment() {
   const { gl, scene } = useThree();
   React.useEffect(() => {
+    // 1. Konfigurasi Renderer (sRGB Color Space & ACES Filmic Tone Mapping)
+    gl.outputColorSpace = THREE.SRGBColorSpace;
+    gl.toneMapping = THREE.ACESFilmicToneMapping;
+    gl.toneMappingExposure = 1.15;
+
     const pmremGenerator = new THREE.PMREMGenerator(gl);
     pmremGenerator.compileEquirectangularShader();
     const envScene = new RoomEnvironment();
     const envTexture = pmremGenerator.fromScene(envScene).texture;
     scene.environment = envTexture;
+    scene.environmentIntensity = 0.45;
     return () => {
       scene.environment = null;
       envTexture.dispose();
@@ -113,37 +119,29 @@ function GltfModel({ url }: { url: string }) {
 
   const prepared = React.useMemo(() => {
     const clone = scene.clone(true);
-    clone.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = true;
-        if (obj.material) {
-          const mat = obj.material as THREE.MeshStandardMaterial;
-          // Render kedua sisi agar bagian bawah atap dan dalam pendapa tidak bolong/gelap pekat
-          mat.side = THREE.DoubleSide;
-          // Sesuaikan roughness & metalness agar tekstur kayu & ornamen terpancar jelas
-          if (typeof mat.roughness === "number") {
-            mat.roughness = Math.max(0.35, Math.min(0.7, mat.roughness));
-          }
-          if (typeof mat.metalness === "number") {
-            mat.metalness = Math.min(mat.metalness, 0.08);
-          }
-          // Kompresi tone adaptif: teduhkan elemen yang terlalu terang agar tekstur & serat kelihatan
-          mat.onBeforeCompile = (shader) => {
-            shader.fragmentShader = shader.fragmentShader.replace(
-              "#include <dithering_fragment>",
-              `
-              #include <dithering_fragment>
-              float texLum = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
-              if (texLum > 0.52) {
-                gl_FragColor.rgb *= mix(1.0, 0.72, smoothstep(0.52, 0.95, texLum));
-              } else if (texLum < 0.22) {
-                gl_FragColor.rgb += vec3(0.08 * smoothstep(0.22, 0.05, texLum));
-              }
-              `
-            );
-          };
-          mat.needsUpdate = true;
+    // 3. Traverse pada Material GLB: Pastikan sRGB colorSpace pada texture map & bayangan aktif
+    clone.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        const mesh = child as THREE.Mesh;
+        if (mesh.material) {
+          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          materials.forEach((mat) => {
+            mat.side = THREE.DoubleSide;
+            const stdMat = mat as THREE.MeshStandardMaterial;
+            if (stdMat.map) {
+              stdMat.map.colorSpace = THREE.SRGBColorSpace;
+              stdMat.map.needsUpdate = true;
+            }
+            if (typeof stdMat.roughness === "number") {
+              stdMat.roughness = Math.max(0.35, Math.min(0.7, stdMat.roughness));
+            }
+            if (typeof stdMat.metalness === "number") {
+              stdMat.metalness = Math.min(stdMat.metalness, 0.08);
+            }
+            mat.needsUpdate = true;
+          });
         }
       }
     });
@@ -468,8 +466,9 @@ export default function ModelViewer({
               camera={{ position: [2.3, 1.65, 2.5], fov: 45 }}
               frameloop={spin ? "always" : "demand"}
               gl={{
-                toneMapping: THREE.NeutralToneMapping,
-                toneMappingExposure: 0.98,
+                outputColorSpace: THREE.SRGBColorSpace,
+                toneMapping: THREE.ACESFilmicToneMapping,
+                toneMappingExposure: 1.15,
                 antialias: true,
               }}
               onPointerMissed={() => setOpenHotspotId(null)}
@@ -477,14 +476,18 @@ export default function ModelViewer({
             >
               <ResponsiveCamera />
               <StudioEnvironment />
-              {/* Pencahayaan Studio Alami & Terkalibrasi: Hangat, jernih, dan tidak membakar tekstur terang */}
-              <ambientLight intensity={0.60} />
-              <hemisphereLight color="#FFFDF2" groundColor="#4A3522" intensity={0.68} />
               
-              {/* Lampu Utama (Key Light) */}
+              {/* 1. Ambient Light Krem Hangat (intensity 0.5) */}
+              <ambientLight intensity={0.5} color="#fff6e8" />
+              
+              {/* 2. Hemisphere Light: Sky putih '#ffffff', Ground pantulan kayu/tanah '#593b1d' (intensity 0.6) */}
+              <hemisphereLight color="#ffffff" groundColor="#593b1d" intensity={0.6} />
+              
+              {/* 3. Directional Light Utama (Key Light) */}
               <directionalLight
-                position={[5, 9, 5]}
-                intensity={1.05}
+                position={[5, 10, 7]}
+                intensity={1.8}
+                color="#fff9ed"
                 castShadow
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
@@ -497,12 +500,12 @@ export default function ModelViewer({
                 shadow-bias={-0.0004}
               />
 
-              {/* Lampu Pengisi Depan (Front Fill Light dari arah kamera) */}
-              <directionalLight position={[0, 4.5, 6.5]} intensity={0.80} color="#FFFBF5" />
-
-              {/* Lampu Pengisi Lawan Arah (Back Fill Light) */}
-              <directionalLight position={[-5, 5, -5]} intensity={0.55} color="#FFF8EE" />
-              <directionalLight position={[0, 6, -6]} intensity={0.40} color="#FFF5E4" />
+              {/* 4. Directional Light Sekunder (Rim/Fill Light dari arah berlawanan untuk garis tegas atap/sisi gelap) */}
+              <directionalLight
+                position={[-5, 5, -5]}
+                intensity={0.6}
+                color="#fff9ed"
+              />
 
               <ContinuouslyRotatingGroup spin={spin}>
                 {glbUrl && !glbFailed ? (
