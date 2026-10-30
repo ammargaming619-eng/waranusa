@@ -3,6 +3,16 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
+const Toaster = dynamic(
+  () => import("@/components/ui/toaster").then((m) => m.Toaster),
+  { ssr: false }
+);
+
+const SonnerToaster = dynamic(
+  () => import("@/components/ui/sonner").then((m) => m.Toaster),
+  { ssr: false }
+);
+
 const AccessibilityWidget = dynamic(
   () =>
     import("@/components/shared/accessibility-widget").then(
@@ -44,17 +54,21 @@ export function ClientWidgets() {
         }
       };
     } else {
-      const timer = setTimeout(() => setShouldMount(true), 1000);
+      const timer = setTimeout(() => setShouldMount(true), 1200);
       return () => clearTimeout(timer);
     }
   }, []);
 
-  if (!shouldMount) return null;
-
   return (
     <>
-      <AccessibilityWidget />
-      <UnifiedAssistantWidget />
+      <Toaster />
+      <SonnerToaster position="top-center" richColors closeButton />
+      {shouldMount && (
+        <>
+          <AccessibilityWidget />
+          <UnifiedAssistantWidget />
+        </>
+      )}
     </>
   );
 }

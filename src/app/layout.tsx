@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ClientWidgets } from "@/components/shared/client-widgets";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -49,8 +47,6 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
         {children}
-        <Toaster />
-        <SonnerToaster position="top-center" richColors closeButton />
         <ClientWidgets />
       </body>
     </html>
