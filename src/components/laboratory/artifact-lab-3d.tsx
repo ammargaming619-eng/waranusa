@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { type ShadingMode } from "./artifact-3d-stage";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/lib/i18n-store";
 
 // Code splitting agresif: Stage Three.js dimuat secara dinamis saat terlihat di viewport
 const Artifact3DStage = dynamic(
@@ -44,7 +45,7 @@ interface StepDetail {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const DIGITALIZATION_STEPS: StepDetail[] = [
+const DIGITALIZATION_STEPS_ID: StepDetail[] = [
   {
     id: 1,
     numberStr: "01",
@@ -83,7 +84,50 @@ const DIGITALIZATION_STEPS: StepDetail[] = [
   },
 ];
 
+const DIGITALIZATION_STEPS_EN: StepDetail[] = [
+  {
+    id: 1,
+    numberStr: "01",
+    title: "Prepare 2D Photo (.PNG / .JPG)",
+    subtitle: "Input Single or Multi-Angle Artifact Image",
+    summary:
+      "Use artifact photos in .png or .jpg format with a clean background and even lighting.",
+    guideline:
+      "Prepare high-resolution 2D artifact photos (minimum 1024×1024 px). Use PNG with transparent background or JPG with a plain contrasting background without harsh shadows so AI can accurately separate object silhouettes with high precision.",
+    recommendedTools: ["Phone / DSLR Camera", "Photoshop / Remove.bg", "Mini Studio Box"],
+    icon: FileImage,
+  },
+  {
+    id: 2,
+    numberStr: "02",
+    title: "AI Conversion (2D to 3D Mesh)",
+    subtitle: "Depth Extraction & Spatial Polygon Meshing",
+    summary:
+      "AI predicts 2D pixel depth and transforms it into millions of 3D point coordinates & wireframe mesh.",
+    guideline:
+      "Modern AI platforms analyze 2D photos to estimate depth maps and reconstruct unseen sides of the object. The AI outputs a Point Cloud (spatial coordinates) and weaves it into an interconnected 3D polygon mesh (Wireframe Mesh).",
+    recommendedTools: ["Tripo3D AI", "Meshy AI", "CSM (Common Sense)", "Kiri Engine"],
+    icon: Cpu,
+  },
+  {
+    id: 3,
+    numberStr: "03",
+    title: "Export & Test .GLB Format",
+    subtitle: "Draco Compression & Web-Ready 3D Testing",
+    summary:
+      "Export lightweight .glb models, then test and verify them live on WaraNusa's virtual stage.",
+    guideline:
+      "The .GLB (glTF 2.0 Binary) format is the industry standard for 3D on the web, combining geometry, material textures, and colors in one compact file. Apply Draco compression to keep files under 15 MB for optimal mobile loading.",
+    recommendedTools: ["Blender 3D", "gltf-pipeline / Draco", "Three.js Editor"],
+    icon: Box,
+  },
+];
+
 export default function ArtifactLab3D() {
+  const { language } = useTranslation();
+  const isEn = language === "EN";
+  const steps = isEn ? DIGITALIZATION_STEPS_EN : DIGITALIZATION_STEPS_ID;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasIntersected, setHasIntersected] = useState<boolean>(false);
   const [isIntersecting, setIsIntersecting] = useState<boolean>(false);
@@ -169,8 +213,8 @@ export default function ArtifactLab3D() {
   };
 
   const currentStep =
-    DIGITALIZATION_STEPS.find((s) => s.id === activeStep) ??
-    DIGITALIZATION_STEPS[0];
+    steps.find((s) => s.id === activeStep) ??
+    steps[0];
 
   return (
     <section
@@ -190,18 +234,24 @@ export default function ArtifactLab3D() {
           {/* HEADER SEKSI */}
           <div className="max-w-3xl mb-8 sm:mb-10">
             <span className="bg-gradient-to-r from-[#F4E3D0] to-[#E8CFB0] text-[#5A3316] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center mb-3 border border-[#D5B792] shadow-2xs">
-              Tutorial & Laboratorium Digital Interaktif
+              {isEn
+                ? "Interactive Digital Tutorial & Lab"
+                : "Tutorial & Laboratorium Digital Interaktif"}
             </span>
 
             <h2
               id="artifact-lab-heading"
               className="font-serif text-[#1C120C] font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight leading-snug"
             >
-              Tutorial Konversi Foto 2D (PNG/JPG) Menjadi Objek 3D (.GLB)
+              {isEn
+                ? "2D Photo (PNG/JPG) to 3D Object (.GLB) Conversion Tutorial"
+                : "Tutorial Konversi Foto 2D (PNG/JPG) Menjadi Objek 3D (.GLB)"}
             </h2>
 
             <p className="mt-3 text-sm sm:text-base text-[#473B32] font-normal leading-relaxed">
-              Pelajari alur praktis langkah demi langkah mengubah citra gambar 2D biasa (.png / .jpg) menjadi model tiga dimensi (.glb) berbasis AI, lalu uji coba langsung pada panggung virtual WaraNusa.
+              {isEn
+                ? "Learn the practical step-by-step workflow of turning standard 2D images (.png / .jpg) into AI-powered three-dimensional models (.glb), then test them live on the WaraNusa virtual stage."
+                : "Pelajari alur praktis langkah demi langkah mengubah citra gambar 2D biasa (.png / .jpg) menjadi model tiga dimensi (.glb) berbasis AI, lalu uji coba langsung pada panggung virtual WaraNusa."}
             </p>
           </div>
 
@@ -212,16 +262,16 @@ export default function ArtifactLab3D() {
               <div>
                 <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-[#E5D5C2]">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-[#783E15]">
-                    Alur Tutorial Konversi 2D ke 3D
+                    {isEn ? "2D to 3D Conversion Workflow" : "Alur Tutorial Konversi 2D ke 3D"}
                   </span>
                   <span className="text-xs text-stone-500 font-bold bg-[#F4EBE0] px-2 py-0.5 rounded-md">
-                    Langkah {activeStep} dari 3
+                    {isEn ? `Step ${activeStep} of 3` : `Langkah ${activeStep} dari 3`}
                   </span>
                 </div>
 
                 {/* 3 Langkah Interaktif (Kartu Pilihan) */}
                 <div className="space-y-3">
-                  {DIGITALIZATION_STEPS.map((step) => {
+                  {steps.map((step) => {
                     const isActive = step.id === activeStep;
                     const IconComponent = step.icon;
 
@@ -276,7 +326,9 @@ export default function ArtifactLab3D() {
               <div className="rounded-2xl border-2 border-[#D8C4AA] bg-gradient-to-br from-[#FAF5EC] to-[#F2E5D4] p-5 mt-2 shadow-2xs">
                 <div className="flex items-center gap-2 text-xs font-extrabold text-[#783E15] uppercase tracking-wider mb-2">
                   <CheckCircle2 className="h-4 w-4 text-[#D97706]" />
-                  <span>Panduan & Aksi: {currentStep.subtitle}</span>
+                  <span>
+                    {isEn ? `Guide & Action: ${currentStep.subtitle}` : `Panduan & Aksi: ${currentStep.subtitle}`}
+                  </span>
                 </div>
                 <p className="text-xs sm:text-[13px] text-[#2C1D13] font-normal leading-relaxed mb-3.5">
                   {currentStep.guideline}
@@ -286,7 +338,7 @@ export default function ArtifactLab3D() {
                 {currentStep.recommendedTools && (
                   <div className="mb-3.5 flex flex-wrap items-center gap-1.5">
                     <span className="text-[10px] font-bold text-stone-600 uppercase tracking-wider mr-1">
-                      Alat / Tool:
+                      {isEn ? "Tools:" : "Alat / Tool:"}
                     </span>
                     {currentStep.recommendedTools.map((tool, idx) => (
                       <span
@@ -304,23 +356,35 @@ export default function ArtifactLab3D() {
                   <div className="pt-3 border-t-2 border-[#E5D5C2] space-y-3">
                     <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-[#D8C4AA] shadow-2xs">
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">Format Gambar</span>
+                        <span className="text-stone-500 block text-[10px] font-medium">
+                          {isEn ? "Image Format" : "Format Gambar"}
+                        </span>
                         <strong className="text-[#8B5E3C] font-bold">.PNG / .JPG / .WEBP</strong>
                       </div>
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">Latar Belakang</span>
-                        <strong className="text-stone-800 font-bold">Polos / Transparan</strong>
+                        <span className="text-stone-500 block text-[10px] font-medium">
+                          {isEn ? "Background" : "Latar Belakang"}
+                        </span>
+                        <strong className="text-stone-800 font-bold">
+                          {isEn ? "Plain / Transparent" : "Polos / Transparan"}
+                        </strong>
                       </div>
                     </div>
                     <p className="text-[11px] text-[#52443A] leading-relaxed">
-                      💡 Tip AI: 1 foto tampak depan sudah cukup untuk AI Single-Image to 3D. Pastikan foto artefak tajam dan tidak blur sebelum melangkah ke konversi AI.
+                      {isEn
+                        ? "💡 AI Tip: A single front-facing photo is sufficient for AI Single-Image to 3D. Ensure the artifact photo is sharp and unblurred before proceeding to AI conversion."
+                        : "💡 Tip AI: 1 foto tampak depan sudah cukup untuk AI Single-Image to 3D. Pastikan foto artefak tajam dan tidak blur sebelum melangkah ke konversi AI."}
                     </p>
                     <Button
                       type="button"
                       onClick={() => handleSelectStep(2)}
                       className="w-full bg-[#1E0F07] hover:bg-[#381C0E] text-white rounded-xl font-bold px-4 py-2.5 text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.98] transition-all"
                     >
-                      <span>Lanjut ke Langkah 02: Konversi AI</span>
+                      <span>
+                        {isEn
+                          ? "Proceed to Step 02: AI Conversion"
+                          : "Lanjut ke Langkah 02: Konversi AI"}
+                      </span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -338,15 +402,17 @@ export default function ArtifactLab3D() {
                       <Sparkles className="h-3.5 w-3.5 text-yellow-200" />
                       <span>
                         {isReconstructingAI
-                          ? "AI Sedang Mengalkulasi Poligon..."
-                          : "⚡ Jalankan Simulasi Konversi AI (2D → 3D)"}
+                          ? (isEn ? "AI is Calculating Polygons..." : "AI Sedang Mengalkulasi Poligon...")
+                          : (isEn ? "⚡ Run AI Conversion Simulation (2D → 3D)" : "⚡ Jalankan Simulasi Konversi AI (2D → 3D)")}
                       </span>
                     </Button>
 
                     {/* Progress Bar Animasi */}
                     <div className="space-y-1.5 bg-white p-3 rounded-xl border border-[#D8C4AA] shadow-2xs">
                       <div className="flex justify-between text-[11px] font-extrabold text-stone-800">
-                        <span>Status Konversi 2D ke 3D:</span>
+                        <span>
+                          {isEn ? "2D to 3D Conversion Status:" : "Status Konversi 2D ke 3D:"}
+                        </span>
                         <span className="text-[#B45309] font-mono">{aiProgress}%</span>
                       </div>
                       <div className="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden p-0.5">
@@ -357,10 +423,16 @@ export default function ArtifactLab3D() {
                       </div>
                       <p className="text-[10px] text-[#52443A] font-medium pt-0.5">
                         {aiProgress < 40
-                          ? "Fase 1: Menganalisis piksel 2D & mengekstrak koordinat ruang (Point Cloud)..."
+                          ? (isEn
+                              ? "Phase 1: Analyzing 2D pixels & extracting 3D spatial coordinates (Point Cloud)..."
+                              : "Fase 1: Menganalisis piksel 2D & mengekstrak koordinat ruang (Point Cloud)...")
                           : aiProgress < 85
-                          ? "Fase 2: Menghubungkan titik kedalaman menjadi jaring kawat (Wireframe Mesh)..."
-                          : "Fase 3: Jaring 3D poligon berhasil dibentuk (18.420 poligon siap diekspor)!"}
+                          ? (isEn
+                              ? "Phase 2: Connecting depth points into wireframe polygonal mesh..."
+                              : "Fase 2: Menghubungkan titik kedalaman menjadi jaring kawat (Wireframe Mesh)...")
+                          : (isEn
+                              ? "Phase 3: 3D polygon mesh generated (18,420 polygons ready for export)!"
+                              : "Fase 3: Jaring 3D poligon berhasil dibentuk (18.420 poligon siap diekspor)!")}
                       </p>
                     </div>
 
@@ -369,7 +441,11 @@ export default function ArtifactLab3D() {
                       onClick={() => handleSelectStep(3)}
                       className="w-full bg-[#1E0F07] hover:bg-[#381C0E] text-white rounded-xl font-bold px-4 py-2.5 text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.98] transition-all"
                     >
-                      <span>Lanjut ke Langkah 03: Ekspor & Uji .GLB</span>
+                      <span>
+                        {isEn
+                          ? "Proceed to Step 03: Export & Test .GLB"
+                          : "Lanjut ke Langkah 03: Ekspor & Uji .GLB"}
+                      </span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -380,16 +456,22 @@ export default function ArtifactLab3D() {
                   <div className="pt-3 border-t-2 border-[#E5D5C2] space-y-3">
                     <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-[#D8C4AA] shadow-2xs">
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">Format Berkas</span>
+                        <span className="text-stone-500 block text-[10px] font-medium">
+                          {isEn ? "File Format" : "Format Berkas"}
+                        </span>
                         <strong className="text-[#8B5E3C] font-bold">.GLB (glTF Binary)</strong>
                       </div>
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">Kompresi Draco</span>
+                        <span className="text-stone-500 block text-[10px] font-medium">
+                          {isEn ? "Draco Compression" : "Kompresi Draco"}
+                        </span>
                         <strong className="text-emerald-700 font-bold">&lt; 15 MB (Optimal)</strong>
                       </div>
                     </div>
                     <p className="text-[11px] text-[#473B32] font-normal leading-relaxed">
-                      Hasil model 3D kini tampil penuh dalam mode Solid PBR. Anda dapat memutar bebas objek di kanvas atau menyeret berkas <strong className="text-[#8B5E3C] font-bold">.glb</strong> hasil konversi buatan Anda sendiri pada kotak dropzone di bawah kanvas.
+                      {isEn
+                        ? "The 3D model is now fully rendered in Solid PBR mode. You can freely rotate the object on canvas or drag and drop your own converted .glb file into the dropzone box below."
+                        : "Hasil model 3D kini tampil penuh dalam mode Solid PBR. Anda dapat memutar bebas objek di kanvas atau menyeret berkas .glb hasil konversi buatan Anda sendiri pada kotak dropzone di bawah kanvas."}
                     </p>
                   </div>
                 )}
@@ -415,10 +497,12 @@ export default function ArtifactLab3D() {
                     <Box className="h-5 w-5" />
                   </span>
                   <p className="font-serif font-bold text-stone-800 text-sm sm:text-base">
-                    Panggung 3D Sandbox Siap Dimuat
+                    {isEn ? "3D Sandbox Stage Ready to Load" : "Panggung 3D Sandbox Siap Dimuat"}
                   </p>
                   <p className="text-xs text-stone-600 mt-1 max-w-xs leading-relaxed">
-                    Kanvas Three.js akan diinisialisasi otomatis saat Anda men-scroll bagian ini untuk menjaga kecepatan halaman web.
+                    {isEn
+                      ? "Three.js Canvas will initialize automatically when you scroll into view to maintain fast web performance."
+                      : "Kanvas Three.js akan diinisialisasi otomatis saat Anda men-scroll bagian ini untuk menjaga kecepatan halaman web."}
                   </p>
                 </div>
               )}

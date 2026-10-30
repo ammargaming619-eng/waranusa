@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n-store";
 
 export type ShadingMode = "solid" | "wireframe" | "points";
 export type LightPreset = "daylight" | "warm" | "studio";
@@ -325,6 +326,9 @@ export function Artifact3DStage({
   aiProgress,
   isIntersecting = true,
 }: Artifact3DStageProps) {
+  const { language } = useTranslation();
+  const isEn = language === "EN";
+
   const controlsRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [lightPreset, setLightPreset] = useState<LightPreset>("daylight");
@@ -368,69 +372,86 @@ export function Artifact3DStage({
     <div className="flex flex-col h-full justify-between relative">
       {/* ================= KANVAS 3D INTERAKTIF ================= */}
       <div className="relative w-full aspect-[4/3] sm:aspect-auto h-[320px] xs:h-[360px] sm:h-[430px] lg:h-[480px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#F9F4EB] via-[#F3E7D5] to-[#EBE0CE] border-2 border-[#D4C1A9] shadow-[inset_0_2px_14px_rgba(110,71,45,0.08)] select-none">
-        {/* Tombol Kontrol Cepat di Sudut Kanan Atas */}
-        <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-2 py-1 rounded-full border-2 border-[#D4C1A9] shadow-xs">
-          <button
-            type="button"
-            onClick={resetCamera}
-            className="rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
-            title="Reset Sudut Pandang Kamera"
-            aria-label="Reset Sudut Pandang Kamera 3D"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={cycleLighting}
-            className="rounded-full min-h-[44px] min-w-[44px] px-2.5 flex items-center justify-center gap-1 text-xs font-bold text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
-            title="Ubah Preset Pencahayaan Studio"
-            aria-label="Ubah Preset Pencahayaan Studio"
-          >
-            {lightPreset === "daylight" && <Sun className="h-4 w-4 text-amber-600" />}
-            {lightPreset === "warm" && <SunMedium className="h-4 w-4 text-orange-600" />}
-            {lightPreset === "studio" && <Moon className="h-4 w-4 text-stone-800" />}
-            <span className="hidden xs:inline capitalize">{lightPreset}</span>
-          </button>
-        </div>
+        {/* Top Header Overlay: Status Badges (Kiri) & Toolbar (Kanan) - Anti Tumpuk di Layar Mobile */}
+        <div className="absolute top-2.5 sm:top-3.5 inset-x-2.5 sm:inset-x-3.5 z-20 flex items-start justify-between gap-2 pointer-events-none">
+          {/* Status Mode & Objek Aktif di Kiri Atas */}
+          <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0 max-w-[calc(100%-105px)] sm:max-w-none">
+            <div className="bg-white/95 backdrop-blur-sm border-2 border-[#D4C1A9] px-2.5 sm:px-3.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold text-[#6E3C17] shadow-xs inline-flex items-center gap-1.5 truncate max-w-fit">
+              {uploadedFileName ? (
+                <span className="flex items-center gap-1.5 truncate max-w-[150px] sm:max-w-[200px]">
+                  <FileCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="truncate">{uploadedFileName}</span>
+                </span>
+              ) : !glbError ? (
+                <span className="truncate">
+                  {isEn ? "🏛️ Borobudur Temple (3D Model)" : "🏛️ Candi Borobudur (Model 3D Nyata)"}
+                </span>
+              ) : (
+                <span className="truncate">
+                  {isEn ? "✨ Borobudur Stupa (Procedural 3D)" : "✨ Stupa Borobudur (Cadangan 3D)"}
+                </span>
+              )}
+            </div>
 
-        {/* Status Mode & Objek Aktif di Kiri Atas */}
-        <div className="absolute top-3.5 left-3.5 z-20 pointer-events-none flex flex-col gap-1.5">
-          <div className="bg-white/95 backdrop-blur-sm border-2 border-[#D4C1A9] px-3.5 py-1 rounded-full text-[11px] font-bold text-[#6E3C17] shadow-xs inline-flex items-center gap-1.5">
-            {uploadedFileName ? (
-              <span className="flex items-center gap-1.5 truncate max-w-[200px]">
-                <FileCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                {uploadedFileName}
-              </span>
-            ) : !glbError ? (
-              <span>🏛️ Candi Borobudur (Model 3D Nyata)</span>
-            ) : (
-              <span>✨ Stupa Borobudur (Cadangan Prosedural 3D)</span>
+            {/* Badge Khusus Berdasarkan Langkah Tutorial */}
+            {activeStep === 1 && (
+              <div className="bg-[#6E3C17] text-white backdrop-blur-sm px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5 truncate max-w-fit">
+                <span className="truncate">
+                  {isEn
+                    ? "🖼️ Step 1: Input 2D Photo (.PNG / .JPG)"
+                    : "🖼️ Langkah 1: Input Foto 2D (.PNG / .JPG)"}
+                </span>
+              </div>
+            )}
+
+            {activeStep === 2 && (
+              <div className="bg-gradient-to-r from-[#D97706] to-[#B45309] text-white backdrop-blur-sm px-2.5 sm:px-3.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-extrabold shadow-xs inline-flex items-center gap-1.5 truncate max-w-fit">
+                <Sparkles className="h-3.5 w-3.5 text-yellow-200 shrink-0" />
+                <span className="truncate">
+                  {isEn
+                    ? (aiProgress < 100
+                        ? `AI 2D→3D: ${aiProgress}% Mesh...`
+                        : "Status: 18,420 Polygon Mesh ✓")
+                    : (aiProgress < 100
+                        ? `AI 2D→3D: ${aiProgress}% Jaring Mesh...`
+                        : "Status: 18.420 Poligon Mesh Selesai ✓")}
+                </span>
+              </div>
+            )}
+
+            {activeStep === 3 && (
+              <div className="bg-[#1E0F07] text-amber-300 backdrop-blur-sm px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5 truncate max-w-fit">
+                <span className="truncate">
+                  {isEn ? "📦 Step 3: Ready to Export (.GLB)" : "📦 Langkah 3: Siap Ekspor & Diuji (.GLB)"}
+                </span>
+              </div>
             )}
           </div>
 
-          {/* Badge Khusus Berdasarkan Langkah Tutorial */}
-          {activeStep === 1 && (
-            <div className="bg-[#6E3C17] text-white backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5">
-              <span>🖼️ Langkah 1: Input Foto 2D (.PNG / .JPG)</span>
-            </div>
-          )}
-
-          {activeStep === 2 && (
-            <div className="bg-gradient-to-r from-[#D97706] to-[#B45309] text-white backdrop-blur-sm px-3.5 py-1 rounded-full text-[11px] font-mono font-extrabold shadow-xs inline-flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-yellow-200" />
-              <span>
-                {aiProgress < 100
-                  ? `AI 2D→3D: ${aiProgress}% Jaring Mesh...`
-                  : "Status: 18.420 Poligon Mesh Selesai ✓"}
-              </span>
-            </div>
-          )}
-
-          {activeStep === 3 && (
-            <div className="bg-[#1E0F07] text-amber-300 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5">
-              <span>📦 Langkah 3: Siap Ekspor & Diuji (.GLB)</span>
-            </div>
-          )}
+          {/* Tombol Kontrol Cepat di Sudut Kanan Atas */}
+          <div className="pointer-events-auto shrink-0 flex items-center gap-1 sm:gap-1.5 bg-white/95 backdrop-blur-md px-1.5 sm:px-2 py-1 rounded-full border-2 border-[#D4C1A9] shadow-xs">
+            <button
+              type="button"
+              onClick={resetCamera}
+              className="rounded-full min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
+              title={isEn ? "Reset Camera View" : "Reset Sudut Pandang Kamera"}
+              aria-label={isEn ? "Reset Camera View" : "Reset Sudut Pandang Kamera 3D"}
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={cycleLighting}
+              className="rounded-full min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] px-2 flex items-center justify-center gap-1 text-xs font-bold text-stone-700 hover:text-stone-950 hover:bg-stone-100 transition-colors cursor-pointer"
+              title={isEn ? "Toggle Lighting Preset" : "Ubah Preset Pencahayaan Studio"}
+              aria-label={isEn ? "Toggle Lighting Preset" : "Ubah Preset Pencahayaan Studio"}
+            >
+              {lightPreset === "daylight" && <Sun className="h-4 w-4 text-amber-600" />}
+              {lightPreset === "warm" && <SunMedium className="h-4 w-4 text-orange-600" />}
+              {lightPreset === "studio" && <Moon className="h-4 w-4 text-stone-800" />}
+              <span className="hidden sm:inline capitalize">{lightPreset}</span>
+            </button>
+          </div>
         </div>
 
         {/* Kanvas Three.js */}
@@ -518,7 +539,9 @@ export function Artifact3DStage({
         {/* Petunjuk Navigasi Bawah */}
         <div className="absolute bottom-2.5 inset-x-0 text-center pointer-events-none">
           <span className="text-[10px] sm:text-xs text-stone-700 font-medium bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full border border-stone-300 shadow-2xs">
-            🖱️ Putar 360° • Gulir untuk Zoom • Klik kanan / dua jari untuk Geser
+            {isEn
+              ? "🖱️ Drag to Rotate 360° • Scroll to Zoom • Right-click / Two fingers to Pan"
+              : "🖱️ Putar 360° • Gulir untuk Zoom • Klik kanan / dua jari untuk Geser"}
           </span>
         </div>
       </div>
@@ -526,14 +549,14 @@ export function Artifact3DStage({
       {/* ================= MODE SWITCHER SHADING (SELALU TAMPIL) ================= */}
       <div className="mt-3.5 flex items-center justify-between gap-2 p-1.5 bg-[#EFE3D2] rounded-xl border-2 border-[#D4C1A9] shadow-2xs">
         <span className="text-xs font-extrabold text-[#5A3316] px-2.5 hidden sm:inline">
-          Mode Shading:
+          {isEn ? "Shading Mode:" : "Mode Shading:"}
         </span>
 
         <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
           <button
             type="button"
             onClick={() => onShadingChange("solid")}
-            aria-label="Mode Shading Solid PBR"
+            aria-label={isEn ? "Solid PBR Shading Mode" : "Mode Shading Solid PBR"}
             className={cn(
               "flex-1 sm:flex-initial min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               shadingMode === "solid"
@@ -548,7 +571,7 @@ export function Artifact3DStage({
           <button
             type="button"
             onClick={() => onShadingChange("wireframe")}
-            aria-label="Mode Shading Jaring Wireframe"
+            aria-label={isEn ? "Wireframe Mesh Shading Mode" : "Mode Shading Jaring Wireframe"}
             className={cn(
               "flex-1 sm:flex-initial min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               shadingMode === "wireframe"
@@ -563,7 +586,7 @@ export function Artifact3DStage({
           <button
             type="button"
             onClick={() => onShadingChange("points")}
-            aria-label="Mode Shading Titik Poligon"
+            aria-label={isEn ? "Point Cloud Shading Mode" : "Mode Shading Titik Poligon"}
             className={cn(
               "flex-1 sm:flex-initial min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer",
               shadingMode === "points"
@@ -572,7 +595,7 @@ export function Artifact3DStage({
             )}
           >
             <Dot className="h-3.5 w-3.5" />
-            <span>📐 Titik Poligon</span>
+            <span>{isEn ? "📐 Point Cloud" : "📐 Titik Poligon"}</span>
           </button>
         </div>
       </div>
@@ -589,7 +612,11 @@ export function Artifact3DStage({
       <div
         role="button"
         tabIndex={0}
-        aria-label="Unggah atau seret berkas model 3D berekstensi glb atau gltf"
+        aria-label={
+          isEn
+            ? "Upload or drag 3D model files with glb or gltf extension"
+            : "Unggah atau seret berkas model 3D berekstensi glb atau gltf"
+        }
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -616,13 +643,15 @@ export function Artifact3DStage({
           </div>
           <div>
             <p className="text-xs font-bold text-stone-900">
-              Tarik & Letakkan Berkas 3D atau{" "}
+              {isEn ? "Drag & drop 3D file or " : "Tarik & Letakkan Berkas 3D atau "}
               <span className="text-[#8B5E3C] underline underline-offset-2">
-                Pilih File 3D (.glb / .gltf)
+                {isEn ? "Choose 3D File (.glb / .gltf)" : "Pilih File 3D (.glb / .gltf)"}
               </span>
             </p>
             <p className="text-[11px] text-[#52443A] font-medium mt-0.5">
-              Ukuran ideal di bawah 15 MB. Berkas diproses lokal di peramban tanpa disimpan ke server.
+              {isEn
+                ? "Ideal size under 15 MB. Files are processed locally in your browser without being uploaded to any server."
+                : "Ukuran ideal di bawah 15 MB. Berkas diproses lokal di peramban tanpa disimpan ke server."}
             </p>
           </div>
         </div>
