@@ -168,25 +168,21 @@ class HybridSoundEngine {
     this.lastTriggerTime = now;
     this.lastTriggerNoteKey = noteKey;
 
-    // Coba muat sampel di latar belakang bila belum pernah dicek
-    if (!this.sampleStatus.has(instrumentId)) {
-      void this.preloadInstrumentSample(instrumentId);
-    }
-
-    const cachedBuffer = this.sampleCache.get(instrumentId);
-    if (cachedBuffer) {
-      const src = ctx.createBufferSource();
-      src.buffer = cachedBuffer;
-      src.playbackRate.value = Math.max(0.4, Math.min(2.5, freq / baseFreq));
-
-      const gain = ctx.createGain();
-      gain.gain.value = Math.min(1, velocity);
-
-      src.connect(gain);
-      gain.connect(this.masterGain);
-      gain.connect(this.reverbSend);
-      src.start();
-      return;
+    // Putar dari cache sampel jika tersedia
+    if (this.sampleStatus.has(instrumentId) && this.sampleStatus.get(instrumentId) === "ready") {
+      const cachedBuffer = this.sampleCache.get(instrumentId);
+      if (cachedBuffer) {
+        const src = ctx.createBufferSource();
+        src.buffer = cachedBuffer;
+        src.playbackRate.value = Math.max(0.4, Math.min(2.5, freq / baseFreq));
+        const gain = ctx.createGain();
+        gain.gain.value = Math.min(1, velocity);
+        src.connect(gain);
+        gain.connect(this.masterGain);
+        gain.connect(this.reverbSend);
+        src.start();
+        return;
+      }
     }
 
     // Fallback Prosedural Web Audio Synthesizer

@@ -571,13 +571,15 @@ export function Instrument3DStage({
   }, [volume]);
 
   React.useEffect(() => {
-    void soundEngine.preloadInstrumentSample(instrument.id);
+    if (instrument.hasAudioSample) {
+      void soundEngine.preloadInstrumentSample(instrument.id);
+    }
     soundEngine.stopContinuousVoice();
     setIsBowingUI(false);
     setIsBlowingHold(false);
     setSelectedPitchIdx(0);
     stopDemo();
-  }, [instrument.id, stopDemo]);
+  }, [instrument.id, instrument.hasAudioSample, stopDemo]);
 
   // Cleanup saat unmount
   React.useEffect(() => {

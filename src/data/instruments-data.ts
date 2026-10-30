@@ -59,6 +59,7 @@ export interface TraditionalInstrument38 {
   modelUrl: string;
   hasGlb: boolean;
   hasGlbAsset: boolean;
+  hasAudioSample?: boolean;
   audioSampleUrl: string;
   mouseGuide: string;
   cameraGuide: string;
@@ -1629,6 +1630,7 @@ export const INSTRUMENTS_38_CATALOGUE: TraditionalInstrument38[] = RAW_INSTRUMEN
     glbUrl,
     modelUrl: glbUrl,
     hasGlbAsset: raw.hasGlb,
+    hasAudioSample: false,
     mouseGuide: raw.mouseGuide ?? gestureGuide.mouseTouch,
     cameraGuide: gestureGuide.cameraAi,
     audioSampleUrl,
