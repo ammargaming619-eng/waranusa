@@ -28,12 +28,12 @@ import { EmptyState, ErrorState } from "@/components/shared/states";
 import { BookMarked, ExternalLink, Pencil, PlusCircle, Search, Trash2 } from "lucide-react";
 
 const SOURCE_BADGE: Record<SourceType, string> = {
-  BOOK: "bg-amber-100/70 text-[#7A4B29] border-amber-300/80",
-  JOURNAL: "bg-[#8C5E3C]/10 text-[#6E472D] border-[#8C5E3C]/30",
-  WEBSITE: "bg-amber-50 text-[#8C5E3C] border-amber-200/80",
-  MUSEUM: "bg-orange-50 text-[#7A4B29] border-amber-200/80",
-  ARCHIVE: "bg-stone-100 text-stone-700 border-stone-200",
-  OTHER: "bg-secondary text-muted-foreground border-border",
+  BOOK: "bg-amber-100/80 text-[#7A4B29] border-amber-300/80 shadow-2xs",
+  JOURNAL: "bg-[#8C5E3C]/15 text-[#5C341A] border-[#8C5E3C]/30 shadow-2xs",
+  WEBSITE: "bg-[#FDF8F0] text-[#7A4B29] border-[#8C5E3C]/25 shadow-2xs",
+  MUSEUM: "bg-orange-100/70 text-[#8B3E12] border-orange-300/60 shadow-2xs",
+  ARCHIVE: "bg-stone-200/70 text-stone-800 border-stone-300 shadow-2xs",
+  OTHER: "bg-amber-50 text-[#8C5E3C] border-amber-200 shadow-2xs",
 };
 
 interface FormState {
@@ -225,18 +225,17 @@ export function SourcesView() {
             className="border-0 bg-transparent"
           />
         ) : (
-          <Table>
+          <Table className="table-fixed">
             <TableHeader>
               <TableRow>
-                <TableHead>Judul</TableHead>
-                <TableHead className="hidden md:table-cell">Creator</TableHead>
-                <TableHead>Tipe</TableHead>
-                <TableHead className="hidden lg:table-cell">Item Terkait</TableHead>
-                <TableHead className="hidden xl:table-cell">URL</TableHead>
-                <TableHead className="hidden sm:table-cell">Akses</TableHead>
-                <TableHead className="hidden xl:table-cell">Verifikasi</TableHead>
+                <TableHead className="w-[28%] min-w-[160px]">Judul</TableHead>
+                <TableHead className="hidden w-[14%] md:table-cell">Creator</TableHead>
+                <TableHead className="w-[12%] min-w-[90px]">Tipe</TableHead>
+                <TableHead className="hidden w-[16%] lg:table-cell">Item Terkait</TableHead>
+                <TableHead className="hidden w-[16%] xl:table-cell">URL</TableHead>
+                <TableHead className="hidden w-[14%] sm:table-cell">Akses</TableHead>
                 {canManage && (
-                  <TableHead className="w-28 text-right">
+                  <TableHead className="w-20 text-right">
                     <span className="sr-only">Aksi</span>
                   </TableHead>
                 )}
@@ -247,54 +246,69 @@ export function SourcesView() {
                 const linked = s.itemId ? itemMap.get(s.itemId) : undefined;
                 return (
                   <TableRow key={s.id}>
-                    <TableCell className="max-w-52">
+                    <TableCell className="min-w-0 pr-3">
                       <p className="truncate font-semibold text-brand-ink" title={s.title}>
                         {s.title}
                       </p>
                       {s.license && <p className="truncate text-[11px] text-muted-foreground">{s.license}</p>}
                     </TableCell>
-                    <TableCell className="hidden text-sm text-muted-foreground md:table-cell">{s.creator || "-"}</TableCell>
+                    <TableCell className="hidden truncate text-sm text-muted-foreground md:table-cell" title={s.creator || "-"}>
+                      {s.creator || "-"}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={`text-[11px] font-semibold ${SOURCE_BADGE[s.sourceType] ?? ""}`}>
+                      <Badge variant="outline" className={`text-[11px] font-semibold whitespace-nowrap ${SOURCE_BADGE[s.sourceType] ?? ""}`}>
                         {labelSourceType(s.sourceType)}
                       </Badge>
                     </TableCell>
-                    <TableCell className="hidden lg:table-cell">
+                    <TableCell className="hidden min-w-0 lg:table-cell">
                       {linked ? (
-                        <a href={`#/budaya/${linked.slug}`} target="_blank" rel="noreferrer" className="inline-flex max-w-44 items-center gap-1 truncate text-xs font-semibold text-[#8C5E3C] hover:text-[#6E472D] hover:underline" title={linked.title}>
-                          {linked.title} <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+                        <a
+                          href={`#/budaya/${linked.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex max-w-full items-center gap-1 text-xs font-semibold text-[#8C5E3C] hover:text-[#6E472D] hover:underline"
+                          title={linked.title}
+                        >
+                          <span className="truncate">{linked.title}</span>
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
                         </a>
                       ) : (
                         <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </TableCell>
-                    <TableCell className="hidden max-w-44 xl:table-cell">
+                    <TableCell className="hidden min-w-0 xl:table-cell">
                       {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 truncate text-xs text-[#8C5E3C] hover:text-[#6E472D] hover:underline" title={s.url}>
-                          {s.url.replace(/^https?:\/\//, "")} <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex max-w-full items-center gap-1 text-xs text-[#8C5E3C] hover:text-[#6E472D] hover:underline"
+                          title={s.url}
+                        >
+                          <span className="truncate">{s.url.replace(/^https?:\/\//, "")}</span>
+                          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
                         </a>
                       ) : (
                         <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </TableCell>
-                    <TableCell className="hidden whitespace-nowrap text-xs text-muted-foreground sm:table-cell">{fmtDateID(s.accessDate)}</TableCell>
-                    <TableCell className="hidden max-w-44 truncate text-xs text-muted-foreground xl:table-cell" title={s.verificationNote ?? ""}>
-                      {s.verificationNote || "-"}
+                    <TableCell className="hidden whitespace-nowrap text-xs text-muted-foreground sm:table-cell">
+                      {fmtDateID(s.accessDate)}
                     </TableCell>
                     {canManage && (
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)} aria-label={`Edit sumber ${s.title}`}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-stone-600 hover:text-[#8C5E3C] hover:bg-amber-100/50" onClick={() => openEdit(s)} aria-label={`Edit sumber ${s.title}`}>
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <ConfirmDialog
                             trigger={
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" aria-label={`Hapus sumber ${s.title}`}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-red-50" aria-label={`Hapus sumber ${s.title}`}>
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             }
-                            title="Hapus sumber?"
-                            description={`Sumber “${s.title}” akan dihapus permanen dari katalog referensi.`}
+                            title="Hapus referensi sumber?"
+                            description={`Sumber “${s.title}” akan dihapus secara permanen.`}
                             confirmLabel="Ya, hapus"
                             destructive
                             loading={busyDeleteId === s.id}

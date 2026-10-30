@@ -61,7 +61,9 @@ const Instrument3DStage = dynamic(
     import("@/components/three/instrument-3d-stage").then((m) => m.Instrument3DStage),
   {
     ssr: false,
-    loading: () => <Skeleton className="h-[460px] w-full rounded-2xl" />,
+    loading: () => (
+      <Skeleton className="h-[340px] xs:h-[380px] sm:h-[430px] md:h-[470px] w-full rounded-2xl bg-[#EADBCC]/60" />
+    ),
   }
 );
 

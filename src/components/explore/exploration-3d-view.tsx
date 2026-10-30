@@ -56,7 +56,9 @@ void Sparkles;
 
 const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ssr: false,
-  loading: () => <Skeleton className="h-[520px] w-full rounded-2xl" />,
+  loading: () => (
+    <Skeleton className="h-[340px] xs:h-[380px] sm:h-[440px] md:h-[500px] lg:h-[520px] w-full rounded-2xl bg-stone-200/60" />
+  ),
 });
 
 export type { OrganologyType, OrganologySpecs };
@@ -261,7 +263,7 @@ export default function Exploration3DView() {
 
             {/* TAB WILAYAH / PULAU */}
             <div className="mb-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 no-scrollbar scroll-smooth">
                 {ISLAND_TABS.map((island) => {
                   const isCurrent = selectedHouseIsland === island.id;
                   return (
@@ -361,7 +363,7 @@ export default function Exploration3DView() {
             ) : houseViewMode === "strip" ? (
               /* DOCK / STRIP HORIZONTAL SCROLLABLE */
               <div className="mb-3 sm:mb-3.5">
-                <div className="flex items-stretch gap-2 overflow-x-auto pb-2 pt-0.5 scrollbar-thin">
+                <div className="flex items-stretch gap-2 overflow-x-auto pb-2 pt-0.5 no-scrollbar scroll-smooth">
                   {filteredHouses.map((house) => {
                     const isActive = house.id === activeHouse.id;
                     return (
@@ -501,15 +503,19 @@ export default function Exploration3DView() {
                 </div>
 
                 {/* Panduan Interaksi Singkat & Berkelas */}
-                <div className="rounded-xl bg-[#F8F4EC] border border-[#E9DECE] px-4 py-2.5 text-xs text-stone-600 flex flex-wrap items-center justify-between gap-3">
-                  <span className="flex items-center gap-2 text-stone-700">
-                    <span className="h-2 w-2 rounded-full bg-[#E5A93C] animate-pulse" />
-                    <strong className="font-medium text-[#2D1E12]">{language === "EN" ? "Interactive 360° Canvas:" : "Kanvas 360° Interaktif:"}</strong>{" "}
-                    {language === "EN"
-                      ? "Drag mouse to rotate, scroll to zoom, & click golden pins for anatomical structural details."
-                      : "Seret mouse untuk memutar, gulir untuk zoom, & klik nomor emas untuk anatomi rangka."}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A5B38] bg-[#8A5B38]/10 px-2.5 py-0.5 rounded-full">
+                <div className="w-full max-w-full rounded-xl bg-[#F8F4EC] border border-[#E9DECE] px-3.5 sm:px-4 py-2.5 text-xs text-stone-600 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                  <div className="flex items-start sm:items-center gap-2 text-stone-700 min-w-0 flex-1">
+                    <span className="h-2 w-2 rounded-full bg-[#E5A93C] animate-pulse shrink-0 mt-1 sm:mt-0" />
+                    <p className="min-w-0 break-words leading-relaxed text-xs">
+                      <strong className="font-semibold text-[#2D1E12]">
+                        {language === "EN" ? "Interactive 360° Canvas:" : "Kanvas 360° Interaktif:"}
+                      </strong>{" "}
+                      {language === "EN"
+                        ? "Drag mouse to rotate, scroll to zoom, & click golden pins for anatomical structural details."
+                        : "Seret mouse untuk memutar, gulir untuk zoom, & klik nomor emas untuk anatomi rangka."}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A5B38] bg-[#8A5B38]/10 px-2.5 py-0.5 rounded-full shrink-0 self-start sm:self-center">
                     {language === "EN" ? "3D Interactive Model" : "Model 3D Interaktif"}
                   </span>
                 </div>

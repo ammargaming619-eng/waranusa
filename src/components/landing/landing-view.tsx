@@ -46,7 +46,9 @@ void Sparkles;
 
 const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ssr: false,
-  loading: () => <Skeleton className="h-[480px] w-full rounded-2xl bg-stone-800/60" />,
+  loading: () => (
+    <Skeleton className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full rounded-xl sm:rounded-2xl bg-[#EADBCC]/60" />
+  ),
 });
 
 const Instrument3DStage = dynamic(
@@ -54,7 +56,9 @@ const Instrument3DStage = dynamic(
     import("@/components/three/instrument-3d-stage").then((m) => m.Instrument3DStage),
   {
     ssr: false,
-    loading: () => <Skeleton className="h-[460px] w-full rounded-2xl bg-[#EADBCC]/60" />,
+    loading: () => (
+      <Skeleton className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full rounded-xl sm:rounded-2xl bg-[#EADBCC]/60" />
+    ),
   }
 );
 
@@ -507,9 +511,12 @@ function Interactive3DPavilion() {
   const [activeTab, setActiveTab] = useState<"HOUSES" | "INSTRUMENTS">("HOUSES");
   const [volume, setVolume] = useState<number>(0.8);
   const activeInstrument = SARON_DEMUNG_DATA;
+  const pavilionRef = useRef<HTMLDivElement>(null);
+  const isNearViewport = useInView(pavilionRef, { once: true, margin: "300px" });
 
   return (
     <section
+      ref={pavilionRef}
       className="relative overflow-hidden bg-gradient-to-b from-[#FAF4EB] via-[#F5EBDD] to-[#EFE4D3] text-[#2D1E12] border-b border-[#E2D5C3]"
       aria-labelledby="ruang-pamer-3d"
     >
@@ -604,12 +611,18 @@ function Interactive3DPavilion() {
                     </span>
                   </div>
 
-                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC]">
-                    <ModelViewer
-                      item={FALLBACK_LANDING_JOGLO}
-                      autoRotate
-                      className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full"
-                    />
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC] min-h-[290px] xs:min-h-[330px] sm:min-h-[390px] lg:min-h-[460px]">
+                    {isNearViewport ? (
+                      <ModelViewer
+                        item={FALLBACK_LANDING_JOGLO}
+                        autoRotate
+                        className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full"
+                      />
+                    ) : (
+                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono text-stone-400">
+                        <span>Panggung 3D Siap Dimuat...</span>
+                      </div>
+                    )}
                   </div>
 
                   <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">
@@ -637,12 +650,18 @@ function Interactive3DPavilion() {
                     </span>
                   </div>
 
-                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC]">
-                    <Instrument3DStage
-                      instrument={activeInstrument}
-                      volume={volume}
-                      onVolumeChange={setVolume}
-                    />
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF6F0] border border-[#EADBCC] min-h-[290px] xs:min-h-[330px] sm:min-h-[390px] lg:min-h-[460px]">
+                    {isNearViewport ? (
+                      <Instrument3DStage
+                        instrument={activeInstrument}
+                        volume={volume}
+                        onVolumeChange={setVolume}
+                      />
+                    ) : (
+                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono text-stone-400">
+                        <span>Panggung Musik 3D Siap Dimuat...</span>
+                      </div>
+                    )}
                   </div>
 
                   <p className="mt-2.5 sm:mt-3 px-1 text-center text-xs text-stone-600">

@@ -157,8 +157,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             src="/images/indonesia-map-batik.png"
             alt="Peta Budaya Kepulauan Nusantara WaraNusa"
             fill
-            priority
-            sizes="(max-width: 768px) 100vw, 1400px"
+            priority={true}
+            fetchPriority="high"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
             className="object-contain object-center pointer-events-none select-none drop-shadow-sm"
           />
         </div>

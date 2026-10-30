@@ -207,7 +207,11 @@ export function CategoriesView() {
                   <TableCell className="hidden max-w-72 truncate text-sm text-muted-foreground md:table-cell" title={c.description ?? ""}>
                     {c.description || "-"}
                   </TableCell>
-                  <TableCell className="text-right text-sm font-bold tabular-nums">{c.itemCount ?? 0}</TableCell>
+                  <TableCell className="text-right">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold font-mono bg-amber-100/70 text-[#7A4B29] border border-amber-300/60 tabular-nums">
+                      {c.itemCount ?? 0}
+                    </span>
+                  </TableCell>
                   {canManage && (
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
