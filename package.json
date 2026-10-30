@@ -107,10 +107,10 @@
     "typescript": "^5"
   },
   "browserslist": [
-    "last 2 Chrome versions",
-    "last 2 Safari versions",
-    "last 2 Firefox versions",
-    "not dead"
+    "chrome >= 100",
+    "safari >= 15",
+    "firefox >= 100",
+    "edge >= 100"
   ],
   "prisma": {
     "seed": "bun prisma/seed.ts"

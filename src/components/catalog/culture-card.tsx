@@ -47,9 +47,10 @@ export function CultureCard({ item, compact = false }: { item: CulturalItem; com
             src={cover}
             alt={`Gambar ${item.title}`}
             fill
-            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 380px, 300px"
-            quality={70}
+            sizes="(max-width: 640px) 320px, (max-width: 1024px) 380px, 300px"
+            quality={65}
             loading="lazy"
+            decoding="async"
             onError={() => setImgFailed(true)}
             className="object-cover transition-transform duration-700 group-hover:scale-105 transform-gpu will-change-transform"
           />

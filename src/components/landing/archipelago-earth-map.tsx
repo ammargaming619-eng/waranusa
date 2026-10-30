@@ -159,8 +159,9 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
             fill
             priority={true}
             fetchPriority="high"
+            decoding="async"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
-            className="object-contain object-center pointer-events-none select-none drop-shadow-sm"
+            className="object-contain object-center pointer-events-none select-none drop-shadow-sm opacity-100"
           />
         </div>
 
