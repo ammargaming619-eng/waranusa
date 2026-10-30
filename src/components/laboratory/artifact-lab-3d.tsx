@@ -189,9 +189,8 @@ export default function ArtifactLab3D() {
         <div className="rounded-3xl bg-white border-2 border-[#D8C4AA] shadow-[0_20px_60px_rgba(80,50,25,0.08)] p-6 sm:p-8 lg:p-10 min-h-[580px] relative z-10">
           {/* HEADER SEKSI */}
           <div className="max-w-3xl mb-8 sm:mb-10">
-            <span className="bg-gradient-to-r from-[#F4E3D0] to-[#E8CFB0] text-[#5A3316] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-2 mb-3 border border-[#D5B792] shadow-2xs">
-              <span>🔬</span>
-              <span>Tutorial & Laboratorium Digital Interaktif</span>
+            <span className="bg-gradient-to-r from-[#F4E3D0] to-[#E8CFB0] text-[#5A3316] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center mb-3 border border-[#D5B792] shadow-2xs">
+              Tutorial & Laboratorium Digital Interaktif
             </span>
 
             <h2
@@ -412,8 +411,8 @@ export default function ArtifactLab3D() {
                 />
               ) : (
                 <div className="w-full h-full min-h-[360px] sm:min-h-[430px] lg:min-h-[480px] rounded-2xl bg-[#FAF6EE] border-2 border-[#D4C1A9] flex flex-col items-center justify-center p-6 text-center">
-                  <span className="w-10 h-10 rounded-full bg-[#F5EBE1] text-[#8B5E3C] flex items-center justify-center text-lg mb-3">
-                    🔬
+                  <span className="w-10 h-10 rounded-full bg-[#F5EBE1] text-[#8B5E3C] flex items-center justify-center mb-3">
+                    <Box className="h-5 w-5" />
                   </span>
                   <p className="font-serif font-bold text-stone-800 text-sm sm:text-base">
                     Panggung 3D Sandbox Siap Dimuat
