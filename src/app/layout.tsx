@@ -45,6 +45,23 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        {/* Responsive LCP Image Preload untuk Mobile 4G */}
+        <link
+          rel="preload"
+          as="image"
+          href="/_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=640&q=75"
+          media="(max-width: 640px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=1200&q=75"
+          media="(min-width: 641px)"
+          fetchPriority="high"
+        />
+      </head>
       <body suppressHydrationWarning className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
         {children}
         <ClientWidgets />
