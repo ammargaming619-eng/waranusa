@@ -170,17 +170,17 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
           <div>
             <h1
               id="hero-title"
-              className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold tracking-tight text-[#2D1E12] leading-tight drop-shadow-xs whitespace-nowrap"
+              className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold tracking-tight text-[#2D1E12] leading-tight drop-shadow-xs whitespace-nowrap animate-hero-zoom"
             >
               {t("hero.title", "Jelajahi Ragam Budaya Nusantara")}
             </h1>
-            <p className="mt-1 sm:mt-2 md:mt-2.5 text-xs sm:text-sm md:text-base text-stone-700 max-w-xl mx-auto font-medium whitespace-nowrap sm:whitespace-normal">
+            <p className="mt-1 sm:mt-2 md:mt-2.5 text-xs sm:text-sm md:text-base text-stone-700 max-w-xl mx-auto font-medium whitespace-nowrap sm:whitespace-normal animate-hero-sub">
               {t("hero.subtitle", "Dari Sabang hingga Merauke, setiap tradisi punya cerita.")}
             </p>
           </div>
 
           {/* Tombol CTA: Peta 38 Provinsi & Katalog Budaya */}
-          <div className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
+          <div className="mt-2.5 sm:mt-3.5 md:mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 animate-hero-cta">
             <Button
               asChild
               size="lg"
