@@ -22,11 +22,27 @@ import { useAuth } from "@/lib/auth-store";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import LandingView from "@/components/landing/landing-view";
-import CatalogView from "@/components/catalog/catalog-view";
-import ArchiveView from "@/components/archive/archive-view";
-import ContributeView from "@/components/contribute/contribute-view";
-import LoginView from "@/components/account/login-view";
-import MyContributionsView from "@/components/account/my-contributions-view";
+
+const CatalogView = dynamic(() => import("@/components/catalog/catalog-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const ArchiveView = dynamic(() => import("@/components/archive/archive-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const ContributeView = dynamic(() => import("@/components/contribute/contribute-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const LoginView = dynamic(() => import("@/components/account/login-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
+const MyContributionsView = dynamic(() => import("@/components/account/my-contributions-view"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#FCF8EC]" />,
+});
 
 const ExploreView = dynamic(() => import("@/components/explore/explore-view"), {
   ssr: false,
