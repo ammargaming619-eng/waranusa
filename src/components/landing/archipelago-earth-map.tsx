@@ -236,7 +236,10 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
               onMouseLeave={() => setHoveredTag(null)}
             >
               {/* Pin Penanda Titik Lokasi Peta dengan Efek Pulse Elegan */}
-              <div className="-translate-x-1/2 -translate-y-full">
+              <div
+                className="-translate-x-1/2 -translate-y-full animate-tag-pop"
+                style={{ animationDelay: `${0.2 + idx * 0.08}s` }}
+              >
                 <button
                   type="button"
                   onClick={() => setActiveTag(tag)}
@@ -265,14 +268,15 @@ export function ArchipelagoEarthMap({ introRevealed = true }: { introRevealed?: 
                 </button>
               </div>
 
-              {/* Floating Cultural Popover Card (Desktop MD+) — LANGSUNG MUNCUL TANPA PERLU HOVER */}
+              {/* Floating Cultural Popover Card (Desktop MD+) — POP-UP MUNCUL ANGGUN DARI DALAM KE LUAR SECARA BERUNTUN */}
               <div
                 className={cn(
-                  "hidden md:block absolute pointer-events-auto transition-all duration-200",
+                  "hidden md:block absolute pointer-events-auto transition-transform duration-200 animate-tag-pop",
                   verticalPositionClass,
                   popoverAlignClass,
                   isHovered ? "z-50 scale-105" : "z-30 scale-100"
                 )}
+                style={{ animationDelay: `${0.32 + idx * 0.09}s` }}
               >
                 <button
                   type="button"
