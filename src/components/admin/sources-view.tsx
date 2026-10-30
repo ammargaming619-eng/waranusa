@@ -265,7 +265,7 @@ export function SourcesView() {
                         <a
                           href={`#/budaya/${linked.slug}`}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="flex max-w-full items-center gap-1 text-xs font-semibold text-[#8C5E3C] hover:text-[#6E472D] hover:underline"
                           title={linked.title}
                         >
@@ -281,7 +281,7 @@ export function SourcesView() {
                         <a
                           href={s.url}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="flex max-w-full items-center gap-1 text-xs text-[#8C5E3C] hover:text-[#6E472D] hover:underline"
                           title={s.url}
                         >

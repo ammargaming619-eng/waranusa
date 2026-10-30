@@ -61,6 +61,14 @@ const ModelViewer = dynamic(() => import("@/components/three/model-viewer"), {
   ),
 });
 
+const ArtifactLab3D = dynamic(
+  () => import("@/components/laboratory/artifact-lab-3d"),
+  {
+    ssr: false,
+    loading: () => <div className="min-h-[580px] bg-[#FAF8F5] rounded-3xl mt-8" />,
+  }
+);
+
 export type { OrganologyType, OrganologySpecs };
 export type TraditionalInstrument = TraditionalInstrument38;
 export const INSTRUMENTS_CATALOGUE: TraditionalInstrument38[] = INSTRUMENTS_38_CATALOGUE;
@@ -699,6 +707,11 @@ export default function Exploration3DView() {
               </div>
             )}
           </section>
+
+          {/* ================= LABORATORIUM DIGITAL 3D ARTEFAK & SANDBOX ================= */}
+          <div className="mb-10">
+            <ArtifactLab3D />
+          </div>
       </div>
     </div>
   );

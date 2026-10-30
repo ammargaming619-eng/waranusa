@@ -41,6 +41,14 @@ import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map"
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n-store";
 
+const ArtifactLab3D = dynamic(
+  () => import("@/components/laboratory/artifact-lab-3d"),
+  {
+    ssr: false,
+    loading: () => <div className="min-h-[580px] bg-[#FAF8F5]" />,
+  }
+);
+
 void MessageSquarePlus;
 void Sparkles;
 
@@ -444,19 +452,25 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
         {/* ========================================================================= */}
         <Interactive3DPavilion />
 
-        {/* ================= AJAKAN BERKONTRIBUSI ================= */}
+        {/* ========================================================================= */}
+        {/* LABORATORIUM DIGITAL 3D ARTEFAK & SANDBOX PLAYGROUND                     */}
+        {/* ========================================================================= */}
+        <ArtifactLab3D />
+
+        {/* ================= AJAKAN BERKONTRIBUSI (GERAKAN PUBLIKASI BERSAMA) ================= */}
         <section
           id="tentang-kami"
-          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8"
+          className="relative w-full bg-[#FAF8F5] py-16 sm:py-24 border-t border-[#EAE0D2]"
           aria-labelledby="kontribusi-cta"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.90, y: 26 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-[#4E3528] bg-[#3C2517] px-6 py-12 text-white shadow-xl sm:px-10 md:py-16"
-          >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.90, y: 26 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="relative overflow-hidden rounded-3xl border border-[#4E3528] bg-[#3C2517] px-6 py-12 text-white shadow-xl sm:px-10 md:py-16"
+            >
             {/* Bentuk Lingkaran Geometris Bersih (Sesuai Referensi Pengguna — Tanpa Blur) */}
             <div
               aria-hidden="true"
@@ -500,6 +514,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
               </div>
             </motion.div>
           </motion.div>
+          </div>
         </section>
       </div>
     </MotionConfig>
