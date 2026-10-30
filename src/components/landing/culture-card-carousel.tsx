@@ -174,6 +174,8 @@ export function CultureCardCarousel({ items, loading }: CultureCardCarouselProps
                 }}
               >
                 <div
+                  aria-hidden={!isCenter ? "true" : undefined}
+                  tabIndex={isCenter ? 0 : -1}
                   className={cn(
                     "w-[320px] xs:w-[360px] sm:w-[410px] md:w-[450px] lg:w-[460px] rounded-3xl overflow-hidden bg-white text-left transition-all duration-300 subpixel-antialiased",
                     isCenter
@@ -294,7 +296,7 @@ function CarouselCardContent({
       {/* Badan Teks & Metadata */}
       <div className="flex flex-1 flex-col justify-between p-4 sm:p-5 select-text">
         <motion.div
-          animate={isCenter ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.75, scale: 0.95, y: 4 }}
+          animate={isCenter ? { scale: 1, y: 0 } : { scale: 0.95, y: 4 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <h3 className="font-serif text-base sm:text-lg font-bold text-[#1E140C] line-clamp-1 leading-snug tracking-tight">

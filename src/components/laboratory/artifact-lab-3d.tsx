@@ -264,7 +264,7 @@ export default function ArtifactLab3D() {
                   <span className="text-xs font-extrabold uppercase tracking-wider text-[#783E15]">
                     {isEn ? "2D to 3D Conversion Workflow" : "Alur Tutorial Konversi 2D ke 3D"}
                   </span>
-                  <span className="text-xs text-stone-500 font-bold bg-[#F4EBE0] px-2 py-0.5 rounded-md">
+                  <span className="text-xs text-[#52331C] font-extrabold bg-[#EFE3D2] px-2.5 py-0.5 rounded-md">
                     {isEn ? `Step ${activeStep} of 3` : `Langkah ${activeStep} dari 3`}
                   </span>
                 </div>
@@ -303,7 +303,7 @@ export default function ArtifactLab3D() {
                             <span
                               className={cn(
                                 "text-[11px] font-mono font-bold",
-                                isActive ? "text-[#B45309]" : "text-stone-400"
+                                isActive ? "text-[#B45309]" : "text-[#7A4B29]"
                               )}
                             >
                               {step.numberStr}.
@@ -356,13 +356,13 @@ export default function ArtifactLab3D() {
                   <div className="pt-3 border-t-2 border-[#E5D5C2] space-y-3">
                     <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-[#D8C4AA] shadow-2xs">
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">
+                        <span className="text-stone-700 block text-[10px] font-semibold">
                           {isEn ? "Image Format" : "Format Gambar"}
                         </span>
                         <strong className="text-[#8B5E3C] font-bold">.PNG / .JPG / .WEBP</strong>
                       </div>
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">
+                        <span className="text-stone-700 block text-[10px] font-semibold">
                           {isEn ? "Background" : "Latar Belakang"}
                         </span>
                         <strong className="text-stone-800 font-bold">
@@ -456,13 +456,13 @@ export default function ArtifactLab3D() {
                   <div className="pt-3 border-t-2 border-[#E5D5C2] space-y-3">
                     <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-[#D8C4AA] shadow-2xs">
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">
+                        <span className="text-stone-700 block text-[10px] font-semibold">
                           {isEn ? "File Format" : "Format Berkas"}
                         </span>
                         <strong className="text-[#8B5E3C] font-bold">.GLB (glTF Binary)</strong>
                       </div>
                       <div>
-                        <span className="text-stone-500 block text-[10px] font-medium">
+                        <span className="text-stone-700 block text-[10px] font-semibold">
                           {isEn ? "Draco Compression" : "Kompresi Draco"}
                         </span>
                         <strong className="text-emerald-700 font-bold">&lt; 15 MB (Optimal)</strong>

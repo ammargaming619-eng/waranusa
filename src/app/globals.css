@@ -266,16 +266,12 @@
 }
 
 @media (max-width: 640px) {
-  .animate-hero-zoom {
-    animation-duration: 0.3s;
-  }
-  .animate-hero-sub {
-    animation-duration: 0.3s;
-    animation-delay: 0.04s;
-  }
+  .animate-hero-zoom,
+  .animate-hero-sub,
   .animate-hero-cta {
-    animation-duration: 0.3s;
-    animation-delay: 0.08s;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

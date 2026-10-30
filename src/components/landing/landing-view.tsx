@@ -32,9 +32,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeading } from "@/components/shared/states";
 import { CultureCard } from "@/components/catalog/culture-card";
 import { CultureCardCarousel } from "@/components/landing/culture-card-carousel";
-import { HOUSES_38_CATALOGUE } from "@/data/traditional-houses";
-import { INSTRUMENTS_38_CATALOGUE } from "@/data/instruments-data";
-import { MASTER_CULTURAL_CATALOGUE } from "@/data/cultural-catalogue";
+import {
+  LANDING_FEATURED_ITEMS,
+  DEFAULT_LANDING_JOGLO,
+  DEFAULT_LANDING_INSTRUMENT,
+} from "@/data/landing-featured";
 import dynamic from "next/dynamic";
 import type { CulturalItem } from "@/lib/types";
 import { ArchipelagoEarthMap } from "@/components/landing/archipelago-earth-map";
@@ -70,77 +72,8 @@ const Instrument3DStage = dynamic(
   }
 );
 
-const SARON_DEMUNG_DATA =
-  INSTRUMENTS_38_CATALOGUE.find((inst) => inst.id === "saron-demung-jateng") ??
-  INSTRUMENTS_38_CATALOGUE[0];
-
-const JOGLO_HOUSE_DATA = HOUSES_38_CATALOGUE.find((h) => h.id === "joglo");
-
-const FALLBACK_LANDING_JOGLO: CulturalItem = JOGLO_HOUSE_DATA?.fallbackItem ?? {
-  id: "seed-joglo-landing",
-  slug: "joglo",
-  title: "Joglo",
-  summary:
-    "Mahakarya arsitektur kayu Jawa bertingkat tumpangsari yang dipikul oleh empat pilar saka guru tanpa paku besi.",
-  description:
-    "Rumah Joglo merupakan manifestasi filosofi hidup orang Jawa yang memadukan ruang terbuka egaliter di pendapa dengan ruang sakral.",
-  status: "PUBLISHED",
-  featured: true,
-  viewCount: 150,
-  category: {
-    id: "cat-arsitektur",
-    slug: "arsitektur",
-    name: "Arsitektur",
-    createdAt: "2026-01-01",
-    updatedAt: "2026-01-01",
-  },
-  region: {
-    id: "ID-JT",
-    code: "ID-JT",
-    name: "Jawa Tengah",
-    islandGroup: "JAWA",
-    summary: "Jawa Tengah",
-    lat: -7.0,
-    lng: 110.4,
-    createdAt: "2026-01-01",
-    updatedAt: "2026-01-01",
-  },
-  modelMedia: {
-    id: "model-joglo-landing",
-    name: "Joglo 3D",
-    type: "MODEL_3D",
-    format: "glb",
-    mimeType: "model/gltf-binary",
-    size: 2500000,
-    storagePath: "/models/houses/jawa-tengah.glb",
-    url: "/models/houses/jawa-tengah.glb",
-    attribution: "Digitalisasi Warisan 3D WaraNusa",
-  },
-  hotspots: [
-    {
-      id: "h1",
-      itemId: "seed-joglo-landing",
-      title: "Saka Guru",
-      description: "Empat tiang penyangga utama penopang struktur atap tumpangsari bertingkat",
-      x: 0,
-      y: 0.8,
-      z: 0,
-      published: true,
-    },
-    {
-      id: "h2",
-      itemId: "seed-joglo-landing",
-      title: "Atap Tajug",
-      description: "Bentuk atap Tajug piramidal bertingkat melambangkan kedewasaan spiritual",
-      x: 0,
-      y: 1.5,
-      z: 0,
-      published: true,
-    },
-  ],
-  createdAt: "2026-01-01",
-  updatedAt: "2026-01-01",
-};
+const SARON_DEMUNG_DATA = DEFAULT_LANDING_INSTRUMENT;
+const FALLBACK_LANDING_JOGLO: CulturalItem = DEFAULT_LANDING_JOGLO;
 
 export default function LandingView({ introRevealed = true }: { introRevealed?: boolean } = {}) {
   const { language, t } = useTranslation();
@@ -226,7 +159,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
 
     const pool = highlights.data && highlights.data.length > 0
       ? highlights.data
-      : (MASTER_CULTURAL_CATALOGUE as CulturalItem[]);
+      : LANDING_FEATURED_ITEMS;
 
     const poolMap = new Map<string, CulturalItem>();
     for (const it of pool) {
@@ -237,7 +170,7 @@ export default function LandingView({ introRevealed = true }: { introRevealed?: 
     const usedSlugs = new Set<string>();
 
     for (const slug of featuredOrder) {
-      const match = poolMap.get(slug) || (MASTER_CULTURAL_CATALOGUE as CulturalItem[]).find((it) => it.slug === slug);
+      const match = poolMap.get(slug) || LANDING_FEATURED_ITEMS.find((it) => it.slug === slug);
       if (match && !usedSlugs.has(match.slug)) {
         selected.push(match);
         usedSlugs.add(match.slug);
@@ -634,7 +567,7 @@ function Interactive3DPavilion() {
                         className="h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full"
                       />
                     ) : (
-                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono text-stone-400">
+                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono font-medium text-[#7A4B29]">
                         <span>Panggung 3D Siap Dimuat...</span>
                       </div>
                     )}
@@ -673,7 +606,7 @@ function Interactive3DPavilion() {
                         onVolumeChange={setVolume}
                       />
                     ) : (
-                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono text-stone-400">
+                      <div className="flex h-[290px] xs:h-[330px] sm:h-[390px] lg:h-[460px] w-full items-center justify-center bg-[#FAF6F0] text-xs font-mono font-medium text-[#7A4B29]">
                         <span>Panggung Musik 3D Siap Dimuat...</span>
                       </div>
                     )}

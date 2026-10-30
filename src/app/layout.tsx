@@ -45,16 +45,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head>
-        {/* Preload Gambar LCP Hero Responsif yang Selaras dengan Next.js SrcSet */}
-        <link
-          rel="preload"
-          as="image"
-          imageSrcSet="/_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=360&q=75 360w, /_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=414&q=75 414w, /_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=640&q=75 640w, /_next/image?url=%2Fimages%2Findonesia-map-batik.png&w=1200&q=75 1200w"
-          imageSizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
-          fetchPriority="high"
-        />
-      </head>
       <body suppressHydrationWarning className={`${jakarta.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}>
         {children}
         <ClientWidgets />
